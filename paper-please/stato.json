@@ -1,0 +1,17 @@
+{
+    "chat": {
+        "round": 1,
+        "suggestions": [],
+        "votes": []
+    },
+    "world": {
+        "regime": 50,
+        "popolo": 50,
+        "ribelli": 50
+    },
+    "lastOutcome": {
+        "index": null,
+        "decision": null,
+        "text": ""
+    }
+}

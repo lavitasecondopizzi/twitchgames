@@ -1,0 +1,1574 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Impiccato – LAN Sync</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+<style>
+:root{
+  --bg: #050912;
+  --bg2:#0e2035;
+  --pri:#213E60;
+  --pri-soft:#1a3153;
+  --acc:#94B6EF;
+  --brand:#E68C3A;
+  --ok:#2ecc71;
+  --ko:#e74c3c;
+}
+
+/* ===== BASE ===== */
+
+html,body{
+  height:100%;
+  margin:0;
+  background:#020308;
+  font-family:'Press Start 2P', system-ui, sans-serif;
+  font-size:16px;
+}
+
+body{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+/* Canvas 16:9 responsivo */
+#app{
+  width: min(100vw, 100vh * 16/9);
+  height: min(100vh, 100vw * 9/16);
+  max-width:1920px;
+  max-height:1080px;
+
+  background:
+    radial-gradient(circle at top, rgba(148,182,239,0.18) 0, transparent 60%),
+    linear-gradient(180deg,var(--bg2),#050912);
+  color:#f5f7ff;
+  box-sizing:border-box;
+  padding:12px 16px;
+  position:relative;
+  overflow:hidden;
+
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+
+  border-radius:18px;
+  box-shadow:
+    0 0 40px rgba(10,20,40,0.9),
+    0 0 0 2px rgba(148,182,239,0.25);
+}
+
+/* testi piccoli più leggibili */
+.cam .label,
+.board-title,
+.legend,
+.banner,
+.btn,
+.score-btn,
+.rules-panel,
+.votes-panel{
+  letter-spacing:0;
+  line-height:1.2;
+}
+
+/* ===== TOP AREA (webcam + round) ===== */
+
+.top{
+  display:flex;
+  justify-content:center;
+  align-items:stretch;
+  gap:24px;
+  flex:0 0 32%;
+  min-height:0;
+}
+
+.cam{
+  flex:0 0 30%;
+  aspect-ratio:16/9;
+  background:rgba(6,14,30,0.88);
+  border-radius:16px;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:
+    0 0 0 1px rgba(148,182,239,0.35),
+    0 0 18px rgba(12,34,68,0.9);
+}
+
+.cam::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(135deg,rgba(148,182,239,0.18),transparent 40%),
+    linear-gradient(315deg,rgba(230,140,58,0.12),transparent 55%);
+  mix-blend-mode:screen;
+  opacity:0.9;
+  pointer-events:none;
+}
+
+.cam .label{
+  position:absolute;
+  top:6px;
+  left:8px;
+  background:rgba(5,9,18,0.85);
+  padding:4px 10px;
+  border-radius:999px;
+  border:1px solid rgba(148,182,239,.7);
+  font-size:0.75rem;
+  font-weight:700;
+  color:#f5f7ff;
+  text-shadow:0 0 4px rgba(0,0,0,.9);
+}
+
+/* ROUND centrale */
+.center{
+  flex:0 0 25%;
+  max-width:26%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  border-radius:14px;
+  background:radial-gradient(circle at top, rgba(148,182,239,0.18) 0, rgba(6,14,30,0.95) 55%);
+  padding:8px 10px;
+  box-sizing:border-box;
+  box-shadow:
+    0 0 0 1px rgba(148,182,239,0.38),
+    0 0 22px rgba(13,40,90,0.9);
+}
+
+.center .label{
+  font-weight:800;
+  margin-bottom:4px;
+  color:var(--acc);
+  font-size:0.85rem;
+  text-transform:uppercase;
+}
+
+.center img{
+  max-width:100%;
+  max-height:40%;
+  object-fit:contain;
+  border-radius:10px;
+  background:#111;
+  border:2px solid rgba(148,182,239,0.4);
+  box-shadow:0 0 14px rgba(148,182,239,0.35);
+}
+
+/* scoreboard sotto */
+.scoreboard{
+  margin-top:6px;
+  margin-bottom:8px;
+  background:linear-gradient(135deg, rgba(230,140,58,0.25), rgba(230,140,58,0.10));
+  border:1px solid rgba(230,140,58,0.9);
+  padding:3px 8px;
+  border-radius:999px;
+  font-size:0.85rem;
+  font-weight:800;
+  color:#fff4e6;
+  text-shadow:0 0 4px rgba(0,0,0,0.85);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+}
+
+.scoreboard .value{
+  color:var(--acc);
+  text-shadow:0 0 6px rgba(148,182,239,0.9);
+}
+
+.scoreboard .dash{
+  opacity:0.8;
+}
+
+/* pulsanti -1 / +1 */
+.score-btn{
+  background:rgba(6,14,30,0.95);
+  border:1px solid rgba(148,182,239,0.8);
+  color:#f5f7ff;
+  border-radius:999px;
+  padding:2px 6px;
+  font-size:0.75rem;
+  font-weight:700;
+  cursor:pointer;
+  box-shadow:0 0 6px rgba(148,182,239,0.7);
+  transition:transform 0.08s ease, box-shadow 0.08s ease, background 0.08s ease;
+}
+
+.score-btn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 0 10px rgba(148,182,239,1);
+  background:rgba(11,26,58,0.95);
+}
+
+.score-btn:active{
+  transform:translateY(1px);
+  box-shadow:0 0 4px rgba(148,182,239,0.8);
+}
+
+/* select difficoltà (dummy per ora) */
+.center select{
+  margin-top:4px;
+  background:rgba(6,14,30,0.95);
+  color:#f5f7ff;
+  border:1px solid rgba(148,182,239,0.7);
+  border-radius:8px;
+  padding:4px 6px;
+  font-size:0.75rem;
+  width:100%;
+}
+
+.center select:focus{
+  outline:none;
+  box-shadow:0 0 8px rgba(148,182,239,0.8);
+}
+
+.center #newRound{
+  margin-top:6px;
+  width:100%;
+}
+
+/* ===== GENERICO BOTTONE ===== */
+
+.btn{
+  background:linear-gradient(180deg,#ffd3a1,#e68c3a);
+  border:none;
+  padding:3px 8px;
+  border-radius:999px;
+  cursor:pointer;
+  font-weight:700;
+  box-shadow:
+    0 2px 0 #b5651d,
+    0 0 8px rgba(230,140,58,0.7);
+  font-size:0.75rem;
+  color:#261106;
+  transition:transform 0.08s ease, box-shadow 0.08s ease, filter 0.08s ease;
+}
+
+.btn:hover{
+  transform:translateY(-1px);
+  filter:brightness(1.05);
+  box-shadow:
+    0 3px 0 #b5651d,
+    0 0 12px rgba(230,140,58,0.9);
+}
+
+.btn:active{
+  transform:translateY(1px);
+  box-shadow:
+    0 1px 0 #8c4615,
+    0 0 4px rgba(230,140,58,0.7);
+}
+
+/* ===== BOARDS IMPICCATO ===== */
+
+.tabs{
+  flex:1 1 auto;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.tab-header{
+  display:flex;
+  gap:6px;
+  margin-top:2px;
+  margin-bottom:4px;
+}
+
+.tab-btn{
+  flex:0 0 auto;
+  background:rgba(6,14,30,0.9);
+  border:1px solid rgba(148,182,239,0.7);
+  color:#f5f7ff;
+  border-radius:999px;
+  padding:3px 8px;
+  font-size:0.85rem;
+  cursor:pointer;
+  box-shadow:0 0 6px rgba(0,0,0,0.6);
+  opacity:0.6;
+  transition:opacity .15s ease, box-shadow .15s ease, transform .08s ease, background .15s ease;
+}
+
+.tab-btn.active{
+  opacity:1;
+  background:linear-gradient(135deg, rgba(148,182,239,0.35), rgba(33,62,96,0.95));
+  box-shadow:0 0 10px rgba(148,182,239,0.9);
+  transform:translateY(-1px);
+}
+
+.tab-btn:hover{
+  opacity:0.9;
+}
+
+.tabs-viewport{
+  flex:1 1 auto;
+  min-height:0;
+  overflow:hidden;
+  border-radius:12px;
+}
+
+.tabs-inner{
+  display:flex;
+  height:100%;
+  transition:transform .35s ease-in-out;
+}
+
+.tab-panel{
+  flex:0 0 100%;
+  height:100%;
+  padding:2px;
+  box-sizing:border-box;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+}
+
+/* TAB 0: GIOCO */
+.tab-panel[data-tab="0"]{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  gap:4px;
+}
+
+.tab-panel[data-tab="0"] .boards{
+  flex:1 1 auto;
+  min-height:0;
+  width:100%;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin:0 auto;
+}
+
+/* board base */
+.board{
+  display:flex;
+  flex-direction:column;
+  background:radial-gradient(circle at top, rgba(148,182,239,0.16) 0, rgba(10,20,40,0.98) 55%);
+  border-radius:16px;
+  padding:6px;
+  box-shadow:
+    0 0 0 1px rgba(148,182,239,0.35),
+    0 10px 26px rgba(0,0,0,0.85);
+  min-height:0;
+  position:relative;
+  overflow:hidden;
+}
+
+.board-head{
+  display:flex;
+  align-items:center;
+  margin-bottom:4px;
+  position:relative;
+  z-index:1;
+}
+
+.board-title{
+  padding:3px 10px;
+  background:rgba(6,14,30,0.95);
+  border:1px solid rgba(148,182,239,.7);
+  border-radius:999px;
+  font-weight:800;
+  font-size:0.75rem;
+  color:#f5f7ff;
+  text-shadow:0 0 4px rgba(0,0,0,.85);
+}
+
+.board-status{
+  margin-left:auto;
+  font-size:0.65rem;
+  color:#cfe0ff;
+}
+
+/* hangman SVG */
+.hangman-wrapper{
+  flex:0 0 auto;
+  display:flex;
+  justify-content:center;
+  margin-bottom:8px;
+}
+
+.hangman-svg{
+  width:180px;
+  height:180px;
+}
+
+.gallow{
+  stroke:#5d6b82;
+  stroke-width:3;
+}
+
+.man-part{
+  stroke:var(--acc);
+  stroke-width:3;
+  stroke-linecap:round;
+  fill:none;
+  opacity:0;
+}
+
+/* parola */
+.word-row{
+  text-align:center;
+  font-size:0.9rem;
+  margin-bottom:4px;
+  letter-spacing:0.25em;
+}
+
+.word-text{
+  font-size:0.9rem;
+}
+
+/* errori */
+.errors-row{
+  font-size:0.7rem;
+  color:#cfe0ff;
+  margin-top:6px;
+  margin-bottom:6px;
+}
+
+.errors-row span.bad{
+  color:var(--ko);
+}
+
+/* lettere */
+.letters-row{
+  margin-top:auto;
+  display:grid;
+  grid-template-columns:repeat(10,1fr);
+  gap:4px;
+  padding-top:8px;
+}
+
+.letter-btn{
+  padding:6px 0;
+  border-radius:8px;
+  border:1px solid var(--pri-soft);
+  background:rgba(9,22,46,0.9);
+  color:#f5f7ff;
+  font-size:0.75rem;
+  cursor:pointer;
+  box-shadow:0 0 4px rgba(0,0,0,0.5);
+}
+
+.letter-btn.used{
+  background:#202737;
+  color:#808ba5;
+  border-color:#202737;
+}
+
+.letter-btn:disabled{
+  opacity:0.4;
+  cursor:default;
+}
+
+/* legend */
+.legend{
+  color:#cfe0ff;
+  font-size:0.7rem;
+  display:flex;
+  justify-content:space-between;
+  opacity:0.85;
+}
+
+/* TAB 1: REGOLE */
+.rules-panel{
+  flex:1 1 auto;
+  height:100%;
+  box-sizing:border-box;
+  padding:8px 10px;
+  background:radial-gradient(circle at top, rgba(148,182,239,0.16) 0, rgba(10,20,40,0.96) 55%);
+  border-radius:12px;
+  box-shadow:0 0 0 1px rgba(148,182,239,0.35), 0 10px 26px rgba(0,0,0,0.85);
+  overflow:auto;
+}
+
+.rules-panel h2{
+  font-size:0.95rem;
+  margin:0 0 8px 0;
+  color:var(--acc);
+}
+
+.rules-panel ul{
+  list-style:disc;
+  padding-left:18px;
+  margin:0;
+}
+
+.rules-panel li{
+  font-size:0.75rem;
+  margin-bottom:4px;
+}
+
+/* TAB 2: VOTI CHAT */
+.votes-panel{
+  flex:1 1 auto;
+  height:100%;
+  box-sizing:border-box;
+  padding:8px 10px;
+  background:radial-gradient(circle at top, rgba(230,140,58,0.18) 0, rgba(10,20,30,0.96) 55%);
+  border-radius:12px;
+  box-shadow:0 0 0 1px rgba(230,140,58,0.4), 0 10px 26px rgba(0,0,0,0.9);
+  overflow:auto;
+}
+
+.votes-panel h2{
+  font-size:0.8rem;
+  margin:0 0 6px 0;
+  color:var(--brand);
+}
+
+.votes-subtitle{
+  font-size:0.65rem;
+  margin:0 0 8px 0;
+  color:#ffe9c8;
+}
+
+.votes-list{
+  font-size:0.75rem;
+  background:rgba(6,14,30,0.9);
+  border-radius:8px;
+  border:1px solid rgba(148,182,239,0.4);
+  padding:6px 8px;
+  min-height:40px;
+}
+
+/* effetto punteggio 8-bit */
+.score-fx{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  font-family:'Press Start 2P', system-ui, sans-serif;
+  font-size:clamp(4rem, 9vw, 7rem);
+  font-weight:900;
+  pointer-events:none;
+  opacity:0;
+  letter-spacing:0.1em;
+  text-shadow:
+    0 0 0 #000,
+    3px 3px 0 #000,
+    -3px 3px 0 #000,
+    3px -3px 0 #000,
+    -3px -3px 0 #000,
+    0 0 18px rgba(0,0,0,0.9);
+  z-index:50;
+}
+.score-fx.positive{
+  color:#2ecc71;
+  text-shadow:
+    0 0 0 #000,
+    3px 3px 0 #000,
+    -3px 3px 0 #000,
+    3px -3px 0 #000,
+    -3px -3px 0 #000,
+    0 0 18px rgba(46,204,113,0.9);
+}
+.score-fx.negative{
+  color:#e74c3c;
+  text-shadow:
+    0 0 0 #000,
+    3px 3px 0 #000,
+    -3px 3px 0 #000,
+    3px -3px 0 #000,
+    -3px -3px 0 #000,
+    0 0 18px rgba(231,76,60,0.9);
+}
+.score-fx.show{
+  animation:scoreFxPop 0.6s steps(2, end) forwards;
+}
+
+@keyframes scoreFxPop{
+  0%{
+    opacity:0;
+    transform:translate(-50%,-40%) scale(0.4) rotate(-6deg);
+  }
+  15%{
+    opacity:1;
+    transform:translate(-50%,-52%) scale(1.25) rotate(3deg);
+  }
+  35%{
+    opacity:1;
+    transform:translate(-50%,-55%) scale(1.0) rotate(-2deg);
+  }
+  65%{
+    opacity:0.9;
+    transform:translate(-50%,-60%) scale(0.95) rotate(1deg);
+  }
+  100%{
+    opacity:0;
+    transform:translate(-50%,-72%) scale(0.7) rotate(0deg);
+  }
+}
+
+.theme-row{
+  font-size:0.7rem;
+  color:#cfe0ff;
+  margin-bottom:6px;
+  text-align:center;
+}
+
+.word-row{
+  text-align:center;
+  margin-bottom:8px;
+}
+
+.word-text{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  font-size:0.95rem;
+}
+
+.word-line{
+  white-space:pre;           /* rispetta gli spazi tra lettere */
+  word-break:break-word;     /* parola troppo lunga? va a capo */
+  max-width:100%;
+  text-align:center;
+}
+
+/* bordo glow per il giocatore di turno */
+.board.active{
+  box-shadow:
+    0 0 0 2px rgba(230,140,58,0.9),
+    0 0 22px rgba(230,140,58,0.8);
+}
+
+.board.active .board-title{
+  background:linear-gradient(135deg, rgba(230,140,58,0.5), rgba(33,62,96,0.95));
+  border-color:rgba(230,140,58,0.9);
+}
+
+/* turno */
+.turn-row{
+  margin-top:2px;
+  font-size:0.7rem;
+  color:#ffe9c8;
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- FX punteggio -->
+  <div id="scoreFx" class="score-fx"></div>
+
+  <audio id="sfxUp"   src="sounds/score_up.ogg"   preload="auto"></audio>
+  <audio id="sfxDown" src="sounds/score_down.ogg" preload="auto"></audio>
+
+  <div class="top">
+    <div class="cam"><div class="label" id="webcamLabelA">Giocatore A</div></div>
+
+    <div class="center">
+      <div class="label">Round attuale</div>
+      <img id="roundImage" alt="">
+      <div class="turn-row">Turno: <span id="turnLabel">-</span></div>
+      <div class="scoreboard">
+        <button class="score-btn" id="subScore">-1</button>
+        <span class="value" id="scoreA">0</span>
+        <span class="dash">-</span>
+        <span class="value" id="scoreB">0</span>
+        <button class="score-btn" id="addScore">+1</button>
+      </div>
+
+      <select id="roundSelect">
+        <option value="complex">Parole complesse casuali</option>
+      </select>
+      <button class="btn" id="newRound">Nuovo Round</button>
+    </div>
+
+    <div class="cam"><div class="label" id="webcamLabelB">Giocatore B</div></div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab-header">
+      <button class="tab-btn active" data-tab="0">Gioco</button>
+      <button class="tab-btn" data-tab="1">Regole</button>
+      <button class="tab-btn" data-tab="2">Voti chat</button>
+    </div>
+
+    <div class="tabs-viewport">
+      <div class="tabs-inner">
+
+        <!-- TAB 0: GIOCO -->
+        <section class="tab-panel" data-tab="0">
+          <div class="boards">
+            <!-- Giocatore A -->
+            <section class="board" data-player="A">
+              <div class="board-head">
+                <div class="board-title" id="boardTitleA">Giocatore A</div>
+                <div class="board-status" id="status-A">In attesa…</div>
+              </div>
+              <div class="hangman-wrapper">
+                <svg class="hangman-svg" viewBox="0 0 200 200">
+                  <!-- gallow -->
+                  <line x1="20" y1="180" x2="180" y2="180" class="gallow"/>
+                  <line x1="60" y1="180" x2="60" y2="20" class="gallow"/>
+                  <line x1="60" y1="20" x2="140" y2="20" class="gallow"/>
+                  <line x1="140" y1="20" x2="140" y2="40" class="gallow"/>
+                  <!-- man -->
+                  <circle id="hm-A-head" cx="140" cy="55" r="15" class="man-part"/>
+                  <line id="hm-A-body" x1="140" y1="70" x2="140" y2="110" class="man-part"/>
+                  <line id="hm-A-armL" x1="140" y1="80" x2="120" y2="95" class="man-part"/>
+                  <line id="hm-A-armR" x1="140" y1="80" x2="160" y2="95" class="man-part"/>
+                  <line id="hm-A-legL" x1="140" y1="110" x2="125" y2="135" class="man-part"/>
+                  <line id="hm-A-legR" x1="140" y1="110" x2="155" y2="135" class="man-part"/>
+                </svg>
+              </div>
+              <div class="theme-row">
+                Tema: <span id="theme-A">-</span>
+              </div>
+              <div class="word-row">
+                <span class="word-text" id="word-A">_ _ _</span>
+              </div>
+              <div class="errors-row">
+                Errori (<span id="errors-A">0</span>/<span id="maxErrors-A">6</span>):
+                <span id="wrong-A" class="bad"></span>
+              </div>
+              <div class="letters-row" id="letters-A"></div>
+            </section>
+
+            <!-- Giocatore B -->
+            <section class="board" data-player="B">
+              <div class="board-head">
+                <div class="board-title" id="boardTitleB">Giocatore B</div>
+                <div class="board-status" id="status-B">In attesa…</div>
+              </div>
+              <div class="hangman-wrapper">
+                <svg class="hangman-svg" viewBox="0 0 200 200">
+                  <!-- gallow -->
+                  <line x1="20" y1="180" x2="180" y2="180" class="gallow"/>
+                  <line x1="60" y1="180" x2="60" y2="20" class="gallow"/>
+                  <line x1="60" y1="20" x2="140" y2="20" class="gallow"/>
+                  <line x1="140" y1="20" x2="140" y2="40" class="gallow"/>
+                  <!-- man -->
+                  <circle id="hm-B-head" cx="140" cy="55" r="15" class="man-part"/>
+                  <line id="hm-B-body" x1="140" y1="70" x2="140" y2="110" class="man-part"/>
+                  <line id="hm-B-armL" x1="140" y1="80" x2="120" y2="95" class="man-part"/>
+                  <line id="hm-B-armR" x1="140" y1="80" x2="160" y2="95" class="man-part"/>
+                  <line id="hm-B-legL" x1="140" y1="110" x2="125" y2="135" class="man-part"/>
+                  <line id="hm-B-legR" x1="140" y1="110" x2="155" y2="135" class="man-part"/>
+                </svg>
+              </div>
+              <div class="theme-row">
+                Tema: <span id="theme-B">-</span>
+              </div>
+              <div class="word-row">
+                <span class="word-text" id="word-B">_ _ _</span>
+              </div>
+              <div class="errors-row">
+                Errori (<span id="errors-B">0</span>/<span id="maxErrors-B">6</span>):
+                <span id="wrong-B" class="bad"></span>
+              </div>
+              <div class="letters-row" id="letters-B"></div>
+            </section>
+          </div>
+        </section>
+
+        <!-- TAB 1: REGOLE -->
+        <section class="tab-panel" data-tab="1">
+          <div class="rules-panel">
+            <h2>Regole dell'impiccato 1v1</h2>
+            <ul>
+              <li>Ogni giocatore ha una <b>parola segreta diversa</b>, generata in modo casuale e complessa.</li>
+              <li>Le parole possono avere più termini: gli spazi sono mostrati, le lettere sono nascoste con <b>_</b>.</li>
+              <li>A turno i giocatori scelgono una lettera dal proprio lato.</li>
+              <li>Se la lettera è presente, viene rivelata in tutte le posizioni corrispondenti.</li>
+              <li>Se la lettera non è presente, si aggiunge un errore e viene disegnata una parte dell’omino.</li>
+              <li>Ogni giocatore ha a disposizione <b>6 errori</b>. Al settimo sarebbe “impiccato”.</li>
+              <li>Un giocatore vince il round quando completa tutte le lettere della propria parola.</li>
+              <li>Ogni giocatore può gestire il suo punteggio <b>-1 / +1</b>.</li>
+              <li>Se il giocatore indovina la parola aggiunge <b>+1</b> al suo punteggio.</li>
+              <li>Se il giocatore arriva all'“impiccato” sottrae <b>-1</b> al suo punteggio.</li>
+              <li>Il tasto <b>Nuovo Round</b> genera due nuove parole casuali, resetta errori, lettere e voti della chat.</li>
+			  <li>Durante questa modalità, la chat può suggerire lettere da provare.</li>
+			  <li>La decisione finale su quali suggerimenti seguire spetta sempre al giocatore.</li>
+            </ul>
+	
+	        <!-- MODALITÀ STREAMER VS CHAT -->
+            <h2 style="margin-top:10px;">Modalità Streamer vs Chat</h2>
+            <ul>
+              <li>La chat gioca dal lato B in modo <b>collettivo</b>: propone le lettere tramite messaggi in chat.</li>
+              <li>Il bot raccoglie le proposte della chat e farà clic sulla lettera più votata
+                quando è il <b>turno della chat</b>, la chat avrà 120 secondi a turno per votare.</li>
+              <li>Verrà presa in considerazione solo la prima lettera proposta da ogni utente.</li>
+              <li>La chat voterà ad ogni turno una penitenza che lo streamer dovrà mettere in pratica tutte le volte che la
+	            chat indovina la frase.</li>
+	          <li>In questa modalità il punteggio verrà ignorato.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- TAB 2: VOTI CHAT -->
+        <section class="tab-panel" data-tab="2">
+          <div class="votes-panel">
+            <h2>Voti della chat</h2>
+            <p class="votes-subtitle">
+              Qui puoi mostrare le lettere proposte dalla chat.
+            </p>
+            <div id="chatVotesList" class="votes-list">
+              Nessuna integrazione bot ancora configurata.
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ========= PARAMETRI URL & CLIENT ========= */
+
+const urlParams   = new URLSearchParams(window.location.search);
+const forcedRole  = urlParams.get("role");   // "A", "B" oppure null
+const playerNameFromUrl = urlParams.get("player") || urlParams.get("name") || null;
+
+let clientId = localStorage.getItem("impiccatoClientId");
+if (!clientId) {
+  clientId = "c-" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+  localStorage.setItem("impiccatoClientId", clientId);
+}
+
+let player = null; // "A", "B" o null (spettatore)
+
+/* ========= DIZIONARIO PAROLE ========= */
+
+const DIZIONARIO = [
+  // ==== VITA REALE ====
+  { theme: "Vita Reale", phrase: "RACCOLTA DIFFERENZIATA FATTA DI CORSA" },
+  { theme: "Vita Reale", phrase: "EQUILIBRIO EMOTIVO PRECARIO" },
+  { theme: "Vita Reale", phrase: "LISTA DELLA SPESA INFINITA" },
+  { theme: "Vita Reale", phrase: "PASTO LIBERO DEL SABATO SERA" },
+  { theme: "Vita Reale", phrase: "SONNO PERSO SCORRENDO IL TELEFONO" },
+  { theme: "Vita Reale", phrase: "ALLENAMENTO RIMANDATO ALL INFINITO" },
+  { theme: "Vita Reale", phrase: "TROPPE COSE DA FARE IN UN GIORNO" },
+  { theme: "Vita Reale", phrase: "MESSAGGI LASCIATI IN VISUALIZZATO" },
+  { theme: "Vita Reale", phrase: "PILA DI VESTITI SULLA SEDIA" },
+  { theme: "Vita Reale", phrase: "APPUNTAMENTO DAL MEDICO RIMANDATO" },
+  { theme: "Vita Reale", phrase: "PROMESSA DI INIZIARE DA LUNEDI" },
+  { theme: "Vita Reale", phrase: "PAVIMENTO CHE SCRICCHIOLA DI NOTTE" },
+
+  // ==== STREAMING / TWITCH ====
+  { theme: "Streaming", phrase: "DROP DI FRAME INEVITABILI" },
+  { theme: "Streaming", phrase: "CHAT CHE SPAMMA EMOTE A CASO" },
+  { theme: "Streaming", phrase: "OVERLAY TROPPO CARICO DI ROBA" },
+  { theme: "Streaming", phrase: "AUDIO DEL GIOCO TROPPO ALTO" },
+  { theme: "Streaming", phrase: "STREAM DI TEST SENZA TITOLO" },
+  { theme: "Streaming", phrase: "RAID A SORPRESA DI UN AMICO" },
+  { theme: "Streaming", phrase: "CHAT CHE SCRIVE CLIP SUBITO" },
+  { theme: "Streaming", phrase: "CLIP MEMORABILE DELLA CHAT" },
+  { theme: "Streaming", phrase: "BACKSEAT GAMING NON RICHIESTO" },
+  { theme: "Streaming", phrase: "MICROFONO LASCIATO MUTO PER SBAGLIO" },
+  { theme: "Streaming", phrase: "LA LIVE SI BLOCCA SUL PIU BELLO" },
+  { theme: "Streaming", phrase: "EMOTE PERSONALIZZATE TROPPO BELLE" },
+
+  // ==== VIDEOGIOCHI ====
+  { theme: "Videogiochi", phrase: "PUNTO DI SALVATAGGIO LONTANISSIMO" },
+  { theme: "Videogiochi", phrase: "BOSS FINALE CON QUATTRO FASI" },
+  { theme: "Videogiochi", phrase: "LIVELLO TUTORIAL CHE NON FINISCE" },
+  { theme: "Videogiochi", phrase: "RACCOLTA DI OGGETTI COLLEZIONABILI" },
+  { theme: "Videogiochi", phrase: "MISSIONE A TEMPO CON TANTA ANSIA" },
+  { theme: "Videogiochi", phrase: "INVENTARIO COMPLETAMENTE PIENO" },
+  { theme: "Videogiochi", phrase: "PARTITA CLASSIFICATA DECISIVA" },
+  { theme: "Videogiochi", phrase: "NEMICI CHE RESPAWNANO ALL INFINITO" },
+  { theme: "Videogiochi", phrase: "MINIGIOCO PIU DIVERTENTE DEL GIOCO" },
+  { theme: "Videogiochi", phrase: "COLPO CRITICO QUANDO MENO TE LO ASPETTI" },
+  { theme: "Videogiochi", phrase: "LIVELLO SEGRETO DIFFICILISSIMO" },
+  { theme: "Videogiochi", phrase: "SCELTE MORALI DAL PESO ENORME" },
+  { theme: "Videogiochi", phrase: "COMPAGNO DI SQUADRA CHE RUSHA SEMPRE" },
+  { theme: "Videogiochi", phrase: "MISSIONE STEALTH FALLITA PER SBAGLIO" },
+  { theme: "Videogiochi", phrase: "TUTORIAL SALTATO E ORA SEI CONFUSO" },
+
+  // ==== ANIME / POP CULTURE ====
+  { theme: "Anime", phrase: "POTERE DELL AMICIZIA" },
+  { theme: "Anime", phrase: "TRASFORMAZIONE FINALE EPICA" },
+  { theme: "Anime", phrase: "ARCO NARRATIVO DI ALLENAMENTO" },
+  { theme: "Anime", phrase: "PROTAGONISTA TROPPO OTTIMISTA" },
+  { theme: "Anime", phrase: "SAGA DEL TORNEO INTERDIMENSIONALE" },
+  { theme: "Anime", phrase: "RISVEGLIO DEL POTERE NASCOSTO" },
+  { theme: "Anime", phrase: "VIAGGIO PER DIVENTARE IL PIU FORTE" },
+  { theme: "Anime", phrase: "COLONNA SONORA CHE FA VENIRE I BRIVIDI" },
+  { theme: "Anime", phrase: "NEMICO CHE DIVENTA ALLEATO" },
+  { theme: "Anime", phrase: "PUNTATA CON FINALE A SOSPESO" },
+
+  // ==== FANTASY ====
+  { theme: "Fantasy", phrase: "SPADA LEGGENDARIA SIGILLATA" },
+  { theme: "Fantasy", phrase: "DRAGO ANTICO SUL SUO TESORO" },
+  { theme: "Fantasy", phrase: "MAGIA PROIBITA MILLENARIA" },
+  { theme: "Fantasy", phrase: "REGNO IN GUERRA PER IL TRONO" },
+  { theme: "Fantasy", phrase: "TAVOLOTA DI AVVENTURIERI IN TAVERNA" },
+  { theme: "Fantasy", phrase: "BOSCO INCANTATO PIENO DI SEGRETI" },
+  { theme: "Fantasy", phrase: "AMULETO DAL POTERE SCONOSCIUTO" },
+  { theme: "Fantasy", phrase: "PROFEZIA ANTICA DIMENTICATA" },
+  { theme: "Fantasy", phrase: "CASTELLO SOSPESO FRA LE NUVOLE" },
+  { theme: "Fantasy", phrase: "LIBRO MAGICO CHE PARLA DA SOLO" },
+
+  // ==== HORROR ====
+  { theme: "Horror", phrase: "RUMORI STRANI NEL CORRIDOIO" },
+  { theme: "Horror", phrase: "PORTA CHE SI CHIUDE DA SOLA" },
+  { theme: "Horror", phrase: "TORCIA QUASI SCARICA NEL BUIO" },
+  { theme: "Horror", phrase: "PASSI DIETRO DI TE NEL SILENZIO" },
+  { theme: "Horror", phrase: "SPECCHIO APPANNATO CON UNA SCRITTA" },
+  { theme: "Horror", phrase: "PRESENZA CHE TI OSSERVA NELL OMBRA" },
+  { theme: "Horror", phrase: "VOCE CHE SUSSURRA IL TUO NOME" },
+  { theme: "Horror", phrase: "CASA ABBANDONATA IN MEZZO AL BOSCO" },
+  { theme: "Horror", phrase: "TELEFONO CHE SQUILLA SENZA NESSUNO" },
+  { theme: "Horror", phrase: "RUMORE DI PASSI AL PIANO DI SOPRA" },
+
+  // ==== CIBO ====
+  { theme: "Cibo", phrase: "PIZZA MARGHERITA CON MOZZARELLA FILANTE" },
+  { theme: "Cibo", phrase: "PASTA AL POMODORO FATTA IN CASA" },
+  { theme: "Cibo", phrase: "APERITIVO LUNGO CON GLI AMICI" },
+  { theme: "Cibo", phrase: "COLAZIONE CON CAPPUCCINO E CORNETTO" },
+  { theme: "Cibo", phrase: "SUSHI ALL YOU CAN EAT" },
+  { theme: "Cibo", phrase: "GELATO ARTIGIANALE AL PISTACCHIO" },
+  { theme: "Cibo", phrase: "HAMBURGER GIGANTE CON PATATINE" },
+  { theme: "Cibo", phrase: "TORTA AL CIOCCOLATO FONDENTE" },
+  { theme: "Cibo", phrase: "CENA DI NATALE IN FAMIGLIA" },
+  { theme: "Cibo", phrase: "PANINO IMPROVVISATO DI MEZZANOTTE" },
+  { theme: "Cibo", phrase: "MERENDA CON BISCOTTI E TE CALDO" },
+  { theme: "Cibo", phrase: "PRANZO DELLA DOMENICA TROPPO ABBONDANTE" },
+
+  // ==== VIAGGI ====
+  { theme: "Viaggi", phrase: "VALIGIA FATTA ALL ULTIMO MINUTO" },
+  { theme: "Viaggi", phrase: "AEREO PRESO ALL ALBA PRESTISSIMO" },
+  { theme: "Viaggi", phrase: "STAZIONE AFFOLLATA IN PIENA ESTATE" },
+  { theme: "Viaggi", phrase: "HOTEL CON VISTA SUL MARE" },
+  { theme: "Viaggi", phrase: "TRAMONTO SULLA SPIAGGIA DESERTA" },
+  { theme: "Viaggi", phrase: "STRADA PANORAMICA IN MONTAGNA" },
+  { theme: "Viaggi", phrase: "PERDERSI IN UNA CITTA SCONOSCIUTA" },
+  { theme: "Viaggi", phrase: "SOUVENIR CHE NON USERAI MAI" },
+  { theme: "Viaggi", phrase: "VIAGGIO IN TRENO DI NOTTE" },
+  { theme: "Viaggi", phrase: "FOTO MOSSE MA PIENE DI RICORDI" },
+
+  // ==== SCUOLA / UNIVERSITÀ ====
+  { theme: "Scuola", phrase: "INTERROGAZIONE A SORPRESA IN CLASSE" },
+  { theme: "Scuola", phrase: "COMPITO IN CLASSE NON ANNUNCIATO" },
+  { theme: "Scuola", phrase: "LIBRO DIMENTICATO A CASA" },
+  { theme: "Scuola", phrase: "COMPAGNO DI BANCO CHE PARLA SEMPRE" },
+  { theme: "Scuola", phrase: "RICREAZIONE TROPPO CORTA" },
+  { theme: "Scuola", phrase: "PROFESSORE CHE NON SORRIDE MAI" },
+  { theme: "Scuola", phrase: "APPUNTI PRESI MALISSIMO" },
+  { theme: "Scuola", phrase: "PRIMO GIORNO DI SCUOLA DOPO LE VACANZE" },
+
+  // ==== LAVORO (NON TECH) ====
+  { theme: "Lavoro", phrase: "RIUNIONI CHE SI ALLUNGANO ALL INFINITO" },
+  { theme: "Lavoro", phrase: "STRAORDINARI NON PROGRAMMATI" },
+  { theme: "Lavoro", phrase: "CAFFE PRESO TROPPO TARDI" },
+  { theme: "Lavoro", phrase: "SCRIVANIA PIENA DI POST IT" },
+  { theme: "Lavoro", phrase: "EMAIL ARRIVATE AL VENERDI SERA" },
+  { theme: "Lavoro", phrase: "PAUSA PRANZO RISICATA" },
+  { theme: "Lavoro", phrase: "COLLEGA CHE PARLA A VOCE ALTA" },
+  { theme: "Lavoro", phrase: "RIUNIONE ONLINE SENZA MICROFONI MUTI" },
+  { theme: "Lavoro", phrase: "CALENDARIO PIENO DI IMPEGNI" },
+  { theme: "Lavoro", phrase: "TABELLE E FOGLI DI CALCOLO OVUNQUE" },
+
+  // ==== MEME / INTERNET ====
+  { theme: "Meme", phrase: "GATTO CHE CAMMINA SULLA TASTIERA" },
+  { theme: "Meme", phrase: "MEME RICICLATO DAL DUEMILADIECI" },
+  { theme: "Meme", phrase: "COMMENTO PASSIVO AGGRESSIVO" },
+  { theme: "Meme", phrase: "RISPONDERE CON SOLO EMOTE" },
+  { theme: "Meme", phrase: "SCROLL INFINITO SUI SOCIAL" },
+  { theme: "Meme", phrase: "VIDEO DI CINQUE ORE SUL NULLA" },
+  { theme: "Meme", phrase: "SFIDA VIRALISSIMA IMPROVVISATA" },
+  { theme: "Meme", phrase: "SCREENSHOT INVIATO AL CONTATTO SBAGLIATO" },
+  { theme: "Meme", phrase: "GRUPPO DI AMICI CHE SCRIVE SOLO STICKER" },
+  { theme: "Meme", phrase: "RISPOSTA LETTA MA NON CAPITA" },
+
+  // ==== FESTE / SOCIALITA ====
+  { theme: "Feste", phrase: "CENA DI COMPLEANNO CHIASSOSA" },
+  { theme: "Feste", phrase: "MUSICA TROPPO ALTA IN SALOTTO" },
+  { theme: "Feste", phrase: "BALLI IMPROVVISATI IN CUCINA" },
+  { theme: "Feste", phrase: "BRINDISI CHE NON FINISCONO MAI" },
+  { theme: "Feste", phrase: "GIOCHI DA TAVOLO ALL UNA DI NOTTE" },
+  { theme: "Feste", phrase: "FOTO DI GRUPPO CON OCCHI CHIUSI" },
+
+  // ==== STREAMER LIFE / META ====
+  { theme: "Streamer Life", phrase: "SCHEDA VIDEO QUASI A FUOCO" },
+  { theme: "Streamer Life", phrase: "REGIA FATTA TUTTA A MANO" },
+  { theme: "Streamer Life", phrase: "DUE PC PER UNA SOLA LIVE" },
+  { theme: "Streamer Life", phrase: "PLANNING DELLE LIVE SETTIMANALI" },
+  { theme: "Streamer Life", phrase: "COMMUNITY CHE CRESCE LENTAMENTE" },
+  { theme: "Streamer Life", phrase: "CLIP DA MONTARE PER I SOCIAL" },
+  { theme: "Streamer Life", phrase: "BOT CHE SMETTE DI FUNZIONARE" },
+  { theme: "Streamer Life", phrase: "LAYOUT ARANCIONE TACCHINO APPROVED" }
+];
+
+/* ========= STATO SINCRONIZZATO ========= */
+
+let stato = {
+  punteggioA: 0,
+  punteggioB: 0,
+  playerA: null,
+  playerB: null,
+  playerNameA: null,
+  playerNameB: null,
+  game: {
+    maxErrors: 6,
+    turn: null,   // "A" o "B"
+    A: {
+      theme: "",
+      secretWord: "",
+      displayWord: "",
+      wrongLetters: [],
+      correctLetters: [],
+      status: "idle"
+    },
+    B: {
+      theme: "",
+      secretWord: "",
+      displayWord: "",
+      wrongLetters: [],
+      correctLetters: [],
+      status: "idle"
+    }
+  }
+};
+
+let isSaving = false;
+let roleClaimed = false;
+
+/* ========= UTILS PAROLA ========= */
+
+function maskWord(word){
+  let out = "";
+  for (let ch of word){
+    if (ch === " " || ch === "-" ) out += ch;
+    else out += "_";
+  }
+  return out;
+}
+
+function nuovaFraseCasuale(excludePhrase = ""){
+  let obj;
+  do {
+    obj = DIZIONARIO[Math.floor(Math.random() * DIZIONARIO.length)];
+  } while (obj.phrase === excludePhrase && DIZIONARIO.length > 1);
+  return {
+    theme: obj.theme,
+    phrase: obj.phrase.toUpperCase()
+  };
+}
+
+function creaStatoGiocatore(phrase, theme){
+  return {
+    theme: theme || "",
+    secretWord: phrase,
+    displayWord: maskWord(phrase),
+    wrongLetters: [],
+    correctLetters: [],
+    status: "playing" // idle | playing | won | lost
+  };
+}
+
+/* ========= SYNC CON sync.php ========= */
+
+async function salvaStato(overrides = {}){
+  if (isSaving) return;
+  isSaving = true;
+  try{
+    const payload = { ...stato, ...overrides };
+    const res = await fetch("sync.php", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(payload)
+    });
+    if (res.ok){
+      stato = payload;
+    }
+  }catch(e){
+    console.error("Errore salvataggio stato:", e);
+  }finally{
+    isSaving = false;
+  }
+}
+
+async function caricaStato(){
+  if (isSaving) return;
+  try{
+    const res = await fetch("sync.php", { cache:"no-store" });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data || typeof data !== "object") return;
+
+    // merge soft
+    stato = {
+      ...stato,
+      ...data,
+      game: {
+        ...stato.game,
+        ...(data.game || {}),
+        A: { ...stato.game.A, ...((data.game && data.game.A) || {}) },
+        B: { ...stato.game.B, ...((data.game && data.game.B) || {}) }
+      }
+    };
+
+    decidiRuoloDaStato();
+    aggiornaUI();
+  }catch(e){
+    console.warn("Errore sync:", e);
+  }
+}
+
+/* ========= RUOLO A/B/SPETTATORE ========= */
+
+function decidiRuoloDaStato(){
+  if (!roleClaimed){
+    if (forcedRole === "A"){
+      stato.playerA = clientId;
+      if (stato.playerB === clientId) stato.playerB = null;
+      player = "A";
+    } else if (forcedRole === "B"){
+      stato.playerB = clientId;
+      if (stato.playerA === clientId) stato.playerA = null;
+      player = "B";
+    } else {
+      if (stato.playerA === clientId) {
+        player = "A";
+      } else if (stato.playerB === clientId){
+        player = "B";
+      } else if (!stato.playerA){
+        stato.playerA = clientId;
+        player = "A";
+      } else if (!stato.playerB){
+        stato.playerB = clientId;
+        player = "B";
+      } else {
+        player = null;
+      }
+    }
+    roleClaimed = true;
+  }
+
+  applyPlayerNameFromUrl();
+  aggiornaInterattivita();
+}
+
+function applyPlayerNameFromUrl(){
+  if (!playerNameFromUrl) return;
+
+  const overrides = {};
+  let changed = false;
+
+  if (player === "A"){
+    if (stato.playerNameA !== playerNameFromUrl){
+      stato.playerNameA = playerNameFromUrl;
+      overrides.playerNameA = playerNameFromUrl;
+      changed = true;
+    }
+  } else if (player === "B"){
+    if (stato.playerNameB !== playerNameFromUrl){
+      stato.playerNameB = playerNameFromUrl;
+      overrides.playerNameB = playerNameFromUrl;
+      changed = true;
+    }
+  } else {
+    return;
+  }
+
+  if (changed){
+    aggiornaUI();
+    salvaStato(overrides);
+  }
+}
+
+/* ========= UI ========= */
+
+const scoreAEl = document.getElementById("scoreA");
+const scoreBEl = document.getElementById("scoreB");
+const roundNumberEl = document.getElementById("roundNumber");
+const webcamLabelA = document.getElementById("webcamLabelA");
+const webcamLabelB = document.getElementById("webcamLabelB");
+const boardTitleA  = document.getElementById("boardTitleA");
+const boardTitleB  = document.getElementById("boardTitleB");
+const statusAEl    = document.getElementById("status-A");
+const statusBEl    = document.getElementById("status-B");
+const wordAEl      = document.getElementById("word-A");
+const wordBEl      = document.getElementById("word-B");
+const errorsAEl    = document.getElementById("errors-A");
+const errorsBEl    = document.getElementById("errors-B");
+const maxErrorsAEl = document.getElementById("maxErrors-A");
+const maxErrorsBEl = document.getElementById("maxErrors-B");
+const wrongAEl     = document.getElementById("wrong-A");
+const wrongBEl     = document.getElementById("wrong-B");
+
+const lettersAEl   = document.getElementById("letters-A");
+const lettersBEl   = document.getElementById("letters-B");
+
+const subScoreBtn  = document.getElementById("subScore");
+const addScoreBtn  = document.getElementById("addScore");
+const newRoundBtn  = document.getElementById("newRound");
+
+/* parti dell omino */
+const hangmanParts = {
+  A: [
+    document.getElementById("hm-A-head"),
+    document.getElementById("hm-A-body"),
+    document.getElementById("hm-A-armL"),
+    document.getElementById("hm-A-armR"),
+    document.getElementById("hm-A-legL"),
+    document.getElementById("hm-A-legR")
+  ],
+  B: [
+    document.getElementById("hm-B-head"),
+    document.getElementById("hm-B-body"),
+    document.getElementById("hm-B-armL"),
+    document.getElementById("hm-B-armR"),
+    document.getElementById("hm-B-legL"),
+    document.getElementById("hm-B-legR")
+  ]
+};
+
+/* tastiera */
+function creaTastiere(){
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
+  lettersAEl.innerHTML = "";
+  lettersBEl.innerHTML = "";
+
+  alphabet.forEach(letter => {
+    const btnA = document.createElement("button");
+    btnA.className = "letter-btn";
+    btnA.textContent = letter;
+    btnA.dataset.letter = letter;
+    btnA.dataset.player = "A";
+    btnA.addEventListener("click", () => onLetterClick("A", letter));
+    lettersAEl.appendChild(btnA);
+
+    const btnB = document.createElement("button");
+    btnB.className = "letter-btn";
+    btnB.textContent = letter;
+    btnB.dataset.letter = letter;
+    btnB.dataset.player = "B";
+    btnB.addEventListener("click", () => onLetterClick("B", letter));
+    lettersBEl.appendChild(btnB);
+  });
+}
+
+function aggiornaUI(){
+  const nameA = stato.playerNameA || "Giocatore A";
+  const nameB = stato.playerNameB || "Giocatore B";
+
+  if (webcamLabelA) webcamLabelA.textContent = nameA;
+  if (webcamLabelB) webcamLabelB.textContent = nameB;
+  if (boardTitleA)  boardTitleA.textContent  = nameA;
+  if (boardTitleB)  boardTitleB.textContent  = nameB;
+
+  if (scoreAEl) scoreAEl.textContent = stato.punteggioA;
+  if (scoreBEl) scoreBEl.textContent = stato.punteggioB;
+
+  if (roundNumberEl) roundNumberEl.textContent = stato.game.round || 0;
+
+  const gA = stato.game.A;
+  const gB = stato.game.B;
+
+  if (wordAEl) renderWord(wordAEl, gA.displayWord);
+  if (wordBEl) renderWord(wordBEl, gB.displayWord);
+
+  if (errorsAEl) errorsAEl.textContent = gA.wrongLetters.length;
+  if (errorsBEl) errorsBEl.textContent = gB.wrongLetters.length;
+
+  if (maxErrorsAEl) maxErrorsAEl.textContent = stato.game.maxErrors;
+  if (maxErrorsBEl) maxErrorsBEl.textContent = stato.game.maxErrors;
+
+  if (wrongAEl) wrongAEl.textContent = gA.wrongLetters.join(", ");
+  if (wrongBEl) wrongBEl.textContent = gB.wrongLetters.join(", ");
+
+  if (statusAEl) statusAEl.textContent = statoTestoGiocatore(gA.status);
+  if (statusBEl) statusBEl.textContent = statoTestoGiocatore(gB.status);
+  
+  if (themeAEl) themeAEl.textContent = gA.theme || "-";
+  if (themeBEl) themeBEl.textContent = gB.theme || "-";
+
+  if (turnLabelEl){
+    if (stato.game.turn === "A") turnLabelEl.textContent = nameA;
+    else if (stato.game.turn === "B") turnLabelEl.textContent = nameB;
+    else turnLabelEl.textContent = "-";
+  }
+
+  /* evidenzia board del giocatore di turno */
+  document.querySelectorAll(".board").forEach(b=>{
+    const pid = b.getAttribute("data-player");
+    b.classList.toggle("active", pid === stato.game.turn);
+  });
+
+  aggiornaLettereUI("A");
+  aggiornaLettereUI("B");
+
+  drawHangman("A");
+  drawHangman("B");
+
+  aggiornaInterattivita();
+}
+
+const themeAEl   = document.getElementById("theme-A");
+const themeBEl   = document.getElementById("theme-B");
+const turnLabelEl = document.getElementById("turnLabel");
+
+function renderWord(el, displayWord){
+  if (!el) return;
+  if (!displayWord){
+    el.textContent = "_ _ _";
+    return;
+  }
+  const words = displayWord.split(" ");  // spezza per parola
+  el.innerHTML = "";
+  words.forEach(w => {
+    const line = document.createElement("div");
+    line.className = "word-line";
+    line.textContent = w.split("").join(" "); // lettere distanziate
+    el.appendChild(line);
+  });
+}
+
+function statoTestoGiocatore(st){
+  if (st === "playing") return "Sta giocando…";
+  if (st === "won")     return "HA VINTO! 🎉";
+  if (st === "lost")    return "HA PERSO 💀";
+  return "In attesa…";
+}
+
+function aggiornaLettereUI(playerId){
+  const g = stato.game[playerId];
+  const cont = playerId === "A" ? lettersAEl : lettersBEl;
+  if (!cont) return;
+
+  const used = new Set([...g.correctLetters, ...g.wrongLetters]);
+
+  cont.querySelectorAll(".letter-btn").forEach(btn =>{
+    const letter = btn.dataset.letter;
+    btn.classList.toggle("used", used.has(letter));
+    btn.disabled =
+      used.has(letter) ||
+      g.status !== "playing" ||
+      !puoControllare(playerId) ||
+      stato.game.turn !== playerId;   // <-- nuovo: blocca se non è il tuo turno
+  });
+}
+
+function drawHangman(playerId){
+  const g = stato.game[playerId];
+  const errors = g.wrongLetters.length;
+  const parts = hangmanParts[playerId] || [];
+  parts.forEach((p, idx)=>{
+    if (!p) return;
+    p.style.opacity = (idx < errors) ? "1" : "0";
+  });
+}
+
+/* ========= INTERATTIVITÀ ========= */
+
+function puoControllare(playerId){
+  return player && player.toUpperCase() === playerId;
+}
+
+function aggiornaInterattivita(){
+  // punteggio: può modificarlo solo chi è A o B (entrambi i lati usano punteggio proprio)
+  if (subScoreBtn){
+    subScoreBtn.disabled = !player;
+  }
+  if (addScoreBtn){
+    addScoreBtn.disabled = !player;
+  }
+}
+
+/* ========= LOGICA GIOCO ========= */
+
+async function onLetterClick(playerId, letter){
+  if (!puoControllare(playerId)) return;
+  const g = stato.game[playerId];
+  if (g.status !== "playing") return;
+
+  letter = letter.toUpperCase();
+  if (g.correctLetters.includes(letter) || g.wrongLetters.includes(letter)) return;
+
+  const secret = g.secretWord || "";
+  if (!secret) return;
+
+  if (secret.includes(letter)){
+    g.correctLetters.push(letter);
+    let newDisplay = "";
+    for (let i=0;i<secret.length;i++){
+      const ch = secret[i];
+      if (ch === " " || ch === "-") {
+        newDisplay += ch;
+      } else if (ch === letter || (stato.game[playerId].displayWord[i] && stato.game[playerId].displayWord[i] !== "_")){
+        // rivela se lettera o se già rivelata in precedenza
+        if (ch === letter){
+          newDisplay += ch;
+        } else {
+          newDisplay += stato.game[playerId].displayWord[i];
+        }
+      } else {
+        // ancora nascosta
+        const prev = stato.game[playerId].displayWord[i];
+        newDisplay += (prev === "_" ? "_" : prev);
+      }
+    }
+    g.displayWord = newDisplay;
+
+    if (!g.displayWord.includes("_")){
+      g.status = "won";
+    }
+  } else {
+    g.wrongLetters.push(letter);
+    if (g.wrongLetters.length >= stato.game.maxErrors){
+      g.status = "lost";
+    }
+  }
+
+  // ... dopo aver aggiornato g.status / g.displayWord / wrongLetters ...
+  stato.game[playerId] = g;
+
+  const other = (playerId === "A") ? "B" : "A";
+  const otherState = stato.game[other];
+
+  // logica turni:
+  if (otherState.status === "playing") {
+    // se l'altro sta ancora giocando, passa a lui
+    stato.game.turn = other;
+  } else if (g.status === "playing") {
+    // l'altro ha già finito (vinto/perso), continuo a giocare io
+    stato.game.turn = playerId;
+  } else {
+    // entrambi non stanno più giocando → nessun turno attivo
+    stato.game.turn = null;
+  }
+
+  aggiornaUI();
+  await salvaStato();
+}
+
+/* ========= NUOVO ROUND ========= */
+
+async function nuovoRound(){
+  // scegli due frasi tematiche diverse
+  const fA = nuovaFraseCasuale();
+  const fB = nuovaFraseCasuale(fA.phrase);
+
+  // alterna il giocatore che inizia (se vuoi)
+  const prevTurn = stato.game.turn;
+  let startTurn = "A";
+  if (prevTurn === "A") startTurn = "B";
+  else if (prevTurn === "B") startTurn = "A";
+
+  stato.game.round = (stato.game.round || 0) + 1;
+  stato.game.turn  = startTurn;
+
+  stato.game.A = creaStatoGiocatore(fA.phrase, fA.theme);
+  stato.game.B = creaStatoGiocatore(fB.phrase, fB.theme);
+
+  aggiornaUI();
+  await salvaStato();
+}
+
+/* ========= PUNTEGGIO ======== */
+
+function showScoreFx(delta){
+  const fx = document.getElementById("scoreFx");
+  if (!fx) return;
+
+  const sfxUp   = document.getElementById("sfxUp");
+  const sfxDown = document.getElementById("sfxDown");
+
+  fx.textContent = delta > 0 ? "+1" : "-1";
+  fx.classList.remove("positive","negative","show");
+
+  if (delta > 0){
+    fx.classList.add("positive");
+    if (sfxUp){ sfxUp.currentTime = 0; sfxUp.play().catch(()=>{}); }
+  } else {
+    fx.classList.add("negative");
+    if (sfxDown){ sfxDown.currentTime = 0; sfxDown.play().catch(()=>{}); }
+  }
+
+  void fx.offsetWidth;
+  fx.classList.add("show");
+  setTimeout(()=> fx.classList.remove("show"), 650);
+}
+
+subScoreBtn.addEventListener("click", async ()=>{
+  if (!player) return;
+  if (player === "A"){
+    if (stato.punteggioA > 0) stato.punteggioA--;
+    else return;
+  } else if (player === "B"){
+    if (stato.punteggioB > 0) stato.punteggioB--;
+    else return;
+  } else return;
+
+  aggiornaUI();
+  await salvaStato();
+  showScoreFx(-1);
+});
+
+addScoreBtn.addEventListener("click", async ()=>{
+  if (!player) return;
+  if (player === "A"){
+    stato.punteggioA++;
+  } else if (player === "B"){
+    stato.punteggioB++;
+  } else return;
+
+  aggiornaUI();
+  await salvaStato();
+  showScoreFx(+1);
+});
+
+/* ========= TABS ========= */
+
+let currentTab = 0;
+
+function setTab(idx){
+  currentTab = idx;
+  const inner = document.querySelector(".tabs-inner");
+  const btns  = document.querySelectorAll(".tab-btn");
+  if (inner){
+    inner.style.transform = `translateX(${-idx * 100}%)`;
+  }
+  btns.forEach(b=>{
+    const t = parseInt(b.dataset.tab,10);
+    b.classList.toggle("active", t === idx);
+  });
+}
+
+function initTabs(){
+  const btns = document.querySelectorAll(".tab-btn");
+  btns.forEach(b=>{
+    b.addEventListener("click", ()=>{
+      const idx = parseInt(b.dataset.tab,10);
+      if (!isNaN(idx)) setTab(idx);
+    });
+  });
+  setTab(0);
+}
+
+/* ========= INIT ========= */
+
+newRoundBtn.addEventListener("click", nuovoRound);
+
+(async function init(){
+  creaTastiere();
+  await caricaStato();   // primo sync (decide ruolo + aggiorna)
+  initTabs();
+  aggiornaUI();
+  setInterval(caricaStato, 2000);
+})();
+</script>
+</body>
+</html>
