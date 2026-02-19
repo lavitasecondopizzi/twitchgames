@@ -717,6 +717,7 @@ body{
   <button class="btn" id="endRestartBtn" style="margin-top:16px;">Nuova partita</button>
 </div>
 
+<script src="../shared-game-apis.js"></script>
 <script>
 /*
   FILE ATTESI:
@@ -740,7 +741,8 @@ document.getElementById("camGuestLabel").textContent    = guestName;
 /* ===== CONFIG ===== */
 const CASES_CONFIG_URL = "cases.json";
 const IMG_BASE_PATH    = "img/";
-const SYNC_URL         = (urlParams.get("sync") || "sync.php");
+const defaultSyncUrl = (window.GameAPIs && window.GameAPIs.endpoint('paper-please', 'sync')) || "sync.php";
+const SYNC_URL         = (urlParams.get("sync") || defaultSyncUrl);
 document.getElementById("serverBadge").textContent = "SYNC: " + (SYNC_URL.includes("http") ? "remote" : "local");
 
 /* ===== UI refs ===== */

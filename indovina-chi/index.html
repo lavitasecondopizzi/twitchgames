@@ -833,12 +833,15 @@ body{
   </div>
 </div>
 
+<script src="../shared-game-apis.js"></script>
 <script>
 /* ========== ID CLIENT & RUOLO ========== */
 
 const urlParams   = new URLSearchParams(window.location.search);
 const forcedRole  = urlParams.get("role");   // "A", "B" o null
 const playerNameFromUrl = urlParams.get("player") || urlParams.get("name") || null;
+const sidFromUrl = (urlParams.get("sid") || "").trim();
+const SYNC_URL = sidFromUrl ? ("sync.php?sid=" + encodeURIComponent(sidFromUrl)) : "sync.php";
 
 let clientId      = localStorage.getItem("indovinachiClientId");
 if (!clientId) {
@@ -898,7 +901,7 @@ async function loadConfigAndImages(){
   // 2) carica lista immagini dalla cartella scelta
   let fileList = [];
   try{
-    const url = "list_images.php?folder=" + encodeURIComponent(imageFolder || "");
+    const url = (((window.GameAPIs && window.GameAPIs.endpoint('indovina-chi', 'listImages')) || "list_images.php") + "?folder=" + encodeURIComponent(imageFolder || ""));
     const res = await fetch(url);
     fileList = await res.json();
     if(!Array.isArray(fileList)) throw new Error("risposta non valida");
@@ -1073,12 +1076,12 @@ function aggiornaChatVotesUI(){
   // es: { "mario": { label: "Mario", red: 2, green: 3 }, ... }
 
   entries.forEach(v => {
-    // v.name può essere undefined, numero, null, ecc.
+    // v.name puï¿½ essere undefined, numero, null, ecc.
     let raw = v && (v.name ?? v.target ?? "");
     if (raw == null) raw = "";
     raw = String(raw).trim();   // <-- qui lo forziamo SEMPRE a stringa
 
-    if (!raw) return; // se non c'è nome, ignoro il voto (es. vecchi voti a numero)
+    if (!raw) return; // se non c'ï¿½ nome, ignoro il voto (es. vecchi voti a numero)
 
     const key = raw.toLowerCase();
     if (!counts[key]) {
@@ -1144,7 +1147,7 @@ function aggiornaChatVotesUI(){
 
     const count = document.createElement("div");
     count.className = "vote-count";
-    count.textContent = `${total} voti (R: ${data.red} · V: ${data.green})`;
+    count.textContent = `${total} voti (R: ${data.red} ï¿½ V: ${data.green})`;
 
     row.appendChild(label);
     row.appendChild(barBg);
@@ -1218,7 +1221,7 @@ async function salvaStato(overrides = {}){
     // debug opzionale:
     // console.log("SALVO STATO:", JSON.stringify(payload, null, 2));
 
-    const res = await fetch("sync.php",{
+    const res = await fetch((window.GameAPIs && window.GameAPIs.endpoint('indovina-chi', 'sync')) || "sync.php",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify(payload)
@@ -1239,7 +1242,7 @@ async function caricaStato(){
   if (isSaving) return;
 
   try{
-    const res = await fetch("sync.php", { cache: "no-store" });
+    const res = await fetch((window.GameAPIs && window.GameAPIs.endpoint('indovina-chi', 'sync')) || "sync.php", { cache: "no-store" });
     if (!res.ok) return;
 
     const data = await res.json();

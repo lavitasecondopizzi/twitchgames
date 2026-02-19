@@ -831,6 +831,7 @@ body{
   </div>
 </div>
 
+<script src="../shared-game-apis.js"></script>
 <script>
 /* ========= PARAMETRI URL & CLIENT ========= */
 
@@ -1083,7 +1084,7 @@ async function salvaStato(overrides = {}){
   isSaving = true;
   try{
     const payload = { ...stato, ...overrides };
-    const res = await fetch("sync.php", {
+    const res = await fetch((window.GameAPIs && window.GameAPIs.endpoint('impiccato', 'sync')) || "sync.php", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify(payload)
@@ -1101,7 +1102,7 @@ async function salvaStato(overrides = {}){
 async function caricaStato(){
   if (isSaving) return;
   try{
-    const res = await fetch("sync.php", { cache:"no-store" });
+    const res = await fetch((window.GameAPIs && window.GameAPIs.endpoint('impiccato', 'sync')) || "sync.php", { cache:"no-store" });
     if (!res.ok) return;
     const data = await res.json();
     if (!data || typeof data !== "object") return;

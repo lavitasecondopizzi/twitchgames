@@ -1,6 +1,6 @@
-// script.js
-
-const apiUrl = 'api.php';
+const urlParams = new URLSearchParams(window.location.search);
+const sidParam = (urlParams.get('sid') || '').trim();
+const apiUrl = sidParam ? `api.php?sid=${encodeURIComponent(sidParam)}` : 'api.php';
 
 const btnNewGame      = document.getElementById('btnNewGame');
 const modeRadios      = document.querySelectorAll('input[name="mode"]');
@@ -38,10 +38,11 @@ modeRadios.forEach(r => {
   });
 });
 
-btnNewGame.addEventListener('click', async () => {
+
+async function startGameFromInputs() {
   const p1Name = player1NameInput.value.trim() || 'Giocatore 1';
   const p2Name = player2NameInput.value.trim() || (currentMode === 'chat' ? 'Chat' : 'Giocatore 2');
-
+  
   const body = {
     mode: currentMode,
     players: {
@@ -49,25 +50,28 @@ btnNewGame.addEventListener('click', async () => {
       p2: { name: p2Name }
     }
   };
-
-  const res = await fetch(apiUrl + '?action=new', {
+  
+  const join = apiUrl.includes('?') ? '&' : '?';
+  const res = await fetch(apiUrl + join + 'action=new', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(body)
   });
-
+  
   currentState = await res.json();
   renderState();
-});
+}
+
+btnNewGame.addEventListener('click', startGameFromInputs);
 
 // crea tastiere separate per p1 e p2
 function createLetterButtons() {
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-
+  
   players.forEach(playerId => {
     const container = document.getElementById(`lettersArea-${playerId}`);
     container.innerHTML = '';
-
+    
     alphabet.forEach(letter => {
       const btn = document.createElement('button');
       btn.textContent = letter;
@@ -84,12 +88,13 @@ async function onLetterClick(playerId, letter) {
   if (!currentState || !currentState.players || !currentState.players[playerId]) return;
   const pState = currentState.players[playerId];
   if (pState.status !== 'playing') return;
-
+  
   await guessLetter(playerId, letter);
 }
 
 async function guessLetter(playerId, letter) {
-  const res = await fetch(apiUrl + '?action=guess', {
+  const join = apiUrl.includes('?') ? '&' : '?';
+  const res = await fetch(apiUrl + join + 'action=guess', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({player: playerId, letter})
@@ -109,10 +114,10 @@ window.guessLetterFromChat = async function(playerId, letter) {
 
 function renderState() {
   if (!currentState || !currentState.players) return;
-
+  
   players.forEach(playerId => {
     const p = currentState.players[playerId];
-
+    
     const nameEl       = document.getElementById(`playerName-${playerId}`);
     const statusTextEl = document.getElementById(`statusText-${playerId}`);
     const wordDisplay  = document.getElementById(`wordDisplay-${playerId}`);
@@ -120,16 +125,16 @@ function renderState() {
     const maxErrors    = document.getElementById(`maxErrors-${playerId}`);
     const wrongLetters = document.getElementById(`wrongLetters-${playerId}`);
     const lastGuess    = document.getElementById(`lastGuess-${playerId}`);
-
+    
     if (!p) return;
-
+    
     nameEl.textContent = p.name;
     wordDisplay.textContent = p.displayWord.split('').join(' ');
     errorsCount.textContent = p.wrongLetters.length;
     maxErrors.textContent   = p.maxErrors;
     wrongLetters.textContent = p.wrongLetters.join(', ') || '-';
     lastGuess.textContent = p.lastGuess || '-';
-
+    
     // testo stato
     let statusText = 'In attesa…';
     if (p.status === 'playing') {
@@ -140,13 +145,13 @@ function renderState() {
       statusText = 'HA PERSO 💀';
     }
     statusTextEl.textContent = statusText;
-
+    
     // lettere disabilitate
     const usedLetters = new Set([
       ...p.correctLetters,
       ...p.wrongLetters
     ]);
-
+    
     document.querySelectorAll(`#lettersArea-${playerId} .letter-btn`).forEach(btn => {
       const l = btn.dataset.letter;
       if (usedLetters.has(l)) {
@@ -157,7 +162,7 @@ function renderState() {
         btn.classList.remove('used');
       }
     });
-
+    
     // aggiorna l omino
     drawHangman(playerId, p.wrongLetters.length);
   });
@@ -186,5 +191,21 @@ async function fetchState() {
 
 // init
 createLetterButtons();
+
+const modeFromUrl = (urlParams.get('mode') || '').trim();
+if (modeFromUrl === 'guest' || modeFromUrl === 'chat') {
+  currentMode = modeFromUrl;
+  const radio = document.querySelector(`input[name="mode"][value="${modeFromUrl}"]`);
+  if (radio) radio.checked = true;
+}
+
+const p1FromUrl = (urlParams.get('p1') || '').trim();
+const p2FromUrl = (urlParams.get('p2') || '').trim();
+if (p1FromUrl) player1NameInput.value = p1FromUrl;
+if (p2FromUrl) player2NameInput.value = p2FromUrl;
+
 fetchState();
+if (urlParams.get('autostart') === '1') {
+  startGameFromInputs();
+}
 setInterval(fetchState, 3000);
