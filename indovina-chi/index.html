@@ -1221,7 +1221,7 @@ async function salvaStato(overrides = {}){
     // debug opzionale:
     // console.log("SALVO STATO:", JSON.stringify(payload, null, 2));
 
-    const res = await fetch((window.GameAPIs && window.GameAPIs.endpoint('indovina-chi', 'sync')) || "sync.php",{
+    const res = await fetch(SYNC_URL,{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify(payload)
@@ -1242,7 +1242,7 @@ async function caricaStato(){
   if (isSaving) return;
 
   try{
-    const res = await fetch((window.GameAPIs && window.GameAPIs.endpoint('indovina-chi', 'sync')) || "sync.php", { cache: "no-store" });
+    const res = await fetch(SYNC_URL, { cache: "no-store" });
     if (!res.ok) return;
 
     const data = await res.json();

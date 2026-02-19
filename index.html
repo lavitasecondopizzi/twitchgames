@@ -1,52 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="it">
 <head>
-	<meta charset="UTF-8">
-	<title><!doctype html>
-      <html lang="it">
-      <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Twitch Games - Launcher Live</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tortello Games</title>
   <style>
-    :root{--bg:#0f1220;--card:#171b2f;--muted:#9ea7c7;--text:#eef2ff;--acc:#7aa2ff;--ok:#48d597}
+    :root{--bg:#0f1220;--card:#171b2f;--muted:#9ea7c7;--text:#eef2ff;--acc:#7aa2ff;--ok:#48d597;--warn:#ffca5f}
     *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,#0d1120,#12172b);color:var(--text)}
-    .wrap{max-width:1100px;margin:0 auto;padding:24px}
-    h1{margin:0 0 8px} .muted{color:var(--muted)}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-top:18px}
+    .wrap{max-width:1200px;margin:0 auto;padding:24px} h1{margin:0 0 8px}
+    .muted{color:var(--muted)} .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin-top:18px}
     .card{background:var(--card);border:1px solid #2a3359;border-radius:14px;padding:14px}
     label{display:block;font-size:12px;color:var(--muted);margin:8px 0 4px}
     input,select{width:100%;padding:10px;border-radius:10px;border:1px solid #33406f;background:#0f1530;color:var(--text)}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.actions{display:flex;gap:8px;flex-wrap:wrap}
     .btn{display:inline-block;border:0;border-radius:10px;padding:10px 12px;background:var(--acc);color:#08112d;font-weight:700;cursor:pointer;margin-top:10px}
     .link{margin-top:10px;font-size:13px;word-break:break-all;background:#0f1530;border:1px dashed #3a4a80;padding:8px;border-radius:10px}
     .actions{display:flex;gap:8px;flex-wrap:wrap}
     .ok{color:var(--ok)}
+    .warn{color:var(--warn)}
   </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Launcher Live (uso interno)</h1>
-  <p class="muted">Crea una nuova sessione per ogni live, scegli gioco/impostazioni e condividi il link al co-streamer/chat bridge.</p>
+  <h1>Home Streamer · Twitch Games</h1>
+  <p class="muted">Nuova partita ad ogni live. Scegli gioco + preset e condividi i link già pronti per co-streamer/chat.</p>
 
   <div class="card">
-    <label>ID sessione live (obbligatorio, es: live-2026-02-19)</label>
-    <input id="sid" placeholder="live-YYYY-MM-DD" />
-    <p class="muted">Suggerimento: cambia SID ad ogni live per avere partita nuova e isolata.</p>
+    <div class="row">
+      <div>
+        <label>ID sessione live (SID)</label>
+        <input id="sid" placeholder="live-YYYY-MM-DD-sera" />
+      </div>
+      <div>
+        <label>Preset modalità live</label>
+        <select id="preset">
+          <option value="solo">Solo streamer</option>
+          <option value="chat">Streamer + chat</option>
+          <option value="co">Streamer + co-streamer</option>
+          <option value="all">Streamer + chat + co-streamer</option>
+        </select>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="newLiveSession()">Nuova partita live</button>
+      <button class="btn" onclick="copySid()">Copia SID</button>
+    </div>
+    <p id="sessionMsg" class="muted">Ogni SID isola completamente lo stato dei giochi.</p>
   </div>
 
   <div class="grid">
     <div class="card">
       <h3>Impiccato</h3>
-      <label>Modalità</label>
-      <select id="impMode"><option value="guest">Solo/2 giocatori</option><option value="chat">Con chat</option></select>
       <div class="row">
-        <div><label>Nome P1</label><input id="impP1" placeholder="Streamer" /></div>
-        <div><label>Nome P2</label><input id="impP2" placeholder="Chat o Co-streamer" /></div>
+        <div><label>Nome host</label><input id="impP1" placeholder="Streamer" /></div>
+        <div><label>Nome guest/chat</label><input id="impP2" placeholder="Co-streamer o Chat" /></div>
       </div>
       <div class="actions">
         <button class="btn" onclick="makeImpiccato()">Genera link</button>
-        <button class="btn" onclick="openGenerated('impOut')">Apri</button>
+        <button class="btn" onclick="openGenerated('impOut')">Apri host</button>
         <button class="btn" onclick="copyGenerated('impOut')">Copia</button>
       </div>
       <div id="impOut" class="link">-</div>
@@ -54,22 +65,24 @@
 
     <div class="card">
       <h3>Indovina Chi</h3>
-      <label>Nome streamer (ruolo A)</label>
-      <input id="ikA" placeholder="Streamer" />
-      <label>Nome co-streamer (ruolo B)</label>
-      <input id="ikB" placeholder="Altro streamer" />
+      <div class="row">
+        <div><label>Nome ruolo A</label><input id="ikA" placeholder="Streamer" /></div>
+        <div><label>Nome ruolo B</label><input id="ikB" placeholder="Co-streamer" /></div>
+      </div>
       <div class="actions">
         <button class="btn" onclick="makeIndovinaChi()">Genera link</button>
         <button class="btn" onclick="openGenerated('ikOutA')">Apri A</button>
-        <button class="btn" onclick="copyGenerated('ikOutB')">Copia link B</button>
+        <button class="btn" onclick="copyGenerated('ikOutB')">Copia B</button>
       </div>
       <div id="ikOutA" class="link">Link A: -</div>
       <div id="ikOutB" class="link">Link B: -</div>
+      <div id="ikOutChat" class="link">Link chat vote: -</div>
     </div>
 
     <div class="card">
       <h3>Paper Please</h3>
-      <p class="muted">Apre la versione locale con sync dedicato alla SID live.</p>
+      <label>Difficoltà iniziale (seed)</label>
+      <input id="ppSeed" placeholder="es. easy-1" />
       <div class="actions">
         <button class="btn" onclick="makePaperPlease()">Genera link</button>
         <button class="btn" onclick="openGenerated('ppOut')">Apri</button>
@@ -79,62 +92,84 @@
     </div>
   </div>
 
-  <p class="muted ok">Workflow consigliato: 1) imposta SID live → 2) genera/apri link streamer → 3) invia link co-streamer già pronto.</p>
+  <p class="muted ok">Workflow: Nuova partita live → genera link → apri host → invia solo link preconfigurati.</p>
 </div>
 
 <script>
   const q = (id) => document.getElementById(id);
+  const val = (id) => encodeURIComponent((q(id).value || '').trim());
 
   function getSid(){
     const sid = (q('sid').value || '').trim();
-    if(!sid){ alert('Inserisci prima un ID sessione live (SID).'); return null; }
-    return encodeURIComponent(sid);
+    if(!sid){ alert('Inserisci un SID live.'); return null; }
+    return sid;
   }
-  function setOut(id, text){ q(id).textContent = text; }
-  function val(id){ return encodeURIComponent((q(id).value || '').trim()); }
+  function roleToken(role){ return btoa(`${getSid()}:${role}`).replace(/=+$/,''); }
+  function setOut(id, txt){ q(id).textContent = txt; }
   function openGenerated(id){
     const t = q(id).textContent || '';
-    const url = t.includes('http') ? t.split(' ').pop() : t.replace(/^Link [AB]:\s*/, '');
+    const cleaned = t.replace(/^Link [AB]:\s*/, '');
+    const url = cleaned.includes('http') || cleaned.startsWith('./') ? cleaned.split(' ').pop() : '';
     if(url && url !== '-') window.open(url, '_blank');
   }
   async function copyGenerated(id){
-    const t = q(id).textContent || '';
-    const url = t.replace(/^Link [AB]:\s*/, '');
-    if(!url || url === '-') return;
-    try{ await navigator.clipboard.writeText(url); alert('Link copiato'); }catch{ alert('Copia non disponibile'); }
+    const t = (q(id).textContent || '').replace(/^Link [AB]:\s*/, '');
+    if(!t || t === '-') return;
+    await navigator.clipboard.writeText(t);
+  }
+
+  function presetMode(){
+    const p = q('preset').value;
+    if (p === 'chat') return 'chat';
+    return 'guest';
+  }
+
+  async function newLiveSession(){
+    const sid = getSid(); if(!sid) return;
+    const sidQ = encodeURIComponent(sid);
+    const reqs = [
+      fetch(`./impiccato/api.php?sid=${sidQ}&action=reset`, { method:'POST' }),
+      fetch(`./indovina-chi/sync.php?sid=${sidQ}&action=reset`, { method:'POST' }),
+      fetch(`./paper-please/sync.php?sid=${sidQ}&action=reset`, { method:'POST' })
+    ];
+    const res = await Promise.allSettled(reqs);
+    const okCount = res.filter(r => r.status === 'fulfilled').length;
+    q('sessionMsg').textContent = okCount === 3
+            ? `Sessione ${sid} creata e resettata su tutti i giochi.`
+            : `Sessione ${sid} creata, ma alcuni reset non sono andati a buon fine.`;
+    q('sessionMsg').className = okCount === 3 ? 'ok' : 'warn';
   }
 
   function makeImpiccato(){
     const sid = getSid(); if(!sid) return;
-    const mode = q('impMode').value;
-    const p1 = val('impP1');
-    const p2 = val('impP2');
-    const url = `./impiccato/index.html?sid=${sid}&autostart=1&mode=${mode}&p1=${p1}&p2=${p2}`;
+    const mode = presetMode();
+    const url = `./impiccato/index.html?sid=${encodeURIComponent(sid)}&autostart=1&mode=${mode}&p1=${val('impP1')}&p2=${val('impP2')}&role=host&token=${roleToken('host')}`;
     setOut('impOut', url);
   }
 
   function makeIndovinaChi(){
     const sid = getSid(); if(!sid) return;
-    const a = val('ikA');
-    const b = val('ikB');
-    const aUrl = `./indovina-chi/index.html?sid=${sid}&role=A&player=${a}`;
-    const bUrl = `./indovina-chi/index.html?sid=${sid}&role=B&player=${b}`;
+    const sidQ = encodeURIComponent(sid);
+    const aUrl = `./indovina-chi/index.html?sid=${sidQ}&role=A&player=${val('ikA')}&token=${roleToken('host')}`;
+    const bUrl = `./indovina-chi/index.html?sid=${sidQ}&role=B&player=${val('ikB')}&token=${roleToken('guest')}`;
+    const chatVote = `./indovina-chi/vote.php?sid=${sidQ}&cmd=rosso&name=0&user=chat`;
     setOut('ikOutA', `Link A: ${aUrl}`);
     setOut('ikOutB', `Link B: ${bUrl}`);
+    setOut('ikOutChat', `Link chat vote: ${chatVote}`);
   }
 
   function makePaperPlease(){
     const sid = getSid(); if(!sid) return;
-    const sync = encodeURIComponent(`sync.php?sid=${decodeURIComponent(sid)}`);
-    const url = `./paper-please/index.html?sync=${sync}`;
+    const sync = encodeURIComponent(`sync.php?sid=${sid}`);
+    const seed = encodeURIComponent((q('ppSeed').value || '').trim());
+    const url = `./paper-please/index.html?sync=${sync}&sid=${encodeURIComponent(sid)}&seed=${seed}&role=host&token=${roleToken('host')}`;
     setOut('ppOut', url);
   }
-</script>
-</body>
-</html>
-</title>
-</head>
-<body>
 
+  async function copySid(){
+    const sid = getSid(); if(!sid) return;
+    await navigator.clipboard.writeText(sid);
+  }
+</script>
 </body>
 </html>
