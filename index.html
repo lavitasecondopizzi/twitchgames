@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title><!doctype html>
+      <html lang="it">
+      <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Twitch Games - Launcher Live</title>
+  <style>
+    :root{--bg:#0f1220;--card:#171b2f;--muted:#9ea7c7;--text:#eef2ff;--acc:#7aa2ff;--ok:#48d597}
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,#0d1120,#12172b);color:var(--text)}
+    .wrap{max-width:1100px;margin:0 auto;padding:24px}
+    h1{margin:0 0 8px} .muted{color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-top:18px}
+    .card{background:var(--card);border:1px solid #2a3359;border-radius:14px;padding:14px}
+    label{display:block;font-size:12px;color:var(--muted);margin:8px 0 4px}
+    input,select{width:100%;padding:10px;border-radius:10px;border:1px solid #33406f;background:#0f1530;color:var(--text)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .btn{display:inline-block;border:0;border-radius:10px;padding:10px 12px;background:var(--acc);color:#08112d;font-weight:700;cursor:pointer;margin-top:10px}
+    .link{margin-top:10px;font-size:13px;word-break:break-all;background:#0f1530;border:1px dashed #3a4a80;padding:8px;border-radius:10px}
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .ok{color:var(--ok)}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Launcher Live (uso interno)</h1>
+  <p class="muted">Crea una nuova sessione per ogni live, scegli gioco/impostazioni e condividi il link al co-streamer/chat bridge.</p>
+
+  <div class="card">
+    <label>ID sessione live (obbligatorio, es: live-2026-02-19)</label>
+    <input id="sid" placeholder="live-YYYY-MM-DD" />
+    <p class="muted">Suggerimento: cambia SID ad ogni live per avere partita nuova e isolata.</p>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Impiccato</h3>
+      <label>Modalità</label>
+      <select id="impMode"><option value="guest">Solo/2 giocatori</option><option value="chat">Con chat</option></select>
+      <div class="row">
+        <div><label>Nome P1</label><input id="impP1" placeholder="Streamer" /></div>
+        <div><label>Nome P2</label><input id="impP2" placeholder="Chat o Co-streamer" /></div>
+      </div>
+      <div class="actions">
+        <button class="btn" onclick="makeImpiccato()">Genera link</button>
+        <button class="btn" onclick="openGenerated('impOut')">Apri</button>
+        <button class="btn" onclick="copyGenerated('impOut')">Copia</button>
+      </div>
+      <div id="impOut" class="link">-</div>
+    </div>
+
+    <div class="card">
+      <h3>Indovina Chi</h3>
+      <label>Nome streamer (ruolo A)</label>
+      <input id="ikA" placeholder="Streamer" />
+      <label>Nome co-streamer (ruolo B)</label>
+      <input id="ikB" placeholder="Altro streamer" />
+      <div class="actions">
+        <button class="btn" onclick="makeIndovinaChi()">Genera link</button>
+        <button class="btn" onclick="openGenerated('ikOutA')">Apri A</button>
+        <button class="btn" onclick="copyGenerated('ikOutB')">Copia link B</button>
+      </div>
+      <div id="ikOutA" class="link">Link A: -</div>
+      <div id="ikOutB" class="link">Link B: -</div>
+    </div>
+
+    <div class="card">
+      <h3>Paper Please</h3>
+      <p class="muted">Apre la versione locale con sync dedicato alla SID live.</p>
+      <div class="actions">
+        <button class="btn" onclick="makePaperPlease()">Genera link</button>
+        <button class="btn" onclick="openGenerated('ppOut')">Apri</button>
+        <button class="btn" onclick="copyGenerated('ppOut')">Copia</button>
+      </div>
+      <div id="ppOut" class="link">-</div>
+    </div>
+  </div>
+
+  <p class="muted ok">Workflow consigliato: 1) imposta SID live → 2) genera/apri link streamer → 3) invia link co-streamer già pronto.</p>
+</div>
+
+<script>
+  const q = (id) => document.getElementById(id);
+
+  function getSid(){
+    const sid = (q('sid').value || '').trim();
+    if(!sid){ alert('Inserisci prima un ID sessione live (SID).'); return null; }
+    return encodeURIComponent(sid);
+  }
+  function setOut(id, text){ q(id).textContent = text; }
+  function val(id){ return encodeURIComponent((q(id).value || '').trim()); }
+  function openGenerated(id){
+    const t = q(id).textContent || '';
+    const url = t.includes('http') ? t.split(' ').pop() : t.replace(/^Link [AB]:\s*/, '');
+    if(url && url !== '-') window.open(url, '_blank');
+  }
+  async function copyGenerated(id){
+    const t = q(id).textContent || '';
+    const url = t.replace(/^Link [AB]:\s*/, '');
+    if(!url || url === '-') return;
+    try{ await navigator.clipboard.writeText(url); alert('Link copiato'); }catch{ alert('Copia non disponibile'); }
+  }
+
+  function makeImpiccato(){
+    const sid = getSid(); if(!sid) return;
+    const mode = q('impMode').value;
+    const p1 = val('impP1');
+    const p2 = val('impP2');
+    const url = `./impiccato/index.html?sid=${sid}&autostart=1&mode=${mode}&p1=${p1}&p2=${p2}`;
+    setOut('impOut', url);
+  }
+
+  function makeIndovinaChi(){
+    const sid = getSid(); if(!sid) return;
+    const a = val('ikA');
+    const b = val('ikB');
+    const aUrl = `./indovina-chi/index.html?sid=${sid}&role=A&player=${a}`;
+    const bUrl = `./indovina-chi/index.html?sid=${sid}&role=B&player=${b}`;
+    setOut('ikOutA', `Link A: ${aUrl}`);
+    setOut('ikOutB', `Link B: ${bUrl}`);
+  }
+
+  function makePaperPlease(){
+    const sid = getSid(); if(!sid) return;
+    const sync = encodeURIComponent(`sync.php?sid=${decodeURIComponent(sid)}`);
+    const url = `./paper-please/index.html?sync=${sync}`;
+    setOut('ppOut', url);
+  }
+</script>
+</body>
+</html>
+</title>
+</head>
+<body>
+
+</body>
+</html>
