@@ -3,173 +3,373 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tortello Games</title>
+  <title>Tortello Games · Main Menu</title>
   <style>
-    :root{--bg:#0f1220;--card:#171b2f;--muted:#9ea7c7;--text:#eef2ff;--acc:#7aa2ff;--ok:#48d597;--warn:#ffca5f}
-    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,#0d1120,#12172b);color:var(--text)}
-    .wrap{max-width:1200px;margin:0 auto;padding:24px} h1{margin:0 0 8px}
-    .muted{color:var(--muted)} .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin-top:18px}
-    .card{background:var(--card);border:1px solid #2a3359;border-radius:14px;padding:14px}
-    label{display:block;font-size:12px;color:var(--muted);margin:8px 0 4px}
-    input,select{width:100%;padding:10px;border-radius:10px;border:1px solid #33406f;background:#0f1530;color:var(--text)}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.actions{display:flex;gap:8px;flex-wrap:wrap}
-    .btn{display:inline-block;border:0;border-radius:10px;padding:10px 12px;background:var(--acc);color:#08112d;font-weight:700;cursor:pointer;margin-top:10px}
-    .link{margin-top:10px;font-size:13px;word-break:break-all;background:#0f1530;border:1px dashed #3a4a80;padding:8px;border-radius:10px}
-    .actions{display:flex;gap:8px;flex-wrap:wrap}
-    .ok{color:var(--ok)}
-    .warn{color:var(--warn)}
+    :root {
+      --text: #f5f2ff;
+      --muted: #c8c0ef;
+      --panel: rgba(9, 8, 30, 0.74);
+      --accent: #7effd2;
+      --danger: #ff8fb1;
+      --btn: #2b2363;
+      --btn-border: #cec4ff;
+      --bg1: #1a1140;
+      --bg2: #402b85;
+      --bg3: #12102b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: "Press Start 2P", "VT323", monospace;
+      overflow: hidden;
+      image-rendering: pixelated;
+      background:
+              linear-gradient(180deg, rgba(255,255,255,0.04) 1px, transparent 1px) 0 0/100% 4px,
+              linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px) 0 0/4px 100%,
+              radial-gradient(circle at 12% 20%, #5b3ecc 0 12%, transparent 28%),
+              radial-gradient(circle at 80% 18%, #2f6db8 0 14%, transparent 32%),
+              radial-gradient(circle at 72% 74%, #239b5f 0 10%, transparent 25%),
+              linear-gradient(150deg, var(--bg1), var(--bg2) 56%, var(--bg3));
+    }
+
+    .scanline {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.35;
+      background: repeating-linear-gradient(
+              to bottom,
+              rgba(255,255,255,0.03),
+              rgba(255,255,255,0.03) 1px,
+              transparent 2px,
+              transparent 4px
+      );
+      mix-blend-mode: soft-light;
+    }
+
+    .music-btn {
+      position: fixed;
+      top: 14px;
+      right: 14px;
+      z-index: 10;
+      font-family: inherit;
+      font-size: 0.55rem;
+      color: var(--text);
+      background: var(--btn);
+      border: 3px solid var(--btn-border);
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.5);
+      padding: 0.55rem 0.75rem;
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .track {
+      width: 200vw;
+      height: 100vh;
+      display: flex;
+      transform: translateX(0);
+      transition: transform 420ms steps(18, end);
+    }
+
+    .track.settings {
+      transform: translateX(-100vw);
+    }
+
+    .panel {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem 1rem;
+      gap: 1rem;
+      background: linear-gradient(180deg, rgba(7,6,20,0.15), rgba(7,6,20,0.55));
+    }
+
+    .title {
+      text-align: center;
+      line-height: 1.8;
+      text-shadow: 4px 4px 0 rgba(0,0,0,0.5);
+      font-size: clamp(1rem, 3vw, 1.8rem);
+    }
+
+    .sub {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.6rem;
+      line-height: 1.8;
+      max-width: 900px;
+    }
+
+    .menu-list,
+    .settings-box {
+      width: min(760px, 100%);
+      background: var(--panel);
+      border: 4px solid #9f91ff;
+      box-shadow: 0 0 0 4px #33276f;
+      padding: 1rem;
+    }
+
+    .menu-list {
+      display: grid;
+      gap: 0.7rem;
+    }
+
+    .settings-box {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .pixel-btn {
+      font-family: inherit;
+      font-size: 0.64rem;
+      line-height: 1.5;
+      color: var(--text);
+      background: var(--btn);
+      border: 3px solid var(--btn-border);
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.5);
+      padding: 0.75rem;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .pixel-btn:hover,
+    .pixel-btn:focus-visible {
+      transform: translate(-2px, -2px);
+      background: #3a2f83;
+      outline: none;
+    }
+
+    .pixel-btn.start {
+      background: #1f6243;
+      border-color: #a4ffd7;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.7rem;
+    }
+
+    label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.52rem;
+      line-height: 1.6;
+    }
+
+    input, select {
+      width: 100%;
+      margin-top: 0.35rem;
+      padding: 0.65rem;
+      font-family: inherit;
+      font-size: 0.54rem;
+      color: var(--text);
+      background: #120f33;
+      border: 3px solid #b9adff;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.65rem;
+    }
+
+    .status {
+      font-size: 0.53rem;
+      line-height: 1.8;
+      border: 3px solid #8b7dff;
+      background: rgba(6, 5, 22, 0.8);
+      padding: 0.7rem;
+      color: #d9d2ff;
+    }
+
+    .status.ok { border-color: var(--accent); color: #cbffe9; }
+    .status.warn { border-color: var(--danger); color: #ffd7e2; }
+
+    @media (max-width: 640px) {
+      .pixel-btn { font-size: 0.56rem; }
+      input, select, .status { font-size: 0.48rem; }
+      .panel { padding-top: 3.5rem; }
+    }
   </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>Home Streamer · Twitch Games</h1>
-  <p class="muted">Nuova partita ad ogni live. Scegli gioco + preset e condividi i link già pronti per co-streamer/chat.</p>
+<audio id="bgMusic" loop preload="auto" src="./sounds/mainmenu.mp3"></audio>
+<button id="musicToggle" class="music-btn" type="button">♫ ATTIVA MUSICA</button>
 
-  <div class="card">
-    <div class="row">
-      <div>
-        <label>ID sessione live (SID)</label>
-        <input id="sid" placeholder="live-YYYY-MM-DD-sera" />
+<main class="screen">
+  <div id="track" class="track">
+    <section class="panel">
+      <h1 class="title">TORTELLO GAMES<br>MAIN MENU</h1>
+      <p class="sub">Menu fullscreen stile videogioco. Seleziona un titolo e configura le impostazioni prima dell'avvio lato streamer.</p>
+      <div class="menu-list">
+        <button class="pixel-btn" type="button" onclick="openSettings('impiccato')">IMpiccato</button>
+        <button class="pixel-btn" type="button" onclick="openSettings('indovina-chi')">INDOVINA CHI</button>
+        <button class="pixel-btn" type="button" onclick="openSettings('paper-please')">PAPER PLEASE</button>
       </div>
-      <div>
-        <label>Preset modalità live</label>
-        <select id="preset">
-          <option value="solo">Solo streamer</option>
-          <option value="chat">Streamer + chat</option>
-          <option value="co">Streamer + co-streamer</option>
-          <option value="all">Streamer + chat + co-streamer</option>
-        </select>
+    </section>
+
+    <section class="panel">
+      <h2 id="gameTitle" class="title" style="font-size:clamp(0.8rem,2.6vw,1.3rem)">CONFIGURAZIONE</h2>
+      <div class="settings-box">
+        <div class="grid" id="impiccatoOptions" hidden>
+          <label>Nome Ospite / Chat
+            <input id="impGuest" placeholder="Ospite o Chat" />
+          </label>
+        </div>
+
+        <div class="grid" id="indovinaOptions" hidden>
+          <div class="status ok">Giocatore A fisso: <b>Pizzi</b>.</div>
+        </div>
+
+        <div class="grid" id="paperOptions" hidden>
+          <label>Seed iniziale
+            <input id="ppSeed" placeholder="easy-1" />
+          </label>
+
+          <label>Modalità
+            <select id="ppMode">
+              <option value="solo">Solo streamer</option>
+              <option value="coop">Streamer + ospite</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button class="pixel-btn" type="button" onclick="goBack()">⬅ TORNA AI GIOCHI</button>
+          <button class="pixel-btn start" type="button" onclick="startStreamerGame()">AVVIA (STREAMER)</button>
+        </div>
+
+        <div id="status" class="status">Seleziona un gioco per iniziare.</div>
       </div>
-    </div>
-    <div class="actions">
-      <button class="btn" onclick="newLiveSession()">Nuova partita live</button>
-      <button class="btn" onclick="copySid()">Copia SID</button>
-    </div>
-    <p id="sessionMsg" class="muted">Ogni SID isola completamente lo stato dei giochi.</p>
+    </section>
   </div>
+</main>
 
-  <div class="grid">
-    <div class="card">
-      <h3>Impiccato</h3>
-      <div class="row">
-        <div><label>Nome host</label><input id="impP1" placeholder="Streamer" /></div>
-        <div><label>Nome guest/chat</label><input id="impP2" placeholder="Co-streamer o Chat" /></div>
-      </div>
-      <div class="actions">
-        <button class="btn" onclick="makeImpiccato()">Genera link</button>
-        <button class="btn" onclick="openGenerated('impOut')">Apri host</button>
-        <button class="btn" onclick="copyGenerated('impOut')">Copia</button>
-      </div>
-      <div id="impOut" class="link">-</div>
-    </div>
-
-    <div class="card">
-      <h3>Indovina Chi</h3>
-      <div class="row">
-        <div><label>Nome ruolo A</label><input id="ikA" placeholder="Streamer" /></div>
-        <div><label>Nome ruolo B</label><input id="ikB" placeholder="Co-streamer" /></div>
-      </div>
-      <div class="actions">
-        <button class="btn" onclick="makeIndovinaChi()">Genera link</button>
-        <button class="btn" onclick="openGenerated('ikOutA')">Apri A</button>
-        <button class="btn" onclick="copyGenerated('ikOutB')">Copia B</button>
-      </div>
-      <div id="ikOutA" class="link">Link A: -</div>
-      <div id="ikOutB" class="link">Link B: -</div>
-      <div id="ikOutChat" class="link">Link chat vote: -</div>
-    </div>
-
-    <div class="card">
-      <h3>Paper Please</h3>
-      <label>Difficoltà iniziale (seed)</label>
-      <input id="ppSeed" placeholder="es. easy-1" />
-      <div class="actions">
-        <button class="btn" onclick="makePaperPlease()">Genera link</button>
-        <button class="btn" onclick="openGenerated('ppOut')">Apri</button>
-        <button class="btn" onclick="copyGenerated('ppOut')">Copia</button>
-      </div>
-      <div id="ppOut" class="link">-</div>
-    </div>
-  </div>
-
-  <p class="muted ok">Workflow: Nuova partita live → genera link → apri host → invia solo link preconfigurati.</p>
-</div>
+<div class="scanline"></div>
 
 <script>
   const q = (id) => document.getElementById(id);
-  const val = (id) => encodeURIComponent((q(id).value || '').trim());
+  const track = q('track');
+  const bgMusic = q('bgMusic');
 
-  function getSid(){
-    const sid = (q('sid').value || '').trim();
-    if(!sid){ alert('Inserisci un SID live.'); return null; }
-    return sid;
-  }
-  function roleToken(role){ return btoa(`${getSid()}:${role}`).replace(/=+$/,''); }
-  function setOut(id, txt){ q(id).textContent = txt; }
-  function openGenerated(id){
-    const t = q(id).textContent || '';
-    const cleaned = t.replace(/^Link [AB]:\s*/, '');
-    const url = cleaned.includes('http') || cleaned.startsWith('./') ? cleaned.split(' ').pop() : '';
-    if(url && url !== '-') window.open(url, '_blank');
-  }
-  async function copyGenerated(id){
-    const t = (q(id).textContent || '').replace(/^Link [AB]:\s*/, '');
-    if(!t || t === '-') return;
-    await navigator.clipboard.writeText(t);
+  let selectedGame = null;
+  let musicOn = false;
+
+  function setStatus(text, tone = 'neutral') {
+    const node = q('status');
+    node.textContent = text;
+    node.className = `status ${tone === 'ok' ? 'ok' : tone === 'warn' ? 'warn' : ''}`.trim();
   }
 
-  function presetMode(){
-    const p = q('preset').value;
-    if (p === 'chat') return 'chat';
-    return 'guest';
+  function updateGameOptionsVisibility() {
+    q('impiccatoOptions').hidden = selectedGame !== 'impiccato';
+    q('indovinaOptions').hidden = selectedGame !== 'indovina-chi';
+    q('paperOptions').hidden = selectedGame !== 'paper-please';
   }
 
-  async function newLiveSession(){
-    const sid = getSid(); if(!sid) return;
-    const sidQ = encodeURIComponent(sid);
-    const reqs = [
-      fetch(`./impiccato/api.php?sid=${sidQ}&action=reset`, { method:'POST' }),
-      fetch(`./indovina-chi/sync.php?sid=${sidQ}&action=reset`, { method:'POST' }),
-      fetch(`./paper-please/sync.php?sid=${sidQ}&action=reset`, { method:'POST' })
-    ];
-    const res = await Promise.allSettled(reqs);
-    const okCount = res.filter(r => r.status === 'fulfilled').length;
-    q('sessionMsg').textContent = okCount === 3
-            ? `Sessione ${sid} creata e resettata su tutti i giochi.`
-            : `Sessione ${sid} creata, ma alcuni reset non sono andati a buon fine.`;
-    q('sessionMsg').className = okCount === 3 ? 'ok' : 'warn';
+  function openSettings(game) {
+    selectedGame = game;
+    q('gameTitle').textContent = `CONFIGURAZIONE · ${game.toUpperCase()}`;
+    updateGameOptionsVisibility();
+    track.classList.add('settings');
+    setStatus('Imposta opzioni e avvia la partita lato streamer.');
   }
 
-  function makeImpiccato(){
-    const sid = getSid(); if(!sid) return;
-    const mode = presetMode();
-    const url = `./impiccato/index.html?sid=${encodeURIComponent(sid)}&autostart=1&mode=${mode}&p1=${val('impP1')}&p2=${val('impP2')}&role=host&token=${roleToken('host')}`;
-    setOut('impOut', url);
+  function goBack() {
+    selectedGame = null;
+    track.classList.remove('settings');
+    updateGameOptionsVisibility();
+    setStatus('Seleziona un gioco per iniziare.');
+  }
+  function buildStreamerUrl() {
+    if (selectedGame === 'impiccato') {
+      const host = encodeURIComponent('Pizzi');
+      return `./impiccato/index.html?role=A&player=${host}`;
+    }
+
+    if (selectedGame === 'indovina-chi') {
+      const playerA = encodeURIComponent('Pizzi');
+      return `./indovina-chi/index.html?role=A&player=${playerA}`;
+    }
+
+    if (selectedGame === 'paper-please') {
+      const seed = encodeURIComponent((q('ppSeed').value || '').trim());
+      const mode = q('ppMode').value === 'solo' ? '&mode=solo' : '';
+      return `./paper-please/index.html?seed=${seed}&streamer=${encodeURIComponent('Pizzi')}${mode}`;
+    }
+
+    return null;
   }
 
-  function makeIndovinaChi(){
-    const sid = getSid(); if(!sid) return;
-    const sidQ = encodeURIComponent(sid);
-    const aUrl = `./indovina-chi/index.html?sid=${sidQ}&role=A&player=${val('ikA')}&token=${roleToken('host')}`;
-    const bUrl = `./indovina-chi/index.html?sid=${sidQ}&role=B&player=${val('ikB')}&token=${roleToken('guest')}`;
-    const chatVote = `./indovina-chi/vote.php?sid=${sidQ}&cmd=rosso&name=0&user=chat`;
-    setOut('ikOutA', `Link A: ${aUrl}`);
-    setOut('ikOutB', `Link B: ${bUrl}`);
-    setOut('ikOutChat', `Link chat vote: ${chatVote}`);
+  function buildGuestUrl() {
+    if (selectedGame === 'impiccato') {
+      const guest = encodeURIComponent((q('impGuest').value || 'Ospite').trim());
+      return `./impiccato/index.html?role=B&player=${guest}`;
+    }
+
+    if (selectedGame === 'indovina-chi') {
+      return `./indovina-chi/index.html?role=B&player=Ospite`;
+    }
+
+    return null;
   }
 
-  function makePaperPlease(){
-    const sid = getSid(); if(!sid) return;
-    const sync = encodeURIComponent(`sync.php?sid=${sid}`);
-    const seed = encodeURIComponent((q('ppSeed').value || '').trim());
-    const url = `./paper-please/index.html?sync=${sync}&sid=${encodeURIComponent(sid)}&seed=${seed}&role=host&token=${roleToken('host')}`;
-    setOut('ppOut', url);
+  async function startStreamerGame() {
+    if (!selectedGame) {
+      setStatus('Scegli un gioco dal menu principale.', 'warn');
+      return;
+    }
+
+    const url = buildStreamerUrl();
+    if (!url) {
+      setStatus('Impossibile avviare il gioco selezionato.', 'warn');
+      return;
+    }
+
+    const guestUrl = buildGuestUrl();
+    if (guestUrl) {
+      try {
+        await navigator.clipboard.writeText(guestUrl);
+        setStatus('Link ospite copiato. Avvio partita...', 'ok');
+      } catch (err) {
+        setStatus('Avvio partita. Copia link ospite non riuscita.', 'warn');
+      }
+    } else {
+      setStatus('Avvio partita...', 'ok');
+    }
+
+    window.location.href = url;
   }
 
-  async function copySid(){
-    const sid = getSid(); if(!sid) return;
-    await navigator.clipboard.writeText(sid);
-  }
+  q('musicToggle').addEventListener('click', async () => {
+    try {
+      if (!musicOn) {
+        bgMusic.volume = 0.35;
+        await bgMusic.play();
+        musicOn = true;
+        q('musicToggle').textContent = '♫ DISATTIVA MUSICA';
+      } else {
+        bgMusic.pause();
+        musicOn = false;
+        q('musicToggle').textContent = '♫ ATTIVA MUSICA';
+      }
+    } catch (err) {
+      setStatus('Audio bloccato dal browser finché non interagisci.', 'warn');
+    }
+  });
 </script>
 </body>
 </html>
