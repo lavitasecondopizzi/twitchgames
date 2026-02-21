@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig authType="PASSWORD" host="ctrds.ddns.net" id="831c7f51-4c0a-4fec-945a-59bb31775ee0" port="22" nameFormat="DESCRIPTIVE" username="pizzi" useOpenSSHConfig="true" />
+      <sshConfig authType="PASSWORD" host="192.168.0.50" id="4f6af707-a339-4af1-9da4-5967ce626967" port="22" nameFormat="DESCRIPTIVE" username="pi01" useOpenSSHConfig="true" />
+    </configs>
+  </component>
+</project>

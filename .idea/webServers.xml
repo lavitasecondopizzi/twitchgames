@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="ef0eeca1-cae5-4af5-852c-b8afdc361106" name="ctrds">
+        <fileTransfer rootFolder="/var/www/html/twitch" accessType="SFTP" host="ctrds.ddns.net" port="22" sshConfigId="831c7f51-4c0a-4fec-945a-59bb31775ee0" sshConfig="pizzi@ctrds.ddns.net:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="e69e805f-1044-4053-9576-301d506962a3" name="ctrds-pi01">
+        <fileTransfer rootFolder="/opt/twitchgames/games" accessType="SFTP" host="192.168.0.50" port="22" sshConfigId="4f6af707-a339-4af1-9da4-5967ce626967" sshConfig="pi01@192.168.0.50:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
