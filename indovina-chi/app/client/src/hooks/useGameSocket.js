@@ -19,6 +19,7 @@ export function useGameSocket() {
 	const [labels, setLabels] = useState(null);
 	const [lastSfx, setLastSfx] = useState(null);
 	const [error, setError] = useState("");
+	const [scoreFx, setScoreFx] = useState(null);
 	
 	useEffect(() => {
 		const proto = window.location.protocol === "https:" ? "wss" : "ws";
@@ -37,6 +38,7 @@ export function useGameSocket() {
 				else if (msg.type === "LABELS_SYNC") setLabels(msg.payload);
 				else if (msg.type === "SFX") setLastSfx({ ...msg.payload, at: Date.now() });
 				else if (msg.type === "ERROR") setError(msg.message || "Errore");
+				else if (msg.type === "SCORE_FX") setScoreFx({ ...msg.payload, at: Date.now() });
 			}
 		});
 		
@@ -45,5 +47,5 @@ export function useGameSocket() {
 	
 	const send = (payload) => wsRef.current?.send(payload);
 	
-	return { clientId, connected, state, labels, lastSfx, error, send, setError };
+	return { clientId, connected, state, labels, lastSfx, scoreFx, error, send, setError };
 }

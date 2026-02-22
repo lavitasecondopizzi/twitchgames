@@ -1,0 +1,103 @@
+{
+  "title": "Tortello Games",
+  "games": [
+    {
+      "id": "tacchina-chi",
+      "name": "Tacchina Chi",
+      "description": "Gioco realtime con board condivisa e voti chat",
+      "cover": "",
+      "launch": {
+        "type": "url",
+        "baseUrl": "ctrds.ddns.net:8081/"
+      },
+      "settings": [
+        {
+          "key": "playerB",
+          "label": "Nome Avversario",
+          "type": "text",
+          "default": "Avversario"
+        },
+        {
+          "key": "folder",
+          "label": "Tema",
+          "type": "select",
+          "options": [
+            { "label": "Nintendo", "value": "nintendo" },
+            { "label": "Anime", "value": "anime" },
+            { "label": "Pokémon", "value": "pokemon" }
+          ],
+          "default": "nintendo"
+        }
+      ],
+      "launchProfiles": [
+        {
+          "id": "playerA",
+          "label": "Copia link Pizzi",
+          "query": {
+            "role": "A",
+            "player": "Pizzi",
+            "folder": "{folder}"
+          }
+        },
+        {
+          "id": "playerB",
+          "label": "Copia link Avversario",
+          "query": {
+            "role": "B",
+            "player": "{playerB}",
+            "folder": "{folder}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tacchino-appeso",
+      "name": "Il Tacchino Appeso",
+      "description": "Gioco realtime con board condivisa e voti chat",
+      "cover": "",
+      "launch": {
+        "type": "url",
+        "baseUrl": "ctrds.ddns.net:8082/"
+      },
+      "settings": [
+        {
+          "key": "playerB",
+          "label": "Nome Avversario",
+          "type": "text",
+          "default": "Avversario"
+        },
+        {
+          "key": "folder",
+          "label": "Tema",
+          "type": "select",
+          "options": [
+            { "label": "Nintendo", "value": "nintendo" },
+            { "label": "Anime", "value": "anime" },
+            { "label": "Pokémon", "value": "pokemon" }
+          ],
+          "default": "nintendo"
+        }
+      ],
+      "launchProfiles": [
+        {
+          "id": "playerA",
+          "label": "Copia link Pizzi",
+          "query": {
+            "role": "A",
+            "player": "Pizzi",
+            "folder": "{folder}"
+          }
+        },
+        {
+          "id": "playerB",
+          "label": "Copia link Avversario",
+          "query": {
+            "role": "B",
+            "player": "{playerB}",
+            "folder": "{folder}"
+          }
+        }
+      ]
+    }
+  ]
+}

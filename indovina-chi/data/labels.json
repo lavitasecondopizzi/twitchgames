@@ -1,0 +1,17 @@
+{
+  "scoreboardTitle": "Punteggio",
+
+  "imageFolder": "nintendo",
+
+  "playerA": {
+    "name": "Pizzi",
+    "boardLabel": "LaVitaSecondoPizzi",
+    "webcamLabel": "Webcam Pizzi"
+  },
+
+  "playerB": {
+    "name": "SciaoRaga",
+    "boardLabel": "SciaoRaga",
+    "webcamLabel": "Webcam SciaoRaga"
+  }
+}

@@ -31,7 +31,7 @@ function nextMode(current, kind) {
     return "";
 }
 
-function Board({ board, title, images, cells, editable, onCellSet, onReset }) {
+function Board({ board, title, images, cells, editable, showReset = false, onCellSet, onReset }) {
     const handleCell = (e, idx) => {
         if (!editable) return;
         const current = cells[idx] || "";
@@ -48,11 +48,13 @@ function Board({ board, title, images, cells, editable, onCellSet, onReset }) {
     };
     
     return (
-        <section className="board" data-board={board}>
+        <section className={`board ${editable ? "" : "disabled"}`} data-board={board}>
             <div className="board-head">
                 <div className="board-title">{title}</div>
                 <div className="board-actions">
-                    <button className="btn" onClick={onReset} disabled={!editable}>Reset</button>
+                    {showReset ? (
+                        <button className="btn" onClick={onReset} disabled={!editable}>Reset</button>
+                    ) : null}
                 </div>
             </div>
             
@@ -77,15 +79,19 @@ function Board({ board, title, images, cells, editable, onCellSet, onReset }) {
 }
 
 export default function App() {
-    const { clientId, connected, state, labels, lastSfx, error, send } = useGameSocket();
+    const { clientId, connected, state, labels, lastSfx, scoreFx, error, send } = useGameSocket();
     
     const [images, setImages] = useState([]);
     const [tab, setTab] = useState(0);
     const [roundSelect, setRoundSelect] = useState("");
+    const [scoreFxView, setScoreFxView] = useState(null);
     
     const qs = useMemo(() => new URLSearchParams(window.location.search), []);
     const forcedRole = qs.get("role"); // A/B
     const forcedName = qs.get("player") || qs.get("name") || "";
+    const forcedFolder = qs.get("folder") || "";
+    const forcedPlayerA = qs.get("playerA") || "";
+    const forcedPlayerB = qs.get("playerB") || "";
     
     const myRole = useMemo(() => {
         if (!state) return null;
@@ -97,7 +103,7 @@ export default function App() {
     
     useEffect(() => {
         if (!labels) return;
-        const folder = labels.imageFolder || "nintendo";
+        const folder = forcedFolder || labels?.imageFolder;
         
         fetch(`/api/images?folder=${encodeURIComponent(folder)}`)
             .then((r) => r.json())
@@ -108,10 +114,10 @@ export default function App() {
                     name: labels.imageLabels?.[file] || autoLabelFromFilename(file)
                 }));
                 setImages(list);
-                if (list.length && !roundSelect) setRoundSelect(list[0].src);
+                setRoundSelect((prev) => prev || list[0]?.src || "");
             })
             .catch(() => setImages([]));
-    }, [labels, roundSelect]);
+    }, [labels]);
     
     useEffect(() => {
         if (!state) return;
@@ -131,6 +137,17 @@ export default function App() {
         audio.play().catch(() => {});
     }, [lastSfx]);
     
+    useEffect(() => {
+        if (!scoreFx) return;
+        setScoreFxView(scoreFx);
+        
+        const t = setTimeout(() => {
+            setScoreFxView(null);
+        }, 900);
+        
+        return () => clearTimeout(t);
+    }, [scoreFx]);
+    
     if (!state || !labels) return <div className="loading">Caricamento...</div>;
     
     const playerAName = state.playerNameA || labels?.playerA?.boardLabel || "Giocatore A";
@@ -149,55 +166,62 @@ export default function App() {
     const votes = aggregateVotes(state.chatVotes?.entries || []);
     
     const onNewRound = () => {
-        send({ type: "NEW_ROUND", roundImage: roundSelect || null });
+        if (!images.length) {
+            send({ type: "NEW_ROUND", roundImage: null });
+            return;
+        }
+        
+        const pick = images[Math.floor(Math.random() * images.length)];
+        setRoundSelect(pick.src); // aggiorna anche la select visivamente
+        send({ type: "NEW_ROUND", roundImage: pick.src });
     };
     
     return (
         <div id="app">
-            <div className={`conn-pill ${connected ? "ok" : "ko"}`}>
-                {connected ? "Realtime ON" : "Offline"}
-            </div>
-            
             <div className="top">
                 <div className="cam">
                     <div className="label">{webcamLabelA}</div>
+                    <div className="placeholder" />
                 </div>
                 
                 <div className="center">
                     <div className="label">Round attuale</div>
-                    {roundImage ? <img src={roundImage} alt="Round attuale" /> : <div className="round-ph" />}
-                    
-                    <div className="scoreboard" id="scoreboard">
-                        <button
-                            className="score-btn"
-                            disabled={!canScore}
-                            onClick={() => send({ type: "SET_SCORE_DELTA", player: scoreTarget, delta: -1 })}
-                        >
-                            -1
-                        </button>
-                        <span className="value">{state.punteggioA}</span>
-                        <span className="dash">-</span>
-                        <span className="value">{state.punteggioB}</span>
-                        <button
-                            className="score-btn"
-                            disabled={!canScore}
-                            onClick={() => send({ type: "SET_SCORE_DELTA", player: scoreTarget, delta: 1 })}
-                        >
-                            +1
-                        </button>
-                    </div>
-                    
                     <select value={roundSelect} onChange={(e) => setRoundSelect(e.target.value)}>
                         {images.map((img) => (
                             <option key={img.file} value={img.src}>{img.name}</option>
                         ))}
                     </select>
-                    
-                    <button className="btn" id="newRound" onClick={onNewRound}>Nuovo Round</button>
+                    {roundImage ? <img src={roundImage} alt="Round attuale" /> : <div className="round-ph" />}
+                    <div className="center-controls-row">
+                        <div className="scoreboard" id="scoreboard">
+                            <button
+                                className="score-btn"
+                                disabled={!canScore}
+                                onClick={() => send({ type: "SET_SCORE_DELTA", player: scoreTarget, delta: -1 })}
+                            >
+                                -1
+                            </button>
+                            <span className="value">{state.punteggioA}</span>
+                            <span className="dash">-</span>
+                            <span className="value">{state.punteggioB}</span>
+                            <button
+                                className="score-btn"
+                                disabled={!canScore}
+                                onClick={() => send({ type: "SET_SCORE_DELTA", player: scoreTarget, delta: 1 })}
+                            >
+                                +1
+                            </button>
+                        </div>
+                        
+                        <button className="btn btn-round-inline" id="newRound" onClick={onNewRound}>
+                            Nuovo Round
+                        </button>
+                    </div>
                 </div>
                 
                 <div className="cam">
                     <div className="label">{webcamLabelB}</div>
+                    <div className="placeholder" />
                 </div>
             </div>
             
@@ -214,27 +238,24 @@ export default function App() {
                             <div className="boards">
                                 <Board
                                     board="A"
-                                    title={playerAName}
+                                    title=""
                                     images={images}
                                     cells={state.celleA || []}
                                     editable={canEditA}
+                                    showReset={canEditA}
                                     onCellSet={(index, mode) => send({ type: "CELL_SET", board: "A", index, mode })}
                                     onReset={() => send({ type: "BOARD_RESET", board: "A" })}
                                 />
                                 <Board
                                     board="B"
-                                    title={playerBName}
+                                    title=""
                                     images={images}
                                     cells={state.celleB || []}
                                     editable={canEditB}
+                                    showReset={canEditB}
                                     onCellSet={(index, mode) => send({ type: "CELL_SET", board: "B", index, mode })}
                                     onReset={() => send({ type: "BOARD_RESET", board: "B" })}
                                 />
-                            </div>
-                            <div className="legend">
-                                <span><b>Click sinistro</b> = rosso</span>
-                                <span><b>Click destro</b> = verde</span>
-                                <span><b>Doppio click</b> = reset</span>
                             </div>
                         </section>
                         
@@ -243,18 +264,24 @@ export default function App() {
                                 <h2>Regole del gioco</h2>
                                 <ul>
                                     <li>Ogni giocatore sceglie in segreto un personaggio dalla propria scheda.</li>
-                                    <li>Ogni giocatore ha una sola azione per turno: domanda o dichiarazione.</li>
-                                    <li>Le domande ammettono solo risposta S�/No.</li>
-                                    <li>Click sinistro = rosso, destro = verde, doppio click = reset cella.</li>
-                                    <li>Reset pulisce la scheda del giocatore.</li>
-                                    <li>Nuovo Round resetta schede e voti chat.</li>
+                                    <li>Ogni giocatore ha a disposizione una sola azione per turno, o <b>domanda</b> o <b>dichiarazione</b>.</li>
+                                    <li>A turno si fanno domande a cui si può rispondere solo con <b>Sì</b> o <b>No</b>.</li>
+                                    <li>Dopo ogni risposta, ogni giocatore aggiorna la propria scheda eliminando (in rosso) o tenendo in considerazione (in verde) i personaggi.</li>
+                                    <li>Quando un giocatore pensa di aver capito chi è il personaggio avversario, può fare una <b>dichiarazione</b>.</li>
+                                    <li>Se la dichiarazione è corretta, quel giocatore vince il round segnando <b>+1 punto</b> sul proprio punteggio.</li>
+                                    <li>Se sbaglia, il round finisce immediatamente e quel giocatore perde il round segnando <b>-1 punto</b> sul proprio punteggio.</li>
+                                    <li>Dopo la fine del round si può iniziare un nuovo round scegliendo un altro personaggio segreto.</li>
+                                    <li>Una sola volta per round ogni giocatore può chiedere un suggerimento all'altro giocatore che deve rispondere anche depistando l'avversario, ciò consuma l'azione del turno di chi pone la domanda.</li>
+                                    <li>Una sola volta per round ogni giocatore può rifiutarsi di rispondere ad una domanda, ciò consuma l'azione del turno di chi pone la domanda.</li>
+                                    <li>Non è concesso barare guardando la live dell'avversario.</li>
                                 </ul>
                                 
-                                <h2 style={{ marginTop: 10 }}>Come pu� interagire la chat</h2>
+                                <h2 style={{ marginTop: 10 }}>Come può interagire la chat</h2>
                                 <ul>
-                                    <li>Comandi tipo <b>!rosso NOME</b> e <b>!verde NOME</b>.</li>
-                                    <li>I voti vengono mostrati nella tab �Voti chat�.</li>
-                                    <li>Lo streamer decide se applicarli davvero.</li>
+                                    <li>La chat può usare i comandi dedicati per proporre quali caselle <b>eliminare</b> (<b>!rosso NOME CASELLA</b>) o <b>tenere</b> (<b>!verde NOME CASELLA</b>).</li>
+                                    <li>Le proposte della chat vengono raccolte e mostrate nella tab <b>“Voti chat”</b>. Solo lo streamer decide se e quando applicare davvero una mossa sulla scheda.</li>
+                                    <li>Il voto viene considerato una sola volta, è però possibile cambiare la propria scelta con un nuovo comando.</li>
+                                    <li>La chat può decidere anche di depistare il giocatore, ciò porterà a dubitare del voto abilitando la chat potenzialmente a barare senza però rovinare il gioco a nessuno.</li>
                                 </ul>
                             </div>
                         </section>
@@ -291,6 +318,12 @@ export default function App() {
             </div>
             
             {error ? <div className="error-floating">{error}</div> : null}
+            
+            {scoreFxView ? (
+                <div className={`score-fx-overlay ${scoreFxView.tone || "green"}`}>
+                    <div className="score-fx-text">{scoreFxView.text}</div>
+                </div>
+            ) : null}
         </div>
     );
 }

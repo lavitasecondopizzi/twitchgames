@@ -8,9 +8,9 @@
     "dev": "nodemon src/index.js",
     "dev:local": "cross-env DATA_DIR=../../data ASSETS_DIR=../../assets PORT=8080 nodemon src/index.js",
     "dev:win": "cross-env DATA_DIR=C:\\Git\\Altro\\twitchgames\\indovina-chi\\data ASSETS_DIR=C:\\Git\\Altro\\twitchgames\\indovina-chi\\assets PORT=8080 nodemon src/index.js",
-    "dev:pi": "cross-env DATA_DIR=/opt/twitchgames/games/indovina-chi/data ASSETS_DIR=/opt/twitchgames/games/indovina-chi/assets PORT=8080 nodemon src/index.js",
+    "dev:pi": "cross-env DATA_DIR=/opt/twitchgames/indovina-chi/data ASSETS_DIR=/opt/twitchgames/games/indovina-chi/assets PORT=8080 nodemon src/index.js",
     "start": "node src/index.js",
-    "start:pi": "cross-env DATA_DIR=/opt/twitchgames/games/indovina-chi/data ASSETS_DIR=/opt/twitchgames/games/indovina-chi/assets PORT=8080 node src/index.js"
+    "start:pi": "cross-env DATA_DIR=/opt/twitchgames/indovina-chi/data ASSETS_DIR=/opt/twitchgames/games/indovina-chi/assets PORT=8080 node src/index.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

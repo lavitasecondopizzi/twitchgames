@@ -84,17 +84,36 @@ app.get("/api/images", (req, res) => {
 	if (!/^[a-zA-Z0-9_-]+$/.test(folder)) return res.status(400).json({ error: "folder non valida" });
 	
 	const dir = path.join(ASSETS_DIR, "img", folder);
+	
+	console.log("ASSETS_DIR =", ASSETS_DIR);
+	console.log("folder =", folder);
+	console.log("dir cercata =", dir);
+	console.log("existsSync =", fs.existsSync(dir));
+	
 	try {
+		const stat = fs.statSync(dir);
+		console.log("isDirectory =", stat.isDirectory());
+		
 		const files = fs.readdirSync(dir)
 			.filter((f) => /\.(jpg|jpeg|png|webp|gif)$/i.test(f))
 			.sort((a, b) => a.localeCompare(b, "it"));
+		
+		console.log("files trovati =", files.length, files.slice(0, 10));
 		res.json(files);
-	} catch {
-		res.status(404).json({ error: "cartella non trovata" });
+	} catch (e) {
+		console.error("ERRORE /api/images:", e.code, e.message);
+		res.status(404).json({
+			error: "cartella non trovata",
+			debug: {
+				code: e.code,
+				message: e.message,
+				dir
+			}
+		});
 	}
 });
 
-// Compatibilità bot/chat esterno (ex vote.php)
+// Compatibilitï¿½ bot/chat esterno (ex vote.php)
 app.post("/api/chat-vote", (req, res) => {
 	const { cmd, name, user = "anon" } = req.body || {};
 	const command = String(cmd || "").trim().toLowerCase();
@@ -214,6 +233,16 @@ wss.on("connection", (ws) => {
 					persist();
 					stateSync();
 					broadcast({ type: "SFX", payload: { sound: n >= 0 ? "score_up" : "score_down" } });
+					
+					broadcast({
+						type: "SCORE_FX",
+						payload: {
+							player,
+							delta: n,
+							text: n >= 0 ? `+${Math.abs(n)}` : `-${Math.abs(n)}`,
+							tone: n >= 0 ? "green" : "red"
+						}
+					});
 					return;
 				}
 				
