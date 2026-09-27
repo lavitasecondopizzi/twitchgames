@@ -1077,56 +1077,126 @@ function creaStatoGiocatore(phrase, theme){
   };
 }
 
-/* ========= SYNC CON sync.php ========= */
+/* ========= SYNC REALTIME CON SUPABASE ========= */
+
+const roomCode = (urlParams.get("room") || "").trim().toUpperCase();
+const roomRole = forcedRole === "A" ? "host" : "guest";
+let roomClient = null;
+let roomReady = false;
+let stateRevision = 0;
+
+function mergeGameState(data){
+  if (!data || typeof data !== "object") return;
+  stato = {
+    ...stato,
+    ...data,
+    game: {
+      ...stato.game,
+      ...(data.game || {}),
+      A: { ...stato.game.A, ...((data.game && data.game.A) || {}) },
+      B: { ...stato.game.B, ...((data.game && data.game.B) || {}) }
+    }
+  };
+  stateRevision = Math.max(stateRevision, Number(data._revision || 0));
+  decidiRuoloDaStato();
+  aggiornaUI();
+}
+
+async function broadcastGameState(){
+  if (!roomClient || !roomReady) return;
+  stateRevision++;
+  const payload = {
+    ...stato,
+    _revision: stateRevision,
+    _sender: clientId
+  };
+  stato = { ...stato, _revision: stateRevision };
+  await roomClient.broadcast("game_state", payload);
+}
+
+async function requestGameState(){
+  if (!roomClient || !roomReady) return;
+  await roomClient.broadcast("state_request", { sender: clientId });
+}
 
 async function salvaStato(overrides = {}){
   if (isSaving) return;
   isSaving = true;
   try{
-    const payload = { ...stato, ...overrides };
-    const res = await fetch((window.GameAPIs && window.GameAPIs.endpoint('impiccato', 'sync')) || "sync.php", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify(payload)
-    });
-    if (res.ok){
-      stato = payload;
-    }
+    const payload = {
+      ...stato,
+      ...overrides,
+      game: {
+        ...stato.game,
+        ...(overrides.game || {}),
+        A: { ...stato.game.A, ...((overrides.game && overrides.game.A) || {}) },
+        B: { ...stato.game.B, ...((overrides.game && overrides.game.B) || {}) }
+      }
+    };
+    stato = payload;
+    aggiornaUI();
+    await broadcastGameState();
   }catch(e){
-    console.error("Errore salvataggio stato:", e);
+    console.error("Errore invio stato realtime:", e);
   }finally{
     isSaving = false;
   }
 }
 
 async function caricaStato(){
-  if (isSaving) return;
-  try{
-    const res = await fetch((window.GameAPIs && window.GameAPIs.endpoint('impiccato', 'sync')) || "sync.php", { cache:"no-store" });
-    if (!res.ok) return;
-    const data = await res.json();
-    if (!data || typeof data !== "object") return;
-
-    // merge soft
-    stato = {
-      ...stato,
-      ...data,
-      game: {
-        ...stato.game,
-        ...(data.game || {}),
-        A: { ...stato.game.A, ...((data.game && data.game.A) || {}) },
-        B: { ...stato.game.B, ...((data.game && data.game.B) || {}) }
-      }
-    };
-
+  if (!roomCode || !["A","B"].includes(forcedRole)){
     decidiRuoloDaStato();
     aggiornaUI();
-  }catch(e){
-    console.warn("Errore sync:", e);
+    return;
+  }
+
+  if (!roomClient){
+    roomClient = new TortelloSupabaseRoom({
+      room: roomCode,
+      role: roomRole,
+      nickname: playerNameFromUrl || (forcedRole === "A" ? "Pizzi" : "Ospite"),
+      game: "impiccato"
+    });
+
+    roomClient.on("game-state", (payload) => {
+      if (payload?._sender === clientId) return;
+      if (Number(payload?._revision || 0) < stateRevision) return;
+      mergeGameState(payload);
+    });
+
+    roomClient.on("state-request", () => {
+      if (forcedRole === "A") broadcastGameState().catch(console.error);
+    });
+
+    roomClient.on("presence", () => {
+      if (forcedRole === "A") broadcastGameState().catch(console.error);
+    });
+  }
+
+  if (!roomReady){
+    try{
+      await roomClient.connect();
+      roomReady = true;
+      decidiRuoloDaStato();
+      if (forcedRole === "A"){
+        if (stato.game.A.status === "idle" && stato.game.B.status === "idle"){
+          await nuovoRound(true);
+        } else {
+          await broadcastGameState();
+        }
+      } else {
+        await requestGameState();
+      }
+    }catch(e){
+      console.error("Errore Supabase Realtime:", e);
+      aggiornaUI();
+    }
   }
 }
 
 /* ========= RUOLO A/B/SPETTATORE ========= */
+
+
 
 function decidiRuoloDaStato(){
   if (!roleClaimed){
@@ -1457,7 +1527,7 @@ async function onLetterClick(playerId, letter){
 
 /* ========= NUOVO ROUND ========= */
 
-async function nuovoRound(){
+async function nuovoRound(initial = false){
   // scegli due frasi tematiche diverse
   const fA = nuovaFraseCasuale();
   const fB = nuovaFraseCasuale(fA.phrase);
