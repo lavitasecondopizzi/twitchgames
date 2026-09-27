@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Tortello Games · WebRTC Test</title>
+  <style>
+    body { font-family: system-ui,sans-serif; max-width:760px; margin:40px auto; padding:0 20px; }
+    label { display:block; margin:12px 0 4px; font-weight:700; }
+    input,select,button { font:inherit; padding:10px; width:100%; box-sizing:border-box; }
+    button { margin-top:16px; cursor:pointer; }
+    #log { white-space:pre-wrap; background:#111; color:#eee; padding:16px; min-height:180px; margin-top:20px; }
+    .ok { color:green; }
+  </style>
+</head>
+<body>
+  <h1>WebRTC connection test</h1>
+  <p>Pagina tecnica temporanea: apre un canale P2P tra due browser usando il signaling server.</p>
+
+  <label for="room">Codice stanza</label>
+  <input id="room" maxlength="6" value="TEST01">
+
+  <label for="role">Ruolo</label>
+  <select id="role">
+    <option value="host">Host</option>
+    <option value="guest">Guest</option>
+  </select>
+
+  <label for="signaling">Signaling WSS URL</label>
+  <input id="signaling" placeholder="wss://signal.example.com">
+
+  <button id="connect">Connetti</button>
+  <button id="send" disabled>Invia messaggio P2P</button>
+
+  <div id="log"></div>
+
+  <script src="./shared/protocol.js"></script>
+  <script src="./shared/webrtc-client.js"></script>
+  <script src="./shared/room-client.js"></script>
+  <script>
+    const logEl = document.getElementById('log');
+    const connectButton = document.getElementById('connect');
+    const sendButton = document.getElementById('send');
+    let roomClient = null;
+
+    function log(message) {
+      logEl.textContent += message + '\n';
+    }
+
+    connectButton.addEventListener('click', async () => {
+      try {
+        if (roomClient) roomClient.close();
+
+        const room = document.getElementById('room').value.trim().toUpperCase();
+        const role = document.getElementById('role').value;
+        const signalingUrl = document.getElementById('signaling').value.trim();
+
+        log('Connessione signaling...');
+        roomClient = new TortelloRoom({ room, role, signalingUrl });
+
+        roomClient.on('signaling-open', () => log('✓ Signaling connesso'));
+        roomClient.on('channel-open', () => {
+          log('✓ WebRTC P2P connesso');
+          sendButton.disabled = false;
+        });
+        roomClient.on('channel-close', () => {
+          log('WebRTC P2P disconnesso');
+          sendButton.disabled = true;
+        });
+        roomClient.on('message', (message) => {
+          log('← P2P: ' + JSON.stringify(message.payload));
+        });
+        roomClient.on('error', (error) => {
+          log('✗ ' + (error?.message || 'Errore'));
+        });
+
+        await roomClient.connect();
+        log('In attesa dell’altro browser...');
+      } catch (error) {
+        log('✗ ' + error.message);
+      }
+    });
+
+    sendButton.addEventListener('click', () => {
+      roomClient.send('game_event', {
+        text: 'Messaggio P2P da ' + document.getElementById('role').value,
+        at: new Date().toISOString()
+      });
+      log('→ P2P: messaggio inviato');
+    });
+  </script>
+</body>
+</html>
