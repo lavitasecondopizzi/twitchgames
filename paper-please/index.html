@@ -1338,6 +1338,7 @@ function phaseDurationSeconds(phase){
   return 0;
 }
 function setPhase(phase){
+  if(!isHost) return;
   stato.phase = phase;
   stato.phaseLocked = (phase==="decision" || phase==="event" || phase==="end");
   const sec = phaseDurationSeconds(phase);
@@ -1370,7 +1371,7 @@ function setPhase(phase){
   saveState();
 }
 function tickPhase(){
-  if (stato.gameOver || stato.runCompleted) return;
+  if (!isHost || stato.gameOver || stato.runCompleted) return;
 
   if (stato.phaseEndsAt && Date.now() >= stato.phaseEndsAt){
     // auto-advance
@@ -1632,12 +1633,17 @@ function updateUI(){
   const locked = stato.gameOver || stato.runCompleted || decided || (stato.phase!=="decision");
   document.querySelectorAll(".decision-btn").forEach(btn=>{
     const v = btn.dataset.decision;
-    btn.disabled = locked;
+    btn.disabled = !isHost || locked;
     btn.classList.toggle("selected", v === (decided ? stato.decisionsByPos[pos] : draftDecision));
   });
 
-  UI.btnConfirm.disabled = locked || !draftDecision;
-  UI.btnNextPhase.disabled = stato.gameOver || stato.runCompleted;
+  UI.btnConfirm.disabled = !isHost || locked || !draftDecision;
+  UI.btnNextPhase.disabled = !isHost || stato.gameOver || stato.runCompleted;
+  UI.btnConfirm.style.display = isHost ? "" : "none";
+  UI.btnNextPhase.style.display = isHost ? "" : "none";
+  UI.btnApplyChat.style.display = isHost ? "" : "none";
+  UI.btnNewRun.style.display = isHost ? "" : "none";
+  UI.btnHardReset.style.display = isHost ? "" : "none";
 
   UI.draftLabel.textContent = "Bozza: " + (draftDecision ? decisionLabel(draftDecision) : "Nessuna");
 
@@ -1951,7 +1957,7 @@ function applyDraftFromChat(){
 /* ===== Events: UI interactions ===== */
 document.querySelectorAll(".decision-btn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
-    if (stato.phase!=="decision") return;
+    if (!isHost || stato.phase!=="decision") return;
     draftDecision = btn.dataset.decision;
     updateUI();
   });
@@ -1960,7 +1966,7 @@ UI.btnConfirm.addEventListener("click", ()=>{ if(isHost) confirmDecision(); });
 UI.btnApplyChat.addEventListener("click", ()=>{ if(isHost) applyDraftFromChat(); });
 
 UI.btnNextPhase.addEventListener("click", ()=>{
-  if (stato.gameOver || stato.runCompleted) return;
+  if (!isHost || stato.gameOver || stato.runCompleted) return;
   // manual phase advance (respects order)
   if (stato.phase==="intro") return setPhase("discuss");
   if (stato.phase==="discuss") return setPhase("vote1");
@@ -1990,6 +1996,7 @@ UI.tabInner.style.transform = "translateX(0%)";
 
 /* Reset buttons */
 function newRun(keepSeason=true){
+  if(!isHost) return;
   const season = keepSeason ? (stato?.season || cfg.seasons?.startSeason || 1) : (cfg.seasons?.startSeason || 1);
   const mode = stato?.mode || cfg.modes?.default || "standard";
   const seed = String(Date.now());
@@ -2007,9 +2014,9 @@ function newRun(keepSeason=true){
   saveState();
   updateUI();
 }
-UI.btnNewRun.addEventListener("click", ()=>newRun(true));
-UI.btnHardReset.addEventListener("click", ()=>newRun(false));
-UI.endRestartBtn.addEventListener("click", ()=>newRun(true));
+UI.btnNewRun.addEventListener("click", ()=>{if(isHost)newRun(true);});
+UI.btnHardReset.addEventListener("click", ()=>{if(isHost)newRun(false);});
+UI.endRestartBtn.addEventListener("click", ()=>{if(isHost)newRun(true);});
 
 /* ===== Bootstrap ===== */
 (async function init(){
