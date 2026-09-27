@@ -408,6 +408,38 @@
       .join-form input { width: 100%; }
       .footer { flex-direction: column; }
     }
+  
+    .room-modal .room-code {
+      margin: 20px 0;
+      border: 4px solid var(--ink);
+      background: var(--paper-2);
+      padding: 18px;
+      text-align: center;
+    }
+    .room-code strong {
+      display: block;
+      font-family: Impact, Haettenschweiler, "Arial Black", sans-serif;
+      font-size: clamp(48px, 12vw, 82px);
+      letter-spacing: .12em;
+      line-height: .9;
+    }
+    .room-status {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      border-top: 3px solid var(--ink);
+      padding-top: 12px;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+    .room-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .room-actions .comic-btn { flex: 1; min-width: 180px; }
+    .hidden { display: none !important; }
+    @media (max-width: 560px) {
+      .room-actions { flex-direction: column; }
+      .room-actions .comic-btn { width: 100%; }
+    }
   </style>
 </head>
 <body>
@@ -474,8 +506,7 @@
     </footer>
   </main>
 
-  <div class="modal-backdrop" id="configModal" hidden>
-    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-backdrop" id="configModal" hidden>    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <div class="modal-header">
         <h2 id="modalTitle">Configura partita</h2>
         <button class="close" id="closeModal" type="button" aria-label="Chiudi">×</button>
@@ -499,9 +530,8 @@
             <option value="coop">Streamer + ospite</option>
           </select>
         </div>
-
         <div class="notice">
-          Il sistema delle stanze sarà il prossimo livello della lobby. Per ora questa schermata mantiene il funzionamento dei giochi già presenti nel progetto.
+          La lobby prepara la partita come una stanza: il creator la crea, riceve un codice e può condividerlo con l'ospite.
         </div>
       </div>
 
@@ -511,9 +541,32 @@
       </div>
     </section>
   </div>
+  <div class="modal-backdrop" id="roomModal" hidden>
+    <section class="modal room-modal" role="dialog" aria-modal="true" aria-labelledby="roomTitle">
+      <div class="modal-header">
+        <h2 id="roomTitle">Stanza pronta</h2>
+        <button class="close" id="closeRoom" type="button" aria-label="Chiudi">×</button>
+      </div>
+      <div class="room-code">
+        <span>Codice stanza</span>
+        <strong id="roomCodeDisplay">------</strong>
+      </div>
+      <div class="room-status">
+        <span id="roomGameLabel">Gioco</span>
+        <span id="roomPlayerLabel">HOST · PIZZI</span>
+      </div>
+      <div class="notice" id="roomNotice">
+        Condividi il codice con il tuo ospite. Il collegamento reale tra dispositivi verrà gestito dal backend delle stanze.
+      </div>
+      <div class="room-actions">
+        <button class="comic-btn" id="copyRoom" type="button">Copia invito</button>
+        <button class="comic-btn primary" id="launchRoomGame" type="button">Avvia gioco</button>
+      </div>
+    </section>
+  </div>
 
   <script>
-    const state = { selectedGame: null };
+    const state = { selectedGame: null, roomCode: null };
 
     const $ = (id) => document.getElementById(id);
 
@@ -570,23 +623,74 @@
 
       return null;
     }
+    function createRoomCode() {
+      const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let code = '';
+      for (let i = 0; i < 6; i++) {
+        code += alphabet[Math.floor(Math.random() * alphabet.length)];
+      }
+      return code;
+    }
 
-    async function startGame() {
+    function gameLabel(game) {
+      return game === 'paper-please' ? 'PAPER PIZZI PLEASE'
+        : game === 'indovina-chi' ? 'INDOVINA CHI'
+        : 'IMPICCATO';
+    }
+
+    function openRoom() {
+      state.roomCode = createRoomCode();
+      $('roomCodeDisplay').textContent = state.roomCode;
+      $('roomGameLabel').textContent = gameLabel(state.selectedGame);
+      $('roomPlayerLabel').textContent = 'HOST · PIZZI';
+      $('roomModal').hidden = false;
+    }
+
+    async function copyRoomInvite() {
+      const roomUrl = new URL(window.location.href);
+      roomUrl.search = '';
+      roomUrl.hash = '';
+      roomUrl.searchParams.set('room', state.roomCode);
+      roomUrl.searchParams.set('role', 'guest');
+
+      try {
+        await navigator.clipboard.writeText(roomUrl.href);
+        $('roomNotice').textContent = 'Invito copiato. Invia il link al tuo ospite.';
+      } catch (_) {
+        $('roomNotice').textContent = 'Copia automatica non disponibile. Codice stanza: ' + state.roomCode;
+      }
+    }
+
+    function launchRoomGame() {
       const gameUrl = buildStreamerUrl();
-
       if (!gameUrl) return;
+      window.location.href = gameUrl + (gameUrl.includes('?') ? '&' : '?') + 'room=' + encodeURIComponent(state.roomCode);
+    }
 
-      const guestUrl = buildGuestUrl();
+    function closeRoom() {
+      $('roomModal').hidden = true;
+    }
 
-      if (guestUrl) {
-        try {
-          await navigator.clipboard.writeText(new URL(guestUrl, window.location.href).href);
-        } catch (_) {
-          // Il gioco viene comunque avviato anche se il browser nega l'accesso agli appunti.
-        }
+    function joinRoom(code) {
+      const normalized = code.replace(/[^A-Z0-9]/g, '').slice(0, 6);
+      if (normalized.length !== 6) {
+        $('roomCode').focus();
+        $('roomCode').setCustomValidity('Inserisci un codice stanza di 6 caratteri.');
+        $('roomCode').reportValidity();
+        return;
       }
 
-      window.location.href = gameUrl;
+      const url = new URL(window.location.href);
+      url.search = '';
+      url.searchParams.set('room', normalized);
+      url.searchParams.set('role', 'guest');
+      window.location.href = url.href;
+    }
+
+    function startGame() {
+      if (!state.selectedGame) return;
+      $('configModal').hidden = true;
+      openRoom();
     }
 
     document.querySelectorAll('[data-game]').forEach((button) => {
@@ -596,6 +700,9 @@
     $('closeModal').addEventListener('click', closeConfig);
     $('cancelModal').addEventListener('click', closeConfig);
     $('startGame').addEventListener('click', startGame);
+    $('closeRoom').addEventListener('click', closeRoom);
+    $('copyRoom').addEventListener('click', copyRoomInvite);
+    $('launchRoomGame').addEventListener('click', launchRoomGame);
 
     $('configModal').addEventListener('click', (event) => {
       if (event.target === $('configModal')) closeConfig();
@@ -603,18 +710,25 @@
 
     $('joinForm').addEventListener('submit', (event) => {
       event.preventDefault();
-      const code = $('roomCode').value.trim().toUpperCase();
-
-      if (!code) {
-        $('roomCode').focus();
-        return;
-      }
-
-      alert('Le stanze con codice saranno collegate al nuovo backend. Codice inserito: ' + code);
+      joinRoom($('roomCode').value.trim().toUpperCase());
     });
+
+    $('roomCode').addEventListener('input', () => {
+      $('roomCode').value = $('roomCode').value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
+      $('roomCode').setCustomValidity('');
+    });
+
+    const initialParams = new URLSearchParams(window.location.search);
+    const initialRoom = initialParams.get('room');
+    const initialRole = initialParams.get('role');
+    if (initialRoom && initialRole === 'guest') {
+      $('roomCode').value = initialRoom.toUpperCase().slice(0, 6);
+      $('joinTitle').textContent = 'Unisciti alla stanza';
+    }
 
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && !$('configModal').hidden) closeConfig();
+      if (event.key === 'Escape' && !$('roomModal').hidden) closeRoom();
     });
   </script>
 </body>
