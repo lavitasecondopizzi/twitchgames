@@ -723,7 +723,6 @@
     const initialRole = initialParams.get('role');
     if (initialRoom && initialRole === 'guest') {
       $('roomCode').value = initialRoom.toUpperCase().slice(0, 6);
-      $('joinTitle').textContent = 'Unisciti alla stanza';
     }
 
     document.addEventListener('keydown', (event) => {
