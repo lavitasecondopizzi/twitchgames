@@ -1,4 +1,5 @@
 name: Deploy Twitch Games to GitHub Pages
+# GitHub Pages deployment
 
 on:
   push:
