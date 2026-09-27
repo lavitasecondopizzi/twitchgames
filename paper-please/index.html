@@ -1851,10 +1851,11 @@ function mergeLoadedState(data){
   stato.objectives={...defaultState().objectives,...(data?.objectives||{})};
   stato.unlocks={...defaultState().unlocks,...(data?.unlocks||{})};
   stato.arcs={...defaultState().arcs,...(data?.arcs||{})};
+  if(Array.isArray(data?.runOrder)) order=data.runOrder.slice();
   ensureState();
 }
 function statePayload(){
-  return {...stato,_revision:revision,_sender:isHost?"host":"guest",_sentAt:Date.now()};
+  return {...stato,runOrder:order.slice(),_revision:revision,_sender:isHost?"host":"guest",_sentAt:Date.now()};
 }
 async function broadcastState(){
   if(!roomClient||!isHost||isApplyingRemoteState)return;
