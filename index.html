@@ -513,11 +513,6 @@
       </div>
 
       <div class="options">
-        <div class="field" id="guestField">
-          <label for="impGuest">Nome ospite</label>
-          <input id="impGuest" placeholder="Ospite" />
-        </div>
-
         <div class="field" id="seedField" hidden>
           <label for="ppSeed">Seed iniziale</label>
           <input id="ppSeed" placeholder="Lascia vuoto per casuale" />
@@ -531,7 +526,7 @@
           </select>
         </div>
         <div class="notice">
-          La lobby prepara la partita come una stanza: il creator la crea, riceve un codice e può condividerlo con l'ospite.
+          Il creator crea la stanza e condivide il codice. L'ospite inserisce il codice e sceglie il proprio nick quando entra.
         </div>
       </div>
 
@@ -556,7 +551,7 @@
         <span id="roomPlayerLabel">HOST · PIZZI</span>
       </div>
       <div class="notice" id="roomNotice">
-        Condividi il codice con il tuo ospite. Il collegamento reale tra dispositivi verrà gestito dal backend delle stanze.
+        Condividi il codice con il tuo ospite. Sarà l'ospite, entrando nella stanza, a scegliere il proprio nick.
       </div>
       <div class="room-actions">
         <button class="comic-btn" id="copyRoom" type="button">Copia invito</button>
@@ -578,13 +573,11 @@
           ? 'Indovina Chi'
           : 'Impiccato';
 
-      $('guestField').hidden = game !== 'impiccato';
       $('seedField').hidden = game !== 'paper-please';
       $('modeField').hidden = game !== 'paper-please';
       $('configModal').hidden = false;
 
       if (game === 'paper-please') $('ppSeed').focus();
-      else if (game === 'impiccato') $('impGuest').focus();
       else $('startGame').focus();
     }
 
@@ -612,11 +605,6 @@
     }
 
     function buildGuestUrl() {
-      if (state.selectedGame === 'impiccato') {
-        const guest = encodeURIComponent($('impGuest').value.trim() || 'Ospite');
-        return './impiccato/index.html?role=B&player=' + guest;
-      }
-
       if (state.selectedGame === 'indovina-chi') {
         return './indovina-chi/index.html?role=B&player=Ospite';
       }
@@ -642,7 +630,7 @@
       state.roomCode = createRoomCode();
       $('roomCodeDisplay').textContent = state.roomCode;
       $('roomGameLabel').textContent = gameLabel(state.selectedGame);
-      $('roomPlayerLabel').textContent = 'HOST · PIZZI';
+      $('roomPlayerLabel').textContent = 'HOST · PIZZI · IN ATTESA DELL’OSPITE';
       $('roomModal').hidden = false;
     }
 
