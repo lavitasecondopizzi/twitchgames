@@ -527,6 +527,15 @@ button,input,select{font:inherit}
   overflow:hidden;
 }
 
+.word-text .word-gap{
+  display:inline-block;
+  width:clamp(10px, 1.2vw, 22px);
+  white-space:nowrap;
+}
+.word-text .word-part{
+  display:inline-block;
+  white-space:nowrap;
+}
 .word-text{
   width:100%;
   display:flex;
@@ -1621,18 +1630,26 @@ const turnLabelEl = document.getElementById("turnLabel");
 function renderWord(el, displayWord){
   if (!el) return;
   const value = String(displayWord || "_ _ _");
-  el.textContent = "";
+  el.innerHTML = "";
   el.classList.toggle("empty-word", !displayWord);
 
-  // Una sola riga: gli spazi separano le parole, non creano nuove righe.
-  const chars = value.split("");
-  el.textContent = chars.map((ch, index) => {
-    if (ch === " ") return "   ";
-    if (ch === "-") return "-";
-    return ch + (index < chars.length - 1 && chars[index + 1] !== " " ? " " : "");
-  }).join("").trim();
+  // Una sola riga, con uno spazio visivo fisso tra le parole.
+  const words = value.split(" ");
+  words.forEach((word, index) => {
+    if (index > 0) {
+      const gap = document.createElement("span");
+      gap.className = "word-gap";
+      gap.textContent = "   ";
+      el.appendChild(gap);
+    }
 
-  const length = String(displayWord || "").replace(/ /g, "").length;
+    const part = document.createElement("span");
+    part.className = "word-part";
+    part.textContent = word.split("").join(" ");
+    el.appendChild(part);
+  });
+
+  const length = value.replace(/ /g, "").length;
   if (length > 60) el.style.fontSize = "clamp(8px, 1vw, 13px)";
   else if (length > 45) el.style.fontSize = "clamp(9px, 1.15vw, 15px)";
   else if (length > 32) el.style.fontSize = "clamp(10px, 1.3vw, 17px)";
