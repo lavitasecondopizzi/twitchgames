@@ -1256,7 +1256,7 @@ function applyPlayerNameFromUrl(){
 
   if (changed){
     aggiornaUI();
-    salvaStato(overrides);
+    // Il nome viene incluso nel prossimo stato autoritativo dell’host.
   }
 }
 
@@ -1633,7 +1633,9 @@ function initTabs(){
 
 /* ========= INIT ========= */
 
-newRoundBtn.addEventListener("click", nuovoRound);
+newRoundBtn.addEventListener("click", () => {
+  if (player === "A") nuovoRound();
+});
 
 (async function init(){
   creaTastiere();
