@@ -1042,10 +1042,10 @@ const urlParams   = new URLSearchParams(window.location.search);
 const forcedRole  = urlParams.get("role");   // "A", "B" oppure null
 const playerNameFromUrl = urlParams.get("player") || urlParams.get("name") || null;
 
-let clientId = localStorage.getItem("impiccatoClientId");
+let clientId = sessionStorage.getItem("impiccatoClientId");
 if (!clientId) {
   clientId = "c-" + Math.random().toString(36).slice(2) + Date.now().toString(36);
-  localStorage.setItem("impiccatoClientId", clientId);
+  sessionStorage.setItem("impiccatoClientId", clientId);
 }
 
 let player = null; // "A", "B" o null (spettatore)
