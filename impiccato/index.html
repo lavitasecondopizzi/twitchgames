@@ -1405,6 +1405,7 @@ async function caricaStato(){
       roomReady = true;
       decidiRuoloDaStato();
       if (forcedRole === "A"){
+        if (!stato.playerNameA) stato.playerNameA = playerNameFromUrl || "Pizzi";
         if (stato.game.A.status === "idle" && stato.game.B.status === "idle"){
           await nuovoRound(true);
         } else {
@@ -1844,7 +1845,7 @@ function setTab(idx){
   const inner = document.querySelector(".tabs-inner");
   const btns  = document.querySelectorAll(".tab-btn");
   if (inner){
-    inner.style.transform = `translateX(${-idx * 100}%)`;
+    inner.style.transform = `translateX(${-idx * 33.333333}%)`;
   }
   btns.forEach(b=>{
     const t = parseInt(b.dataset.tab,10);
