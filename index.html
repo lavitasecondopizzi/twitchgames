@@ -436,6 +436,31 @@
     .room-actions { display: flex; gap: 10px; flex-wrap: wrap; }
     .room-actions .comic-btn { flex: 1; min-width: 180px; }
     .hidden { display: none !important; }
+    .guest-room-code {
+      margin: 20px 0;
+      border: 4px solid var(--ink);
+      background: var(--ink);
+      color: var(--paper);
+      padding: 16px;
+      text-align: center;
+    }
+    .guest-room-code strong {
+      display: block;
+      margin-top: 5px;
+      font-family: Impact, Haettenschweiler, "Arial Black", sans-serif;
+      font-size: clamp(42px, 10vw, 68px);
+      letter-spacing: .12em;
+      line-height: .9;
+    }
+    .guest-state {
+      margin-top: 18px;
+      border: 3px solid var(--ink);
+      padding: 14px;
+      background: var(--paper-2);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.5;
+    }
     @media (max-width: 560px) {
       .room-actions { flex-direction: column; }
       .room-actions .comic-btn { width: 100%; }
@@ -544,6 +569,51 @@
       </div>
     </section>
   </div>
+  <div class="modal-backdrop" id="guestModal" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="guestTitle">
+      <div class="modal-header">
+        <h2 id="guestTitle">Unisciti alla stanza</h2>
+        <button class="close" id="closeGuest" type="button" aria-label="Chiudi">×</button>
+      </div>
+
+      <div class="guest-room-code">
+        <span>Codice stanza</span>
+        <strong id="guestRoomCode">------</strong>
+      </div>
+
+      <form id="guestForm">
+        <div class="field">
+          <label for="guestNickname">Il tuo nick</label>
+          <input id="guestNickname" maxlength="16" minlength="2" autocomplete="nickname" placeholder="Es. ErTortello" required />
+        </div>
+
+        <div class="notice">
+          Scegli il nick che verrà mostrato agli altri giocatori. Il creator non lo sceglie per te.
+        </div>
+
+        <div class="modal-actions">
+          <button class="comic-btn" id="cancelGuest" type="button">Annulla</button>
+          <button class="comic-btn primary" type="submit">Entra nella stanza</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="guestWaitingModal" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="guestWaitingTitle">
+      <div class="modal-header">
+        <h2 id="guestWaitingTitle">Sei nella stanza</h2>
+      </div>
+      <div class="guest-room-code">
+        <span>Codice stanza</span>
+        <strong id="guestWaitingCode">------</strong>
+      </div>
+      <div class="guest-state" id="guestWaitingState">
+        Sei entrato come ospite. In attesa che il creator avvii la partita.
+      </div>
+    </section>
+  </div>
+
   <div class="modal-backdrop" id="roomModal" hidden>
     <section class="modal room-modal" role="dialog" aria-modal="true" aria-labelledby="roomTitle">
       <div class="modal-header">
@@ -569,7 +639,7 @@
   </div>
 
   <script>
-    const state = { selectedGame: null, roomCode: null };
+    const state = { selectedGame: null, roomCode: null, guestNickname: null };
 
     const $ = (id) => document.getElementById(id);
 
@@ -577,9 +647,11 @@
       state.selectedGame = game;
       $('modalTitle').textContent = game === 'paper-please'
         ? 'Paper Pizzi Please'
-        : game === 'indovina-chi'
-          ? 'Indovina Chi'
-          : 'Impiccato';
+        : game === 'quiz-pizzi'
+          ? 'Quiz Pizzi'
+          : game === 'indovina-chi'
+            ? 'Indovina Chi'
+            : 'Impiccato';
 
       $('seedField').hidden = game !== 'paper-please';
       $('modeField').hidden = game !== 'paper-please';
@@ -672,6 +744,35 @@
       $('roomModal').hidden = true;
     }
 
+    function openGuestJoin(roomCode) {
+      state.roomCode = roomCode;
+      $('guestRoomCode').textContent = roomCode;
+      $('guestNickname').value = sessionStorage.getItem('tortelloGuestNickname') || '';
+      $('guestModal').hidden = false;
+      setTimeout(() => $('guestNickname').focus(), 0);
+    }
+
+    function closeGuestJoin() {
+      $('guestModal').hidden = true;
+    }
+
+    function enterGuestRoom(nickname) {
+      const clean = nickname.trim().replace(/\\s+/g, ' ');
+      if (clean.length < 2 || clean.length > 16) {
+        $('guestNickname').setCustomValidity('Il nick deve contenere da 2 a 16 caratteri.');
+        $('guestNickname').reportValidity();
+        return;
+      }
+
+      $('guestNickname').setCustomValidity('');
+      state.guestNickname = clean;
+      sessionStorage.setItem('tortelloGuestNickname', clean);
+      $('guestModal').hidden = true;
+      $('guestWaitingCode').textContent = state.roomCode;
+      $('guestWaitingState').textContent = 'Sei entrato come ' + clean + '. In attesa che il creator avvii la partita.';
+      $('guestWaitingModal').hidden = false;
+    }
+
     function joinRoom(code) {
       const normalized = code.replace(/[^A-Z0-9]/g, '').slice(0, 6);
       if (normalized.length !== 6) {
@@ -702,6 +803,15 @@
     $('cancelModal').addEventListener('click', closeConfig);
     $('startGame').addEventListener('click', startGame);
     $('closeRoom').addEventListener('click', closeRoom);
+    $('closeGuest').addEventListener('click', closeGuestJoin);
+    $('cancelGuest').addEventListener('click', closeGuestJoin);
+    $('guestForm').addEventListener('submit', (event) => {
+      event.preventDefault();
+      enterGuestRoom($('guestNickname').value);
+    });
+    $('guestNickname').addEventListener('input', () => {
+      $('guestNickname').setCustomValidity('');
+    });
     $('copyRoom').addEventListener('click', copyRoomInvite);
     $('launchRoomGame').addEventListener('click', launchRoomGame);
 
@@ -723,12 +833,15 @@
     const initialRoom = initialParams.get('room');
     const initialRole = initialParams.get('role');
     if (initialRoom && initialRole === 'guest') {
-      $('roomCode').value = initialRoom.toUpperCase().slice(0, 6);
+      const normalizedInitialRoom = initialRoom.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
+      $('roomCode').value = normalizedInitialRoom;
+      if (normalizedInitialRoom.length === 6) openGuestJoin(normalizedInitialRoom);
     }
 
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && !$('configModal').hidden) closeConfig();
       if (event.key === 'Escape' && !$('roomModal').hidden) closeRoom();
+      if (event.key === 'Escape' && !$('guestModal').hidden) closeGuestJoin();
     });
   </script>
 </body>
