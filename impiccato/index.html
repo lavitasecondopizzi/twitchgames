@@ -527,33 +527,33 @@ button,input,select{font:inherit}
   overflow:hidden;
 }
 
+.word-text{
+  width:100%;
+  display:block;
+  text-align:center;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:clip;
+  font-family:"Arial Black",Impact,Haettenschweiler,sans-serif;
+  font-size:clamp(10px,1.35vw,22px);
+  line-height:1.05;
+  letter-spacing:.025em;
+}
+
 .word-text .word-gap{
   display:inline-block;
-  width:clamp(10px, 1.2vw, 22px);
-  white-space:nowrap;
+  width:clamp(14px,1.5vw,24px);
+  flex:0 0 auto;
 }
+
 .word-text .word-part{
   display:inline-block;
   white-space:nowrap;
 }
-.word-text{
-  width:100%;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:3px;
-  font-family:"Arial Black",Impact,Haettenschweiler,sans-serif;
-  font-size:clamp(15px,1.8vw,28px);
-  line-height:1.05;
-  letter-spacing:.04em;
-}
 
 .word-line{
-  max-width:100%;
-  white-space:pre-wrap;
-  overflow-wrap:anywhere;
-  text-align:center;
+  display:inline;
+  white-space:nowrap;
 }
 
 .errors-row{
