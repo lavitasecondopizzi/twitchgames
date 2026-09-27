@@ -639,7 +639,8 @@
   </div>
 
   <script>
-    const state = { selectedGame: null, roomCode: null, guestNickname: null };
+    const ROOM_API = window.TORTELLO_ROOM_API || './rooms/api.php';
+    const state = { selectedGame: null, roomCode: null, guestNickname: null, roomToken: null, roomRole: null, roomPoll: null };
 
     const $ = (id) => document.getElementById(id);
 
@@ -711,12 +712,31 @@
         : 'IMPICCATO';
     }
 
-    function openRoom() {
-      state.roomCode = createRoomCode();
-      $('roomCodeDisplay').textContent = state.roomCode;
-      $('roomGameLabel').textContent = gameLabel(state.selectedGame);
-      $('roomPlayerLabel').textContent = 'HOST · PIZZI · IN ATTESA DELL’OSPITE';
-      $('roomModal').hidden = false;
+    async function openRoom() {
+      try {
+        const response = await fetch(ROOM_API + '?action=create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ game: state.selectedGame, hostNickname: 'Pizzi' })
+        });
+        const result = await response.json();
+        if (!response.ok || !result.ok) throw new Error(result.error || 'room_creation_failed');
+        state.roomCode = result.room.code;
+        state.roomToken = result.token;
+        state.roomRole = 'host';
+        $('roomCodeDisplay').textContent = state.roomCode;
+        $('roomGameLabel').textContent = gameLabel(state.selectedGame);
+        $('roomPlayerLabel').textContent = 'HOST · PIZZI · IN ATTESA DELL’OSPITE';
+        $('roomNotice').textContent = 'Condividi il codice con il tuo ospite. Quando entra, il suo nick comparirà qui.';
+        $('roomModal').hidden = false;
+        startRoomPolling();
+      } catch (_) {
+        $('roomCodeDisplay').textContent = '------';
+        $('roomGameLabel').textContent = gameLabel(state.selectedGame);
+        $('roomPlayerLabel').textContent = 'BACKEND NON DISPONIBILE';
+        $('roomNotice').textContent = 'Il backend delle stanze non è raggiungibile. Configura TORTELLO_ROOM_API sul server che esegue rooms/api.php.';
+        $('roomModal').hidden = false;
+      }
     }
 
     async function copyRoomInvite() {
@@ -734,14 +754,56 @@
       }
     }
 
-    function launchRoomGame() {
+    async function launchRoomGame() {
       const gameUrl = buildStreamerUrl();
-      if (!gameUrl) return;
-      window.location.href = gameUrl + (gameUrl.includes('?') ? '&' : '?') + 'room=' + encodeURIComponent(state.roomCode);
+      if (!gameUrl || !state.roomCode || !state.roomToken) return;
+      try {
+        const response = await fetch(ROOM_API + '?action=start', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ room: state.roomCode, token: state.roomToken })
+        });
+        const result = await response.json();
+        if (!response.ok || !result.ok) {
+          $('roomNotice').textContent = result.error === 'guest_missing'
+            ? 'L’ospite non è ancora entrato nella stanza.'
+            : 'Non è stato possibile avviare la partita.';
+          return;
+        }
+        stopRoomPolling();
+        window.location.href = gameUrl + (gameUrl.includes('?') ? '&' : '?') + 'room=' + encodeURIComponent(state.roomCode);
+      } catch (_) {
+        $('roomNotice').textContent = 'Backend stanza non raggiungibile.';
+      }
     }
 
     function closeRoom() {
       $('roomModal').hidden = true;
+    }
+
+    function stopRoomPolling() {
+      if (state.roomPoll) {
+        clearInterval(state.roomPoll);
+        state.roomPoll = null;
+      }
+    }
+
+    async function pollRoom() {
+      if (!state.roomCode || state.roomRole !== 'host') return;
+      try {
+        const response = await fetch(ROOM_API + '?action=state&room=' + encodeURIComponent(state.roomCode), { cache: 'no-store' });
+        const result = await response.json();
+        if (!response.ok || !result.ok) return;
+        const guest = result.room.guest;
+        $('roomPlayerLabel').textContent = guest ? 'HOST · PIZZI · OSPITE: ' + guest.nickname : 'HOST · PIZZI · IN ATTESA DELL’OSPITE';
+        $('roomNotice').textContent = guest ? 'Ospite collegato. Puoi avviare la partita.' : 'Condividi il codice con il tuo ospite. Quando entra, il suo nick comparirà qui.';
+      } catch (_) {}
+    }
+
+    function startRoomPolling() {
+      stopRoomPolling();
+      pollRoom();
+      state.roomPoll = setInterval(pollRoom, 2000);
     }
 
     function openGuestJoin(roomCode) {
@@ -756,21 +818,65 @@
       $('guestModal').hidden = true;
     }
 
-    function enterGuestRoom(nickname) {
-      const clean = nickname.trim().replace(/\\s+/g, ' ');
+    async function enterGuestRoom(nickname) {
+      const clean = nickname.trim().replace(/\s+/g, ' ');
       if (clean.length < 2 || clean.length > 16) {
         $('guestNickname').setCustomValidity('Il nick deve contenere da 2 a 16 caratteri.');
         $('guestNickname').reportValidity();
         return;
       }
-
       $('guestNickname').setCustomValidity('');
-      state.guestNickname = clean;
-      sessionStorage.setItem('tortelloGuestNickname', clean);
-      $('guestModal').hidden = true;
-      $('guestWaitingCode').textContent = state.roomCode;
-      $('guestWaitingState').textContent = 'Sei entrato come ' + clean + '. In attesa che il creator avvii la partita.';
-      $('guestWaitingModal').hidden = false;
+      try {
+        const response = await fetch(ROOM_API + '?action=join', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ room: state.roomCode, nickname: clean })
+        });
+        const result = await response.json();
+        if (!response.ok || !result.ok) {
+          const messages = {
+            room_not_found: 'La stanza non esiste o è scaduta.',
+            room_full_or_started: 'La stanza è piena o la partita è già iniziata.',
+            nickname_taken: 'Questo nick è già utilizzato nella stanza.'
+          };
+          $('guestNickname').setCustomValidity(messages[result.error] || 'Impossibile entrare nella stanza.');
+          $('guestNickname').reportValidity();
+          return;
+        }
+        state.guestNickname = clean;
+        state.roomToken = result.token;
+        state.roomRole = 'guest';
+        sessionStorage.setItem('tortelloGuestNickname', clean);
+        $('guestModal').hidden = true;
+        $('guestWaitingCode').textContent = state.roomCode;
+        $('guestWaitingState').textContent = 'Sei entrato come ' + clean + '. In attesa che il creator avvii la partita.';
+        $('guestWaitingModal').hidden = false;
+        startGuestPolling();
+      } catch (_) {
+        $('guestNickname').setCustomValidity('Il backend delle stanze non è raggiungibile.');
+        $('guestNickname').reportValidity();
+      }
+    }
+
+    async function pollGuestRoom() {
+      try {
+        const response = await fetch(ROOM_API + '?action=state&room=' + encodeURIComponent(state.roomCode), { cache: 'no-store' });
+        const result = await response.json();
+        if (!response.ok || !result.ok || result.room.status !== 'playing') return;
+        stopRoomPolling();
+        $('guestWaitingState').textContent = 'Il creator ha avviato la partita. Apertura del gioco...';
+        const gamePath = result.room.game === 'impiccato' ? './impiccato/index.html'
+          : result.room.game === 'indovina-chi' ? './indovina-chi/index.html'
+          : result.room.game === 'paper-please' ? './paper-please/index.html'
+          : './quiz-pizzi/index.html';
+        window.location.href = gamePath + '?room=' + encodeURIComponent(state.roomCode) + '&role=guest&player=' + encodeURIComponent(state.guestNickname);
+      } catch (_) {}
+    }
+
+    function startGuestPolling() {
+      stopRoomPolling();
+      pollGuestRoom();
+      state.roomPoll = setInterval(pollGuestRoom, 2000);
     }
 
     function joinRoom(code) {
