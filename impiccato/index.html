@@ -487,7 +487,6 @@ button,input,select{font:inherit}
   stroke-linejoin:round;
   fill:none;
 }
-
 .man-part{
   stroke:var(--ink);
   stroke-width:5;
@@ -496,42 +495,12 @@ button,input,select{font:inherit}
   fill:none;
   opacity:0;
 }
-
-.man-part.head{
-  stroke-width:5;
-  fill:var(--paper);
-}
-
-.man-part.body{
-  stroke-width:6;
-}
-
-.man-part.limb{
-  stroke-width:6;
-}
-
-.hangman-svg .rope{
-  stroke-width:4;
-  stroke-dasharray:2 2;
-}
-
-.hangman-svg .face{
-  stroke:var(--ink);
-  stroke-width:3;
-  stroke-linecap:round;
-  fill:none;
-}
-
-.hangman-svg .hand{
-  fill:var(--paper);
-  stroke:var(--ink);
-  stroke-width:3;
-}
-
-.hangman-svg .shoe{
-  fill:var(--ink);
-  stroke:none;
-}
+.man-part.head{stroke-width:5;fill:var(--paper)}
+.man-part.body,.man-part.limb{stroke-width:6}
+.hangman-svg .rope{stroke-width:4;stroke-dasharray:2 2}
+.hangman-svg .face{stroke:var(--ink);stroke-width:3;stroke-linecap:round;fill:none}
+.hangman-svg .hand{fill:var(--paper);stroke:var(--ink);stroke-width:3}
+.hangman-svg .shoe{fill:var(--ink);stroke:none}
 
 .theme-row{
   flex:0 0 auto;
@@ -951,49 +920,19 @@ button,input,select{font:inherit}
                 <div class="board-title" id="boardTitleA">Giocatore A</div>
                 <div class="board-status" id="status-A">In attesa…</div>
               </div>
-              <div class="hangman-wrapper">
-                <svg class="hangman-svg" viewBox="0 0 200 200" aria-label="Stato impiccato">
-                  <!-- gabbia / forca -->
+              <div class="hangman-wrapper"><svg class="hangman-svg" viewBox="0 0 200 200" aria-label="Stato impiccato">
                   <path d="M18 178 H182" class="gallow"/>
                   <path d="M52 178 V22 Q52 18 56 18 H140" class="gallow"/>
                   <path d="M140 18 V38" class="gallow"/>
                   <path d="M136 38 H144" class="gallow"/>
                   <path d="M140 38 V45" class="rope"/>
-
-                  <!-- 1: testa -->
-                  <g id="hm-A-head" class="man-part head">
-                    <circle cx="140" cy="60" r="17"/>
-                    <path d="M130 61 q4 -4 8 0 M143 61 q4 -4 8 0" class="face"/>
-                    <circle cx="135" cy="59" r="1.8" fill="var(--ink)"/>
-                    <circle cx="147" cy="59" r="1.8" fill="var(--ink)"/>
-                  </g>
-
-                  <!-- 2: corpo -->
-                  <g id="hm-A-body" class="man-part body">
-                    <path d="M140 77 Q137 91 140 112"/>
-                  </g>
-
-                  <!-- 3/4: braccia -->
-                  <g id="hm-A-armL" class="man-part limb">
-                    <path d="M140 86 Q130 88 119 99"/>
-                    <path d="M119 99 q-3 3 0 6 q3 2 6 -1" class="hand"/>
-                  </g>
-                  <g id="hm-A-armR" class="man-part limb">
-                    <path d="M140 86 Q150 88 161 99"/>
-                    <path d="M161 99 q3 3 0 6 q-3 2 -6 -1" class="hand"/>
-                  </g>
-
-                  <!-- 5/6: gambe -->
-                  <g id="hm-A-legL" class="man-part limb">
-                    <path d="M140 112 Q132 124 124 138"/>
-                    <path d="M124 138 q-7 0 -10 4 h15 q3 -2 0 -4" class="shoe"/>
-                  </g>
-                  <g id="hm-A-legR" class="man-part limb">
-                    <path d="M140 112 Q148 124 156 138"/>
-                    <path d="M156 138 q7 0 10 4 h-15 q-3 -2 0 -4" class="shoe"/>
-                  </g>
-                </svg>
-              </div>
+                  <g id="hm-A-head" class="man-part head"><circle cx="140" cy="60" r="17"/><path d="M130 61 q4 -4 8 0 M143 61 q4 -4 8 0" class="face"/><circle cx="135" cy="59" r="1.8" fill="var(--ink)"/><circle cx="147" cy="59" r="1.8" fill="var(--ink)"/></g>
+                  <g id="hm-A-body" class="man-part body"><path d="M140 77 Q137 91 140 112"/></g>
+                  <g id="hm-A-armL" class="man-part limb"><path d="M140 86 Q130 88 119 99"/><path d="M119 99 q-3 3 0 6 q3 2 6 -1" class="hand"/></g>
+                  <g id="hm-A-armR" class="man-part limb"><path d="M140 86 Q150 88 161 99"/><path d="M161 99 q3 3 0 6 q-3 2 -6 -1" class="hand"/></g>
+                  <g id="hm-A-legL" class="man-part limb"><path d="M140 112 Q132 124 124 138"/><path d="M124 138 q-7 0 -10 4 h15 q3 -2 0 -4" class="shoe"/></g>
+                  <g id="hm-A-legR" class="man-part limb"><path d="M140 112 Q148 124 156 138"/><path d="M156 138 q7 0 10 4 h-15 q-3 -2 0 -4" class="shoe"/></g>
+                </svg></div>
               <div class="theme-row">
                 Tema: <span id="theme-A">-</span>
               </div>
@@ -1013,49 +952,19 @@ button,input,select{font:inherit}
                 <div class="board-title" id="boardTitleB">Giocatore B</div>
                 <div class="board-status" id="status-B">In attesa…</div>
               </div>
-              <div class="hangman-wrapper">
-                <svg class="hangman-svg" viewBox="0 0 200 200" aria-label="Stato impiccato">
-                  <!-- gabbia / forca -->
+              <div class="hangman-wrapper"><svg class="hangman-svg" viewBox="0 0 200 200" aria-label="Stato impiccato">
                   <path d="M18 178 H182" class="gallow"/>
                   <path d="M52 178 V22 Q52 18 56 18 H140" class="gallow"/>
                   <path d="M140 18 V38" class="gallow"/>
                   <path d="M136 38 H144" class="gallow"/>
                   <path d="M140 38 V45" class="rope"/>
-
-                  <!-- 1: testa -->
-                  <g id="hm-B-head" class="man-part head">
-                    <circle cx="140" cy="60" r="17"/>
-                    <path d="M130 61 q4 -4 8 0 M143 61 q4 -4 8 0" class="face"/>
-                    <circle cx="135" cy="59" r="1.8" fill="var(--ink)"/>
-                    <circle cx="147" cy="59" r="1.8" fill="var(--ink)"/>
-                  </g>
-
-                  <!-- 2: corpo -->
-                  <g id="hm-B-body" class="man-part body">
-                    <path d="M140 77 Q137 91 140 112"/>
-                  </g>
-
-                  <!-- 3/4: braccia -->
-                  <g id="hm-B-armL" class="man-part limb">
-                    <path d="M140 86 Q130 88 119 99"/>
-                    <path d="M119 99 q-3 3 0 6 q3 2 6 -1" class="hand"/>
-                  </g>
-                  <g id="hm-B-armR" class="man-part limb">
-                    <path d="M140 86 Q150 88 161 99"/>
-                    <path d="M161 99 q3 3 0 6 q-3 2 -6 -1" class="hand"/>
-                  </g>
-
-                  <!-- 5/6: gambe -->
-                  <g id="hm-B-legL" class="man-part limb">
-                    <path d="M140 112 Q132 124 124 138"/>
-                    <path d="M124 138 q-7 0 -10 4 h15 q3 -2 0 -4" class="shoe"/>
-                  </g>
-                  <g id="hm-B-legR" class="man-part limb">
-                    <path d="M140 112 Q148 124 156 138"/>
-                    <path d="M156 138 q7 0 10 4 h-15 q-3 -2 0 -4" class="shoe"/>
-                  </g>
-                </svg>
-              </div>
+                  <g id="hm-B-head" class="man-part head"><circle cx="140" cy="60" r="17"/><path d="M130 61 q4 -4 8 0 M143 61 q4 -4 8 0" class="face"/><circle cx="135" cy="59" r="1.8" fill="var(--ink)"/><circle cx="147" cy="59" r="1.8" fill="var(--ink)"/></g>
+                  <g id="hm-B-body" class="man-part body"><path d="M140 77 Q137 91 140 112"/></g>
+                  <g id="hm-B-armL" class="man-part limb"><path d="M140 86 Q130 88 119 99"/><path d="M119 99 q-3 3 0 6 q3 2 6 -1" class="hand"/></g>
+                  <g id="hm-B-armR" class="man-part limb"><path d="M140 86 Q150 88 161 99"/><path d="M161 99 q3 3 0 6 q-3 2 -6 -1" class="hand"/></g>
+                  <g id="hm-B-legL" class="man-part limb"><path d="M140 112 Q132 124 124 138"/><path d="M124 138 q-7 0 -10 4 h15 q3 -2 0 -4" class="shoe"/></g>
+                  <g id="hm-B-legR" class="man-part limb"><path d="M140 112 Q148 124 156 138"/><path d="M156 138 q7 0 10 4 h-15 q-3 -2 0 -4" class="shoe"/></g>
+                </svg></div>
               <div class="theme-row">
                 Tema: <span id="theme-B">-</span>
               </div>
@@ -1397,15 +1306,20 @@ function mergeGameState(data){
 }
 
 async function broadcastGameState(){
-  if (!roomClient || !roomReady) return;
+  if (!roomClient || !roomReady || forcedRole !== "A") return;
   stateRevision++;
-  const payload = {
+  const publicState = {
     ...stato,
+    game: {
+      ...stato.game,
+      A: { ...stato.game.A, secretWord: "" },
+      B: { ...stato.game.B, secretWord: "" }
+    },
     _revision: stateRevision,
     _sender: clientId
   };
   stato = { ...stato, _revision: stateRevision };
-  await roomClient.broadcast("game_state", payload);
+  await roomClient.broadcast("game_state", publicState);
 }
 
 async function requestGameState(){
@@ -1429,7 +1343,7 @@ async function salvaStato(overrides = {}){
     };
     stato = payload;
     aggiornaUI();
-    await broadcastGameState();
+    if (!roomCode || forcedRole === "A") await broadcastGameState();
   }catch(e){
     console.error("Errore invio stato realtime:", e);
   }finally{
@@ -1462,8 +1376,26 @@ async function caricaStato(){
       if (forcedRole === "A") broadcastGameState().catch(console.error);
     });
 
+    roomClient.on("game-event", (event) => {
+      if (forcedRole !== "A" || !event || event.sender === clientId) return;
+      processingHostAction = true;
+      Promise.resolve().then(async () => {
+        if (event.type === "letter" && ["A","B"].includes(event.playerId)) {
+          await onLetterClick(event.playerId, event.letter, true);
+        } else if (event.type === "score_adjust" && ["A","B"].includes(event.playerId)) {
+          await adjustScore(event.playerId, Number(event.delta) || 0, true);
+        } else if (event.type === "new_round") {
+          await nuovoRound(false);
+        }
+      }).catch(console.error).finally(() => { processingHostAction = false; });
+    });
+
     roomClient.on("presence", () => {
-      if (forcedRole === "A") broadcastGameState().catch(console.error);
+      if (forcedRole === "A"){
+        const guest = roomClient.getGuest();
+        stato.playerNameB = guest?.nickname || null;
+        broadcastGameState().catch(console.error);
+      }
     });
   }
 
@@ -1493,3 +1425,443 @@ async function caricaStato(){
 
 
 function decidiRuoloDaStato(){
+  if (!roleClaimed){
+    if (forcedRole === "A"){
+      stato.playerA = clientId;
+      if (stato.playerB === clientId) stato.playerB = null;
+      player = "A";
+    } else if (forcedRole === "B"){
+      stato.playerB = clientId;
+      if (stato.playerA === clientId) stato.playerA = null;
+      player = "B";
+    } else {
+      if (stato.playerA === clientId) {
+        player = "A";
+      } else if (stato.playerB === clientId){
+        player = "B";
+      } else if (!stato.playerA){
+        stato.playerA = clientId;
+        player = "A";
+      } else if (!stato.playerB){
+        stato.playerB = clientId;
+        player = "B";
+      } else {
+        player = null;
+      }
+    }
+    roleClaimed = true;
+  }
+
+  applyPlayerNameFromUrl();
+  aggiornaInterattivita();
+}
+
+function applyPlayerNameFromUrl(){
+  if (!playerNameFromUrl) return;
+
+  const overrides = {};
+  let changed = false;
+
+  if (player === "A"){
+    if (stato.playerNameA !== playerNameFromUrl){
+      stato.playerNameA = playerNameFromUrl;
+      overrides.playerNameA = playerNameFromUrl;
+      changed = true;
+    }
+  } else if (player === "B"){
+    if (stato.playerNameB !== playerNameFromUrl){
+      stato.playerNameB = playerNameFromUrl;
+      overrides.playerNameB = playerNameFromUrl;
+      changed = true;
+    }
+  } else {
+    return;
+  }
+
+  if (changed){
+    aggiornaUI();
+    // Il nome viene incluso nel prossimo stato autoritativo dell’host.
+  }
+}
+
+/* ========= UI ========= */
+
+const scoreAEl = document.getElementById("scoreA");
+const scoreBEl = document.getElementById("scoreB");
+const roundNumberEl = document.getElementById("roundNumber");
+const webcamLabelA = document.getElementById("webcamLabelA");
+const webcamLabelB = document.getElementById("webcamLabelB");
+const boardTitleA  = document.getElementById("boardTitleA");
+const boardTitleB  = document.getElementById("boardTitleB");
+const statusAEl    = document.getElementById("status-A");
+const statusBEl    = document.getElementById("status-B");
+const wordAEl      = document.getElementById("word-A");
+const wordBEl      = document.getElementById("word-B");
+const errorsAEl    = document.getElementById("errors-A");
+const errorsBEl    = document.getElementById("errors-B");
+const maxErrorsAEl = document.getElementById("maxErrors-A");
+const maxErrorsBEl = document.getElementById("maxErrors-B");
+const wrongAEl     = document.getElementById("wrong-A");
+const wrongBEl     = document.getElementById("wrong-B");
+
+const lettersAEl   = document.getElementById("letters-A");
+const lettersBEl   = document.getElementById("letters-B");
+
+const subScoreBtn  = document.getElementById("subScore");
+const addScoreBtn  = document.getElementById("addScore");
+const newRoundBtn  = document.getElementById("newRound");
+
+/* parti dell omino */
+const hangmanParts = {
+  A: [
+    document.getElementById("hm-A-head"),
+    document.getElementById("hm-A-body"),
+    document.getElementById("hm-A-armL"),
+    document.getElementById("hm-A-armR"),
+    document.getElementById("hm-A-legL"),
+    document.getElementById("hm-A-legR")
+  ],
+  B: [
+    document.getElementById("hm-B-head"),
+    document.getElementById("hm-B-body"),
+    document.getElementById("hm-B-armL"),
+    document.getElementById("hm-B-armR"),
+    document.getElementById("hm-B-legL"),
+    document.getElementById("hm-B-legR")
+  ]
+};
+
+/* tastiera */
+function creaTastiere(){
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
+  lettersAEl.innerHTML = "";
+  lettersBEl.innerHTML = "";
+
+  alphabet.forEach(letter => {
+    const btnA = document.createElement("button");
+    btnA.className = "letter-btn";
+    btnA.textContent = letter;
+    btnA.dataset.letter = letter;
+    btnA.dataset.player = "A";
+    btnA.addEventListener("click", () => onLetterClick("A", letter));
+    lettersAEl.appendChild(btnA);
+
+    const btnB = document.createElement("button");
+    btnB.className = "letter-btn";
+    btnB.textContent = letter;
+    btnB.dataset.letter = letter;
+    btnB.dataset.player = "B";
+    btnB.addEventListener("click", () => onLetterClick("B", letter));
+    lettersBEl.appendChild(btnB);
+  });
+}
+
+function aggiornaUI(){
+  const nameA = stato.playerNameA || "Giocatore A";
+  const nameB = stato.playerNameB || "Giocatore B";
+
+  if (webcamLabelA) webcamLabelA.textContent = nameA;
+  if (webcamLabelB) webcamLabelB.textContent = nameB;
+  if (boardTitleA)  boardTitleA.textContent  = nameA;
+  if (boardTitleB)  boardTitleB.textContent  = nameB;
+
+  if (scoreAEl) scoreAEl.textContent = stato.punteggioA;
+  if (scoreBEl) scoreBEl.textContent = stato.punteggioB;
+
+  if (roundNumberEl) roundNumberEl.textContent = stato.game.round || 0;
+
+  const gA = stato.game.A;
+  const gB = stato.game.B;
+
+  if (wordAEl) renderWord(wordAEl, gA.displayWord);
+  if (wordBEl) renderWord(wordBEl, gB.displayWord);
+
+  if (errorsAEl) errorsAEl.textContent = gA.wrongLetters.length;
+  if (errorsBEl) errorsBEl.textContent = gB.wrongLetters.length;
+
+  if (maxErrorsAEl) maxErrorsAEl.textContent = stato.game.maxErrors;
+  if (maxErrorsBEl) maxErrorsBEl.textContent = stato.game.maxErrors;
+
+  if (wrongAEl) wrongAEl.textContent = gA.wrongLetters.join(", ");
+  if (wrongBEl) wrongBEl.textContent = gB.wrongLetters.join(", ");
+
+  if (statusAEl) statusAEl.textContent = statoTestoGiocatore(gA.status);
+  if (statusBEl) statusBEl.textContent = statoTestoGiocatore(gB.status);
+  
+  if (themeAEl) themeAEl.textContent = gA.theme || "-";
+  if (themeBEl) themeBEl.textContent = gB.theme || "-";
+
+  if (turnLabelEl){
+    if (stato.game.turn === "A") turnLabelEl.textContent = nameA;
+    else if (stato.game.turn === "B") turnLabelEl.textContent = nameB;
+    else turnLabelEl.textContent = "-";
+  }
+
+  /* evidenzia board del giocatore di turno */
+  document.querySelectorAll(".board").forEach(b=>{
+    const pid = b.getAttribute("data-player");
+    b.classList.toggle("active", pid === stato.game.turn);
+  });
+
+  aggiornaLettereUI("A");
+  aggiornaLettereUI("B");
+
+  drawHangman("A");
+  drawHangman("B");
+
+  aggiornaInterattivita();
+}
+
+const themeAEl   = document.getElementById("theme-A");
+const themeBEl   = document.getElementById("theme-B");
+const turnLabelEl = document.getElementById("turnLabel");
+
+function renderWord(el, displayWord){
+  if (!el) return;
+  if (!displayWord){
+    el.textContent = "_ _ _";
+    return;
+  }
+  const words = displayWord.split(" ");  // spezza per parola
+  el.innerHTML = "";
+  words.forEach(w => {
+    const line = document.createElement("div");
+    line.className = "word-line";
+    line.textContent = w.split("").join(" "); // lettere distanziate
+    el.appendChild(line);
+  });
+}
+
+function statoTestoGiocatore(st){
+  if (st === "playing") return "Sta giocando…";
+  if (st === "won")     return "HA VINTO! 🎉";
+  if (st === "lost")    return "HA PERSO 💀";
+  return "In attesa…";
+}
+
+function aggiornaLettereUI(playerId){
+  const g = stato.game[playerId];
+  const cont = playerId === "A" ? lettersAEl : lettersBEl;
+  if (!cont) return;
+
+  const used = new Set([...g.correctLetters, ...g.wrongLetters]);
+
+  cont.querySelectorAll(".letter-btn").forEach(btn =>{
+    const letter = btn.dataset.letter;
+    btn.classList.toggle("used", used.has(letter));
+    btn.disabled =
+      used.has(letter) ||
+      g.status !== "playing" ||
+      !puoControllare(playerId) ||
+      stato.game.turn !== playerId;   // <-- nuovo: blocca se non è il tuo turno
+  });
+}
+
+function drawHangman(playerId){
+  const g = stato.game[playerId];
+  const errors = g.wrongLetters.length;
+  const parts = hangmanParts[playerId] || [];
+  parts.forEach((p, idx)=>{
+    if (!p) return;
+    p.style.opacity = (idx < errors) ? "1" : "0";
+  });
+}
+
+/* ========= INTERATTIVITÀ ========= */
+
+function puoControllare(playerId){
+  return player && player.toUpperCase() === playerId;
+}
+
+function aggiornaInterattivita(){
+  // punteggio: può modificarlo solo chi è A o B (entrambi i lati usano punteggio proprio)
+  if (subScoreBtn){
+    subScoreBtn.disabled = !player;
+  }
+  if (addScoreBtn){
+    addScoreBtn.disabled = !player;
+  }
+}
+
+/* ========= LOGICA GIOCO ========= */
+
+async function onLetterClick(playerId, letter){
+  if (!puoControllare(playerId)) return;
+  const g = stato.game[playerId];
+  if (g.status !== "playing") return;
+
+  letter = letter.toUpperCase();
+  if (g.correctLetters.includes(letter) || g.wrongLetters.includes(letter)) return;
+
+  const secret = g.secretWord || "";
+  if (!secret) return;
+
+  if (secret.includes(letter)){
+    g.correctLetters.push(letter);
+    let newDisplay = "";
+    for (let i=0;i<secret.length;i++){
+      const ch = secret[i];
+      if (ch === " " || ch === "-") {
+        newDisplay += ch;
+      } else if (ch === letter || (stato.game[playerId].displayWord[i] && stato.game[playerId].displayWord[i] !== "_")){
+        // rivela se lettera o se già rivelata in precedenza
+        if (ch === letter){
+          newDisplay += ch;
+        } else {
+          newDisplay += stato.game[playerId].displayWord[i];
+        }
+      } else {
+        // ancora nascosta
+        const prev = stato.game[playerId].displayWord[i];
+        newDisplay += (prev === "_" ? "_" : prev);
+      }
+    }
+    g.displayWord = newDisplay;
+
+    if (!g.displayWord.includes("_")){
+      g.status = "won";
+    }
+  } else {
+    g.wrongLetters.push(letter);
+    if (g.wrongLetters.length >= stato.game.maxErrors){
+      g.status = "lost";
+    }
+  }
+
+  // ... dopo aver aggiornato g.status / g.displayWord / wrongLetters ...
+  stato.game[playerId] = g;
+
+  const other = (playerId === "A") ? "B" : "A";
+  const otherState = stato.game[other];
+
+  // logica turni:
+  if (otherState.status === "playing") {
+    // se l'altro sta ancora giocando, passa a lui
+    stato.game.turn = other;
+  } else if (g.status === "playing") {
+    // l'altro ha già finito (vinto/perso), continuo a giocare io
+    stato.game.turn = playerId;
+  } else {
+    // entrambi non stanno più giocando → nessun turno attivo
+    stato.game.turn = null;
+  }
+
+  aggiornaUI();
+  await salvaStato();
+}
+
+/* ========= NUOVO ROUND ========= */
+
+async function nuovoRound(initial = false){
+  // scegli due frasi tematiche diverse
+  const fA = nuovaFraseCasuale();
+  const fB = nuovaFraseCasuale(fA.phrase);
+
+  // alterna il giocatore che inizia (se vuoi)
+  const prevTurn = stato.game.turn;
+  let startTurn = "A";
+  if (prevTurn === "A") startTurn = "B";
+  else if (prevTurn === "B") startTurn = "A";
+
+  stato.game.round = (stato.game.round || 0) + 1;
+  stato.game.turn  = startTurn;
+
+  stato.game.A = creaStatoGiocatore(fA.phrase, fA.theme);
+  stato.game.B = creaStatoGiocatore(fB.phrase, fB.theme);
+
+  aggiornaUI();
+  await salvaStato();
+}
+
+/* ========= PUNTEGGIO ======== */
+
+async function adjustScore(playerId, delta, fromHostEvent = false){
+  if (!["A","B"].includes(playerId) || !Number.isFinite(delta) || delta === 0) return;
+  if (roomCode && forcedRole === "B" && !fromHostEvent){
+    await roomClient?.broadcast("game_event", { type:"score_adjust", playerId, delta, sender:clientId });
+    showScoreFx(delta);
+    return;
+  }
+  if (playerId === "A") stato.punteggioA = Math.max(0, stato.punteggioA + delta);
+  else stato.punteggioB = Math.max(0, stato.punteggioB + delta);
+  aggiornaUI();
+  await salvaStato();
+  showScoreFx(delta);
+}
+
+function showScoreFx(delta){
+  const fx = document.getElementById("scoreFx");
+  if (!fx) return;
+
+  const sfxUp   = document.getElementById("sfxUp");
+  const sfxDown = document.getElementById("sfxDown");
+
+  fx.textContent = delta > 0 ? "+1" : "-1";
+  fx.classList.remove("positive","negative","show");
+
+  if (delta > 0){
+    fx.classList.add("positive");
+    if (sfxUp){ sfxUp.currentTime = 0; sfxUp.play().catch(()=>{}); }
+  } else {
+    fx.classList.add("negative");
+    if (sfxDown){ sfxDown.currentTime = 0; sfxDown.play().catch(()=>{}); }
+  }
+
+  void fx.offsetWidth;
+  fx.classList.add("show");
+  setTimeout(()=> fx.classList.remove("show"), 650);
+}
+
+subScoreBtn.addEventListener("click", async ()=>{
+  if (player) await adjustScore(player, -1);
+});
+
+addScoreBtn.addEventListener("click", async ()=>{
+  if (player) await adjustScore(player, +1);
+});
+
+/* ========= TABS ========= */
+
+let currentTab = 0;
+
+function setTab(idx){
+  currentTab = idx;
+  const inner = document.querySelector(".tabs-inner");
+  const btns  = document.querySelectorAll(".tab-btn");
+  if (inner){
+    inner.style.transform = `translateX(${-idx * 100}%)`;
+  }
+  btns.forEach(b=>{
+    const t = parseInt(b.dataset.tab,10);
+    b.classList.toggle("active", t === idx);
+  });
+}
+
+function initTabs(){
+  const btns = document.querySelectorAll(".tab-btn");
+  btns.forEach(b=>{
+    b.addEventListener("click", ()=>{
+      const idx = parseInt(b.dataset.tab,10);
+      if (!isNaN(idx)) setTab(idx);
+    });
+  });
+  setTab(0);
+}
+
+/* ========= INIT ========= */
+
+newRoundBtn.addEventListener("click", () => {
+  if (player === "A") nuovoRound();
+});
+
+(async function init(){
+  creaTastiere();
+  await caricaStato();   // primo sync (decide ruolo + aggiorna)
+  initTabs();
+  aggiornaUI();
+
+})();
+</script>
+</body>
+</html>
