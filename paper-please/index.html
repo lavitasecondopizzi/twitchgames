@@ -721,12 +721,6 @@ body{
 <script src="../shared/supabase-config.js"></script>
 <script src="../shared/supabase-room.js"></script>
 <script>
-/*
-  FILE ATTESI:
-  - cases.json (nuovo schema aggiornato qui sotto).
-  - sync.php (GET = legge stato.json, POST = salva stato.json). Può stare nella stessa cartella.
-  - img/<imageFolder>/<file>
-*/
 
 const urlParams = new URLSearchParams(location.search);
 const soloMode  = urlParams.get("solo")==="1" || urlParams.get("mode")==="solo";
@@ -750,9 +744,7 @@ document.getElementById("camGuestLabel").textContent    = guestName;
 /* ===== CONFIG ===== */
 const CASES_CONFIG_URL = "cases.json";
 const IMG_BASE_PATH    = "img/";
-const defaultSyncUrl = (window.GameAPIs && window.GameAPIs.endpoint('paper-please', 'sync')) || "sync.php";
-const SYNC_URL         = (urlParams.get("sync") || defaultSyncUrl);
-document.getElementById("serverBadge").textContent = "SYNC: " + (SYNC_URL.includes("http") ? "remote" : "local");
+document.getElementById("serverBadge").textContent = "SYNC: SUPABASE REALTIME";
 
 /* ===== UI refs ===== */
 const UI = {
