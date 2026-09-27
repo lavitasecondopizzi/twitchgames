@@ -44,6 +44,12 @@
         .on('broadcast', { event: 'game_event' }, ({ payload }) => {
           this.dispatchEvent(new CustomEvent('game-event', { detail: payload }));
         })
+        .on('broadcast', { event: 'game_state' }, ({ payload }) => {
+          this.dispatchEvent(new CustomEvent('game-state', { detail: payload }));
+        })
+        .on('broadcast', { event: 'state_request' }, ({ payload }) => {
+          this.dispatchEvent(new CustomEvent('state-request', { detail: payload }));
+        })
         .on('presence', { event: 'sync' }, () => {
           this.dispatchEvent(new CustomEvent('presence', {
             detail: this.channel.presenceState()
