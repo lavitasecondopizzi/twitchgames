@@ -1688,8 +1688,8 @@ function aggiornaInterattivita(){
 /* ========= LOGICA GIOCO ========= */
 
 async function onLetterClick(playerId, letter, fromHostEvent = false){
-  if (!puoControllare(playerId)) return;
-  if (roomCode && forcedRole === "B" && !fromHostEvent){
+  if (!fromHostEvent && !puoControllare(playerId)) return;
+  if (!fromHostEvent && roomCode && forcedRole === "B"){
     await roomClient?.broadcast("game_event", { type:"letter", playerId, letter, sender:clientId });
     return;
   }
