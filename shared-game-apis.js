@@ -1,14 +1,5 @@
 (function initGameApis(global){
   const API_MAP = {
-    impiccato: {
-      hangman: 'api.php',
-      sync: 'sync.php'
-    },
-    'indovina-chi': {
-      sync: 'sync.php',
-      listImages: 'list_images.php',
-      vote: 'vote.php'
-    },
     'paper-please': {
       sync: 'sync.php'
     }
