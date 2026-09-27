@@ -16,6 +16,9 @@
       this.channel = null;
       this.connected = false;
       this.closed = false;
+      this.remoteDescriptionSet = false;
+      this.pendingIceCandidates = [];
+      this.offerStarted = false;
     }
 
     async connect() {
@@ -25,7 +28,6 @@
       await this.connectSignaling();
       this.peer = this.createPeer();
       this.sendSignal('hello', { room: this.room, role: this.role });
-      if (this.role === 'host') await this.createOffer();
       return this;
     }
 
@@ -60,9 +62,11 @@
 
     createPeer() {
       const peer = new RTCPeerConnection({ iceServers: this.iceServers });
+
       peer.addEventListener('icecandidate', (event) => {
         if (event.candidate) this.sendSignal('ice', { candidate: event.candidate });
       });
+
       peer.addEventListener('connectionstatechange', () => {
         const state = peer.connectionState;
         if (state === 'connected') {
@@ -74,6 +78,7 @@
           this.dispatchEvent(new CustomEvent('connection-state', { detail: state }));
         }
       });
+
       peer.addEventListener('datachannel', (event) => this.attachChannel(event.channel));
       return peer;
     }
@@ -100,8 +105,12 @@
     }
 
     async createOffer() {
+      if (this.role !== 'host' || this.offerStarted) return;
+      this.offerStarted = true;
+
       const channel = this.peer.createDataChannel('tortello');
       this.attachChannel(channel);
+
       const offer = await this.peer.createOffer();
       await this.peer.setLocalDescription(offer);
       this.sendSignal('offer', { description: this.peer.localDescription });
@@ -109,28 +118,51 @@
 
     async handleSignal(raw) {
       const message = Protocol.decode(raw);
+
       switch (message.type) {
+        case Protocol.TYPES.PEER_READY:
+          if (this.role === 'host') await this.createOffer();
+          break;
+
         case Protocol.TYPES.OFFER:
           await this.handleOffer(message.payload.description);
           break;
+
         case Protocol.TYPES.ANSWER:
           await this.handleAnswer(message.payload.description);
           break;
+
         case Protocol.TYPES.ICE:
-          if (message.payload.candidate && this.peer) {
-            try { await this.peer.addIceCandidate(message.payload.candidate); }
-            catch (error) { this.dispatchEvent(new CustomEvent('error', { detail: error })); }
+          if (message.payload.candidate) {
+            if (this.remoteDescriptionSet && this.peer) {
+              await this.peer.addIceCandidate(message.payload.candidate);
+            } else {
+              this.pendingIceCandidates.push(message.payload.candidate);
+            }
           }
           break;
+
         case Protocol.TYPES.PING:
           this.sendSignal('pong');
           break;
       }
     }
 
+    async flushPendingIce() {
+      if (!this.peer || !this.remoteDescriptionSet) return;
+      const pending = this.pendingIceCandidates.splice(0);
+      for (const candidate of pending) {
+        try { await this.peer.addIceCandidate(candidate); }
+        catch (error) { this.dispatchEvent(new CustomEvent('error', { detail: error })); }
+      }
+    }
+
     async handleOffer(description) {
       if (!this.peer) this.peer = this.createPeer();
       await this.peer.setRemoteDescription(description);
+      this.remoteDescriptionSet = true;
+      await this.flushPendingIce();
+
       const answer = await this.peer.createAnswer();
       await this.peer.setLocalDescription(answer);
       this.sendSignal('answer', { description: this.peer.localDescription });
@@ -139,6 +171,8 @@
     async handleAnswer(description) {
       if (!this.peer) throw new Error('PeerConnection non inizializzato');
       await this.peer.setRemoteDescription(description);
+      this.remoteDescriptionSet = true;
+      await this.flushPendingIce();
     }
 
     sendSignal(type, payload = {}) {
