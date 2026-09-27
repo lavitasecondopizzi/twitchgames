@@ -223,6 +223,14 @@
       box-shadow: 1px 1px 0 var(--ink);
     }
 
+    .comic-btn:disabled,
+    .comic-btn[disabled] {
+      opacity: .45;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: 2px 2px 0 var(--ink);
+    }
+
     .comic-btn.primary {
       flex: 1;
       background: var(--ink);
@@ -633,7 +641,7 @@
       </div>
       <div class="room-actions">
         <button class="comic-btn" id="copyRoom" type="button">Copia invito</button>
-        <button class="comic-btn primary" id="launchRoomGame" type="button">Avvia gioco</button>
+        <button class="comic-btn primary" id="launchRoomGame" type="button" disabled>Avvia gioco</button>
       </div>
     </section>
   </div>
@@ -648,7 +656,9 @@
       guestNickname: null,
       roomRole: null,
       roomClient: null,
-      gameConfig: {}
+      gameConfig: {},
+      roomInfoReceived: false,
+      gameStarted: false
     };
 
     const $ = (id) => document.getElementById(id);
@@ -723,15 +733,23 @@
 
     function updateHostPresence(presence) {
       const entries = Object.values(presence || {}).flat();
-      const guest = entries.find((entry) => entry.role === 'guest');
+      const guests = entries.filter((entry) => entry.role === 'guest');
+      const guest = guests[0];
+      const launchButton = $('launchRoomGame');
 
-      if (guest) {
+      if (guests.length === 1) {
         $('roomPlayerLabel').textContent = 'HOST · PIZZI · OSPITE: ' + guest.nickname;
         $('roomNotice').textContent = 'Ospite collegato. Puoi avviare la partita.';
+        launchButton.disabled = false;
         state.roomClient?.sendRoomInfo().catch(() => {});
+      } else if (guests.length > 1) {
+        $('roomPlayerLabel').textContent = 'HOST · PIZZI · ' + guests.length + ' OSPITI';
+        $('roomNotice').textContent = 'La stanza supporta un solo ospite. Attendi che ne rimanga uno solo.';
+        launchButton.disabled = true;
       } else {
         $('roomPlayerLabel').textContent = 'HOST · PIZZI · IN ATTESA DELL’OSPITE';
         $('roomNotice').textContent = 'Condividi il codice con il tuo ospite. Quando entra, il suo nick comparirà qui.';
+        launchButton.disabled = true;
       }
     }
 
@@ -741,9 +759,28 @@
     }
 
     function attachGuestRoom(client) {
+      client.on('presence', (presence) => {
+        const host = Object.values(presence || {})
+          .flat()
+          .find((entry) => entry.role === 'host');
+
+        if (!host) {
+          $('guestWaitingState').textContent =
+            'Il creator non è più collegato alla stanza. Torna alla lobby e riprova.';
+          return;
+        }
+
+        if (!state.gameStarted && !state.roomInfoReceived) {
+          $('guestWaitingState').textContent =
+            'Sei entrato come ' + state.guestNickname +
+            '. Connessione al creator in corso...';
+        }
+      });
+
       client.on('room-info', (payload) => {
         state.selectedGame = payload.game;
         state.gameConfig = payload.gameConfig || {};
+        state.roomInfoReceived = true;
         $('guestWaitingState').textContent =
           'Sei entrato come ' + state.guestNickname +
           '. In attesa che il creator avvii ' + gameLabel(payload.game) + '.';
@@ -752,6 +789,7 @@
       client.on('game-start', (payload) => {
         state.selectedGame = payload.game;
         state.gameConfig = payload.gameConfig || {};
+        state.gameStarted = true;
         $('guestWaitingState').textContent = 'Il creator ha avviato la partita. Apertura del gioco...';
         const url = buildGameUrl(payload.game, 'guest', state.guestNickname, state.gameConfig);
         if (url) window.location.href = url;
@@ -879,13 +917,26 @@
         sessionStorage.setItem('tortelloGuestNickname', clean);
         $('guestModal').hidden = true;
         $('guestWaitingCode').textContent = state.roomCode;
+        state.roomInfoReceived = false;
+        state.gameStarted = false;
         $('guestWaitingState').textContent = 'Connessione alla stanza in corso...';
         $('guestWaitingModal').hidden = false;
+
+        window.setTimeout(() => {
+          if (!state.roomInfoReceived && !state.gameStarted && state.roomClient === client) {
+            $('guestWaitingState').textContent =
+              'Stanza non trovata o creator non raggiungibile. Torna alla lobby e riprova.';
+          }
+        }, 8000);
       } catch (error) {
         console.error(error);
         await state.roomClient?.close().catch(() => {});
         state.roomClient = null;
-        $('guestNickname').setCustomValidity('Impossibile collegarsi alla stanza. Controlla il codice e riprova.');
+        $('guestNickname').setCustomValidity(
+          error?.message === 'Codice stanza non valido'
+            ? 'Il codice stanza non è valido.'
+            : 'Impossibile collegarsi alla stanza. Controlla il codice e riprova.'
+        );
         $('guestNickname').reportValidity();
       }
     }
