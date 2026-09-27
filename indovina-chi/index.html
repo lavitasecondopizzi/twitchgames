@@ -1154,7 +1154,15 @@ async function connectRoom(){
   });
 
   roomClient.on("presence", presence => {
-    if(isHost && Object.values(presence || {}).flat().some(entry => entry.role === "guest")){
+    if(!isHost) return;
+
+    const guest = Object.values(presence || {})
+      .flat()
+      .find(entry => entry.role === "guest");
+
+    if(guest){
+      stato.playerNameB = guest.nickname || stato.playerNameB || "Ospite";
+      aggiornaUI();
       broadcastState().catch(() => {});
     }
   });
