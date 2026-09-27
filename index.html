@@ -467,7 +467,7 @@
     <section class="section" aria-labelledby="games-title">
       <div class="section-heading">
         <h2 id="games-title">Scegli il gioco</h2>
-        <span>03 titoli disponibili</span>
+        <span>04 titoli disponibili</span>
       </div>
 
       <div class="games">
@@ -495,6 +495,14 @@
           <p>Documenti, decisioni e caos burocratico direttamente dalla live.</p>
           <div class="game-actions">
             <button class="comic-btn primary" type="button" data-game="paper-please">Scegli gioco</button>
+          </div>
+        </article>
+        <article class="game-card">
+          <span class="game-number">04</span>
+          <h3>Quiz Pizzi</h3>
+          <p>Quiz interattivo per mettere alla prova la chat e sfidare lo streamer.</p>
+          <div class="game-actions">
+            <button class="comic-btn primary" type="button" data-game="quiz-pizzi">Scegli gioco</button>
           </div>
         </article>
       </div>
@@ -614,6 +622,10 @@
         return './paper-please/index.html?seed=' + seed + '&streamer=Pizzi' + mode;
       }
 
+      if (state.selectedGame === 'quiz-pizzi') {
+        return './quiz-pizzi/index.html';
+      }
+
       return null;
     }
 
@@ -635,6 +647,7 @@
 
     function gameLabel(game) {
       return game === 'paper-please' ? 'PAPER PIZZI PLEASE'
+        : game === 'quiz-pizzi' ? 'QUIZ PIZZI'
         : game === 'indovina-chi' ? 'INDOVINA CHI'
         : 'IMPICCATO';
     }
