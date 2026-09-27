@@ -833,23 +833,23 @@ body{
   </div>
 </div>
 
-<script src="../shared-game-apis.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../shared/supabase-config.js"></script>
+<script src="../shared/supabase-room.js"></script>
 <script>
-/* ========== ID CLIENT & RUOLO ========== */
+/* ========== SUPABASE ROOM / RUOLO ========== */
 
-const urlParams   = new URLSearchParams(window.location.search);
-const forcedRole  = urlParams.get("role");   // "A", "B" o null
-const playerNameFromUrl = urlParams.get("player") || urlParams.get("name") || null;
-const sidFromUrl = (urlParams.get("sid") || "").trim();
-const SYNC_URL = sidFromUrl ? ("sync.php?sid=" + encodeURIComponent(sidFromUrl)) : "sync.php";
+const urlParams = new URLSearchParams(window.location.search);
+const forcedRole = urlParams.get("role"); // "A" o "B"
+const playerNameFromUrl = (urlParams.get("player") || urlParams.get("name") || "").trim();
+const roomCode = (urlParams.get("room") || "").trim().toUpperCase();
 
-let clientId      = localStorage.getItem("indovinachiClientId");
-if (!clientId) {
-  clientId = "c-" + Math.random().toString(36).slice(2) + Date.now().toString(36);
-  localStorage.setItem("indovinachiClientId", clientId);
-}
+const player = forcedRole === "A" ? "A" : forcedRole === "B" ? "B" : null;
+const isHost = player === "A";
 
-let player = null; // "A", "B" o null (spettatore)
+let roomClient = null;
+let isApplyingRemoteState = false;
+let revision = 0;
 
 /* ========== CONFIG LABELS & IMMAGINI ========== */
 
@@ -857,12 +857,12 @@ const labels = {
   scoreboardTitle: "Punteggio",
   playerA: { name:"Giocatore A", boardLabel:"Giocatore A", webcamLabel:"Webcam A" },
   playerB: { name:"Giocatore B", boardLabel:"Giocatore B", webcamLabel:"Webcam B" },
-  imageLabels: {} // filename -> label
+  imageLabels: {}
 };
 
 const IMG_BASE_PATH = "img/";
-let imageFolder = "";    // es: "pokemon"
-let images = [];         // [{src, name}]
+let imageFolder = "";
+let images = [];
 let IMG_COUNT = 0;
 
 function autoLabelFromFilename(file){
@@ -876,10 +876,9 @@ function autoLabelFromFilename(file){
 }
 
 async function loadConfigAndImages(){
-  // 1) carica labels.json
   try{
     const res = await fetch("labels.json?_=" + Date.now());
-    if(!res.ok) throw new Error("no labels.json");
+    if(!res.ok) throw new Error("labels.json non trovato");
     const data = await res.json();
 
     if(data.scoreboardTitle) labels.scoreboardTitle = data.scoreboardTitle;
@@ -889,679 +888,594 @@ async function loadConfigAndImages(){
       labels.imageLabels = data.imageLabels;
     }
     if(typeof data.imageFolder === "string"){
-      imageFolder = data.imageFolder.replace(/\/+$/,"");
+      imageFolder = data.imageFolder.replace(/\/+$/, "");
     }
   }catch(e){
-    console.warn("labels.json non trovato o invalido, uso default", e);
-    imageFolder = "";
+    console.warn("Errore labels.json:", e);
   }
 
-  applyLabels();
-
-  // 2) carica lista immagini dalla cartella scelta
   let fileList = [];
   try{
-    const url = (((window.GameAPIs && window.GameAPIs.endpoint('indovina-chi', 'listImages')) || "list_images.php") + "?folder=" + encodeURIComponent(imageFolder || ""));
-    const res = await fetch(url);
+    const res = await fetch("images.json?_=" + Date.now());
+    if(!res.ok) throw new Error("images.json non trovato");
     fileList = await res.json();
-    if(!Array.isArray(fileList)) throw new Error("risposta non valida");
+    if(!Array.isArray(fileList)) throw new Error("Lista immagini non valida");
   }catch(e){
-    console.warn("Errore caricando lista immagini, uso fallback", e);
-    fileList = [];
+    console.error("Errore caricando images.json:", e);
   }
 
-  if(fileList.length === 0){
-    // fallback: almeno 25 immagini generiche numerate
-    for(let i=1;i<=25;i++){
-      fileList.push(i + ".jpg");
-    }
-  }
-
-  images = fileList.map(file=>{
-    const prefix = imageFolder ? (imageFolder + "/") : "";
-    const src    = IMG_BASE_PATH + prefix + file;
-    const name   = labels.imageLabels[file] || autoLabelFromFilename(file);
-    return { src, name };
+  images = fileList.map(file => {
+    const prefix = imageFolder ? imageFolder + "/" : "";
+    return {
+      src: IMG_BASE_PATH + prefix + file,
+      name: labels.imageLabels[file] || autoLabelFromFilename(file)
+    };
   });
-  IMG_COUNT = images.length;
 
+  IMG_COUNT = images.length;
   buildGrids();
   setupRoundSection();
 }
 
-/* labels su scoreboard/board/webcam */
 function applyLabels(){
   const sbTitle = document.getElementById("scoreboardTitle");
-  const la      = document.getElementById("labelA");
-  const lb      = document.getElementById("labelB");
-  const btA     = document.getElementById("boardTitleA");
-  const btB     = document.getElementById("boardTitleB");
-  const wlA     = document.getElementById("webcamLabelA");
-  const wlB     = document.getElementById("webcamLabelB");
+  const btA = document.getElementById("boardTitleA");
+  const btB = document.getElementById("boardTitleB");
+  const wlA = document.getElementById("webcamLabelA");
+  const wlB = document.getElementById("webcamLabelB");
 
   if(sbTitle) sbTitle.textContent = labels.scoreboardTitle;
-  if(la)      la.textContent      = stato.playerNameA || labels.playerA.name;
-  if(lb)      lb.textContent      = stato.playerNameB || labels.playerB.name;
-  if(btA)     btA.textContent     = stato.playerNameA || labels.playerA.boardLabel;
-  if(btB)     btB.textContent     = stato.playerNameB || labels.playerB.boardLabel;
-  if(wlA)     wlA.textContent     = stato.playerNameA || labels.playerA.webcamLabel;
-  if(wlB)     wlB.textContent     = stato.playerNameB || labels.playerB.webcamLabel;
+  if(btA) btA.textContent = stato.playerNameA || labels.playerA.boardLabel;
+  if(btB) btB.textContent = stato.playerNameB || labels.playerB.boardLabel;
+  if(wlA) wlA.textContent = stato.playerNameA || labels.playerA.webcamLabel;
+  if(wlB) wlB.textContent = stato.playerNameB || labels.playerB.webcamLabel;
 }
 
-/* costruisce celle per le due board */
 function buildGrids(){
-  document.querySelectorAll(".grid").forEach(grid=>{
+  document.querySelectorAll(".grid").forEach(grid => {
     grid.innerHTML = "";
-    images.forEach(img=>{
-      const cell=document.createElement("div");
-      cell.className="cell";
-      cell.innerHTML=`
-        <img src="${img.src}">
-        <div class="overlay"></div>
-        <div class="banner">${img.name}</div>
-      `;
+    images.forEach(img => {
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      const image = document.createElement("img");
+      image.src = img.src;
+      image.alt = img.name;
+      const overlay = document.createElement("div");
+      overlay.className = "overlay";
+      const banner = document.createElement("div");
+      banner.className = "banner";
+      banner.textContent = img.name;
+      cell.append(image, overlay, banner);
       grid.append(cell);
     });
   });
 }
 
-/* round locale */
 function setupRoundSection(){
-  const roundSelect=document.getElementById("roundSelect");
-  const roundImage=document.getElementById("roundImage");
+  const roundSelect = document.getElementById("roundSelect");
+  const roundImage = document.getElementById("roundImage");
+
   roundSelect.innerHTML = "";
 
-  images.forEach(img=>{
-    const opt=document.createElement("option");
-    opt.value=img.src;
-    opt.textContent=img.name;
+  images.forEach(img => {
+    const opt = document.createElement("option");
+    opt.value = img.src;
+    opt.textContent = img.name;
     roundSelect.append(opt);
   });
 
-  if(images.length>0){
-    roundSelect.value = images[0].src;
-    roundImage.src    = images[0].src;
-  }
-
   roundSelect.onchange = () => {
-    roundImage.src = roundSelect.value;
-  };
-
-  document.getElementById("newRound").onclick = () => {
-    // scegli un nuovo personaggio
-    const r = images[Math.floor(Math.random()*images.length)];
-    roundSelect.value = r.src;
-    roundImage.src    = r.src;
-
-    // reset board A e B (solo selezioni, non punteggi)
-    stato.celleA = Array(IMG_COUNT).fill("");
-    stato.celleB = Array(IMG_COUNT).fill("");
-
-    // reset voti chat
-    resetChatVotes();
-
-    // aggiorna UI e salva stato su Raspberry
+    if (!isHost) {
+      roundSelect.value = stato.roundSrc || images[0]?.src || "";
+      return;
+    }
+    stato.roundSrc = roundSelect.value;
+    const selected = images.find(img => img.src === roundSelect.value);
+    stato.roundName = selected?.name || "";
     aggiornaUI();
     salvaStato();
   };
 
+  document.getElementById("newRound").onclick = () => {
+    if (!isHost || !images.length) return;
+
+    const r = images[Math.floor(Math.random() * images.length)];
+    stato.roundSrc = r.src;
+    stato.roundName = r.name;
+    stato.celleA = Array(IMG_COUNT).fill("");
+    stato.celleB = Array(IMG_COUNT).fill("");
+    resetChatVotes();
+
+    aggiornaUI();
+    salvaStato();
+  };
 }
 
-/* ========== STATO SYNCATO ========== */
+/* ========== STATO ========== */
 
 let stato = {
-  celleA:[],
-  celleB:[],
-  punteggioA:0,
-  punteggioB:0,
-  playerA:null,
-  playerB:null,
+  celleA: [],
+  celleB: [],
+  punteggioA: 0,
+  punteggioB: 0,
   playerNameA: null,
   playerNameB: null,
+  roundSrc: "",
+  roundName: "",
   chatVotes: { round: 0, entries: [] }
 };
 
-let isSaving = false;
-let roleClaimed = false;
-
-function ensureCelleSize(){
-  if(!Array.isArray(stato.celleA) || stato.celleA.length!==IMG_COUNT){
+function ensureStateShape(){
+  if(!Array.isArray(stato.celleA) || stato.celleA.length !== IMG_COUNT){
     stato.celleA = Array(IMG_COUNT).fill("");
   }
-  if(!Array.isArray(stato.celleB) || stato.celleB.length!==IMG_COUNT){
+  if(!Array.isArray(stato.celleB) || stato.celleB.length !== IMG_COUNT){
     stato.celleB = Array(IMG_COUNT).fill("");
   }
-}
-
-function ensureChatVotes(){
-  if (!stato.chatVotes || typeof stato.chatVotes !== "object"){
+  if(!stato.chatVotes || typeof stato.chatVotes !== "object"){
     stato.chatVotes = { round: 0, entries: [] };
   }
-  if (!Array.isArray(stato.chatVotes.entries)){
+  if(!Array.isArray(stato.chatVotes.entries)){
     stato.chatVotes.entries = [];
+  }
+  if(!stato.roundSrc && images[0]){
+    stato.roundSrc = images[0].src;
+    stato.roundName = images[0].name;
   }
 }
 
 function resetChatVotes(){
-  ensureChatVotes();
-  stato.chatVotes.round = (stato.chatVotes.round || 0) + 1;
+  ensureStateShape();
+  stato.chatVotes.round = (Number(stato.chatVotes.round) || 0) + 1;
   stato.chatVotes.entries = [];
   aggiornaChatVotesUI();
 }
 
-function ensureChatVotes(){
-  if (!stato.chatVotes || typeof stato.chatVotes !== "object"){
-    stato.chatVotes = { round: 0, entries: [] };
+function normalizeRemoteState(data){
+  if(!data || typeof data !== "object") return null;
+  const next = { ...stato, ...data };
+  if(data.chatVotes && typeof data.chatVotes === "object"){
+    next.chatVotes = {
+      round: Number(data.chatVotes.round) || 0,
+      entries: Array.isArray(data.chatVotes.entries) ? data.chatVotes.entries : []
+    };
   }
-  if (!Array.isArray(stato.chatVotes.entries)){
-    stato.chatVotes.entries = [];
+  return next;
+}
+
+/* ========== SUPABASE REALTIME ========== */
+
+function statePayload(){
+  return {
+    ...stato,
+    _revision: revision,
+    _sender: player,
+    _sentAt: Date.now()
+  };
+}
+
+async function broadcastState(){
+  if(!roomClient) return;
+  revision++;
+  await roomClient.broadcast("game_state", statePayload());
+}
+
+async function salvaStato(){
+  if(isApplyingRemoteState) return;
+  ensureStateShape();
+  aggiornaUI();
+  aggiornaChatVotesUI();
+  try{
+    await broadcastState();
+  }catch(e){
+    console.error("Errore broadcast stato:", e);
   }
 }
 
+function requestGameState(){
+  roomClient?.broadcast("state_request", {
+    requester: player,
+    _sentAt: Date.now()
+  }).catch(() => {});
+}
+
+function applyRemoteState(payload){
+  if(!payload || payload._sender === player) return;
+
+  const incomingRevision = Number(payload._revision) || 0;
+  if(incomingRevision && incomingRevision < revision) return;
+
+  revision = Math.max(revision, incomingRevision);
+  const clean = { ...payload };
+  delete clean._revision;
+  delete clean._sender;
+  delete clean._sentAt;
+
+  isApplyingRemoteState = true;
+  const next = normalizeRemoteState(clean);
+  if(next) stato = next;
+  ensureStateShape();
+  aggiornaUI();
+  aggiornaChatVotesUI();
+  isApplyingRemoteState = false;
+}
+
+function appendChatVote(vote){
+  if(!vote || !vote.cmd || !vote.name) return;
+  if(vote.cmd !== "rosso" && vote.cmd !== "verde") return;
+
+  ensureStateShape();
+
+  const entry = {
+    user: String(vote.user || "anon").slice(0, 80),
+    cmd: vote.cmd,
+    name: String(vote.name).trim().slice(0, 100),
+    ts: vote.ts || new Date().toISOString()
+  };
+
+  const last = stato.chatVotes.entries[stato.chatVotes.entries.length - 1];
+  if(last &&
+     last.user === entry.user &&
+     last.cmd === entry.cmd &&
+     String(last.name).toLowerCase() === entry.name.toLowerCase()){
+    return;
+  }
+
+  stato.chatVotes.entries.push(entry);
+  aggiornaChatVotesUI();
+
+  if(isHost){
+    broadcastState().catch(() => {});
+  }
+}
+
+async function connectRoom(){
+  if(!/^[A-Z0-9]{6}$/.test(roomCode)){
+    console.error("Codice stanza mancante o non valido.");
+    return;
+  }
+
+  roomClient = new TortelloSupabaseRoom({
+    room: roomCode,
+    role: isHost ? "host" : "guest",
+    nickname: playerNameFromUrl || (isHost ? "Pizzi" : "Ospite"),
+    game: "indovina-chi"
+  });
+
+  roomClient.on("game-state", applyRemoteState);
+  roomClient.on("game-event", payload => {
+    if(payload?.type === "chat_vote") appendChatVote(payload);
+  });
+
+  roomClient.on("state-request", payload => {
+    if(isHost && payload?.requester !== "A"){
+      broadcastState().catch(() => {});
+    }
+  });
+
+  roomClient.on("presence", presence => {
+    if(isHost && Object.values(presence || {}).flat().some(entry => entry.role === "guest")){
+      broadcastState().catch(() => {});
+    }
+  });
+
+  try{
+    await roomClient.connect();
+
+    if(isHost){
+      stato.playerNameA = playerNameFromUrl || "Pizzi";
+      ensureStateShape();
+      aggiornaUI();
+      await broadcastState();
+    }else{
+      stato.playerNameB = playerNameFromUrl || "Ospite";
+      aggiornaUI();
+      requestGameState();
+    }
+  }catch(e){
+    console.error("Supabase Realtime non disponibile:", e);
+  }
+}
+
+/* ========== VOTI CHAT ========== */
+
 function aggiornaChatVotesUI(){
-  ensureChatVotes();
+  ensureStateShape();
 
   const listEl = document.getElementById("chatVotesList");
-  if (!listEl) return;
+  if(!listEl) return;
 
   const entries = stato.chatVotes.entries;
-
-  if (!entries.length){
+  if(!entries.length){
     listEl.textContent = "Nessun voto per questo round.";
     return;
   }
 
-  // 1) Aggrego voti per NOME
-  const counts = {}; 
-  // es: { "mario": { label: "Mario", red: 2, green: 3 }, ... }
-
+  const counts = {};
   entries.forEach(v => {
-    // v.name pu� essere undefined, numero, null, ecc.
-    let raw = v && (v.name ?? v.target ?? "");
-    if (raw == null) raw = "";
-    raw = String(raw).trim();   // <-- qui lo forziamo SEMPRE a stringa
-
-    if (!raw) return; // se non c'� nome, ignoro il voto (es. vecchi voti a numero)
+    const raw = String(v?.name ?? v?.target ?? "").trim();
+    if(!raw) return;
 
     const key = raw.toLowerCase();
-    if (!counts[key]) {
-      counts[key] = { label: raw, red: 0, green: 0 };
-    }
-    if (v.cmd === "rosso") {
-      counts[key].red++;
-    } else if (v.cmd === "verde") {
-      counts[key].green++;
-    }
+    if(!counts[key]) counts[key] = { label: raw, red: 0, green: 0 };
+    if(v.cmd === "rosso") counts[key].red++;
+    if(v.cmd === "verde") counts[key].green++;
   });
 
-  const keys = Object.keys(counts);
-  if (!keys.length){
-    listEl.textContent = "Nessun voto valido per questo round.";
-    return;
-  }
+  const keys = Object.keys(counts).sort((a,b) =>
+    counts[a].label.localeCompare(counts[b].label, "it", { sensitivity:"base" })
+  );
 
-  // 2) Ordino per nome
-  keys.sort((a,b) => counts[a].label.localeCompare(counts[b].label, 'it', { sensitivity: 'base' }));
-
-  // 3) Trovo il massimo di voti per scalare la barra
   let maxTotal = 0;
   keys.forEach(k => {
-    const total = counts[k].red + counts[k].green;
-    if (total > maxTotal) maxTotal = total;
+    maxTotal = Math.max(maxTotal, counts[k].red + counts[k].green);
   });
-  if (maxTotal === 0){
+
+  if(!maxTotal){
     listEl.textContent = "Nessun voto valido per questo round.";
     return;
   }
 
-  // 4) Costruisco le barre
   listEl.innerHTML = "";
 
   keys.forEach(k => {
-    const data  = counts[k];
+    const data = counts[k];
     const total = data.red + data.green;
-    if (!total) return;
-
     const ratio = total / maxTotal;
 
     let colorClass = "neutral";
-    if (data.red > data.green)      colorClass = "red";
-    else if (data.green > data.red) colorClass = "green";
+    if(data.red > data.green) colorClass = "red";
+    else if(data.green > data.red) colorClass = "green";
 
     const row = document.createElement("div");
     row.className = "vote-row";
 
     const label = document.createElement("div");
     label.className = "vote-label";
-    label.textContent = data.label; // nome del personaggio
+    label.textContent = data.label;
 
     const barBg = document.createElement("div");
     barBg.className = "vote-bar-bg";
 
     const barFill = document.createElement("div");
     barFill.className = "vote-bar-fill " + colorClass;
-    const widthPercent = 15 + ratio * 85;
-    barFill.style.width = widthPercent + "%";
-
-    barBg.appendChild(barFill);
+    barFill.style.width = (15 + ratio * 85) + "%";
 
     const count = document.createElement("div");
     count.className = "vote-count";
-    count.textContent = `${total} voti (R: ${data.red} � V: ${data.green})`;
+    count.textContent = total + " voti (R: " + data.red + " · V: " + data.green + ")";
 
-    row.appendChild(label);
-    row.appendChild(barBg);
-    row.appendChild(count);
-
+    barBg.appendChild(barFill);
+    row.append(label, barBg, count);
     listEl.appendChild(row);
   });
 }
 
-function aggiornaUI(){
-  ensureCelleSize();
+/* ========== UI ========== */
 
-  // --- punteggio numerico ---
+function aggiornaUI(){
+  ensureStateShape();
+
   const scoreAEl = document.getElementById("scoreA");
   const scoreBEl = document.getElementById("scoreB");
-  if (scoreAEl) scoreAEl.textContent = stato.punteggioA;
-  if (scoreBEl) scoreBEl.textContent = stato.punteggioB;
+  if(scoreAEl) scoreAEl.textContent = stato.punteggioA;
+  if(scoreBEl) scoreBEl.textContent = stato.punteggioB;
 
-  // --- nomi giocatori ---
   const nameA = stato.playerNameA || labels.playerA.name;
   const nameB = stato.playerNameB || labels.playerB.name;
 
-  const labelAEl    = document.getElementById("labelA");
-  const labelBEl    = document.getElementById("labelB");
   const boardATitle = document.getElementById("boardTitleA");
   const boardBTitle = document.getElementById("boardTitleB");
-  const camALabel   = document.getElementById("webcamLabelA");
-  const camBLabel   = document.getElementById("webcamLabelB");
+  const camALabel = document.getElementById("webcamLabelA");
+  const camBLabel = document.getElementById("webcamLabelB");
 
-  if (labelAEl)    labelAEl.textContent    = nameA;
-  if (labelBEl)    labelBEl.textContent    = nameB;
+  if(boardATitle) boardATitle.textContent = "Scheda " + nameA;
+  if(boardBTitle) boardBTitle.textContent = "Scheda " + nameB;
+  if(camALabel) camALabel.textContent = nameA;
+  if(camBLabel) camBLabel.textContent = nameB;
 
-  if (boardATitle) boardATitle.textContent = `Scheda ${nameA}`;
-  if (boardBTitle) boardBTitle.textContent = `Scheda ${nameB}`;
+  const roundSelect = document.getElementById("roundSelect");
+  const roundImage = document.getElementById("roundImage");
+  if(roundSelect && stato.roundSrc && [...roundSelect.options].some(o => o.value === stato.roundSrc)){
+    roundSelect.value = stato.roundSrc;
+  }
+  if(roundImage){
+    roundImage.src = stato.roundSrc || images[0]?.src || "";
+    roundImage.alt = stato.roundName || "";
+  }
 
-  if (camALabel)   camALabel.textContent   = nameA;
-  if (camBLabel)   camBLabel.textContent   = nameB;
+  const gA = document.querySelector(".board[data-board='A'] .grid")?.children || [];
+  const gB = document.querySelector(".board[data-board='B'] .grid")?.children || [];
 
-  // --- colori celle board A ---
-  const gridAEl = document.querySelector(".board[data-board='A'] .grid");
-  const gA = gridAEl ? gridAEl.children : [];
-  stato.celleA.forEach((v,i)=>{
-    const cell = gA[i];
-    if(!cell) return;
-    cell.classList.remove("red","green");
-    if(v) cell.classList.add(v);
+  stato.celleA.forEach((v,i) => {
+    if(!gA[i]) return;
+    gA[i].classList.remove("red","green");
+    if(v) gA[i].classList.add(v);
   });
 
-  // --- colori celle board B ---
-  const gridBEl = document.querySelector(".board[data-board='B'] .grid");
-  const gB = gridBEl ? gridBEl.children : [];
-  stato.celleB.forEach((v,i)=>{
-    const cell = gB[i];
-    if(!cell) return;
-    cell.classList.remove("red","green");
-    if(v) cell.classList.add(v);
+  stato.celleB.forEach((v,i) => {
+    if(!gB[i]) return;
+    gB[i].classList.remove("red","green");
+    if(v) gB[i].classList.add(v);
   });
 
   aggiornaInterattivita();
-}
-
-async function salvaStato(overrides = {}){
-  if (isSaving) return;
-
-  isSaving = true;
-
-  try{
-    // payload = stato attuale + eventuali override (tipo nomi)
-    const payload = { ...stato, ...overrides };
-
-    // debug opzionale:
-    // console.log("SALVO STATO:", JSON.stringify(payload, null, 2));
-
-    const res = await fetch(SYNC_URL,{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify(payload)
-    });
-
-    // se va bene, allineo anche lo stato locale al payload
-    if (res.ok){
-      stato = payload;
-    }
-  }catch(e){
-    console.error("Errore nel salvataggio stato:", e);
-  } finally {
-    isSaving = false;
-  }
-}
-
-async function caricaStato(){
-  if (isSaving) return;
-
-  try{
-    const res = await fetch(SYNC_URL, { cache: "no-store" });
-    if (!res.ok) return;
-
-    const data = await res.json();
-    if (!data || typeof data !== "object") return;
-
-    // merge "soft": quello che c'è nel file sovrascrive, il resto resta
-    stato = { ...stato, ...data };
-
-    ensureCelleSize();
-    ensureChatVotes();
-    decidiRuoloDaStato();  // qui dentro viene chiamata anche applyPlayerNameFromUrl
-    aggiornaUI();
-    aggiornaChatVotesUI();
-  }catch(e){
-    console.warn("Errore sync", e);
-  }
-}
-
-/* ========== RUOLO A/B/SPETTATORE ========== */
-
-function decidiRuoloDaStato(){
-  // assegniamo il ruolo una sola volta per questa pagina
-  if (!roleClaimed){
-    if (forcedRole === "A") {
-      stato.playerA = clientId;
-      if (stato.playerB === clientId) {
-        stato.playerB = null;
-      }
-      player = "A";
-
-    } else if (forcedRole === "B") {
-      stato.playerB = clientId;
-      if (stato.playerA === clientId) {
-        stato.playerA = null;
-      }
-      player = "B";
-
-    } else {
-      // logica automatica se non hai usato ?role=
-      if (stato.playerA === clientId) {
-        player = "A";
-      } else if (stato.playerB === clientId) {
-        player = "B";
-      } else if (!stato.playerA) {
-        stato.playerA = clientId;
-        player = "A";
-      } else if (!stato.playerB) {
-        stato.playerB = clientId;
-        player = "B";
-      } else {
-        player = null; // spettatore
-      }
-    }
-
-    roleClaimed = true;
-  }
-
-  // dopo aver deciso chi siamo (A/B/spettatore), applichiamo l'eventuale nome da GET
-  applyPlayerNameFromUrl();
-  aggiornaInterattivita();
-}
-
-function applyPlayerNameFromUrl(){
-  // se non c'è ?player= nella URL, non facciamo nulla
-  if (!playerNameFromUrl) return;
-
-  const overrides = {};
-  let changed = false;
-
-  if (player === "A") {
-    if (stato.playerNameA !== playerNameFromUrl) {
-      stato.playerNameA = playerNameFromUrl;
-      overrides.playerNameA = playerNameFromUrl;
-      changed = true;
-    }
-  } else if (player === "B") {
-    if (stato.playerNameB !== playerNameFromUrl) {
-      stato.playerNameB = playerNameFromUrl;
-      overrides.playerNameB = playerNameFromUrl;
-      changed = true;
-    }
-  } else {
-    // spettatore: non ha senso settare il nome
-    return;
-  }
-
-  if (changed) {
-    // aggiorno subito la UI locale
-    aggiornaUI();
-    // salvo su stato.json forzando i campi nome
-    salvaStato(overrides);
-  }
+  aggiornaChatVotesUI();
 }
 
 function aggiornaInterattivita(){
-  const gridA  = document.querySelector(".board[data-board='A'] .grid");
-  const gridB  = document.querySelector(".board[data-board='B'] .grid");
+  const gridA = document.querySelector(".board[data-board='A'] .grid");
+  const gridB = document.querySelector(".board[data-board='B'] .grid");
   const resetA = document.querySelector(".board[data-board='A'] [data-reset]");
-  const resetB = document.querySelector(".board[data-board='B'] [data-reset]");
+  const resetB = document.querySelector(".board[data-board='B'] [data-reset");
   const subScoreBtn = document.getElementById("subScore");
   const addScoreBtn = document.getElementById("addScore");
+  const newRoundBtn = document.getElementById("newRound");
 
-  // base: tutto spento
-  [gridA, gridB].forEach(g=>{
-    g.style.opacity       = "0.45";
+  [gridA, gridB].forEach(g => {
+    if(!g) return;
+    g.style.opacity = "0.45";
     g.style.pointerEvents = "none";
   });
 
-  [resetA, resetB, subScoreBtn, addScoreBtn].forEach(btn=>{
+  [resetA, resetB, subScoreBtn, addScoreBtn, newRoundBtn].forEach(btn => {
     if(!btn) return;
     btn.disabled = true;
-    btn.style.display = "none";   // nascosti per default
+    if(btn === newRoundBtn){
+      btn.style.display = isHost ? "" : "none";
+    }else{
+      btn.style.display = "none";
+    }
   });
 
-  // Giocatore A: controlla board A + i pulsanti punteggio
-  if (player === "A"){
-    gridA.style.opacity       = "1";
-    gridA.style.pointerEvents = "auto";
-
-    if (resetA){ resetA.disabled = false; resetA.style.display = ""; }
-    if (subScoreBtn){ subScoreBtn.disabled = false; subScoreBtn.style.display = ""; }
-    if (addScoreBtn){ addScoreBtn.disabled = false; addScoreBtn.style.display = ""; }
-
-  // Giocatore B: controlla board B + i pulsanti punteggio
-  } else if (player === "B"){
-    gridB.style.opacity       = "1";
-    gridB.style.pointerEvents = "auto";
-
-    if (resetB){ resetB.disabled = false; resetB.style.display = ""; }
-    if (subScoreBtn){ subScoreBtn.disabled = false; subScoreBtn.style.display = ""; }
-    if (addScoreBtn){ addScoreBtn.disabled = false; addScoreBtn.style.display = ""; }
-
-  // Spettatore: vede numeri ma niente controlli
-  } else {
-    // tutto già nascosto sopra
+  if(player === "A"){
+    if(gridA){ gridA.style.opacity = "1"; gridA.style.pointerEvents = "auto"; }
+    if(resetA){ resetA.disabled = false; resetA.style.display = ""; }
+    if(subScoreBtn){ subScoreBtn.disabled = false; subScoreBtn.style.display = ""; }
+    if(addScoreBtn){ addScoreBtn.disabled = false; addScoreBtn.style.display = ""; }
+  }else if(player === "B"){
+    if(gridB){ gridB.style.opacity = "1"; gridB.style.pointerEvents = "auto"; }
+    if(resetB){ resetB.disabled = false; resetB.style.display = ""; }
+    if(subScoreBtn){ subScoreBtn.disabled = false; subScoreBtn.style.display = ""; }
+    if(addScoreBtn){ addScoreBtn.disabled = false; addScoreBtn.style.display = ""; }
   }
 }
 
-/* ========== CLICK CELLE ========== */
-
 function abilitaBoard(boardKey){
-  const grid=document.querySelector(`.board[data-board='${boardKey}'] .grid`);
+  const grid = document.querySelector(".board[data-board='" + boardKey + "'] .grid");
+  if(!grid) return;
 
-  grid.addEventListener("click", e=>{
-    if (player !== boardKey) return;
-    const c=e.target.closest(".cell"); if(!c)return;
-    const idx=[...grid.children].indexOf(c);
+  grid.addEventListener("click", e => {
+    if(player !== boardKey) return;
+    const c = e.target.closest(".cell");
+    if(!c) return;
+
+    const idx = [...grid.children].indexOf(c);
     if(e.altKey){
       c.classList.remove("red","green");
-      stato["celle"+boardKey][idx]="";
-      salvaStato();
-      return;
+      stato["celle" + boardKey][idx] = "";
+    }else{
+      c.classList.toggle("red");
+      c.classList.remove("green");
+      stato["celle" + boardKey][idx] = c.classList.contains("red") ? "red" : "";
     }
-    c.classList.toggle("red");
-    c.classList.remove("green");
-    stato["celle"+boardKey][idx]=c.classList.contains("red")?"red":"";
     salvaStato();
   });
 
-  grid.addEventListener("contextmenu", e=>{
+  grid.addEventListener("contextmenu", e => {
     e.preventDefault();
-    if (player !== boardKey) return;
-    const c=e.target.closest(".cell"); if(!c)return;
-    const idx=[...grid.children].indexOf(c);
+    if(player !== boardKey) return;
+    const c = e.target.closest(".cell");
+    if(!c) return;
+
+    const idx = [...grid.children].indexOf(c);
     c.classList.toggle("green");
     c.classList.remove("red");
-    stato["celle"+boardKey][idx]=c.classList.contains("green")?"green":"";
+    stato["celle" + boardKey][idx] = c.classList.contains("green") ? "green" : "";
     salvaStato();
   });
 
-  grid.addEventListener("dblclick", e=>{
-    if (player !== boardKey) return;
-    const c=e.target.closest(".cell"); if(!c)return;
-    const idx=[...grid.children].indexOf(c);
+  grid.addEventListener("dblclick", e => {
+    if(player !== boardKey) return;
+    const c = e.target.closest(".cell");
+    if(!c) return;
+
+    const idx = [...grid.children].indexOf(c);
     c.classList.remove("red","green");
-    stato["celle"+boardKey][idx]="";
+    stato["celle" + boardKey][idx] = "";
     salvaStato();
   });
 }
 
 /* ========== RESET & PUNTEGGIO ========== */
 
-document.addEventListener("click", e=>{
+document.addEventListener("click", e => {
   const btn = e.target.closest("[data-reset]");
-  if(!btn) return;
+  if(!btn || player !== btn.closest(".board")?.dataset.board) return;
+
+  if(!confirm("Sei sicuro di voler resettare questa scheda?")) return;
+
   const board = btn.closest(".board").dataset.board;
-  if(player !== board) return;
-  if(!confirm("Sei sicuro di voler resettare la board "+board+"?")) return;
-  stato["celle"+board]=Array(IMG_COUNT).fill("");
-  aggiornaUI();
+  stato["celle" + board] = Array(IMG_COUNT).fill("");
   salvaStato();
 });
 
-const subScoreBtn = document.getElementById("subScore");
-const addScoreBtn = document.getElementById("addScore");
-
-subScoreBtn.onclick = () => {
-  let changed = false;
-
-  if (player === "A") {
-    if (stato.punteggioA > 0) {
-      stato.punteggioA = Math.max(0, stato.punteggioA - 1);
-      changed = true;
-    }
-  } else if (player === "B") {
-    if (stato.punteggioB > 0) {
-      stato.punteggioB = Math.max(0, stato.punteggioB - 1);
-      changed = true;
-    }
-  } else {
-    return; // spettatore
-  }
-
-  if (!changed) return; // niente effetto se era già 0
+document.getElementById("subScore").onclick = () => {
+  if(player === "A" && stato.punteggioA > 0) stato.punteggioA--;
+  else if(player === "B" && stato.punteggioB > 0) stato.punteggioB--;
+  else return;
 
   aggiornaUI();
   salvaStato();
   showScoreFx(-1);
 };
 
-addScoreBtn.onclick = () => {
-  if (player === "A") {
-    stato.punteggioA++;
-  } else if (player === "B") {
-    stato.punteggioB++;
-  } else {
-    return; // spettatore
-  }
+document.getElementById("addScore").onclick = () => {
+  if(player === "A") stato.punteggioA++;
+  else if(player === "B") stato.punteggioB++;
+  else return;
 
   aggiornaUI();
   salvaStato();
   showScoreFx(+1);
 };
 
-let currentTab = 0;
+/* ========== TABS ========== */
 
 function setTab(idx){
-  currentTab = idx;
   const inner = document.querySelector(".tabs-inner");
-  const btns  = document.querySelectorAll(".tab-btn");
+  if(inner) inner.style.transform = "translateX(" + (-idx * 100) + "%)";
 
-  if (inner){
-    inner.style.transform = `translateX(${-idx * 100}%)`;
-  }
-
-  btns.forEach(b=>{
-    const t = parseInt(b.dataset.tab,10);
-    b.classList.toggle("active", t === idx);
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.classList.toggle("active", parseInt(btn.dataset.tab, 10) === idx);
   });
 }
 
 function initTabs(){
-  const btns = document.querySelectorAll(".tab-btn");
-  btns.forEach(b=>{
-    b.addEventListener("click", ()=>{
-      const idx = parseInt(b.dataset.tab,10);
-      if (!isNaN(idx)){
-        setTab(idx);
-      }
-    });
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => setTab(parseInt(btn.dataset.tab, 10)));
   });
-
-  // tab iniziale: Gioco
   setTab(0);
 }
+
+/* ========== SCORE FX ========== */
 
 let scoreFxTimeout = null;
 
 function showScoreFx(delta){
-  if (!delta) return; // sicurezza
-
   const fx = document.getElementById("scoreFx");
-  if (!fx) return;
+  if(!fx || !delta) return;
 
-  const sfxUp   = document.getElementById("sfxUp");
-  const sfxDown = document.getElementById("sfxDown");
-
-  // testo +1 / -1
-  fx.textContent = (delta > 0 ? "+1" : "-1");
-
-  // reset classi
+  const sfx = document.getElementById(delta > 0 ? "sfxUp" : "sfxDown");
+  fx.textContent = delta > 0 ? "+1" : "-1";
   fx.classList.remove("positive","negative","show");
+  fx.classList.add(delta > 0 ? "positive" : "negative");
 
-  if (delta > 0){
-    fx.classList.add("positive");
-    if (sfxUp){
-      sfxUp.currentTime = 0;
-      sfxUp.play().catch(()=>{});
-    }
-  } else {
-    fx.classList.add("negative");
-    if (sfxDown){
-      sfxDown.currentTime = 0;
-      sfxDown.play().catch(()=>{});
-    }
+  if(sfx){
+    sfx.currentTime = 0;
+    sfx.play().catch(() => {});
   }
 
-  // forza reflow per riavviare l'animazione
   void fx.offsetWidth;
-
   fx.classList.add("show");
 
-  // pulizia dopo l’animazione
-  if (scoreFxTimeout) clearTimeout(scoreFxTimeout);
-  scoreFxTimeout = setTimeout(()=>{
-    fx.classList.remove("show");
-  }, 650);
+  if(scoreFxTimeout) clearTimeout(scoreFxTimeout);
+  scoreFxTimeout = setTimeout(() => fx.classList.remove("show"), 650);
 }
 
 /* ========== BOOTSTRAP ========== */
 
 (async function init(){
-  await loadConfigAndImages();   // labels + tema + immagini
+  await loadConfigAndImages();
+  ensureStateShape();
+  applyLabels();
+  aggiornaUI();
   abilitaBoard("A");
   abilitaBoard("B");
-  await caricaStato();           // primo sync (stato + chatVotes)
-  initTabs();                    // attiva le tre schede
-  aggiornaChatVotesUI();         // assicura pannello voti coerente
-  setInterval(caricaStato,2000);
+  initTabs();
+  await connectRoom();
+  aggiornaUI();
+  aggiornaChatVotesUI();
 })();
 </script>
 </body>
