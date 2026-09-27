@@ -724,15 +724,15 @@ body{
 
 const urlParams = new URLSearchParams(location.search);
 const soloMode  = urlParams.get("solo")==="1" || urlParams.get("mode")==="solo";
-const streamerName = urlParams.get("streamer") || urlParams.get("player") || "Pizzi";
 const roomCode = (urlParams.get("room") || "").trim().toUpperCase();
+const streamerName = isHost ? (urlParams.get("streamer") || urlParams.get("player") || "Pizzi") : "Pizzi";
 const forcedRole = urlParams.get("role") || "host";
 const isHost = forcedRole === "host" || forcedRole === "A";
 const isGuest = forcedRole === "guest" || forcedRole === "B";
+const guestName = isGuest ? (urlParams.get("streamer") || urlParams.get("guest") || "Ospite") : "Ospite";
 let roomClient = null;
 let revision = 0;
 let isApplyingRemoteState = false;
-const guestName    = urlParams.get("guest") || "Ospite";
 
 if (soloMode){
   document.querySelector(".cam-right").style.display="none";
