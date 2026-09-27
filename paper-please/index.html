@@ -728,7 +728,14 @@ body{
 
 const urlParams = new URLSearchParams(location.search);
 const soloMode  = urlParams.get("solo")==="1" || urlParams.get("mode")==="solo";
-const streamerName = urlParams.get("streamer") || urlParams.get("player") || "Streamer";
+const streamerName = urlParams.get("streamer") || urlParams.get("player") || "Pizzi";
+const roomCode = (urlParams.get("room") || "").trim().toUpperCase();
+const forcedRole = urlParams.get("role") || "host";
+const isHost = forcedRole === "host" || forcedRole === "A";
+const isGuest = forcedRole === "guest" || forcedRole === "B";
+let roomClient = null;
+let revision = 0;
+let isApplyingRemoteState = false;
 const guestName    = urlParams.get("guest") || "Ospite";
 
 if (soloMode){
@@ -1836,45 +1843,93 @@ function formatExtraModes(){
   return "Modalità disponibili: " + ms.map(m=>m.id).join(", ") + ".";
 }
 
-/* ===== Sync ===== */
-async function loadState(){
-  if (isSaving) return;
-  try{
-    const res = await fetch(SYNC_URL + "?_=" + Date.now(), {cache:"no-store"});
-    if (!res.ok) return;
-    const data = await res.json();
-    if (!data || typeof data!=="object") return;
-
-    // accept
-    stato = {...defaultState(), ...data};
-    // deep merges
-    stato.world = {...(cfg.baseWorld||{regime:50,popolo:50,ribelli:50}), ...(data.world||{})};
-    stato.chat  = {...defaultState().chat, ...(data.chat||{})};
-    stato.objectives = {...defaultState().objectives, ...(data.objectives||{})};
-    stato.unlocks = {...defaultState().unlocks, ...(data.unlocks||{})};
-    stato.arcs = {...defaultState().arcs, ...(data.arcs||{})};
-
-    ensureState();
-    updateUI();
-  }catch(e){}
+/* ===== SUPABASE REALTIME ===== */
+function mergeLoadedState(data){
+  stato={...defaultState(),...(data||{})};
+  stato.world={...(cfg.baseWorld||{regime:50,popolo:50,ribelli:50}),...(data?.world||{})};
+  stato.chat={...defaultState().chat,...(data?.chat||{})};
+  stato.objectives={...defaultState().objectives,...(data?.objectives||{})};
+  stato.unlocks={...defaultState().unlocks,...(data?.unlocks||{})};
+  stato.arcs={...defaultState().arcs,...(data?.arcs||{})};
+  ensureState();
 }
-
+function statePayload(){
+  return {...stato,_revision:revision,_sender:isHost?"host":"guest",_sentAt:Date.now()};
+}
+async function broadcastState(){
+  if(!roomClient||!isHost||isApplyingRemoteState)return;
+  revision++;
+  await roomClient.broadcast("game_state",statePayload());
+}
 async function saveState(){
-  if (isSaving) return;
-  isSaving=true;
-  try{
-    const res = await fetch(SYNC_URL, {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify(stato)
+  if(!isHost||isApplyingRemoteState)return;
+  try{ensureState();updateUI();await broadcastState();}
+  catch(e){console.error("Errore broadcast stato:",e);}
+}
+function requestGameState(){
+  roomClient?.broadcast("state_request",{requester:"guest",_sentAt:Date.now()}).catch(()=>{});
+}
+function applyRemoteState(payload){
+  if(!payload||!isGuest)return;
+  const incoming=Number(payload._revision)||0;
+  if(incoming&&incoming<revision)return;
+  revision=Math.max(revision,incoming);
+  const clean={...payload};
+  delete clean._revision;delete clean._sender;delete clean._sentAt;
+  isApplyingRemoteState=true;
+  mergeLoadedState(clean);
+  updateUI();
+  isApplyingRemoteState=false;
+}
+function handleGameEvent(payload){
+  if(!payload||!isHost||stato.phaseLocked)return;
+  if(payload.type==="chat_suggestion"){
+    const text=String(payload.text||"").trim();
+    if(!text)return;
+    stato.chat.suggestions.push({
+      user:String(payload.user||"anon"),side:normSide(payload.side),text,
+      ts:payload.ts||Date.now(),role:payload.role||computeRole(payload.user)
     });
-    if (res.ok){
-      // ok
-    }
-  }catch(e){
-  }finally{
-    isSaving=false;
+    updateObjectiveProgress();saveState();return;
   }
+  if(payload.type==="chat_vote"||payload.type==="chat_tiebreak"){
+    const choice=normalizeChoice(payload.choice);
+    if(!choice)return;
+    const list=payload.type==="chat_tiebreak"?stato.chat.votes2:stato.chat.votes1;
+    list.push({
+      user:String(payload.user||"anon"),choice,ts:payload.ts||Date.now(),
+      role:payload.role||computeRole(payload.user)
+    });
+    updateObjectiveProgress();saveState();
+  }
+}
+async function connectRoom(){
+  if(!/^[A-Z0-9]{6}$/.test(roomCode)){
+    console.warn("Codice stanza mancante o non valido.");return;
+  }
+  roomClient=new TortelloSupabaseRoom({
+    room:roomCode,role:isHost?"host":"guest",
+    nickname:isHost?streamerName:guestName,game:"paper-please",
+    gameConfig:{seed:urlParams.get("seed")||"",mode:soloMode?"solo":(urlParams.get("mode")||"coop")}
+  });
+  roomClient.on("game-state",applyRemoteState);
+  roomClient.on("game-event",handleGameEvent);
+  roomClient.on("state-request",payload=>{
+    if(isHost&&payload?.requester==="guest")broadcastState().catch(()=>{});
+  });
+  roomClient.on("presence",presence=>{
+    if(isHost&&Object.values(presence||{}).flat().some(e=>e.role==="guest"))
+      broadcastState().catch(()=>{});
+  });
+  try{
+    await roomClient.connect();
+    if(isHost){
+      const seed=urlParams.get("seed")?.trim();
+      if(seed)stato.seed=seed;
+      stato.mode=soloMode?"solo":(urlParams.get("mode")||stato.mode);
+      updateUI();await broadcastState();
+    }else requestGameState();
+  }catch(e){console.error("Supabase Realtime non disponibile:",e);}
 }
 
 /* ===== Chat intake lock behavior =====
@@ -1906,8 +1961,8 @@ document.querySelectorAll(".decision-btn").forEach(btn=>{
     updateUI();
   });
 });
-UI.btnConfirm.addEventListener("click", confirmDecision);
-UI.btnApplyChat.addEventListener("click", applyDraftFromChat);
+UI.btnConfirm.addEventListener("click", ()=>{ if(isHost) confirmDecision(); });
+UI.btnApplyChat.addEventListener("click", ()=>{ if(isHost) applyDraftFromChat(); });
 
 UI.btnNextPhase.addEventListener("click", ()=>{
   if (stato.gameOver || stato.runCompleted) return;
@@ -1964,39 +2019,18 @@ UI.endRestartBtn.addEventListener("click", ()=>newRun(true));
 /* ===== Bootstrap ===== */
 (async function init(){
   await loadConfig();
-  stato = defaultState();
-
-  // initial order
-  buildOrderFromState();
-  ensureState();
-
-  // try load existing state
-  await loadState();
-
-  // if loaded state has different seed/order mismatch -> rebuild order from its seed
-  if (stato && stato.seed){
-    buildOrderFromState();
-    ensureState();
-  }
-
-  // init phase if missing
-  if (!stato.phase || !PHASES.includes(stato.phase)){
-    setPhase("intro");
-  } else {
-    updateUI();
-  }
-
-  // main tick
+  stato=defaultState();
+  const seed=urlParams.get("seed")?.trim();
+  if(seed)stato.seed=seed;
+  if(urlParams.get("mode"))stato.mode=soloMode?"solo":urlParams.get("mode");
+  buildOrderFromState();ensureState();
+  updateUI();
+  await connectRoom();
   setInterval(()=>{
-    tickPhase();
+    if(isHost)tickPhase();
     updateTimerUI();
-    // quick UI refresh without repainting everything too often
-    if (stato.objectives.active) renderObjective();
-  }, 250);
-
-  // polling sync
-  setInterval(loadState, Number(cfg?.settings?.pollMs ?? 1500));
-})();
-</script>
+    if(isHost&&stato.objectives.active)renderObjective();
+  },250);
+})();</script>
 </body>
 </html>
