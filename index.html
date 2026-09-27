@@ -911,16 +911,18 @@
         state.guestNickname = clean;
         state.roomRole = 'guest';
         state.roomClient = client;
+        state.roomInfoReceived = false;
+        state.gameStarted = false;
         attachGuestRoom(client);
+
+        $('guestModal').hidden = true;
+        $('guestWaitingCode').textContent = state.roomCode;
+        $('guestWaitingState').textContent = 'Connessione alla stanza in corso...';
+        $('guestWaitingModal').hidden = false;
+
         await client.connect();
 
         sessionStorage.setItem('tortelloGuestNickname', clean);
-        $('guestModal').hidden = true;
-        $('guestWaitingCode').textContent = state.roomCode;
-        state.roomInfoReceived = false;
-        state.gameStarted = false;
-        $('guestWaitingState').textContent = 'Connessione alla stanza in corso...';
-        $('guestWaitingModal').hidden = false;
 
         window.setTimeout(() => {
           if (!state.roomInfoReceived && !state.gameStarted && state.roomClient === client) {
