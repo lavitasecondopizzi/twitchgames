@@ -1686,10 +1686,15 @@ function aggiornaInterattivita(){
 
 /* ========= LOGICA GIOCO ========= */
 
-async function onLetterClick(playerId, letter){
+async function onLetterClick(playerId, letter, fromHostEvent = false){
   if (!puoControllare(playerId)) return;
+  if (roomCode && forcedRole === "B" && !fromHostEvent){
+    await roomClient?.broadcast("game_event", { type:"letter", playerId, letter, sender:clientId });
+    return;
+  }
   const g = stato.game[playerId];
   if (g.status !== "playing") return;
+  const previousStatus = g.status;
 
   letter = letter.toUpperCase();
   if (g.correctLetters.includes(letter) || g.wrongLetters.includes(letter)) return;
@@ -1728,9 +1733,17 @@ async function onLetterClick(playerId, letter){
       g.status = "lost";
     }
   }
-
-  // ... dopo aver aggiornato g.status / g.displayWord / wrongLetters ...
   stato.game[playerId] = g;
+
+  if (previousStatus === "playing" && g.status === "won"){
+    if (playerId === "A") stato.punteggioA++;
+    else stato.punteggioB++;
+    showScoreFx(+1);
+  } else if (previousStatus === "playing" && g.status === "lost"){
+    if (playerId === "A") stato.punteggioA = Math.max(0, stato.punteggioA - 1);
+    else stato.punteggioB = Math.max(0, stato.punteggioB - 1);
+    showScoreFx(-1);
+  }
 
   const other = (playerId === "A") ? "B" : "A";
   const otherState = stato.game[other];
@@ -1754,6 +1767,7 @@ async function onLetterClick(playerId, letter){
 /* ========= NUOVO ROUND ========= */
 
 async function nuovoRound(initial = false){
+  if (roomCode && forcedRole !== "A") return;
   // scegli due frasi tematiche diverse
   const fA = nuovaFraseCasuale();
   const fB = nuovaFraseCasuale(fA.phrase);
