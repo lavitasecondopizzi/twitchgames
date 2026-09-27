@@ -1,9 +1,5 @@
 (function initGameApis(global){
-  const API_MAP = {
-    'paper-please': {
-      sync: 'sync.php'
-    }
-  };
+  const API_MAP = {};
 
   function currentGame(){
     const parts = window.location.pathname.split('/').filter(Boolean);
