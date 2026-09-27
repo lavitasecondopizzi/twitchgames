@@ -15,6 +15,10 @@ function broadcast(room, sender, message) {
   }
 }
 
+function broadcastAll(room, message) {
+  for (const peer of room.peers) send(peer.socket, message);
+}
+
 function removePeer(peer) {
   const room = rooms.get(peer.room);
   if (!room) return;
@@ -65,14 +69,18 @@ wss.on('connection', (socket, request) => {
   room.peers.add(peer);
 
   send(socket, {
-    v: 1, type: 'hello',
+    v: 1,
+    type: 'hello',
     payload: { peerId: peer.id, room: roomCode, role },
     timestamp: Date.now()
   });
 
   if (room.peers.size === 2) {
-    broadcast(room, peer, {
-      v: 1, type: 'peer_ready', payload: { role }, timestamp: Date.now()
+    broadcastAll(room, {
+      v: 1,
+      type: 'peer_ready',
+      payload: { roles: [...room.peers].map((item) => item.role) },
+      timestamp: Date.now()
     });
   }
 
