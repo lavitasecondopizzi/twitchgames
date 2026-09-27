@@ -1587,8 +1587,8 @@ function aggiornaUI(){
   if (wrongAEl) wrongAEl.textContent = gA.wrongLetters.join(", ");
   if (wrongBEl) wrongBEl.textContent = gB.wrongLetters.join(", ");
 
-  if (statusAEl) statusAEl.textContent = statoTestoGiocatore(gA.status);
-  if (statusBEl) statusBEl.textContent = statoTestoGiocatore(gB.status);
+  if (statusAEl) statusAEl.textContent = statoTestoGiocatore(gA.status, "A");
+  if (statusBEl) statusBEl.textContent = statoTestoGiocatore(gB.status, "B");
   
   if (themeAEl) themeAEl.textContent = gA.theme || "-";
   if (themeBEl) themeBEl.textContent = gB.theme || "-";
@@ -1620,25 +1620,32 @@ const turnLabelEl = document.getElementById("turnLabel");
 
 function renderWord(el, displayWord){
   if (!el) return;
-  if (!displayWord){
-    el.textContent = "_ _ _";
-    return;
-  }
-  const words = displayWord.split(" ");  // spezza per parola
-  el.innerHTML = "";
-  words.forEach(w => {
-    const line = document.createElement("div");
-    line.className = "word-line";
-    line.textContent = w.split("").join(" "); // lettere distanziate
-    el.appendChild(line);
-  });
+  const value = String(displayWord || "_ _ _");
+  el.textContent = "";
+  el.classList.toggle("empty-word", !displayWord);
+
+  // Una sola riga: gli spazi separano le parole, non creano nuove righe.
+  const chars = value.split("");
+  el.textContent = chars.map((ch, index) => {
+    if (ch === " ") return "   ";
+    if (ch === "-") return "-";
+    return ch + (index < chars.length - 1 && chars[index + 1] !== " " ? " " : "");
+  }).join("").trim();
+
+  const length = String(displayWord || "").replace(/ /g, "").length;
+  if (length > 60) el.style.fontSize = "clamp(8px, 1vw, 13px)";
+  else if (length > 45) el.style.fontSize = "clamp(9px, 1.15vw, 15px)";
+  else if (length > 32) el.style.fontSize = "clamp(10px, 1.3vw, 17px)";
+  else el.style.fontSize = "clamp(12px, 1.6vw, 22px)";
 }
 
-function statoTestoGiocatore(st){
-  if (st === "playing") return "Sta giocando…";
-  if (st === "won")     return "HA VINTO! 🎉";
-  if (st === "lost")    return "HA PERSO 💀";
-  return "In attesa…";
+function statoTestoGiocatore(st, playerId){
+  if (st === "won") return "HA VINTO!";
+  if (st === "lost") return "HA PERSO!";
+  if (st === "playing"){
+    return stato.game.turn === playerId ? "È IL SUO TURNO" : "IN ATTESA";
+  }
+  return "IN ATTESA";
 }
 
 function aggiornaLettereUI(playerId){
