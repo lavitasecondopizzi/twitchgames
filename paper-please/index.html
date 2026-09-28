@@ -138,6 +138,7 @@ button,input,select{font:inherit}
 .decision-btn.selected{background:var(--green);color:var(--ink)}
 .decision-btn:disabled{opacity:.4;cursor:not-allowed}.outcome{margin-top:6px}
 .outcome .hud-row{margin-bottom:5px}
+.role-master{background:var(--purple);color:#fff}.phase-help{margin-top:2px;font-size:6px;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
 .side{min-width:0;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr);gap:7px}
 .side-info{display:grid;grid-template-rows:auto minmax(0,1fr);gap:6px;min-height:0}
 .side-info-head{display:flex;align-items:center;justify-content:space-between;gap:6px}
@@ -220,7 +221,7 @@ button,input,select{font:inherit}
         <div class="hud-title">Paper Pizzi Please</div>
         <div class="hud-row">
           <span id="hudRound">Caso 1/12</span>
-          <span class="badge brand" id="hudSeason">Stagione 1</span>
+          <span class="badge brand" id="hudSeason">Stagione 1</span><span class="badge role-master" id="uiRoleBadge">MASTER / NARRATORE</span>
         </div>
         <div class="hud-row">
           <span class="badge" id="hudPhase">Intro</span>
@@ -404,7 +405,7 @@ const UI = {
   hudUnlocks: el("hudUnlocks"),
   hudDebts: el("hudDebts"),
   hudCaseIndex: el("hudCaseIndex"),
-  hudDossier: el("hudDossier"),
+  hudDossier: el("hudDossier"), uiRoleBadge: el("uiRoleBadge"),
 
   // bars
   barRegime: el("barRegime"), barPopolo: el("barPopolo"), barRibelli: el("barRibelli"),
@@ -1206,6 +1207,8 @@ function updateUI(){
 
   // phase
   UI.hudPhase.textContent = phaseLabel(stato.phase);
+  UI.uiRoleBadge.textContent = soloMode ? "MASTER + GIOCATORE" : (isHost ? "MASTER / NARRATORE" : "GIOCATORE / OSPITE");
+  UI.uiRoleBadge.className = "badge " + (soloMode ? "brand" : (isHost ? "role-master" : "ok"));
   UI.voteLockBadge.textContent = "Voto: " + (stato.phaseLocked ? "LOCK" : "Aperto");
   UI.voteLockBadge.className = "badge " + (stato.phaseLocked ? "ko" : "ok");
 
