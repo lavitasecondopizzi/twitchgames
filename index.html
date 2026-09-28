@@ -749,7 +749,7 @@
       return {};
     }
 
-    function buildGameUrl(game, role, nickname, gameConfig = {}, view = 'player') {
+    function buildGameUrl(game, role, nickname, gameConfig = {}, view = 'player', guestNickname = '') {
       const player = encodeURIComponent(nickname || (role === 'host' ? 'Pizzi' : 'Ospite'));
       const room = encodeURIComponent(state.roomCode);
       const interaction = encodeURIComponent(gameConfig.interactionMode || 'guest');
@@ -770,9 +770,10 @@
         const seed = encodeURIComponent(gameConfig.seed || '');
         const mode = gameConfig.mode === 'solo' ? '&mode=solo' : '';
         const paperPage = view === 'master' ? 'master.html' : 'index.html';
+        const guest = guestNickname ? '&guest=' + encodeURIComponent(guestNickname) : (role === 'guest' ? '&guest=' + player : '');
         return './paper-please/' + paperPage + '?seed=' + seed +
           '&streamer=' + player + mode + '&room=' + room +
-          '&role=' + role + '&interaction=' + interaction +
+          '&role=' + role + '&interaction=' + interaction + guest +
           (view === 'master' ? '&master=1' : '');
       }
 
@@ -930,7 +931,7 @@
 
     function openMasterRoom() {
       if (state.selectedGame !== 'paper-please' || !state.roomCode) return;
-      const masterUrl = buildGameUrl('paper-please', 'host', 'Pizzi', state.gameConfig, 'master');
+      const masterUrl = buildGameUrl('paper-please', 'host', 'Pizzi', state.gameConfig, 'master', state.guestNickname || '');
       if (masterUrl) window.open(masterUrl, '_blank', 'noopener,noreferrer');
     }
 
