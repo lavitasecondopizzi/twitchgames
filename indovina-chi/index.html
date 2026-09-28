@@ -269,6 +269,8 @@ button,select{font:inherit}
 .score-btn:hover:not(:disabled),.score-btn:focus-visible{
   background:var(--ink);color:var(--paper);outline:none;
 }
+.score-btn#subScore{color:#d11;font-weight:900}
+.score-btn#addScore{color:#19a83a;font-weight:900}
 
 /* ===== AREA GIOCO ===== */
 
@@ -399,6 +401,9 @@ button,select{font:inherit}
   transition:transform .08s steps(2,end),filter .08s;
 }
 .cell:hover{transform:translate(-1px,-1px);filter:contrast(1.08)}
+.board.choosing-character .cell{outline:4px solid #19d34a;outline-offset:-4px}
+.board.choosing-character .cell:hover{transform:translate(-2px,-2px) scale(1.02);filter:contrast(1.12)}
+.cell.selected-character{outline:5px solid #19d34a;outline-offset:-5px}
 .cell img{
   width:100%;height:100%;
   object-fit:contain;
@@ -655,9 +660,9 @@ button,select{font:inherit}
 
     <div class="center">
       <div class="center-header">
-        <div class="label">Round attuale</div>
+        <div class="label">Il tuo personaggio</div>
         <div class="round-controls">
-          <select id="roundSelect"></select>
+          <button class="btn" id="chooseCharacter">Scegli</button>
           <button class="btn" id="newRound">Nuovo Round</button>
         </div>
       </div>
@@ -730,6 +735,32 @@ const isHost = player === "A";
 let roomClient = null;
 let isApplyingRemoteState = false;
 let revision = 0;
+let personalCharacter = null;
+function characterStorageKey(){
+  return "tortello-indovina-chi:" + roomCode + ":" + (player || "spectator") + ":character";
+}
+function loadPersonalCharacter(){
+  try{ personalCharacter = JSON.parse(localStorage.getItem(characterStorageKey()) || "null"); }catch(_){ personalCharacter = null; }
+}
+function savePersonalCharacter(value){
+  personalCharacter = value;
+  try{ localStorage.setItem(characterStorageKey(), JSON.stringify(value)); }catch(_){}
+}
+function renderPersonalCharacter(){
+  const img = document.getElementById("roundImage");
+  const label = document.querySelector(".center .label");
+  if(!img) return;
+  if(personalCharacter?.src){
+    img.src = personalCharacter.src;
+    img.alt = personalCharacter.name || "Personaggio scelto";
+    if(label) label.textContent = "Il tuo personaggio";
+  }else{
+    img.removeAttribute("src");
+    img.alt = "";
+    if(label) label.textContent = "Scegli il tuo personaggio";
+  }
+}
+
 
 /* ========== CONFIG LABELS & IMMAGINI ========== */
 
@@ -794,6 +825,7 @@ async function loadConfigAndImages(){
 
   IMG_COUNT = images.length;
   buildGrids();
+  loadPersonalCharacter();
   setupRoundSection();
 }
 
@@ -832,45 +864,28 @@ function buildGrids(){
 }
 
 function setupRoundSection(){
-  const roundSelect = document.getElementById("roundSelect");
-  const roundImage = document.getElementById("roundImage");
-
-  roundSelect.innerHTML = "";
-
-  images.forEach(img => {
-    const opt = document.createElement("option");
-    opt.value = img.src;
-    opt.textContent = img.name;
-    roundSelect.append(opt);
-  });
-
-  roundSelect.onchange = () => {
-    if (!isHost) {
-      roundSelect.value = stato.roundSrc || images[0]?.src || "";
-      return;
-    }
-    stato.roundSrc = roundSelect.value;
-    const selected = images.find(img => img.src === roundSelect.value);
-    stato.roundName = selected?.name || "";
-    aggiornaUI();
-    salvaStato();
+  const chooseButton = document.getElementById("chooseCharacter");
+  chooseButton.onclick = () => {
+    if(!player) return;
+    const board = document.querySelector(".board[data-board='" + player + "']");
+    const choosing = board?.classList.toggle("choosing-character");
+    chooseButton.textContent = choosing ? "Annulla" : (personalCharacter ? "Cambia" : "Scegli");
   };
 
   document.getElementById("newRound").onclick = () => {
-    if (!isHost || !images.length) return;
-
-    const r = images[Math.floor(Math.random() * images.length)];
-    stato.roundSrc = r.src;
-    stato.roundName = r.name;
+    if(!isHost) return;
     stato.celleA = Array(IMG_COUNT).fill("");
     stato.celleB = Array(IMG_COUNT).fill("");
     resetChatVotes();
-
+    localStorage.removeItem("tortello-indovina-chi:" + roomCode + ":A:character");
+    localStorage.removeItem("tortello-indovina-chi:" + roomCode + ":B:character");
+    personalCharacter = null;
+    renderPersonalCharacter();
     aggiornaUI();
     salvaStato();
   };
 }
-
+ 
 /* ========== STATO ========== */
 
 let stato = {
@@ -1167,10 +1182,7 @@ function aggiornaUI(){
   if(roundSelect && stato.roundSrc && [...roundSelect.options].some(o => o.value === stato.roundSrc)){
     roundSelect.value = stato.roundSrc;
   }
-  if(roundImage){
-    roundImage.src = stato.roundSrc || images[0]?.src || "";
-    roundImage.alt = stato.roundName || "";
-  }
+  renderPersonalCharacter();
 
   const gA = document.querySelector(".board[data-board='A'] .grid")?.children || [];
   const gB = document.querySelector(".board[data-board='B'] .grid")?.children || [];
@@ -1237,6 +1249,20 @@ function abilitaBoard(boardKey){
     if(player !== boardKey) return;
     const c = e.target.closest(".cell");
     if(!c) return;
+
+    if(document.querySelector(".board[data-board='" + boardKey + "']")?.classList.contains("choosing-character")){
+      const idx = [...grid.children].indexOf(c);
+      const selected = images[idx];
+      if(selected){
+        savePersonalCharacter(selected);
+        document.querySelector(".board[data-board='" + boardKey + "']")?.classList.remove("choosing-character");
+        const chooseButton = document.getElementById("chooseCharacter");
+        if(chooseButton) chooseButton.textContent = "Cambia";
+        renderPersonalCharacter();
+        aggiornaUI();
+      }
+      return;
+    }
 
     const idx = [...grid.children].indexOf(c);
     if(e.altKey){
@@ -1425,18 +1451,18 @@ function initTopLayoutSync(){
     </div>
 
     <div class="rules-section">
-      <h3>⑦ INDIZIO</h3>
-      <p>Ogni giocatore può chiedere <b>un solo indizio per round</b>. L'avversario può rispondere sinceramente oppure <b>depistare</b>. Una volta richiesto un determinato indizio, lo stesso indizio <b>non può più essere chiesto dall'altro giocatore</b> per tutto il round.</p>
+      <h3>⑦ INDIZIO / AIUTO</h3>
+      <p>Ogni giocatore può chiedere <b>un solo indizio per round</b>. L'avversario può rispondere sinceramente oppure <b>depistare</b>. Lo stesso indizio, una volta richiesto, <b>non può più essere chiesto dall'altro giocatore</b> per tutto il round. L'indizio può anche essere usato per <b>bandire una domanda specifica</b>: quella domanda non potrà più essere fatta da nessuno dei due giocatori per il resto del round.</p>
     </div>
 
     <div class="rules-section rules-chat">
-      <h3>⑧ AIUTO: BANDIRE UNA DOMANDA</h3>
-      <p><b>Una sola volta per round</b>, uno dei due giocatori può spendere il proprio aiuto per bandire una domanda specifica. Da quel momento quella domanda <b>non può essere fatta da nessuno dei due giocatori</b> per il resto del round.</p>
+      <h3>⑧ VOTI DELLA CHAT</h3>
+      <p>La chat può proporre di segnare un personaggio in <b>rosso</b> o <b>verde</b> usando i comandi dedicati. Le proposte vengono mostrate nella colonna centrale e lo streamer decide se applicarle.</p>
     </div>
 
     <div class="rules-section rules-new-round">
-      <h3>⑨ CHAT E NUOVO ROUND</h3>
-      <p>La chat può proporre di segnare un personaggio in <b>rosso</b> o <b>verde</b> usando i comandi dedicati. Le proposte vengono mostrate nella colonna centrale. L'<b>host</b> può avviare un nuovo round: le schede vengono azzerate e le risorse utilizzate nel round vengono ripristinate.</p>
+      <h3>⑨ NUOVO ROUND</h3>
+      <p>L'<b>host</b> può avviare un nuovo round. Le schede vengono azzerate e l'utilizzo dell'indizio/aiuto viene ripristinato.</p>
     </div>
   </section>
 </div>
