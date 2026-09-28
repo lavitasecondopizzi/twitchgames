@@ -291,6 +291,7 @@ body.master-view .decision-btn{cursor:default}
 .master-contracts{font-size:6px;line-height:1.4}
 .master-contract{padding:4px 5px;border:2px solid var(--line);background:var(--paper2);margin-bottom:3px}
 .master-contract strong{display:block;font-size:6px;text-transform:uppercase}
+.master-contract small{display:block;margin-top:3px;font-size:5px;font-weight:800;line-height:1.3}
 @media(max-width:650px){.master-twists{grid-template-columns:1fr}}
 
 .master-shop-confirm{max-width:520px}
@@ -1745,10 +1746,14 @@ function renderMasterDossier(caseObj){
         contractCount++;
         const row=document.createElement("div");row.className="master-contract";
         const type=kind==="debts"?"DEBITO":"PROMESSA";
-        row.innerHTML="<strong></strong><span></span>";
+        row.innerHTML="<strong></strong><span></span><small></small>";
         row.querySelector("strong").textContent=label+" · "+type;
+        const from=item.from?String(item.from):"";
+        const to=item.to?String(item.to):"";
+        const parties=from||to ? "Da: "+(from||"—")+" · A: "+(to||"—") : "";
         const due=typeof item.dueOffset==="number"?" · scadenza +"+item.dueOffset+" casi":"";
         row.querySelector("span").textContent=String(item.text||"—")+due;
+        row.querySelector("small").textContent=parties;
         UI.masterContracts.appendChild(row);
       });
     });
