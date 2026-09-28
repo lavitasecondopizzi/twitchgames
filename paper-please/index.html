@@ -1725,7 +1725,7 @@ async function broadcastState(){
   await roomClient.broadcast("game_state",statePayload());
 }
 async function saveState(){
-  if(!isHost||isApplyingRemoteState)return;
+  if(!isMaster||isApplyingRemoteState)return;
   try{ensureState();updateUI();await broadcastState();}
   catch(e){console.error("Errore broadcast stato:",e);}
 }
@@ -1783,8 +1783,7 @@ async function connectRoom(){
     }
   });
   roomClient.on("presence",presence=>{
-    if(isHost&&Object.values(presence||{}).flat().some(e=>e.role==="guest"))
-      broadcastState().catch(()=>{});
+    // Presence is only informational on player/host views.
   });
   try{
     await roomClient.connect();
@@ -1792,7 +1791,7 @@ async function connectRoom(){
       const seed=urlParams.get("seed")?.trim();
       if(seed)stato.seed=seed;
       stato.mode=soloMode?"solo":(urlParams.get("mode")||stato.mode);
-      updateUI();await broadcastState();
+      updateUI();
     }else requestGameState();
   }catch(e){console.error("Supabase Realtime non disponibile:",e);}
 }
