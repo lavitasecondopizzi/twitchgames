@@ -241,7 +241,7 @@ body.master-view .decision-btn{cursor:default}
 .control-mini-row{display:flex;gap:5px;margin-top:6px}.objective-readout{font-size:7px;font-weight:800;line-height:1.35;margin-top:5px}.world-row{display:flex;justify-content:space-between;font-size:6px;font-weight:900;margin-top:6px}.world-bar{height:6px;border:2px solid var(--line);background:#fff}.world-bar i{display:block;height:100%;width:50%;background:var(--green)}
 .master-main>.panel{min-width:0;min-height:0}.master-side{display:grid;grid-template-rows:minmax(0,1.45fr) minmax(0,.95fr);gap:8px}.master-side>.side{height:100%;min-height:0}.master-side .side-columns{grid-template-columns:1fr 1fr;grid-template-rows:1fr;gap:6px}.master-side .side-info{height:100%;min-height:0}.master-side .chat-box,.master-side .history-box{min-height:0}
 .master-main .panel-head{margin-bottom:7px}.master-main .grid-case{grid-template-columns:1fr}.master-main .master-dossier-details{grid-template-rows:auto auto minmax(0,1fr) auto}
-.master-dossier-details{width:100%}
+.master-dossier-details{width:100%} .master-dossier-details #caseNotes{display:block;-webkit-line-clamp:unset;max-height:none;overflow:auto}.master-dossier-actions{display:none}
 .master-section{margin-top:7px;padding-top:6px;border-top:2px solid var(--line)}
 .master-section-title{font-size:6px;font-weight:900;text-transform:uppercase;margin-bottom:4px}
 .master-tags{display:flex;flex-wrap:wrap;gap:3px}
@@ -361,8 +361,8 @@ body.master-view .decision-btn{cursor:default}
   </aside>
   <section class="panel" id="panelCase">
       <div class="panel-head">
-        <div class="panel-title">POSTAZIONE DI FRONTIERA</div>
-        <div class="panel-actions"><span class="badge role-master">DOSSIER LIVE</span></div>
+        <div class="panel-title">FASCICOLO DEL CASO</div>
+        <div class="panel-actions"><span class="badge role-master">CASO CORRENTE</span></div>
       </div>
 
       <div class="details master-dossier-details">
@@ -389,8 +389,7 @@ body.master-view .decision-btn{cursor:default}
               <span class="badge" id="caseDebt">Debito: —</span>
             </div>
           </div>
-          <div>
-            <div class="controls compat"><button class="decision-btn" data-decision="pass">Fai passare</button><button class="decision-btn" data-decision="deny">Respingi</button><button class="decision-btn" data-decision="arrest">Arresta</button><button class="decision-btn" data-decision="condemn">Condanna</button></div>
+          <div class="master-dossier-actions">\n            <div class="controls compat"><button class="decision-btn" data-decision="pass">Fai passare</button><button class="decision-btn" data-decision="deny">Respingi</button><button class="decision-btn" data-decision="arrest">Arresta</button><button class="decision-btn" data-decision="condemn">Condanna</button></div>
             <div class="outcome">
               <div class="hud-row">
                 <span class="badge" id="draftLabel">Decisione ospite: Nessuna</span>
