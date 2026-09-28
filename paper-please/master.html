@@ -1100,7 +1100,7 @@ function phaseDurationSeconds(phase){
   return 0;
 }
 function setPhase(phase){
-  if(!isHost) return;
+  if(!isMaster) return;
   stato.phase = phase;
   stato.phaseLocked = (phase==="decision" || phase==="event" || phase==="end");
   const sec = phaseDurationSeconds(phase);
@@ -1400,7 +1400,7 @@ function updateUI(){
   UI.btnConfirm.disabled = !isMaster || locked || !playerChoice;
   UI.btnConfirm.style.display = isMaster ? "" : "none";
   UI.btnNextPhase.disabled = !isMaster || stato.gameOver || stato.runCompleted;
-  UI.btnNextPhase.style.display = isHost ? "" : "none";
+  UI.btnNextPhase.style.display = isMaster ? "" : "none";
   UI.btnApplyChat.style.display = "none";
   UI.draftLabel.textContent = "Decisione ospite: " + (playerChoice ? decisionLabel(playerChoice) : "Nessuna");
   const masterDecisionEl = document.getElementById("masterPlayerDecision");
@@ -1771,7 +1771,7 @@ async function broadcastState(){
   await roomClient.broadcast("game_state",statePayload());
 }
 async function saveState(){
-  if(!isHost||isApplyingRemoteState)return;
+  if(!isMaster||isApplyingRemoteState)return;
   try{ensureState();updateUI();await broadcastState();}
   catch(e){console.error("Errore broadcast stato:",e);}
 }
@@ -1827,7 +1827,7 @@ async function connectRoom(){
     if(isMaster&&payload?.requester!=="master")broadcastState().catch(()=>{});
   });
   roomClient.on("presence",presence=>{
-    if(isHost&&Object.values(presence||{}).flat().some(e=>e.role==="guest"))
+    if(isMaster&&Object.values(presence||{}).flat().some(e=>e.role==="guest"))
       broadcastState().catch(()=>{});
   });
   try{
@@ -1870,8 +1870,8 @@ document.querySelectorAll(".decision-btn").forEach(btn=>{
     updateUI();
   });
 });
-UI.btnConfirm.addEventListener("click", ()=>{ if(isHost) confirmDecision(); });
-UI.btnApplyChat.addEventListener("click", ()=>{ if(isHost) applyDraftFromChat(); });
+UI.btnConfirm.addEventListener("click", ()=>{ if(isMaster) confirmDecision(); });
+UI.btnApplyChat.addEventListener("click", ()=>{ if(isMaster) applyDraftFromChat(); });
 
 UI.btnNextPhase.addEventListener("click", ()=>{
   if (!isHost || stato.gameOver || stato.runCompleted) return;
