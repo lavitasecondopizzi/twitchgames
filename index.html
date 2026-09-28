@@ -657,6 +657,7 @@
       </div>
       <div class="room-actions">
         <button class="comic-btn" id="copyRoom" type="button">Copia invito</button>
+        <button class="comic-btn hidden" id="openMasterRoom" type="button">Apri visuale Master</button>
         <button class="comic-btn primary" id="launchRoomGame" type="button" disabled>Avvia gioco</button>
       </div>
     </section>
@@ -889,6 +890,7 @@
           ? 'Modalità Solo Chat: puoi avviare subito. La chat sarà il secondo giocatore.'
           : 'Condividi il codice con il tuo ospite. Quando entra, il suo nick comparirà qui.';
         $('roomModal').hidden = false;
+        $('openMasterRoom').classList.toggle('hidden', state.selectedGame !== 'paper-please');
         updateHostPresence(client.presenceState());
       } catch (error) {
         console.error(error);
@@ -923,6 +925,12 @@
       } catch (_) {
         $('roomNotice').textContent = 'Copia automatica non disponibile. Codice stanza: ' + state.roomCode;
       }
+    }
+
+    function openMasterRoom() {
+      if (state.selectedGame !== 'paper-please' || !state.roomCode) return;
+      const masterUrl = buildGameUrl('paper-please', 'host', 'Pizzi', state.gameConfig);
+      if (masterUrl) window.location.href = masterUrl;
     }
 
     async function launchRoomGame() {
@@ -1055,6 +1063,7 @@
     });
 
     $('copyRoom').addEventListener('click', copyRoomInvite);
+    $('openMasterRoom').addEventListener('click', openMasterRoom);
     $('launchRoomGame').addEventListener('click', launchRoomGame);
 
     $('configModal').addEventListener('click', (event) => {
