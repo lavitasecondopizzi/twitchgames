@@ -1648,12 +1648,6 @@ function aggiornaUI(){
   if (themeAEl) themeAEl.textContent = gA.theme || "-";
   if (themeBEl) themeBEl.textContent = gB.theme || "-";
 
-  if (turnLabelEl){
-    if (stato.game.turn === "A") turnLabelEl.textContent = nameA;
-    else if (stato.game.turn === "B") turnLabelEl.textContent = nameB;
-    else turnLabelEl.textContent = "-";
-  }
-
   if (roundResultEl){
     if (stato.game.roundResult === "A"){
       roundResultEl.textContent = "ROUND: " + nameA + " VINCE";
@@ -1692,8 +1686,8 @@ const roundResultEl = document.getElementById("roundResult");
 const connectionStatusEl = document.createElement("span");
 connectionStatusEl.id = "realtimeStatus";
 connectionStatusEl.style.cssText = "display:inline-block;margin-left:8px;font-size:9px;font-weight:900;text-transform:uppercase;";
-const turnRowEl = turnLabelEl?.closest(".turn-row");
-if (turnRowEl) turnRowEl.appendChild(connectionStatusEl);
+const centerEl = document.querySelector(".center");
+if (centerEl) centerEl.appendChild(connectionStatusEl);
 
 function aggiornaStatoConnessioneUI(){
   if (!connectionStatusEl) return;
