@@ -1874,7 +1874,7 @@ UI.btnConfirm.addEventListener("click", ()=>{ if(isMaster) confirmDecision(); })
 UI.btnApplyChat.addEventListener("click", ()=>{ if(isMaster) applyDraftFromChat(); });
 
 UI.btnNextPhase.addEventListener("click", ()=>{
-  if (!isHost || stato.gameOver || stato.runCompleted) return;
+  if (!isMaster || stato.gameOver || stato.runCompleted) return;
   // manual phase advance (respects order)
   if (stato.phase==="intro") return setPhase("discuss");
   if (stato.phase==="discuss") return setPhase("vote1");
