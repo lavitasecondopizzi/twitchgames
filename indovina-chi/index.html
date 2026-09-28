@@ -1245,6 +1245,7 @@ function aggiornaInterattivita(){
     btn.disabled = true;
     if(btn === newRoundBtn){
       btn.style.display = isHost ? "" : "none";
+      btn.disabled = !isHost;
     }else{
       btn.style.display = "none";
     }
