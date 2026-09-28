@@ -409,7 +409,7 @@ button,select{font:inherit}
   background:#fff;
 }
 .cell .overlay{position:absolute;inset:0;pointer-events:none}
-.cell.red .overlay{background:rgba(0,0,0,.58)}
+.cell.red .overlay{background:rgba(210,30,30,.72)}
 .cell.red:after{
   content:"✕";
   position:absolute;inset:0;
@@ -420,7 +420,7 @@ button,select{font:inherit}
   text-shadow:3px 3px 0 #000;
 }
 .cell.green .overlay{
-  background:rgba(255,255,255,.22);
+  background:rgba(25,211,74,.62);
   outline:4px solid #111;
   outline-offset:-4px;
 }
@@ -1329,7 +1329,7 @@ document.addEventListener("click", e => {
   const btn = e.target.closest("[data-reset]");
   if(!btn || player !== btn.closest(".board")?.dataset.board) return;
 
-  if(!confirm("Sei sicuro di voler resettare questa scheda?")) return;
+  if(!window.confirm("Sei sicuro di voler resettare tutta la scheda?\\n\\nTutte le indicazioni rosse e verdi verranno rimosse.")) return;
 
   const board = btn.closest(".board").dataset.board;
   stato["celle" + board] = Array(IMG_COUNT).fill("");
