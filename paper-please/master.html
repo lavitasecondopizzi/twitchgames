@@ -1406,8 +1406,8 @@ function updateUI(){
   const masterGuestNameEl = document.getElementById("masterGuestName");
   if(masterDecisionEl) masterDecisionEl.textContent = playerChoice ? decisionLabel(playerChoice).toUpperCase() : "NESSUNA";
   if(masterPhaseEl) masterPhaseEl.textContent = phaseLabel(stato.phase).toUpperCase();
-  if(masterGuestNameEl) masterGuestNameEl.textContent = guestName;
-  if(masterGuestStatusEl) masterGuestStatusEl.textContent = playerChoice ? "DECISIONE PRONTA" : "COLLEGATO";
+  if(masterGuestNameEl && !masterGuestNameEl.textContent.trim()) masterGuestNameEl.textContent = "Ospite";
+  if(masterGuestStatusEl) masterGuestStatusEl.textContent = playerChoice ? "DECISIONE PRONTA" : (masterGuestStatusEl.textContent || "IN ATTESA");
 
   const last = stato.lastOutcome;
   if (last && last.pos===pos && decided && last.text){
@@ -1673,8 +1673,15 @@ async function connectRoom(){
     if(isHost&&payload?.requester==="guest")broadcastState().catch(()=>{});
   });
   roomClient.on("presence",presence=>{
-    if(isHost&&Object.values(presence||{}).flat().some(e=>e.role==="guest"))
-      broadcastState().catch(()=>{});
+    const guest=Object.values(presence||{}).flat().find(e=>e.role==="guest");
+    const name=guest?.nickname || "Ospite";
+    const guestEl=document.getElementById("masterGuestName");
+    const statusEl=document.getElementById("masterGuestStatus");
+    if(guestEl)guestEl.textContent=name;
+    if(statusEl)statusEl.textContent=guest ? "COLLEGATO" : "IN ATTESA";
+    const camGuest=document.getElementById("camGuestLabel");
+    if(camGuest)camGuest.textContent=name;
+    if(isHost&&guest) broadcastState().catch(()=>{});
   });
   try{
     await roomClient.connect();
