@@ -1434,6 +1434,9 @@ async function caricaStato(){
           await onLetterClick(event.playerId, event.letter, true);
         } else if (event.type === "score_adjust" && ["A","B"].includes(event.playerId)) {
           await adjustScore(event.playerId, Number(event.delta) || 0, true);
+        } else if (event.type === "score_fx" && Number(event.delta)) {
+          // L'host ha già aggiornato il punteggio: qui riproduciamo solo l'effetto.
+          showScoreFx(Number(event.delta));
         } else if (event.type === "new_round") {
           await nuovoRound(false);
         }
@@ -1896,13 +1899,21 @@ async function adjustScore(playerId, delta, fromHostEvent = false){
   if (!["A","B"].includes(playerId) || !Number.isFinite(delta) || delta === 0) return;
   if (roomCode && forcedRole === "B" && !fromHostEvent){
     await roomClient?.broadcast("game_event", { type:"score_adjust", playerId, delta, sender:clientId });
-    showScoreFx(delta);
     return;
   }
   if (playerId === "A") stato.punteggioA = Math.max(0, stato.punteggioA + delta);
   else stato.punteggioB = Math.max(0, stato.punteggioB + delta);
   aggiornaUI();
   await salvaStato();
+
+  // L'host è l'autorità: comunica a entrambi i client l'effetto del punteggio.
+  if (roomCode && forcedRole === "A"){
+    await roomClient?.broadcast("game_event", {
+      type:"score_fx",
+      delta,
+      sender:clientId
+    });
+  }
   showScoreFx(delta);
 }
 
