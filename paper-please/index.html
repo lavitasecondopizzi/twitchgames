@@ -484,7 +484,11 @@ const forcedRole = roomRole;
 const isHost = roomRole === "host";
 const streamerName = urlParams.get("streamer") || "Pizzi";
 const isGuest = roomRole === "guest";
-const guestName = isGuest ? (urlParams.get("guest") || urlParams.get("player") || "Ospite") : "Ospite";
+const guestStorageKey = roomCode ? "tortello:paper:guest:" + roomCode : "";
+const storedGuestName = guestStorageKey ? (localStorage.getItem(guestStorageKey) || "") : "";
+const guestName = isGuest
+  ? (urlParams.get("guest") || urlParams.get("player") || "Ospite")
+  : (urlParams.get("guest") || storedGuestName || "Ospite");
 let roomClient = null;
 let revision = 0;
 let isApplyingRemoteState = false;
