@@ -476,13 +476,14 @@ body.master-view .decision-btn{cursor:default}
 <script>
 
 const urlParams = new URLSearchParams(location.search);
-const masterMode = urlParams.get("master")==="1" || urlParams.get("role")==="host";
-const soloMode  = !masterMode && (urlParams.get("solo")==="1" || urlParams.get("mode")==="solo");
+const masterMode = urlParams.get("master")==="1";
+const roomRole = urlParams.get("role") === "host" ? "host" : "guest";
+const soloMode  = roomRole === "guest" && (urlParams.get("solo")==="1" || urlParams.get("mode")==="solo");
 const roomCode = (urlParams.get("room") || "").trim().toUpperCase();
-const forcedRole = masterMode ? "host" : "guest";
-const isHost = masterMode;
+const forcedRole = roomRole;
+const isHost = roomRole === "host";
 const streamerName = urlParams.get("streamer") || "Pizzi";
-const isGuest = !masterMode;
+const isGuest = roomRole === "guest";
 const guestName = isGuest ? (urlParams.get("guest") || urlParams.get("player") || "Ospite") : "Ospite";
 let roomClient = null;
 let revision = 0;
@@ -1306,7 +1307,7 @@ function updateUI(){
 
   // phase
   UI.hudPhase.textContent = phaseLabel(stato.phase);
-  UI.uiRoleBadge.textContent = masterMode ? "MASTER / NARRATORE" : (soloMode ? "GIOCATORE SOLO" : "GIOCATORE / OSPITE");
+  UI.uiRoleBadge.textContent = masterMode ? "MASTER / NARRATORE" : (soloMode ? "GIOCATORE SOLO" : (isHost ? "GIOCATORE / HOST" : "GIOCATORE / OSPITE"));
   UI.uiRoleBadge.className = "badge " + (masterMode ? "vio" : (soloMode ? "brand" : "ok"));
   UI.voteLockBadge.textContent = "Voto: " + (stato.phaseLocked ? "LOCK" : "Aperto");
   UI.voteLockBadge.className = "badge " + (stato.phaseLocked ? "ko" : "ok");
