@@ -359,6 +359,72 @@ body.master-view .decision-btn{cursor:default}
 .master-main .decision-btn{display:none}.master-main .controls{display:none}.master-main .outcome{margin-top:0}.master-main .side-info-head{display:none}
 @media(max-width:1100px){.master-top{grid-template-columns:1.3fr 1.5fr 1fr}.master-resources{display:none!important}.master-main{grid-template-columns:200px minmax(0,1fr) 300px}}
 @media(max-width:800px){.master-top{grid-template-columns:1fr 1fr}.master-guest{display:none}.master-main{grid-template-columns:180px minmax(0,1fr)}.master-side{display:none}}
+
+/* ===== MASTER LAYOUT — SINGLE SOURCE OF TRUTH ===== */
+body.master-view #app{
+  display:grid;
+  grid-template-rows:auto minmax(0,1fr);
+  min-width:1100px;
+  width:100%;
+  height:100vh;
+}
+body.master-view .master-main{
+  width:100%;
+  min-width:0;
+  min-height:0;
+  display:grid !important;
+  grid-template-columns:240px minmax(0,1fr) 430px !important;
+  grid-template-rows:minmax(0,1fr);
+  gap:8px;
+  overflow:hidden;
+}
+body.master-view .master-control,
+body.master-view .master-case-panel,
+body.master-view .master-side{
+  min-width:0;
+  min-height:0;
+}
+body.master-view .master-side{
+  display:grid !important;
+  grid-template-rows:minmax(0,1fr) 250px !important;
+  gap:8px;
+  overflow:hidden;
+}
+body.master-view .master-case-panel{
+  display:flex;
+  flex-direction:column;
+}
+body.master-view .master-case-panel .master-dossier-details{
+  flex:1 1 auto;
+  min-height:0;
+}
+body.master-view .master-side-intel{
+  min-width:0;
+  min-height:0;
+  overflow:auto;
+}
+body.master-view .master-side .side{
+  min-width:0;
+  min-height:0;
+  height:100%;
+}
+body.master-view .master-side .side-info,
+body.master-view .master-side .side-columns{
+  min-height:0;
+  height:100%;
+}
+body.master-view .master-side .side-columns{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:6px;
+}
+body.master-view .master-side .side-box{
+  min-width:0;
+  min-height:0;
+}
+@media(max-width:1100px){
+  body.master-view #app{min-width:1100px}
+}
 </style>
 </head>
 
@@ -2107,144 +2173,6 @@ function applyDraftFromChat(){
 
 /* Tabs */
 /* ===== Bootstrap ===== */
-function mergeLoadedState(data){
-  stato={...defaultState(),...(data||{})};
-  stato.world={...(cfg.baseWorld||{regime:50,popolo:50,ribelli:50}),...(data?.world||{})};
-  stato.chat={...defaultState().chat,...(data?.chat||{})};
-  stato.objectives={...defaultState().objectives,...(data?.objectives||{})};
-  stato.unlocks={...defaultState().unlocks,...(data?.unlocks||{})};
-  stato.arcs={...defaultState().arcs,...(data?.arcs||{})};
-  stato.shop={...defaultState().shop,...(data?.shop||{})};
-  stato.shop.inventory={...defaultState().shop.inventory,...(data?.shop?.inventory||{})};
-  if(!Number.isFinite(Number(stato.shop.purchasedDossier))) stato.shop.purchasedDossier=1;
-  if(Array.isArray(data?.runOrder)) order=data.runOrder.slice();
-  ensureState();
-}
-function statePayload(){
-  return {...stato,runOrder:order.slice(),_revision:revision,_sender:"master",_sentAt:Date.now()};
-}
-async function broadcastState(){
-  if(!roomClient||!isMaster||isApplyingRemoteState)return;
-  revision++;
-  await roomClient.broadcast("game_state",statePayload());
-}
-async function saveState(){
-  if(!isMaster||isApplyingRemoteState)return;
-  try{
-    ensureState();
-    updateUI();
-    if(stateStorageKey){
-      localStorage.setItem(stateStorageKey, JSON.stringify({
-        savedAt:Date.now(),
-        state:statePayload()
-      }));
-    }
-    await broadcastState();
-  }catch(e){console.error("Errore salvataggio stato:",e);}
-}
-function requestGameState(){
-  roomClient?.broadcast("state_request",{requester:"master",_sentAt:Date.now()}).catch(()=>{});
-}
-function applyRemoteState(payload){
-  if(!payload)return;
-  const incoming=Number(payload._revision)||0;
-  if(incoming&&incoming<revision)return;
-  revision=Math.max(revision,incoming);
-  const clean={...payload};
-  delete clean._revision;delete clean._sender;delete clean._sentAt;
-  isApplyingRemoteState=true;
-  mergeLoadedState(clean);
-  updateUI();
-  isApplyingRemoteState=false;
-}
-function handleGameEvent(payload){
-  if(!payload||!isMaster)return;
-  if(payload.type==="player_decision"){
-    if(stato.phase!=="decision" || stato.decisionsByPos[stato.currentPos]) return;
-    const choice=normalizeChoice(payload.choice);
-    if(!choice) return;
-    stato.playerDecision=choice;
-    updateUI();
-    saveState();
-    return;
-  }
-  if(stato.phaseLocked)return;
-  if(payload.type==="chat_suggestion"){
-    const text=String(payload.text||"").trim();
-    if(!text)return;
-    stato.chat.suggestions.push({
-      user:String(payload.user||"anon"),side:normSide(payload.side),text,
-      ts:payload.ts||Date.now(),role:payload.role||computeRole(payload.user)
-    });
-    updateObjectiveProgress();saveState();return;
-  }
-  if(payload.type==="chat_vote"||payload.type==="chat_tiebreak"){
-    const choice=normalizeChoice(payload.choice);
-    if(!choice)return;
-    const list=payload.type==="chat_tiebreak"?stato.chat.votes2:stato.chat.votes1;
-    list.push({
-      user:String(payload.user||"anon"),choice,ts:payload.ts||Date.now(),
-      role:payload.role||computeRole(payload.user)
-    });
-    updateObjectiveProgress();saveState();
-  }
-}
-async function connectRoom(){
-  if(!/^[A-Z0-9]{6}$/.test(roomCode)){
-    console.warn("Codice stanza mancante o non valido.");return;
-  }
-  roomClient=new TortelloSupabaseRoom({
-    room:roomCode,role:"host",
-    nickname:streamerName,game:"paper-please",
-    gameConfig:{seed:urlParams.get("seed")||"",mode:soloMode?"solo":(urlParams.get("mode")||"coop")}
-  });
-  roomClient.on("game-state",applyRemoteState);
-  roomClient.on("game-event",handleGameEvent);
-  roomClient.on("state-request",payload=>{
-    if(isMaster && payload?.requester!=="master") broadcastState().catch(()=>{});
-  });
-  roomClient.on("presence",presence=>{
-    const guest=Object.values(presence||{}).flat().find(e=>e.role==="guest");
-    const name=String(guest?.nickname || guestName || "Ospite").trim() || "Ospite";
-    const guestEl=document.getElementById("masterGuestName");
-    const statusEl=document.getElementById("masterGuestStatus");
-    const camGuest=document.getElementById("camGuestLabel");
-    if(guestEl)guestEl.textContent=name;
-    if(statusEl)statusEl.textContent=guest ? "COLLEGATO" : "IN ATTESA";
-    if(camGuest)camGuest.textContent=name;
-  });
-  try{
-    await roomClient.connect();
-    const seed=urlParams.get("seed")?.trim();
-    if(seed)stato.seed=seed;
-    stato.mode=soloMode?"solo":(urlParams.get("mode")||stato.mode);
-    updateUI();
-    roomClient.broadcast("state_request",{requester:"master",_sentAt:Date.now()}).catch(()=>{});
-    roomClient.broadcast("guest_identity_request",{requester:"master"}).catch(()=>{});
-  }catch(e){console.error("Supabase Realtime non disponibile:",e);}
-}
-
-/* ===== Chat intake lock behavior =====
-   Nota: il bot/bridge dovrebbe rispettare stato.phaseLocked e scrivere in chat.suggestions/votes solo se non locked.
-   Qui ci limitiamo a renderizzare e applicare la bozza.
-*/
-function applyDraftFromChat(){
-  if (stato.phase !== "decision") return;
-  const counts1 = voteCounts(stato.chat.votes1 || []);
-  const lead1 = leaderFromCounts(counts1);
-  if (!lead1.leader){
-    return;
-  }
-  if (lead1.tie && stato.phase==="decision" && Array.isArray(stato.chat.votes2) && stato.chat.votes2.length){
-    const counts2 = voteCounts(stato.chat.votes2);
-    const lead2 = leaderFromCounts(counts2);
-    if (lead2.leader) draftDecision = lead2.leader;
-  } else {
-    draftDecision = lead1.leader;
-  }
-  updateUI();
-}
-
 /* ===== Events: UI interactions ===== */
 document.querySelectorAll(".decision-btn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
