@@ -139,39 +139,20 @@ button,input,select{font:inherit}
 .decision-btn:disabled{opacity:.4;cursor:not-allowed}.outcome{margin-top:6px}
 .outcome .hud-row{margin-bottom:5px}
 .side{min-width:0;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr);gap:7px}
-.tabs{display:flex;gap:5px;overflow:hidden}
-.tab-btn{
-  flex:1;min-width:0;min-height:30px;padding:5px 4px;
-  border:3px solid var(--line);border-radius:0;background:var(--paper);color:var(--ink);
-  box-shadow:3px 3px 0 var(--line);cursor:pointer;font-size:8px;font-weight:900;text-transform:uppercase;
-}
-.tab-btn.active,.tab-btn:hover{background:var(--ink);color:var(--paper)}
-.tabview{min-height:0;overflow:hidden}.tabinner{height:100%;display:flex}
-.tabpanel{
-  flex:0 0 100%;min-width:0;min-height:0;padding:8px;overflow:hidden;
-  display:grid;grid-template-rows:auto minmax(0,1fr);gap:7px;
-}
-.tabpanel>.panel-title{justify-self:start;font-size:14px}
-.list{
-  min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:5px;
-  padding:7px;border:3px solid var(--line);background:#fff;
-}
-.item{
-  min-width:0;padding:6px;background:var(--paper);border:2px solid var(--line);
-  display:flex;justify-content:space-between;gap:6px;font-size:8px;font-weight:800;overflow:hidden;
-}
-.item .t{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.item .c{font-weight:900}
-.vbars{display:flex;flex-direction:column;gap:6px}.vrow{
-  display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:5px;align-items:center;font-size:8px;font-weight:900;
-}
-.vbg{height:10px;border:2px solid var(--line);background:#fff;overflow:hidden}
-.vfill{height:100%;width:0}.vfill.pass{background:var(--green)}.vfill.deny{background:var(--red)}
-.vfill.arrest{background:var(--yellow)}.vfill.condemn{background:var(--purple)}
-.footer{
-  min-width:0;padding:6px 8px;display:flex;justify-content:space-between;align-items:center;gap:8px;
-}
-.footer .left,.footer .right{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
-.footer .hint{max-width:55vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:8px;font-weight:800}
+.side-info{display:grid;grid-template-rows:auto minmax(0,1fr);gap:6px;min-height:0}
+.side-info-head{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.side-columns{display:grid;grid-template-columns:1fr 1fr;gap:6px;min-height:0}
+.side-box{min-width:0;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr);gap:5px;padding:7px;border:3px solid var(--line);background:var(--paper);box-shadow:3px 3px 0 var(--line)}
+.side-box-title{font-size:9px;font-weight:900;text-transform:uppercase}
+.rules-overlay{position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(17,17,17,.94);opacity:0;pointer-events:none;transition:opacity .2s}
+.rules-overlay.show{opacity:1;pointer-events:auto}
+.rules-card{width:min(1100px,92vw);max-height:88vh;overflow:auto;padding:14px;border:5px solid var(--line);background:var(--paper);box-shadow:10px 10px 0 #000}
+.rules-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.rules-title{font-family:Impact,"Arial Black",sans-serif;font-size:clamp(28px,5vw,58px);line-height:.85;text-transform:uppercase}
+.rules-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.rules-block{padding:10px;border:3px solid var(--line);background:#fff;box-shadow:4px 4px 0 var(--line)}
+.rules-block h3{margin:0 0 6px;font-size:12px;text-transform:uppercase}
+.rules-block p{margin:0;font-size:9px;font-weight:800;line-height:1.45}
 .end-overlay{
   position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:24px;text-align:center;background:rgba(17,17,17,.94);opacity:0;pointer-events:none;transition:opacity .2s;
@@ -200,9 +181,8 @@ button,input,select{font:inherit}
   .portrait{min-height:105px;max-height:30%}.name{font-size:17px}.meta{font-size:7px}
   .notes{padding:5px}.notes .title{font-size:11px}.clamp-5,.clamp-3{font-size:7px}
   .decision-btn{min-height:26px;font-size:6px;padding:4px}
-  .tabs{gap:2px}.tab-btn{min-height:23px;font-size:6px;padding:3px;border-width:2px;box-shadow:2px 2px 0 var(--line)}
-  .tabpanel{padding:5px}.tabpanel>.panel-title{font-size:10px}.item,.small{font-size:6px}
-  .footer{padding:4px;border-width:3px;box-shadow:3px 3px 0 var(--line)}.footer .hint{font-size:6px}
+  .side-info{gap:4px}.side-box{padding:5px;border-width:2px;box-shadow:2px 2px 0 var(--line)}.side-box-title{font-size:7px}
+  .rules-card{padding:8px;border-width:3px;box-shadow:6px 6px 0 #000}.rules-grid{grid-template-columns:1fr;gap:5px}.rules-block{padding:6px;border-width:2px;box-shadow:2px 2px 0 var(--line)}.rules-block h3{font-size:8px}.rules-block p{font-size:6px}
 }
 </style>
 </head>
@@ -310,15 +290,9 @@ button,input,select{font:inherit}
     </section>
 
     <aside class="side">
-      <nav class="tabs" aria-label="Informazioni">
-        <button class="tab-btn active" data-tab="0">Chat</button>
-        <button class="tab-btn" data-tab="1">Storico</button>
-        <button class="tab-btn" data-tab="2">Regole</button>
-        <button class="tab-btn" data-tab="3">Extra</button>
-      </nav>
-      <div class="tabview">
-        <div class="tabinner" id="tabInner">
-          <section class="tabpanel" data-tab="0">
+      <div class="side-info">
+        <div class="side-info-head"><div class="panel-title">INFORMAZIONI</div><button class="btn ghost" id="btnRules">REGOLE</button></div>
+        <div class="side-columns"><div class="side-box"><div class="side-box-title">CHAT / VOTO</div>
             <div class="panel-title">CHAT / VOTO</div>
             <div style="display:grid;grid-template-rows:minmax(0,1fr) auto;gap:7px;min-height:0">
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;min-height:0">
@@ -344,51 +318,28 @@ button,input,select{font:inherit}
                 <button class="btn ghost" id="btnApplyChat">Imposta bozza da voto</button>
               </div>
             </div>
-          </section>
-
-          <section class="tabpanel" data-tab="1">
+          </div><div class="side-box"><div class="side-box-title">STORICO</div>
             <div class="panel-title">STORICO</div>
             <div class="list" id="historyList"><div class="item"><span class="t">In attesa…</span><span class="c"></span></div></div>
-          </section>
-
-          <section class="tabpanel" data-tab="2">
-            <div class="panel-title">REGOLE</div>
-            <div class="list">
-              <div class="small">
-                <b>1.</b> Ogni caso passa attraverso Intro → Discussione → Voto → Decisione → Evento.<br><br>
-                <b>2.</b> Il dossier può sbloccarsi con Timbri e obiettivi.<br><br>
-                <b>3.</b> Le decisioni influenzano risorse, fazioni, archi ed eventi.<br><br>
-                <b>4.</b> La Sanità a 0 causa il game over.<br><br>
-                <b>5.</b> Ogni 12 casi termina una stagione.
-              </div>
-            </div>
-          </section>
-
-          <section class="tabpanel" data-tab="3">
-            <div class="panel-title">EXTRA</div>
-            <div class="list">
-              <div class="small" id="extraModesText">—</div>
-              <div class="hud-row">
-                <button class="btn ghost" id="btnNewRun">Nuova partita</button>
-                <button class="btn ghost" id="btnHardReset">Reset totale</button>
-              </div>
-              <div class="small"><b>Seed:</b> <span id="seedBadge">—</span></div>
-              <div class="small"><b>Modalità:</b> <span id="modeBadge">Standard</span></div>
-              <div class="small"><b>Sincronizzazione:</b> <span id="serverBadge">SYNC: local</span></div>
-            </div>
-          </section>
-        </div>
+          </div></div>
       </div>
-    </aside>
+        </aside>
   </main>
 
-  <footer class="footer">
-    <div class="left">
-      <span class="badge">PAPER PIZZI PLEASE</span>
-      <span class="badge ok" id="serverBadgeFooter">REALTIME</span>
+</div>
+
+<div id="rulesOverlay" class="rules-overlay">
+  <div class="rules-card">
+    <div class="rules-head"><div class="rules-title">REGOLE</div><button class="btn ghost" id="btnRulesClose">CHIUDI</button></div>
+    <div class="rules-grid">
+      <div class="rules-block"><h3>01 · Il caso</h3><p>Ogni caso passa attraverso Intro → Discussione → Voto → Decisione → Evento.</p></div>
+      <div class="rules-block"><h3>02 · Dossier</h3><p>Il dossier può sbloccarsi con Timbri e obiettivi.</p></div>
+      <div class="rules-block"><h3>03 · Decisioni</h3><p>Le decisioni influenzano risorse, fazioni, archi ed eventi.</p></div>
+      <div class="rules-block"><h3>04 · Sanità</h3><p>La Sanità a 0 causa il game over.</p></div>
+      <div class="rules-block"><h3>05 · Stagioni</h3><p>Ogni 12 casi termina una stagione.</p></div>
+      <div class="rules-block"><h3>06 · Fasi</h3><p>Segui il timer e la fase indicata nell'HUD per sapere cosa sta accadendo.</p></div>
     </div>
-    <div class="right"><div class="hint" id="footerHint">Nessun evento in corso.</div></div>
-  </footer>
+  </div>
 </div>
 
 <div id="endOverlay" class="end-overlay">
@@ -414,17 +365,12 @@ let roomClient = null;
 let revision = 0;
 let isApplyingRemoteState = false;
 
-if (soloMode){
-  document.querySelector(".cam-right").style.display="none";
-  document.querySelector(".top").style.gridTemplateColumns="1.2fr 2.6fr";
-}
 document.getElementById("camStreamerLabel").textContent = streamerName;
 document.getElementById("camGuestLabel").textContent    = guestName;
 
 /* ===== CONFIG ===== */
 const CASES_CONFIG_URL = "cases.json";
 const IMG_BASE_PATH    = "img/";
-document.getElementById("serverBadge").textContent = "SYNC: SUPABASE REALTIME"; document.getElementById("serverBadgeFooter").textContent = "REALTIME";
 
 /* ===== UI refs ===== */
 const UI = {
@@ -477,13 +423,9 @@ const UI = {
 
   historyList: el("historyList"),
 
-  // footer
-  footerHint: el("footerHint"),
-  seedBadge: el("seedBadge"),
-  modeBadge: el("modeBadge"),
-
-  // tabs
-  tabInner: el("tabInner"),
+  btnRules: el("btnRules"),
+  btnRulesClose: el("btnRulesClose"),
+  rulesOverlay: el("rulesOverlay"),
 
   // end overlay
   endOverlay: el("endOverlay"),
@@ -491,13 +433,14 @@ const UI = {
   endText: el("endText"),
   endRestartBtn: el("endRestartBtn"),
 
-  // extras
-  extraModesText: el("extraModesText"),
-  btnNewRun: el("btnNewRun"),
-  btnHardReset: el("btnHardReset"),
 };
 
 function el(id){ return document.getElementById(id); }
+
+UI.btnRules.addEventListener("click", ()=>UI.rulesOverlay.classList.add("show"));
+UI.btnRulesClose.addEventListener("click", ()=>UI.rulesOverlay.classList.remove("show"));
+UI.rulesOverlay.addEventListener("click", e=>{ if(e.target===UI.rulesOverlay) UI.rulesOverlay.classList.remove("show"); });
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") UI.rulesOverlay.classList.remove("show"); });
 
 /* ===== GAME DATA ===== */
 let cfg = null;
@@ -1322,8 +1265,6 @@ function updateUI(){
   UI.btnConfirm.style.display = isHost ? "" : "none";
   UI.btnNextPhase.style.display = isHost ? "" : "none";
   UI.btnApplyChat.style.display = isHost ? "" : "none";
-  UI.btnNewRun.style.display = isHost ? "" : "none";
-  UI.btnHardReset.style.display = isHost ? "" : "none";
 
   UI.draftLabel.textContent = "Bozza: " + (draftDecision ? decisionLabel(draftDecision) : "Nessuna");
 
@@ -1344,7 +1285,6 @@ function updateUI(){
   renderHistory();
 
   // extras
-  UI.extraModesText.textContent = formatExtraModes();
 
   // endings overlay
   if (stato.gameOver){
@@ -1514,13 +1454,6 @@ function renderHistory(){
     row.appendChild(left); row.appendChild(right);
     UI.historyList.appendChild(row);
   }
-}
-
-/* ===== Extra Modes text ===== */
-function formatExtraModes(){
-  const ms = cfg?.modes?.list || [];
-  if (!ms.length) return "Nessuna modalità extra configurata in cases.json.";
-  return "Modalità disponibili: " + ms.map(m=>m.id).join(", ") + ".";
 }
 
 /* ===== SUPABASE REALTIME ===== */
@@ -1694,8 +1627,6 @@ function newRun(keepSeason=true){
   saveState();
   updateUI();
 }
-UI.btnNewRun.addEventListener("click", ()=>{if(isHost)newRun(true);});
-UI.btnHardReset.addEventListener("click", ()=>{if(isHost)newRun(false);});
 UI.endRestartBtn.addEventListener("click", ()=>{if(isHost)newRun(true);});
 
 /* ===== Bootstrap ===== */
