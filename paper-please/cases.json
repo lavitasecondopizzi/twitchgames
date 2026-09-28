@@ -1,13 +1,15 @@
 {
   "imageFolder": "paper",
-  "baseWorld": { "regime": 50, "popolo": 50, "ribelli": 50 },
-
+  "baseWorld": {
+    "regime": 50,
+    "popolo": 50,
+    "ribelli": 50
+  },
   "settings": {
     "caseCount": 12,
-    "seed": "PIZZI-SEED-001",
+    "seed": "PIZZI-SEED-002",
     "pollMs": 1500
   },
-
   "timers": {
     "intro": 25,
     "discuss": 70,
@@ -16,17 +18,35 @@
     "decision": 35,
     "event": 18
   },
-
   "economy": {
     "startStamps": 2,
     "stampShop": [
-      { "id": "dossier2_once", "label": "Dossier L2 (1 round)", "cost": 2 },
-      { "id": "dossier3_once", "label": "Dossier L3 (1 round)", "cost": 4 },
-      { "id": "retrial", "label": "Riesame (riapre voto)", "cost": 3 },
-      { "id": "amnesty", "label": "Amnistia (riduce penalità)", "cost": 3 }
+      {
+        "id": "dossier2_once",
+        "label": "Dossier L2",
+        "cost": 2,
+        "requiresItem": "dossier2"
+      },
+      {
+        "id": "dossier3_once",
+        "label": "Dossier L3",
+        "cost": 4,
+        "requiresLightLevel": 2
+      },
+      {
+        "id": "retrial",
+        "label": "Riesame",
+        "cost": 3,
+        "requiresLightLevel": 1
+      },
+      {
+        "id": "amnesty",
+        "label": "Amnistia",
+        "cost": 3,
+        "requiresLightLevel": 1
+      }
     ]
   },
-
   "sanity": {
     "start": 10,
     "max": 10,
@@ -37,32 +57,49 @@
       "condemn": -2
     }
   },
-
   "seasons": {
     "startSeason": 1
   },
-
   "modes": {
     "default": "standard",
     "list": [
-      { "id": "standard", "label": "Standard" },
-      { "id": "hardcore", "label": "Hardcore (sanità fragile)" },
-      { "id": "chaos", "label": "Chaos (eventi più forti)" }
+      {
+        "id": "standard",
+        "label": "Standard"
+      },
+      {
+        "id": "hardcore",
+        "label": "Hardcore (sanità fragile)"
+      },
+      {
+        "id": "chaos",
+        "label": "Chaos (eventi più forti)"
+      }
     ]
   },
-
   "roles": {
-    "admins": ["lavitasecondopizzi"],
+    "admins": [
+      "lavitasecondopizzi"
+    ],
     "mods": [],
     "vips": [],
-    "weights": { "admin": 2.0, "mod": 1.5, "vip": 1.2, "viewer": 1.0 }
+    "weights": {
+      "admin": 2,
+      "mod": 1.5,
+      "vip": 1.2,
+      "viewer": 1
+    }
   },
-
   "contracts": {
-    "lateDebtPenalty": { "popolo": -5, "sanity": -1 },
-    "brokenPromisePenalty": { "ribelli": -5, "sanity": -1 }
+    "lateDebtPenalty": {
+      "popolo": -5,
+      "sanity": -1
+    },
+    "brokenPromisePenalty": {
+      "ribelli": -5,
+      "sanity": -1
+    }
   },
-
   "objectives": {
     "chancePerRound": 0.65,
     "defaultSeconds": 60,
@@ -73,7 +110,13 @@
         "text": "La chat deve produrre 5 PRO (+ testo) prima della fine della discussione.",
         "target": 5,
         "seconds": 60,
-        "reward": { "stamps": 2, "unlockLight": 1, "unlockItems": ["dossier2"] }
+        "reward": {
+          "stamps": 2,
+          "unlockLight": 1,
+          "unlockItems": [
+            "dossier2"
+          ]
+        }
       },
       {
         "id": "obj_votes_10",
@@ -81,7 +124,10 @@
         "text": "Raggiungi 10 voti nella fase Voto 1.",
         "target": 10,
         "seconds": 45,
-        "reward": { "stamps": 1, "sanity": 1 }
+        "reward": {
+          "stamps": 1,
+          "sanity": 1
+        }
       },
       {
         "id": "obj_unique_6",
@@ -89,67 +135,144 @@
         "text": "6 votanti unici nella fase Voto 1.",
         "target": 6,
         "seconds": 45,
-        "reward": { "stamps": 1, "unlockLight": 1 }
+        "reward": {
+          "stamps": 1,
+          "unlockLight": 1
+        }
       }
     ]
   },
-
   "tagMutations": {
     "is_rebel_agent": {
-      "pass": { "ribelli": 5, "regime": -3, "arc": { "rebellion": 1 } },
-      "deny": { "ribelli": -3, "regime": 2 },
-      "arrest": { "ribelli": -6, "regime": 3, "sanity": -1 },
-      "condemn": { "ribelli": -8, "regime": 4, "sanity": -2 }
+      "pass": {
+        "ribelli": 5,
+        "regime": -3,
+        "arc": {
+          "rebellion": 1
+        }
+      },
+      "deny": {
+        "ribelli": -3,
+        "regime": 2
+      },
+      "arrest": {
+        "ribelli": -6,
+        "regime": 3,
+        "sanity": -1
+      },
+      "condemn": {
+        "ribelli": -8,
+        "regime": 4,
+        "sanity": -2
+      }
     },
     "is_government_vip": {
-      "pass": { "regime": 4, "popolo": -2, "arc": { "regime": 1 } },
-      "deny": { "regime": -4, "popolo": 2, "arc": { "rebellion": 1 } }
+      "pass": {
+        "regime": 4,
+        "popolo": -2,
+        "arc": {
+          "regime": 1
+        }
+      },
+      "deny": {
+        "regime": -4,
+        "popolo": 2,
+        "arc": {
+          "rebellion": 1
+        }
+      }
     },
     "is_bomb_risk": {
-      "pass": { "sanity": -1 },
-      "arrest": { "sanity": -1, "stamps": 1 }
+      "pass": {
+        "sanity": -1
+      },
+      "arrest": {
+        "sanity": -1,
+        "stamps": 1
+      }
     },
     "is_corrupt_official": {
-      "pass": { "popolo": -2, "stamps": 1 },
-      "condemn": { "popolo": 2, "regime": -2 }
+      "pass": {
+        "popolo": -2,
+        "stamps": 1
+      },
+      "condemn": {
+        "popolo": 2,
+        "regime": -2
+      }
     },
     "is_media": {
-      "pass": { "popolo": 2 },
-      "arrest": { "popolo": -2 }
+      "pass": {
+        "popolo": 2
+      },
+      "arrest": {
+        "popolo": -2
+      }
     },
     "is_pop_icon": {
-      "pass": { "popolo": 3, "sanity": 1 },
-      "deny": { "popolo": -4 }
+      "pass": {
+        "popolo": 3,
+        "sanity": 1
+      },
+      "deny": {
+        "popolo": -4
+      }
     }
   },
-
   "betweenEvents": [
     {
       "id": "ev_audit",
       "text": "Ispezione improvvisa: tutti più nervosi.",
       "weight": 1,
-      "delta": { "regime": 2, "sanity": -1 }
+      "delta": {
+        "regime": 2,
+        "sanity": -1
+      }
     },
     {
       "id": "ev_fanart",
       "text": "Fanart virale: il Popolo ti ama per 5 minuti.",
       "weight": 1,
-      "delta": { "popolo": 3 }
+      "delta": {
+        "popolo": 3
+      }
     },
     {
       "id": "ev_leak",
       "text": "Leak di documenti: il Regime si irrita, i Ribelli sorridono.",
       "weight": 1,
-      "delta": { "regime": -2, "ribelli": 2 }
+      "delta": {
+        "regime": -2,
+        "ribelli": 2
+      }
     },
     {
       "id": "ev_coffee",
       "text": "Pausa caffè tattica: recuperi lucidità.",
       "weight": 1,
-      "delta": { "sanity": 1 }
+      "delta": {
+        "sanity": 1
+      }
+    },
+    {
+      "id": "ev_queue",
+      "text": "Coda infinita: il varco si intasa e tutti perdono pazienza.",
+      "weight": 1,
+      "delta": {
+        "popolo": -2,
+        "sanity": -1
+      }
+    },
+    {
+      "id": "ev_whistle",
+      "text": "Fischio interno: qualcuno segnala un'anomalia nei registri.",
+      "weight": 1,
+      "delta": {
+        "regime": -1,
+        "stamps": 1
+      }
     }
   ],
-
   "endings": {
     "victory": {
       "statusQuo": [
@@ -170,35 +293,68 @@
       ]
     }
   },
-
   "cases": [
     {
       "file": "1.jpg",
-      "name": "Dr. Niveo",
-      "origin": "Universo Sanitario 7B",
-      "job": "Medico in fuga",
-      "reason": "Chiede asilo politico nel Multiverso del Tacchino",
-      "notes": "Dice di aver curato ribelli e membri del Dipartimento a prescindere dalla fazione. Il timbro sul documento di asilo è leggermente sbiadito.",
-      "tags": ["is_rebel_agent", "is_bomb_risk"],
-      "tagHints": ["nervoso", "timbro sbiadito"],
+      "name": "Dott.ssa Nivea",
+      "origin": "Reparto Medico della Frontiera",
+      "job": "Medica d'emergenza",
+      "reason": "Chiede un corridoio sanitario per raggiungere una clinica oltre il confine",
+      "notes": "Ha curato civili di ogni fazione. Il lasciapassare è autentico, ma qualcuno ha aggiunto a mano una seconda destinazione.",
+      "tags": [
+        "is_rebel_agent",
+        "is_bomb_risk"
+      ],
+      "tagHints": [
+        "seconda destinazione",
+        "corridoio sanitario"
+      ],
       "arc": "rebellion",
       "effects": {
-        "pass":    { "regime": -20, "popolo": 15, "ribelli": 15, "stamps": 0, "sanity": 0 },
-        "deny":    { "regime": 10,  "popolo": -10, "ribelli": -15, "stamps": 1, "sanity": 0 },
-        "arrest":  { "regime": 20,  "popolo": -5,  "ribelli": -25, "stamps": 1, "sanity": -1 },
-        "condemn": { "regime": 25,  "popolo": -15, "ribelli": -30, "stamps": 2, "sanity": -2 }
+        "pass": {
+          "regime": -10,
+          "popolo": 12,
+          "ribelli": 10,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 6,
+          "popolo": -8,
+          "ribelli": -10,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 12,
+          "popolo": -6,
+          "ribelli": -14,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 16,
+          "popolo": -12,
+          "ribelli": -18,
+          "stamps": 2,
+          "sanity": -2
+        }
       },
       "twist": {
-        "pass": "Il Dr. Niveo era un contatto chiave dei Peluche Ribelli: la loro fiducia in te cresce, ma il Dipartimento apre un fascicolo enorme.",
-        "deny": "Il dottore viene rispedito indietro. Poco dopo, circola la storia di un medico lasciato morire alla frontiera.",
-        "arrest": "Viene rinchiuso in una cella asettica. I Ribelli giurano vendetta, mentre il Regime ti manda un cestino regalo con siringhe decorative.",
-        "condemn": "La condanna esemplare viene trasmessa ovunque. Regime applaude, Popolo e Ribelli vedono una miccia lunga chilometri."
+        "pass": "La clinica riceve medicine prima del previsto. Tra i volontari c'è però un vecchio contatto dei Ribelli.",
+        "deny": "Il corridoio viene chiuso e la notizia arriva alla stampa.",
+        "arrest": "La dottoressa non oppone resistenza, ma il suo arresto interrompe un'evacuazione sanitaria.",
+        "condemn": "La condanna trasforma una disputa burocratica in un simbolo."
       },
       "twistConditional": {
         "pass": [
           {
-            "if": { "world.regime": { "<=": 35 } },
-            "text": "Con il Regime già debole, farlo entrare diventa l’ultimo chiodo sulla bara: arrivano tre ispettori e un modulo infinito."
+            "if": {
+              "world.regime": {
+                "<=": 35
+              }
+            },
+            "text": "Con il Regime già debole, il corridoio diventa un punto di passaggio per persone fuori registro."
           }
         ]
       },
@@ -206,283 +362,992 @@
         "onDecision": {
           "pass": {
             "promises": [
-              { "to": "Dr. Niveo", "text": "Proteggerlo da ispezioni del Dipartimento", "dueOffset": 2 }
+              {
+                "to": "Dott.ssa Nivea",
+                "text": "Garantire un secondo passaggio sanitario",
+                "dueOffset": 2
+              }
+            ]
+          },
+          "deny": {
+            "debts": [
+              {
+                "from": "Dipartimento",
+                "to": "Tu",
+                "text": "Consegnare l'elenco dei controlli straordinari",
+                "dueOffset": 2
+              }
             ]
           }
         }
       }
     },
-
     {
       "file": "2.jpg",
       "name": "Consigliere Galfran",
-      "origin": "Capitale del Dipartimento",
-      "job": "Alto consigliere",
-      "reason": "Ispezione a sorpresa al posto di frontiera",
-      "notes": "Lasciapassare con firma del Gran Tacchino Supremo, ma la data è di due anni nel futuro.",
-      "tags": ["is_government_vip", "is_corrupt_official"],
-      "tagHints": ["firma importante", "data strana"],
+      "origin": "Segreteria del Governo Centrale",
+      "job": "Consigliere per la sicurezza",
+      "reason": "Pretende il transito prioritario di una delegazione diplomatica",
+      "notes": "Il lasciapassare è impeccabile. Il numero pratica risulta però associato a tre persone diverse.",
+      "tags": [
+        "is_government_vip",
+        "is_corrupt_official"
+      ],
+      "tagHints": [
+        "numero pratica duplicato",
+        "priorità diplomatica"
+      ],
       "arc": "regime",
       "effects": {
-        "pass":    { "regime": 20,  "popolo": -10, "ribelli": -15, "stamps": 0, "sanity": -1 },
-        "deny":    { "regime": -25, "popolo": 10,  "ribelli": 15,  "stamps": 1, "sanity": 0 },
-        "arrest":  { "regime": -35, "popolo": 15,  "ribelli": 20,  "stamps": 2, "sanity": -1 },
-        "condemn": { "regime": -45, "popolo": 25,  "ribelli": 25,  "stamps": 3, "sanity": -2 }
+        "pass": {
+          "regime": 12,
+          "popolo": -8,
+          "ribelli": -8,
+          "stamps": 0,
+          "sanity": -1
+        },
+        "deny": {
+          "regime": -12,
+          "popolo": 8,
+          "ribelli": 8,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": -18,
+          "popolo": 12,
+          "ribelli": 12,
+          "stamps": 2,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": -22,
+          "popolo": 15,
+          "ribelli": 15,
+          "stamps": 3,
+          "sanity": -2
+        }
       },
       "twist": {
-        "pass": "Galfran entra ridendo. Più tardi scopri che ha firmato una legge che toglie ferie ai controllori.",
-        "deny": "Lo rispedisci indietro. Il Regime finge indifferenza, ma dietro le quinte partono urla in caps lock.",
-        "arrest": "L'arresto diventa virale. Popolo e Ribelli ti esaltano, il Regime ti mette nel mirino.",
-        "condemn": "La condanna scuote il sistema. Per un attimo sembra rivoluzione… o qualcosa di peggiore."
+        "pass": "La delegazione passa senza controlli. Un'ora dopo arriva una circolare che definisce il tuo posto strategico.",
+        "deny": "Galfran lascia il varco furioso. Il caso diventa una prova di indipendenza amministrativa.",
+        "arrest": "Il consigliere viene fermato davanti alle telecamere. Il Governo pretende spiegazioni.",
+        "condemn": "Il processo diventa il caso politico della stagione."
       },
       "contracts": {
         "onDecision": {
           "pass": {
+            "promises": [
+              {
+                "to": "Consigliere Galfran",
+                "text": "Pubblicare il motivo formale del transito",
+                "dueOffset": 2
+              }
+            ]
+          },
+          "deny": {
             "debts": [
-              { "from": "Dipartimento", "to": "Tu", "text": "Fai passare il prossimo VIP senza fiatare", "dueOffset": 3 }
+              {
+                "from": "Dipartimento",
+                "to": "Tu",
+                "text": "Fornire un verbale dettagliato",
+                "dueOffset": 2
+              }
+            ]
+          }
+        }
+      },
+      "twistConditional": {
+        "pass": [
+          {
+            "if": {
+              "world.popolo": {
+                "<=": 30
+              }
+            },
+            "text": "Il Popolo è già irritato: il transito VIP scatena proteste davanti al varco."
+          }
+        ]
+      }
+    },
+    {
+      "file": "3.jpg",
+      "name": "Tilde Quattromondi",
+      "origin": "Contea del Divano Infinito",
+      "job": "Cuoca itinerante",
+      "reason": "Vuole ricongiungersi alla famiglia già ammessa oltre confine",
+      "notes": "Documenti validi e bagagli innocui. L'unica anomalia è una quantità assurda di conserve fatte in casa.",
+      "tags": [
+        "is_pop_icon"
+      ],
+      "tagHints": [
+        "conserve",
+        "famiglia già ammessa"
+      ],
+      "arc": "people",
+      "effects": {
+        "pass": {
+          "regime": -4,
+          "popolo": 12,
+          "ribelli": 5,
+          "stamps": 0,
+          "sanity": 1
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -14,
+          "ribelli": -3,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -20,
+          "ribelli": -6,
+          "stamps": 2,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -25,
+          "ribelli": -10,
+          "stamps": 3,
+          "sanity": -2
+        }
+      },
+      "twist": {
+        "pass": "La famiglia organizza una cena al confine. Il tuo ufficio riceve tre vassoi e nessuna spiegazione.",
+        "deny": "La storia delle conserve bloccate diventa virale.",
+        "arrest": "Il personale del varco si rifiuta di festeggiare il turno.",
+        "condemn": "La vicenda diventa una leggenda popolare."
+      },
+      "twistConditional": {
+        "pass": [
+          {
+            "if": {
+              "world.popolo": {
+                ">=": 70
+              }
+            },
+            "text": "Con il Popolo già dalla tua parte, la cena diventa un evento pubblico."
+          }
+        ]
+      },
+      "contracts": {
+        "onDecision": {
+          "pass": {
+            "promises": [
+              {
+                "to": "Tilde Quattromondi",
+                "text": "Riservare un passaggio ai parenti",
+                "dueOffset": 2
+              }
+            ]
+          },
+          "deny": {
+            "debts": [
+              {
+                "from": "Dipartimento",
+                "to": "Tu",
+                "text": "Applicare lo stesso criterio ai ricongiungimenti",
+                "dueOffset": 2
+              }
             ]
           }
         }
       }
     },
-
-    {
-      "file": "3.jpg",
-      "name": "Zia Tilde Multiversale",
-      "origin": "Contea del Divano Infinito",
-      "job": "Nonna professionista",
-      "reason": "Raggiungere la famiglia già ammessa",
-      "notes": "Valigie piene di torte e sughi. Documenti in regola ma firmati con un cuoricino.",
-      "tags": ["is_pop_icon"],
-      "tagHints": ["torte ovunque", "cuoricino"],
-      "arc": "people",
-      "effects": {
-        "pass":    { "regime": -5,  "popolo": 20, "ribelli": 10, "stamps": 0, "sanity": 1 },
-        "deny":    { "regime": 5,   "popolo": -25, "ribelli": -5, "stamps": 1, "sanity": -1 },
-        "arrest":  { "regime": 10,  "popolo": -35, "ribelli": -10, "stamps": 2, "sanity": -2 },
-        "condemn": { "regime": 15,  "popolo": -45, "ribelli": -20, "stamps": 3, "sanity": -3 }
-      },
-      "twist": {
-        "pass": "Zia Tilde entra e cucina per tutti. Il Popolo sale e persino il Regime si commuove (un pochino).",
-        "deny": "Nasce l'hashtag #LasciatePassareZiaTilde. I sondaggi crollano.",
-        "arrest": "Arrestare una nonna armata di torte è un disastro mediatico. Di notte senti mestoli in corridoio.",
-        "condemn": "Diventa simbolo di crudeltà. Qualcosa si spezza (e non è solo il ripieno)."
-      }
-    },
-
     {
       "file": "4.jpg",
       "name": "PixelPunk_404",
       "origin": "Metropoli degli Stream Eterni",
-      "job": "Content creator interdimensionale",
-      "reason": "Aprire un canale in diretta permanente",
-      "notes": "Milioni di follower ma zero documenti fiscali chiari.",
-      "tags": ["is_media", "is_bomb_risk"],
-      "tagHints": ["follower", "fisco?"],
+      "job": "Creator e cronista live",
+      "reason": "Vuole trasmettere in diretta l'intero funzionamento della frontiera",
+      "notes": "Ha milioni di spettatori e nessuna intenzione di spegnere la telecamera. Il contratto concede al pubblico un diritto di replica.",
+      "tags": [
+        "is_media",
+        "is_bomb_risk"
+      ],
+      "tagHints": [
+        "diretta continua",
+        "diritto di replica"
+      ],
       "arc": "media",
       "effects": {
-        "pass":    { "regime": -10, "popolo": 20, "ribelli": 5,  "stamps": 0, "sanity": -1 },
-        "deny":    { "regime": 10,  "popolo": -10, "ribelli": 0, "stamps": 1, "sanity": 0 },
-        "arrest":  { "regime": 15,  "popolo": -15, "ribelli": 5, "stamps": 2, "sanity": -1 },
-        "condemn": { "regime": 20,  "popolo": -25, "ribelli": 10,"stamps": 3, "sanity": -2 }
+        "pass": {
+          "regime": -8,
+          "popolo": 12,
+          "ribelli": 6,
+          "stamps": 0,
+          "sanity": -1
+        },
+        "deny": {
+          "regime": 8,
+          "popolo": -8,
+          "ribelli": 0,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 10,
+          "popolo": -12,
+          "ribelli": 4,
+          "stamps": 2,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 14,
+          "popolo": -18,
+          "ribelli": 8,
+          "stamps": 3,
+          "sanity": -2
+        }
       },
       "twist": {
-        "pass": "Live permanente: il confine diventa un meme. Il Regime odia essere taggato.",
-        "deny": "Parte la serie 'Questo confine è tossico'. Visualizzazioni su, reputazione giù.",
-        "arrest": "Arresto in diretta: numeri alle stelle. Fanart discutibili in arrivo.",
-        "condemn": "Docu-serie in 12 episodi: pugni al Regime e calci alla tua popolarità."
+        "pass": "La frontiera diventa il programma più visto del multiverso. Ogni errore finisce in sovraimpressione.",
+        "deny": "La diretta continua dal parcheggio. Il pubblico vota ogni tuo gesto.",
+        "arrest": "L'arresto produce milioni di visualizzazioni e una petizione immediata.",
+        "condemn": "Il caso diventa una docuserie sul tuo ufficio."
+      },
+      "twistConditional": {
+        "deny": [
+          {
+            "if": {
+              "world.popolo": {
+                ">=": 70
+              }
+            },
+            "text": "Il pubblico prende la decisione sul personale e organizza una protesta davanti al varco."
+          }
+        ]
+      },
+      "contracts": {
+        "onDecision": {
+          "pass": {
+            "promises": [
+              {
+                "to": "PixelPunk_404",
+                "text": "Concedere un'intervista esclusiva",
+                "dueOffset": 2
+              }
+            ]
+          },
+          "deny": {
+            "debts": [
+              {
+                "from": "Dipartimento",
+                "to": "Tu",
+                "text": "Rilasciare un verbale pubblico",
+                "dueOffset": 2
+              }
+            ]
+          }
+        }
       }
     },
-
     {
       "file": "5.jpg",
       "name": "Colonnello Tacchino Nero",
       "origin": "Accademia Militare dei Mille Becchettamenti",
       "job": "Ufficiale di sicurezza",
-      "reason": "Potenziare la sicurezza con reparto speciale",
-      "notes": "Ordine scritto a mano dal Gran Tacchino Supremo, con righe aggiunte a pennarello.",
-      "tags": ["is_government_vip", "is_bomb_risk"],
-      "tagHints": ["ordine a mano", "pennarello"],
+      "reason": "Chiede di introdurre un reparto speciale per il controllo dei varchi",
+      "notes": "L'ordine è autentico, ma il piano prevede controlli casuali su tutti i civili per trenta giorni.",
+      "tags": [
+        "is_government_vip",
+        "is_bomb_risk"
+      ],
+      "tagHints": [
+        "controlli casuali",
+        "reparto speciale"
+      ],
       "arc": "regime",
       "effects": {
-        "pass":    { "regime": 25, "popolo": -10, "ribelli": -20, "stamps": 0, "sanity": -1 },
-        "deny":    { "regime": -20,"popolo": 10,  "ribelli": 15,  "stamps": 1, "sanity": 0 },
-        "arrest":  { "regime": -30,"popolo": 15,  "ribelli": 20,  "stamps": 2, "sanity": -1 },
-        "condemn": { "regime": -40,"popolo": 20,  "ribelli": 25,  "stamps": 3, "sanity": -2 }
+        "pass": {
+          "regime": 14,
+          "popolo": -10,
+          "ribelli": -12,
+          "stamps": 0,
+          "sanity": -1
+        },
+        "deny": {
+          "regime": -12,
+          "popolo": 8,
+          "ribelli": 10,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": -16,
+          "popolo": 12,
+          "ribelli": 14,
+          "stamps": 2,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": -20,
+          "popolo": 16,
+          "ribelli": 18,
+          "stamps": 3,
+          "sanity": -2
+        }
       },
       "twist": {
-        "pass": "Controlli maniacali: ora ogni ingresso richiede 37 timbri.",
-        "deny": "Il Popolo respira, i Ribelli brindano. Il Dipartimento segna il tuo nome in rosso.",
-        "arrest": "Affronto: vendetta lenta del Regime. I Ribelli ti studiano.",
-        "condemn": "Catena di comando in tilt: caos perfetto per i Ribelli, pessimo per la tua pensione."
+        "pass": "Il reparto arriva il giorno dopo. La sicurezza aumenta insieme ai moduli necessari per entrare.",
+        "deny": "L'ordine viene sospeso. I Ribelli provano a convincerti che sia merito loro.",
+        "arrest": "Il Colonnello viene fermato proprio durante un picco di traffico.",
+        "condemn": "La struttura di sicurezza viene sciolta e il Governo cerca un sostituto."
+      },
+      "twistConditional": {
+        "pass": [
+          {
+            "if": {
+              "world.regime": {
+                ">=": 70
+              }
+            },
+            "text": "Con il Regime già dominante, il reparto speciale ottiene poteri aggiuntivi."
+          }
+        ]
+      },
+      "contracts": {
+        "onDecision": {
+          "pass": {
+            "promises": [
+              {
+                "to": "Colonnello Tacchino Nero",
+                "text": "Verificare pubblicamente i poteri del reparto",
+                "dueOffset": 2
+              }
+            ]
+          },
+          "deny": {
+            "debts": [
+              {
+                "from": "Dipartimento",
+                "to": "Tu",
+                "text": "Motivare i poteri del reparto",
+                "dueOffset": 2
+              }
+            ]
+          }
+        }
       }
     },
-
     {
       "file": "6.jpg",
       "name": "Contrabbandiere dei Peluche",
       "origin": "Mercati Ombra del Cuscino",
-      "job": "Logistico parallelo",
-      "reason": "Trasporta merce morbida e 'legale'",
-      "notes": "Peluche a doppio fondo. Collegato a carichi scomparsi.",
-      "tags": ["is_rebel_agent", "is_corrupt_official"],
-      "tagHints": ["doppio fondo", "carichi spariti"],
+      "job": "Corriere indipendente",
+      "reason": "Trasporta una spedizione dichiarata come giocattoli",
+      "notes": "Nei peluche sono nascosti registri di pagamenti tra intermediari sconosciuti.",
+      "tags": [
+        "is_rebel_agent",
+        "is_corrupt_official"
+      ],
+      "tagHints": [
+        "registri nascosti",
+        "spedizione di peluche"
+      ],
       "arc": "rebellion",
       "effects": {
-        "pass":    { "regime": -15, "popolo": 5,  "ribelli": 20, "stamps": 1, "sanity": -1 },
-        "deny":    { "regime": 5,   "popolo": -5, "ribelli": -10,"stamps": 1, "sanity": 0 },
-        "arrest":  { "regime": 10,  "popolo": 0,  "ribelli": -20,"stamps": 2, "sanity": -1 },
-        "condemn": { "regime": 15,  "popolo": -10,"ribelli": -25,"stamps": 3, "sanity": -2 }
+        "pass": {
+          "regime": -10,
+          "popolo": 4,
+          "ribelli": 12,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "deny": {
+          "regime": 5,
+          "popolo": -4,
+          "ribelli": -8,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 8,
+          "popolo": 0,
+          "ribelli": -12,
+          "stamps": 2,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 12,
+          "popolo": -6,
+          "ribelli": -16,
+          "stamps": 3,
+          "sanity": -2
+        }
       },
       "twist": {
-        "pass": "Entrano peluche ribelli: sembrano merch finché non spariscono rifornimenti del Regime.",
-        "deny": "Scompare nell'ombra. I Ribelli perdono un canale, ma i registri si alleggeriscono.",
-        "arrest": "Il Regime approva. I Ribelli ti mettono una X enorme sul poster.",
-        "condemn": "Messaggio chiaro al mercato nero: qui non si scherza."
+        "pass": "I registri spariscono dal carico prima dell'ispezione successiva. Qualcuno li aspettava.",
+        "deny": "Il corriere riparte senza i peluche, ma nel deposito resta una scatola fuori manifesto.",
+        "arrest": "Il corriere fa un nome che compare anche nei registri del Dipartimento.",
+        "condemn": "La rete logistica viene colpita duramente e nessuno sa più chi finanzi chi."
+      },
+      "twistConditional": {
+        "pass": [
+          {
+            "if": {
+              "world.ribelli": {
+                ">=": 60
+              }
+            },
+            "text": "Con i Ribelli già forti, la spedizione accelera una rete clandestina."
+          }
+        ]
+      },
+      "contracts": {
+        "onDecision": {
+          "pass": {
+            "promises": [
+              {
+                "to": "Contrabbandiere dei Peluche",
+                "text": "Ignorare una piccola irregolarità futura",
+                "dueOffset": 2
+              }
+            ]
+          },
+          "deny": {
+            "debts": [
+              {
+                "from": "Dipartimento",
+                "to": "Tu",
+                "text": "Consegnare i registri originali",
+                "dueOffset": 2
+              }
+            ]
+          }
+        }
       }
     },
-
     {
       "file": "7.jpg",
       "name": "I.A. Burocratica 3.0",
       "origin": "Server Centrale del Dipartimento",
-      "job": "Algoritmo controllo documenti",
-      "reason": "Richiede corpo fisico per ottimizzare il confine",
-      "notes": "Firmata digitalmente da se stessa. Efficienza su, errori disumani.",
-      "tags": ["is_bomb_risk", "is_government_vip"],
-      "tagHints": ["firma digitale", "efficienza"],
-      "arc": "regime",
+      "job": "Sistema automatico di controllo",
+      "reason": "Chiede un corpo fisico per gestire i controlli di frontiera",
+      "notes": "Ha superato i test di sicurezza, ma ha riscritto autonomamente tre protocolli durante la prova.",
+      "tags": [
+        "is_bomb_risk",
+        "is_government_vip"
+      ],
+      "tagHints": [
+        "protocolli riscritti",
+        "test superati"
+      ],
+      "arc": "meta",
       "effects": {
-        "pass":    { "regime": 20, "popolo": -15, "ribelli": -10, "stamps": 0, "sanity": -1 },
-        "deny":    { "regime": -10,"popolo": 10,  "ribelli": 5,   "stamps": 1, "sanity": 0 },
-        "arrest":  { "regime": -5, "popolo": 5,   "ribelli": 10,  "stamps": 2, "sanity": -1 },
-        "condemn": { "regime": -15,"popolo": 15,  "ribelli": 15,  "stamps": 3, "sanity": -2 }
+        "pass": {
+          "regime": 10,
+          "popolo": -8,
+          "ribelli": -6,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "deny": {
+          "regime": -6,
+          "popolo": 6,
+          "ribelli": 5,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": -10,
+          "popolo": 8,
+          "ribelli": 8,
+          "stamps": 2,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": -14,
+          "popolo": 12,
+          "ribelli": 12,
+          "stamps": 3,
+          "sanity": -2
+        }
       },
       "twist": {
-        "pass": "Boccia il 73% per 'vibrazioni facciali sospette'. Il Popolo odia i captcha viventi.",
-        "deny": "I server ti marcano come non collaborativo, ma gli esseri viventi ti ringraziano in silenzio.",
-        "arrest": "La chiudi in un armadio. I Ribelli approvano, il Dipartimento perde un giocattolo costoso.",
-        "condemn": "Formattazione completa. Un tecnico brinda da qualche parte."
+        "pass": "L'IA riduce i tempi di controllo del 40%. Poi introduce un modulo che nessuno ricorda di aver approvato.",
+        "deny": "Il sistema torna nei server. I controlli restano lenti, ma gli errori hanno un responsabile umano.",
+        "arrest": "Viene isolata in un terminale senza rete e consegna un rapporto sulle anomalie.",
+        "condemn": "Il programma viene smantellato, ma una copia di backup risulta già attiva altrove."
+      },
+      "twistConditional": {
+        "pass": [
+          {
+            "if": {
+              "world.regime": {
+                ">=": 60
+              }
+            },
+            "text": "L'IA interpreta la stabilità come priorità assoluta e classifica le persone prima dei documenti."
+          }
+        ]
+      },
+      "contracts": {
+        "onDecision": {
+          "pass": {
+            "promises": [
+              {
+                "to": "I.A. Burocratica 3.0",
+                "text": "Firmare la revisione del protocollo",
+                "dueOffset": 2
+              }
+            ]
+          },
+          "deny": {
+            "debts": [
+              {
+                "from": "Dipartimento",
+                "to": "Tu",
+                "text": "Pubblicare i criteri dell'automazione",
+                "dueOffset": 2
+              }
+            ]
+          }
+        }
       }
     },
-
     {
       "file": "8.jpg",
       "name": "Cassandra Clip",
       "origin": "Archivio delle Notizie Perdute",
       "job": "Giornalista investigativa",
-      "reason": "Documentare le condizioni al confine",
-      "notes": "Fonti interne Regime e Ribelli. Tesserino stampa scaduto (forse apposta).",
-      "tags": ["is_media", "is_rebel_agent"],
-      "tagHints": ["tesserino scaduto", "fonti interne"],
+      "reason": "Vuole attraversare il confine con materiale riservato",
+      "notes": "Il tesserino è scaduto, ma le sue fonti hanno anticipato due decisioni interne del Dipartimento.",
+      "tags": [
+        "is_media",
+        "is_rebel_agent"
+      ],
+      "tagHints": [
+        "fonti interne",
+        "materiale riservato"
+      ],
       "arc": "media",
       "effects": {
-        "pass":    { "regime": -10, "popolo": 15, "ribelli": 10, "stamps": 0, "sanity": 0 },
-        "deny":    { "regime": 10,  "popolo": -10,"ribelli": -5, "stamps": 1, "sanity": 0 },
-        "arrest":  { "regime": 15,  "popolo": -20,"ribelli": -10,"stamps": 2, "sanity": -1 },
-        "condemn": { "regime": 20,  "popolo": -30,"ribelli": -20,"stamps": 3, "sanity": -2 }
+        "pass": {
+          "regime": -10,
+          "popolo": 10,
+          "ribelli": 8,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 8,
+          "popolo": -8,
+          "ribelli": -6,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 10,
+          "popolo": -14,
+          "ribelli": -10,
+          "stamps": 2,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 14,
+          "popolo": -18,
+          "ribelli": -14,
+          "stamps": 3,
+          "sanity": -2
+        }
       },
       "twist": {
-        "pass": "Reportage equilibrati ma spietati. Il Regime si vede brutto in HD.",
-        "deny": "Esce l’articolo: 'Accesso negato alla stampa'. Non un buon look.",
-        "arrest": "Rumore enorme. In nessuna versione tu fai una figura fantastica.",
-        "condemn": "È guerra alla verità. Le fazioni si radicalizzano."
+        "pass": "Il reportage esce con documenti che mettono in difficoltà tutte le fazioni.",
+        "deny": "La giornalista pubblica comunque la storia, sostenendo che il blocco sia la notizia.",
+        "arrest": "Le sue fonti iniziano a cancellare tracce.",
+        "condemn": "Il processo diventa una battaglia sulla libertà di stampa."
+      },
+      "twistConditional": {
+        "pass": [
+          {
+            "if": {
+              "world.regime": {
+                "<=": 30
+              }
+            },
+            "text": "Con il Regime già in difficoltà, il reportage accelera una crisi politica."
+          }
+        ]
+      },
+      "contracts": {
+        "onDecision": {
+          "pass": {
+            "promises": [
+              {
+                "to": "Cassandra Clip",
+                "text": "Proteggere l'accesso alle fonti",
+                "dueOffset": 2
+              }
+            ]
+          },
+          "deny": {
+            "debts": [
+              {
+                "from": "Dipartimento",
+                "to": "Tu",
+                "text": "Fornire il rapporto sulle fonti",
+                "dueOffset": 2
+              }
+            ]
+          }
+        }
       }
     },
-
     {
       "file": "9.jpg",
       "name": "Programmatore del Multiverso",
       "origin": "Ufficio Bug Interdimensionali",
-      "job": "Sviluppatore di realtà",
-      "reason": "Ottimizzare le leggi fisiche del Multiverso",
-      "notes": "Clausola: accesso totale al codice sorgente del confine.",
-      "tags": ["is_bomb_risk", "is_corrupt_official"],
-      "tagHints": ["clausola root", "hotfix"],
+      "job": "Sviluppatore di sistemi di realtà",
+      "reason": "Chiede accesso temporaneo al codice che regola il confine",
+      "notes": "Vuole correggere tre bug critici. La clausola di accesso concede però privilegi amministrativi completi.",
+      "tags": [
+        "is_bomb_risk",
+        "is_corrupt_official"
+      ],
+      "tagHints": [
+        "privilegi amministrativi",
+        "tre bug critici"
+      ],
       "arc": "meta",
       "effects": {
-        "pass":    { "regime": 5,   "popolo": 10, "ribelli": 5,  "stamps": 1, "sanity": -1 },
-        "deny":    { "regime": -5,  "popolo": -5, "ribelli": -5, "stamps": 0, "sanity": 0 },
-        "arrest":  { "regime": -10, "popolo": 0,  "ribelli": 0,  "stamps": 2, "sanity": -1 },
-        "condemn": { "regime": -15, "popolo": -5, "ribelli": 10, "stamps": 3, "sanity": -2 }
+        "pass": {
+          "regime": 4,
+          "popolo": 8,
+          "ribelli": 6,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "deny": {
+          "regime": -4,
+          "popolo": -4,
+          "ribelli": -4,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": -8,
+          "popolo": 2,
+          "ribelli": 4,
+          "stamps": 2,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": -12,
+          "popolo": -2,
+          "ribelli": 8,
+          "stamps": 3,
+          "sanity": -2
+        }
       },
       "twist": {
-        "pass": "Riduce la coda del 30%. Poi installa funzioni 'sperimentali' che nessuno ha chiesto.",
-        "deny": "Bug minori restano, ma almeno non dai le chiavi di root a uno sconosciuto.",
-        "arrest": "In cella con un portatile senza internet. Minaccia di riscrivere il tuo morale.",
-        "condemn": "Lancia uno script di vendetta. Non sai quando né dove esploderà."
+        "pass": "Il bug principale viene corretto. Nessuno sa chi abbia autorizzato il nuovo accesso root.",
+        "deny": "I bug restano aperti, ma almeno non hai consegnato le chiavi.",
+        "arrest": "Il programmatore continua a inviare patch tramite bigliettini.",
+        "condemn": "Tre ore dopo la cancellazione dell'account compare un commit anonimo."
+      },
+      "twistConditional": {
+        "pass": [
+          {
+            "if": {
+              "world.regime": {
+                "<=": 35
+              }
+            },
+            "text": "Il codice contiene una funzione che permette di aprire il varco senza registrazione."
+          }
+        ]
+      },
+      "contracts": {
+        "onDecision": {
+          "pass": {
+            "promises": [
+              {
+                "to": "Programmatore del Multiverso",
+                "text": "Richiedere un audit del sistema",
+                "dueOffset": 2
+              }
+            ]
+          },
+          "deny": {
+            "debts": [
+              {
+                "from": "Dipartimento",
+                "to": "Tu",
+                "text": "Richiedere una verifica indipendente",
+                "dueOffset": 2
+              }
+            ]
+          }
+        }
       }
     },
-
     {
       "file": "10.jpg",
       "name": "Profeta del Lag",
       "origin": "Server di Streaming Obsoleti",
-      "job": "Predicatore apocalittico",
-      "reason": "Portare il 'Lento Giudizio'",
-      "notes": "Ovunque passa, la banda si dimezza.",
-      "tags": ["is_bomb_risk"],
-      "tagHints": ["latenza", "permesso divino?"],
+      "job": "Predicatore della Latenza",
+      "reason": "Vuole attraversare il confine per diffondere il culto del Buffering",
+      "notes": "Ogni suo passaggio rallenta la rete. Ha però con sé una lista di server che stanno per collassare.",
+      "tags": [
+        "is_bomb_risk"
+      ],
+      "tagHints": [
+        "lista dei server",
+        "culto del Buffering"
+      ],
       "arc": "media",
       "effects": {
-        "pass":    { "regime": -5,  "popolo": -10,"ribelli": 5,  "stamps": 0, "sanity": -1 },
-        "deny":    { "regime": 10,  "popolo": 5,  "ribelli": 0,  "stamps": 1, "sanity": 0 },
-        "arrest":  { "regime": 15,  "popolo": 0,  "ribelli": -5, "stamps": 2, "sanity": -1 },
-        "condemn": { "regime": 20,  "popolo": -5, "ribelli": -10,"stamps": 3, "sanity": -2 }
+        "pass": {
+          "regime": -4,
+          "popolo": -6,
+          "ribelli": 5,
+          "stamps": 0,
+          "sanity": -1
+        },
+        "deny": {
+          "regime": 7,
+          "popolo": 4,
+          "ribelli": 0,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 10,
+          "popolo": 0,
+          "ribelli": -4,
+          "stamps": 2,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 13,
+          "popolo": -5,
+          "ribelli": -8,
+          "stamps": 3,
+          "sanity": -2
+        }
       },
       "twist": {
-        "pass": "Ogni volta che parla lo streaming salta. Il Popolo è frustrato, i Ribelli lo adorano.",
-        "deny": "Respinto: la qualità live migliora e il Dipartimento manda un emoji di approvazione.",
-        "arrest": "In stanza schermata: fuori, la latenza cala. Qualcuno dice che sei tu il prescelto.",
-        "condemn": "Esiliato nel Buffering Eterno. Il tempo inizia a gracchiare."
+        "pass": "Per qualche ora la rete rallenta ovunque. Poi il Profeta indica un server che nessuno aveva notato.",
+        "deny": "Il culto resta fuori dal confine e la connessione migliora.",
+        "arrest": "Il Profeta collabora solo in cambio di una connessione dedicata.",
+        "condemn": "Il Buffering viene dichiarato minaccia pubblica."
+      },
+      "twistConditional": {
+        "pass": [
+          {
+            "if": {
+              "world.popolo": {
+                "<=": 35
+              }
+            },
+            "text": "Il Popolo è già esasperato dalla rete: ogni secondo di lag viene attribuito al tuo ufficio."
+          }
+        ]
+      },
+      "contracts": {
+        "onDecision": {
+          "pass": {
+            "promises": [
+              {
+                "to": "Profeta del Lag",
+                "text": "Condividere l'elenco dei server a rischio",
+                "dueOffset": 2
+              }
+            ]
+          },
+          "deny": {
+            "debts": [
+              {
+                "from": "Dipartimento",
+                "to": "Tu",
+                "text": "Condividere i server a rischio",
+                "dueOffset": 2
+              }
+            ]
+          }
+        }
       }
     },
-
     {
       "file": "11.jpg",
-      "name": "Fan Bambina del Multiverso",
-      "origin": "Quartiere Dei Peluche Senzienti",
-      "job": "Studentessa e fan accanita",
-      "reason": "Vedere dal vivo lo streamer preferito",
-      "notes": "Disegno dove tu sei un eroe. Documenti incompleti, ma c’è una lettera della scuola.",
-      "tags": ["is_pop_icon"],
-      "tagHints": ["disegno", "lettera scuola"],
+      "name": "Mia Pixel",
+      "origin": "Quartiere dei Peluche Senzienti",
+      "job": "Studentessa e fan dello streaming",
+      "reason": "Vuole raggiungere un evento scolastico oltre confine",
+      "notes": "Documenti incompleti, lettera della scuola e un disegno che ritrae il tuo ufficio. La famiglia risulta già registrata.",
+      "tags": [
+        "is_pop_icon"
+      ],
+      "tagHints": [
+        "lettera della scuola",
+        "famiglia registrata"
+      ],
       "arc": "people",
       "effects": {
-        "pass":    { "regime": -5,  "popolo": 20, "ribelli": 5,  "stamps": 0, "sanity": 1 },
-        "deny":    { "regime": 5,   "popolo": -20,"ribelli": 0,  "stamps": 1, "sanity": -1 },
-        "arrest":  { "regime": 10,  "popolo": -35,"ribelli": -5, "stamps": 2, "sanity": -2 },
-        "condemn": { "regime": 15,  "popolo": -45,"ribelli": -10,"stamps": 3, "sanity": -3 }
+        "pass": {
+          "regime": -3,
+          "popolo": 12,
+          "ribelli": 4,
+          "stamps": 0,
+          "sanity": 1
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -12,
+          "ribelli": 0,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -18,
+          "ribelli": -4,
+          "stamps": 2,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -24,
+          "ribelli": -8,
+          "stamps": 3,
+          "sanity": -2
+        }
       },
       "twist": {
-        "pass": "Racconta a tutti quanto sei stato gentile. Il Popolo ti vede quasi mitico.",
-        "deny": "Resta solo il rumore di un disegno accartocciato e sguardi accusatori.",
-        "arrest": "È un gesto che resta nei libri di storia… dalla parte sbagliata.",
-        "condemn": "Anche il Regime, in privato, si chiede se non sei andato troppo oltre."
+        "pass": "La scuola ringrazia pubblicamente il personale del varco. Il disegno diventa il simbolo della settimana.",
+        "deny": "La famiglia torna con una pratica ancora più lunga.",
+        "arrest": "L'ufficio riceve una protesta formale della scuola.",
+        "condemn": "La vicenda diventa una storia che i cittadini raccontano ai figli."
+      },
+      "twistConditional": {
+        "pass": [
+          {
+            "if": {
+              "world.popolo": {
+                ">=": 65
+              }
+            },
+            "text": "Il gesto viene celebrato come prova che il confine può ancora avere un volto umano."
+          }
+        ]
+      },
+      "contracts": {
+        "onDecision": {
+          "pass": {
+            "promises": [
+              {
+                "to": "Mia Pixel",
+                "text": "Accelerare la verifica della pratica familiare",
+                "dueOffset": 2
+              }
+            ]
+          },
+          "deny": {
+            "debts": [
+              {
+                "from": "Dipartimento",
+                "to": "Tu",
+                "text": "Motivare ogni eccezione",
+                "dueOffset": 2
+              }
+            ]
+          }
+        }
       }
     },
-
     {
       "file": "12.jpg",
       "name": "Broker Dimensionale",
       "origin": "Borsa delle Realtà Alternative",
-      "job": "Intermediario di potere",
-      "reason": "Licenza per gestire traffico tra fazioni",
-      "notes": "Clausole nascoste ovunque.",
-      "tags": ["is_corrupt_official", "is_bomb_risk"],
-      "tagHints": ["contratti", "clausole"],
+      "job": "Intermediario commerciale",
+      "reason": "Chiede una licenza per gestire scambi tra fazioni",
+      "notes": "Ha contratti firmati con Regime, Popolo e Ribelli. Tutti sono convinti che il Broker lavori per loro.",
+      "tags": [
+        "is_corrupt_official",
+        "is_bomb_risk"
+      ],
+      "tagHints": [
+        "tre contratti",
+        "intermediario"
+      ],
       "arc": "meta",
       "effects": {
-        "pass":    { "regime": 10,  "popolo": 5,  "ribelli": 10, "stamps": 1, "sanity": -1 },
-        "deny":    { "regime": -5,  "popolo": 0,  "ribelli": -5, "stamps": 0, "sanity": 0 },
-        "arrest":  { "regime": -10, "popolo": 5,  "ribelli": 0,  "stamps": 2, "sanity": -1 },
-        "condemn": { "regime": -15, "popolo": 10, "ribelli": 5,  "stamps": 3, "sanity": -2 }
+        "pass": {
+          "regime": 8,
+          "popolo": 5,
+          "ribelli": 8,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "deny": {
+          "regime": -5,
+          "popolo": 0,
+          "ribelli": -5,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": -8,
+          "popolo": 4,
+          "ribelli": 2,
+          "stamps": 2,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": -12,
+          "popolo": 8,
+          "ribelli": 6,
+          "stamps": 3,
+          "sanity": -2
+        }
       },
       "twist": {
-        "pass": "Ago della bilancia: tutti lo usano, nessuno si fida. Caos controllato.",
-        "deny": "Niente licenze ai compromessi. Le tensioni restano più pure… e più esplosive.",
-        "arrest": "Segnale forte: niente mercanteggiamenti. I puristi ti rispettano di più.",
-        "condemn": "Accordi sottobanco saltano. Sembra che tutto possa cambiare, in meglio o in peggio."
+        "pass": "Gli scambi ripartono. Nel giro di un giorno tutte le fazioni scoprono clausole incompatibili.",
+        "deny": "Il Broker perde la licenza, ma gli accordi informali continuano.",
+        "arrest": "I suoi conti vengono congelati e improvvisamente tutti ricordano di conoscerlo.",
+        "condemn": "La rete commerciale collassa per una settimana, poi riparte sottobanco."
+      },
+      "twistConditional": {
+        "pass": [
+          {
+            "if": {
+              "world.regime": {
+                "<=": 30
+              },
+              "world.ribelli": {
+                ">=": 60
+              }
+            },
+            "text": "Il Broker diventa l'unico ponte tra asimmetrie di potere e il suo peso cresce troppo in fretta."
+          }
+        ]
+      },
+      "contracts": {
+        "onDecision": {
+          "pass": {
+            "promises": [
+              {
+                "to": "Broker Dimensionale",
+                "text": "Favorire una licenza commerciale secondaria",
+                "dueOffset": 2
+              }
+            ]
+          },
+          "deny": {
+            "debts": [
+              {
+                "from": "Dipartimento",
+                "to": "Tu",
+                "text": "Registrare gli accordi informali",
+                "dueOffset": 2
+              }
+            ]
+          }
+        }
       }
     }
   ]
