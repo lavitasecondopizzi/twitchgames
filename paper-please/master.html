@@ -235,22 +235,25 @@ body.master-view .decision-btn{cursor:default}
 .master-guest .guest-name{font-family:Impact,"Arial Black",sans-serif;font-size:20px;text-transform:uppercase;margin-top:8px}
 .master-resources{display:grid!important;grid-template-columns:1fr 1fr;gap:5px}.master-resources div{border:2px solid var(--line);padding:5px;background:var(--paper2)}
 .master-main{
+  position:relative;
   width:100%;height:100%;min-width:0;min-height:0;
-  display:flex;
-  flex-direction:row;
-  align-items:stretch;
-  gap:8px;
+  display:block;
   overflow:hidden;
 }
 .master-main>.master-control{
-  flex:0 0 220px;
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:220px;
 }
 .master-main>.master-case-panel{
-  flex:1 1 auto;
-  min-width:0;
+  position:absolute;
+  left:228px;right:368px;top:0;bottom:0;
+  width:auto;min-width:0;
 }
 .master-main>.master-side{
-  flex:0 0 360px;
+  position:absolute;
+  right:0;top:0;bottom:0;
+  width:360px;
   min-width:360px;
 }
 .master-control,.master-side{
@@ -312,8 +315,9 @@ body.master-view .decision-btn{cursor:default}
 @media(max-width:1100px){
   .master-top{grid-template-columns:1.3fr 1.5fr 1fr}
   .master-resources{display:none!important}
-  .master-main>.master-control{flex-basis:200px}
-  .master-main>.master-side{flex-basis:300px;min-width:300px}
+  .master-main>.master-control{width:200px}
+  .master-main>.master-case-panel{left:208px;right:308px}
+  .master-main>.master-side{width:300px;min-width:300px}
 }
 @media(max-width:900px){
   .master-top{grid-template-columns:1fr 1fr}
@@ -323,9 +327,9 @@ body.master-view .decision-btn{cursor:default}
     grid-template-columns:190px minmax(0,1fr);
     grid-template-rows:minmax(0,1fr) 280px;
   }
-  .master-control{grid-column:1;grid-row:1}
-  .master-main>.panel{grid-column:2;grid-row:1}
-  .master-side{grid-column:1/-1;grid-row:2}
+  .master-control{grid-column:1;grid-row:1;position:static;width:auto}
+  .master-main>.panel{grid-column:2;grid-row:1;position:static;width:auto}
+  .master-side{grid-column:1/-1;grid-row:2;position:static;width:auto;min-width:0}
 }
 @media(max-width:650px){
   .master-main{
