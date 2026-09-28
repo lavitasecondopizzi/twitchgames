@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Paper Pizzi Please — Giocatore</title>
+<title>Paper Pizzi Please</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
 
 <style>
@@ -476,13 +476,13 @@ body.master-view .decision-btn{cursor:default}
 <script>
 
 const urlParams = new URLSearchParams(location.search);
-const masterMode = false;
+const masterMode = urlParams.get("master")==="1" || urlParams.get("role")==="host";
 const soloMode  = !masterMode && (urlParams.get("solo")==="1" || urlParams.get("mode")==="solo");
 const roomCode = (urlParams.get("room") || "").trim().toUpperCase();
-const forcedRole = "guest";
-const isHost = false;
+const forcedRole = masterMode ? "host" : "guest";
+const isHost = masterMode;
 const streamerName = urlParams.get("streamer") || "Pizzi";
-const isGuest = true;
+const isGuest = !masterMode;
 const guestName = isGuest ? (urlParams.get("guest") || urlParams.get("player") || "Ospite") : "Ospite";
 let roomClient = null;
 let revision = 0;
@@ -490,6 +490,7 @@ let isApplyingRemoteState = false;
 
 document.getElementById("camStreamerLabel").textContent = streamerName;
 document.getElementById("camGuestLabel").textContent    = guestName;
+document.body.classList.toggle("master-view", masterMode);
 
 /* ===== CONFIG ===== */
 const CASES_CONFIG_URL = "cases.json";
@@ -1305,8 +1306,8 @@ function updateUI(){
 
   // phase
   UI.hudPhase.textContent = phaseLabel(stato.phase);
-  UI.uiRoleBadge.textContent = soloMode ? "GIOCATORE SOLO" : "GIOCATORE / OSPITE";
-  UI.uiRoleBadge.className = "badge " + (soloMode ? "brand" : "ok");
+  UI.uiRoleBadge.textContent = masterMode ? "MASTER / NARRATORE" : (soloMode ? "GIOCATORE SOLO" : "GIOCATORE / OSPITE");
+  UI.uiRoleBadge.className = "badge " + (masterMode ? "vio" : (soloMode ? "brand" : "ok"));
   UI.voteLockBadge.textContent = "Voto: " + (stato.phaseLocked ? "LOCK" : "Aperto");
   UI.voteLockBadge.className = "badge " + (stato.phaseLocked ? "ko" : "ok");
 
@@ -1372,10 +1373,10 @@ function updateUI(){
     btn.disabled = !canChoose;
     btn.classList.toggle("selected", v === (decided ? stato.decisionsByPos[pos] : playerChoice));
   });
-  UI.btnConfirm.disabled = true;
-  UI.btnConfirm.style.display = "none";
-  UI.btnNextPhase.disabled = true;
-  UI.btnNextPhase.style.display = "none";
+  UI.btnConfirm.disabled = !masterMode || !playerChoice || stato.phase !== "decision" || decided;
+  UI.btnConfirm.style.display = masterMode ? "" : "none";
+  UI.btnNextPhase.disabled = !masterMode || stato.gameOver || stato.runCompleted || stato.phase === "decision";
+  UI.btnNextPhase.style.display = masterMode ? "" : "none";
   UI.btnApplyChat.style.display = "none";
   UI.draftLabel.textContent = "Decisione: " + (playerChoice ? decisionLabel(playerChoice) : "Nessuna");
 
@@ -1432,7 +1433,7 @@ function phaseHelpText(phase){
   if (phase==="discuss") return "DISCUSSIONE: la chat manda +pro / -contro. Obiettivo a tempo può apparire.";
   if (phase==="vote1") return "VOTO 1: la chat vota !passa / !nega / !arresta / !condanna.";
   if (phase==="vote2") return "VOTO 2: spareggio attivo. La chat vota tra le due opzioni indicate.";
-  if (phase==="decision") return "DECISIONE: scegli una bozza e premi Conferma.";
+  if (phase==="decision") return masterMode ? "DECISIONE: attendi la scelta dell'Ospite, poi applicala e narra la conseguenza." : "DECISIONE: scegli personalmente una delle quattro opzioni.";
   if (phase==="event") return "EVENTO: applico un evento tra-round, poi si passa alla prossima persona.";
   return "—";
 }
@@ -1620,6 +1621,13 @@ function handleGameEvent(payload){
     });
     updateObjectiveProgress();saveState();return;
   }
+  if(payload.type==="player_decision"){
+    const choice=normalizeChoice(payload.choice);
+    if(!choice || stato.phase!=="decision" || stato.decisionsByPos[stato.currentPos]) return;
+    stato.playerDecision=choice;
+    saveState();
+    return;
+  }
   if(payload.type==="chat_vote"||payload.type==="chat_tiebreak"){
     const choice=normalizeChoice(payload.choice);
     if(!choice)return;
@@ -1646,8 +1654,12 @@ async function connectRoom(){
     if(isHost&&payload?.requester==="guest")broadcastState().catch(()=>{});
   });
   roomClient.on("presence",presence=>{
-    if(isHost&&Object.values(presence||{}).flat().some(e=>e.role==="guest"))
-      broadcastState().catch(()=>{});
+    const entries=Object.values(presence||{}).flat();
+    const host=entries.find(e=>e.role==="host");
+    const guest=entries.find(e=>e.role==="guest");
+    if(host && !isHost) document.getElementById("camStreamerLabel").textContent=String(host.nickname||"Pizzi");
+    if(guest && isHost) document.getElementById("camGuestLabel").textContent=String(guest.nickname||"Ospite");
+    if(isHost&&guest) broadcastState().catch(()=>{});
   });
   try{
     await roomClient.connect();
