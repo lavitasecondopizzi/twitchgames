@@ -1792,7 +1792,17 @@ function applyRemoteState(payload){
   isApplyingRemoteState=false;
 }
 function handleGameEvent(payload){
-  if(!payload||!isMaster||stato.phaseLocked)return;
+  if(!payload||!isMaster)return;
+  if(payload.type==="player_decision"){
+    if(stato.phase!=="decision" || stato.decisionsByPos[stato.currentPos]) return;
+    const choice=normalizeChoice(payload.choice);
+    if(!choice) return;
+    stato.playerDecision=choice;
+    updateUI();
+    saveState();
+    return;
+  }
+  if(stato.phaseLocked)return;
   if(payload.type==="chat_suggestion"){
     const text=String(payload.text||"").trim();
     if(!text)return;
