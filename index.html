@@ -770,9 +770,11 @@
         const seed = encodeURIComponent(gameConfig.seed || '');
         const mode = gameConfig.mode === 'solo' ? '&mode=solo' : '';
         const paperPage = view === 'master' ? 'master.html' : 'index.html';
-        const guest = guestNickname ? '&guest=' + encodeURIComponent(guestNickname) : (role === 'guest' ? '&guest=' + player : '');
+        const streamer = encodeURIComponent('Pizzi');
+        const guestName = guestNickname || (role === 'guest' ? nickname : '');
+        const guest = guestName ? '&guest=' + encodeURIComponent(guestName) : '';
         return './paper-please/' + paperPage + '?seed=' + seed +
-          '&streamer=' + player + mode + '&room=' + room +
+          '&streamer=' + streamer + mode + '&room=' + room +
           '&role=' + role + '&interaction=' + interaction + guest +
           (view === 'master' ? '&master=1' : '');
       }
@@ -808,6 +810,9 @@
 
       if (guests.length === 1) {
         state.guestNickname = String(guest.nickname || '').trim();
+        if (state.guestNickname) {
+          localStorage.setItem('tortello:paper:guest:' + state.roomCode, state.guestNickname);
+        }
         $('roomPlayerLabel').textContent = 'HOST · PIZZI · OSPITE: ' + (state.guestNickname || 'Ospite');
         $('roomNotice').textContent = 'Ospite collegato. Puoi avviare la partita.';
         launchButton.disabled = false;
