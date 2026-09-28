@@ -1907,36 +1907,23 @@ async function adjustScore(playerId, delta, fromHostEvent = false){
 }
 
 function showScoreFx(delta){
-  const sfxUp = document.getElementById("sfxUp");
-  const sfxDown = document.getElementById("sfxDown");
-
-  if (delta > 0){
-    if (sfxUp){ sfxUp.currentTime = 0; sfxUp.play().catch(()=>{}); }
-  } else {
-    if (sfxDown){ sfxDown.currentTime = 0; sfxDown.play().catch(()=>{}); }
-  }
+  const sfx = document.getElementById(delta > 0 ? "sfxUp" : "sfxDown");
+  if (sfx){ sfx.currentTime = 0; sfx.play().catch(()=>{}); }
 
   const fx = document.createElement("div");
   fx.textContent = delta > 0 ? "+1" : "-1";
   fx.setAttribute("aria-hidden", "true");
   fx.style.cssText = [
-    "position:fixed",
-    "inset:0",
-    "z-index:2147483647",
-    "display:flex",
-    "align-items:center",
-    "justify-content:center",
+    "position:fixed","inset:0","z-index:2147483647",
+    "display:flex","align-items:center","justify-content:center",
     "pointer-events:none",
     "font-family:Impact,Haettenschweiler,Arial Black,sans-serif",
-    "font-size:clamp(140px,22vw,360px)",
-    "font-weight:900",
-    "line-height:.8",
+    "font-size:clamp(140px,22vw,360px)","font-weight:900",
+    "line-height:.8","letter-spacing:.02em",
     "color:" + (delta > 0 ? "#19d34a" : "#e32626"),
-    "-webkit-text-stroke:8px #111",
-    "text-shadow:12px 12px 0 #111",
-    "opacity:0",
-    "transform:scale(.35) rotate(-6deg)",
-    "transition:opacity .12s steps(2,end),transform .18s steps(3,end)"
+    "-webkit-text-stroke:8px #111","text-shadow:12px 12px 0 #111",
+    "opacity:0","transform:translateY(120px) scale(.45) rotate(-8deg)",
+    "transition:opacity .28s ease-out,transform .5s cubic-bezier(.16,1.4,.3,1)"
   ].join(";");
 
   document.body.appendChild(fx);
@@ -1944,16 +1931,18 @@ function showScoreFx(delta){
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       fx.style.opacity = "1";
-      fx.style.transform = "scale(1.08) rotate(2deg)";
+      fx.style.transform = "translateY(0) scale(1) rotate(0deg)";
     });
   });
 
+  // Rimane pienamente visibile per oltre 2 secondi.
   setTimeout(() => {
+    fx.style.transition = "opacity .45s ease-in, transform .55s cubic-bezier(.55,.05,.8,.4)";
     fx.style.opacity = "0";
-    fx.style.transform = "scale(1.15) rotate(0deg)";
-  }, 350);
+    fx.style.transform = "translateY(-110px) scale(.8) rotate(6deg)";
+  }, 2100);
 
-  setTimeout(() => fx.remove(), 700);
+  setTimeout(() => fx.remove(), 2650);
 }
 
 subScoreBtn.addEventListener("click", async ()=>{
