@@ -684,7 +684,8 @@ function defaultState(){
     dossierLevel: 1,        // 1..3 (global, can be modified by stamps/unlocks)
     shop: {
       dossierOverride: 0,
-      used: [],
+      purchasedDossier: 1,
+      inventory: { retrial: 0, amnesty: 0 },
       amnestyActive: false
     },
     stamps: cfg?.economy?.startStamps ?? 0,
@@ -1229,11 +1230,7 @@ function canUseStamps(cost){ return stato.stamps >= cost; }
 function spendStamps(cost){
   stato.stamps = Math.max(0, stato.stamps - cost);
 }
-function getEffectiveDossierLevel(){
-  const base=Number(stato?.dossierLevel||1);
-  const override=Number(stato?.shop?.dossierOverride||0);
-  return Math.max(base,override);
-}
+function getEffectiveDossierLevel(){return Math.max(Number(stato?.dossierLevel||1),shopPurchasedDossier());}
 
 function maybeAutoDossierUpgrade(){
   // “sbloccabili gameplay leggeri”: if unlocks/lightLevel or stamps thresholds => bump dossier
@@ -1243,86 +1240,87 @@ function maybeAutoDossierUpgrade(){
 
 /* ===== SHOP ===== */
 const SHOP_FALLBACK = {
-  dossier2_once:{id:"dossier2_once",label:"Dossier L2",cost:2,description:"Rivela le informazioni del Dossier L2 per questo caso."},
-  dossier3_once:{id:"dossier3_once",label:"Dossier L3",cost:4,description:"Rivela le informazioni del Dossier L3 per questo caso."},
-  retrial:{id:"retrial",label:"Riesame",cost:3,description:"Riapre il voto del caso corrente prima della conferma."},
-  amnesty:{id:"amnesty",label:"Amnistia",cost:3,description:"Dimezza la prossima penalità da Debito o Promessa."}
+  dossier2_once:{id:"dossier2_once",label:"Dossier L2",cost:2,description:"Sblocca permanentemente il Dossier L2 per tutta la run.",requiresItem:"dossier2"},
+  dossier3_once:{id:"dossier3_once",label:"Dossier L3",cost:4,description:"Sblocca permanentemente il Dossier L3 per tutta la run.",requiresLightLevel:2},
+  retrial:{id:"retrial",label:"Riesame",cost:3,description:"Acquista un Riesame da conservare e usare in un caso successivo.",requiresLightLevel:1},
+  amnesty:{id:"amnesty",label:"Amnistia",cost:3,description:"Acquista un'Amnistia da conservare per dimezzare una penalità.",requiresLightLevel:1}
 };
 function shopDefinitions(){
   const configured=cfg?.economy?.stampShop;
   const out={...SHOP_FALLBACK};
-  if(Array.isArray(configured)){
-    configured.forEach(item=>{
-      if(item?.id && out[item.id]) out[item.id]={...out[item.id],...item};
-    });
-  }
+  if(Array.isArray(configured)) configured.forEach(item=>{if(item?.id&&out[item.id])out[item.id]={...out[item.id],...item};});
   return Object.values(out);
 }
-function shopUsed(id){ return Array.isArray(stato.shop?.used) && stato.shop.used.includes(id); }
-function shopCanPurchase(id){
-  if(!isMaster && stato?.gameOver) return false;
-  if(!stato?.shop) return false;
-  if(shopUsed(id)) return false;
-  const phase=stato.phase;
-  if(id==="dossier2_once") return phase!=="end" && getEffectiveDossierLevel()<2;
-  if(id==="dossier3_once") return phase!=="end" && getEffectiveDossierLevel()<3;
-  if(id==="retrial") return phase==="decision" && !!stato.playerDecision && !stato.decisionsByPos[stato.currentPos];
-  if(id==="amnesty") return phase==="decision" && !stato.decisionsByPos[stato.currentPos];
-  return false;
+function hasUnlockItem(id){return Array.isArray(stato?.unlocks?.items)&&stato.unlocks.items.includes(id);}
+function shopRequirementText(item){
+  if(item.requiresItem&&!hasUnlockItem(item.requiresItem))return "Richiede sblocco: "+item.requiresItem;
+  if(Number(item.requiresLightLevel||0)>Number(stato?.unlocks?.lightLevel||0))return "Richiede Unlock L"+item.requiresLightLevel;
+  return "Requisiti soddisfatti";
 }
-function shopItemById(id){ return shopDefinitions().find(x=>x.id===id) || SHOP_FALLBACK[id]; }
-function purchaseShopItem(id, source="player"){
-  if(!isMaster) return false;
-  const item=shopItemById(id);
-  if(!item || !shopCanPurchase(id) || !canUseStamps(Number(item.cost)||0)) return false;
-  spendStamps(Number(item.cost)||0);
-  stato.shop.used.push(id);
-  if(id==="dossier2_once") stato.shop.dossierOverride=2;
-  if(id==="dossier3_once") stato.shop.dossierOverride=3;
-  if(id==="amnesty") stato.shop.amnestyActive=true;
-  if(id==="retrial"){
-    stato.playerDecision=null;
-    draftDecision=null;
-    stato.chat.votes1=[];
-    stato.chat.votes2=[];
-    stato.chat.tiebreak=null;
-    stato.phaseLocked=false;
-    setPhase("vote1");
-    return true;
-  }
-  updateUI();
-  saveState();
+function shopPurchasedDossier(){return Math.max(1,Math.min(3,Number(stato?.shop?.purchasedDossier||1)));}
+function shopInventory(id){return Math.max(0,Number(stato?.shop?.inventory?.[id]||0));}
+function shopCanPurchase(id){
+  if(!stato?.shop||stato.gameOver||stato.runCompleted)return false;
+  const item=shopDefinitions().find(x=>x.id===id);if(!item)return false;
+  if(Number(item.requiresLightLevel||0)>Number(stato?.unlocks?.lightLevel||0))return false;
+  if(item.requiresItem&&!hasUnlockItem(item.requiresItem))return false;
+  if(id==="dossier2_once"&&shopPurchasedDossier()>=2)return false;
+  if(id==="dossier3_once"&&shopPurchasedDossier()<2)return false;
   return true;
 }
+function shopCanUse(id){
+  if(id==="retrial")return stato.phase==="decision"&&!stato.decisionsByPos[stato.currentPos]&&shopInventory("retrial")>0;
+  if(id==="amnesty")return !stato.decisionsByPos[stato.currentPos]&&shopInventory("amnesty")>0;
+  return false;
+}
+function shopItemById(id){return shopDefinitions().find(x=>x.id===id)||SHOP_FALLBACK[id];}
+function purchaseShopItem(id){
+  if(!isMaster)return false;
+  const item=shopItemById(id);
+  if(!item||!shopCanPurchase(id)||!canUseStamps(Number(item.cost)||0))return false;
+  spendStamps(Number(item.cost)||0);
+  if(id==="dossier2_once")stato.shop.purchasedDossier=2;
+  if(id==="dossier3_once")stato.shop.purchasedDossier=3;
+  if(id==="retrial")stato.shop.inventory.retrial=(stato.shop.inventory.retrial||0)+1;
+  if(id==="amnesty")stato.shop.inventory.amnesty=(stato.shop.inventory.amnesty||0)+1;
+  updateUI();saveState();return true;
+}
+function useShopItem(id){
+  if(!isMaster||!shopCanUse(id))return false;
+  stato.shop.inventory[id]=Math.max(0,shopInventory(id)-1);
+  if(id==="retrial"){
+    stato.playerDecision=null;draftDecision=null;stato.chat.votes1=[];stato.chat.votes2=[];stato.chat.tiebreak=null;setPhase("vote1");return true;
+  }
+  if(id==="amnesty"){stato.shop.amnestyActive=true;updateUI();saveState();return true;}
+  return false;
+}
 function renderShop(){
-  if(!UI.shopList) return;
-  const items=shopDefinitions();
+  if(!UI.shopList)return;
   UI.shopBalance.textContent="TIMBRI: "+Math.max(0,Math.floor(stato?.stamps||0));
   UI.shopList.innerHTML="";
-  items.forEach(item=>{
-    const row=document.createElement("div");
-    row.className="shop-item";
-    const info=document.createElement("div");
+  shopDefinitions().forEach(item=>{
+    const row=document.createElement("div");row.className="shop-item";
+    const info=document.createElement("div");const req=shopRequirementText(item);
+    const inv=(item.id==="retrial"||item.id==="amnesty")?shopInventory(item.id):0;
     info.innerHTML="<h3></h3><p></p>";
     info.querySelector("h3").textContent=item.label+" · "+item.cost+" TIMBRI";
-    info.querySelector("p").textContent=item.description;
-    const btn=document.createElement("button");
-    btn.className="btn shop-buy";
-    btn.type="button";
-    btn.textContent=shopUsed(item.id)?"USATO":("ACQUISTA · "+item.cost);
-    btn.disabled=!shopCanPurchase(item.id) || (stato?.stamps||0)<Number(item.cost||0);
-    btn.addEventListener("click",()=>{
-      if(isMaster) purchaseShopItem(item.id,"master");
-      else if(roomClient) roomClient.broadcast("game_event",{type:"shop_purchase",itemId:item.id,user:guestName,ts:Date.now(),requestId:guestName+"-"+Date.now()+"-"+Math.random().toString(36).slice(2)}).catch(()=>{});
-      if(!isMaster && UI.shopStatus) UI.shopStatus.textContent="Richiesta inviata al Master.";
-    });
+    info.querySelector("p").textContent=item.description+(req==="Requisiti soddisfatti"?"":" ["+req+"]");
+    const btn=document.createElement("button");btn.className="btn shop-buy";btn.type="button";
+    btn.textContent=(item.id==="dossier2_once"&&shopPurchasedDossier()>=2)||(item.id==="dossier3_once"&&shopPurchasedDossier()>=3)?"SBLOCCATO":"ACQUISTA · "+item.cost+" ("+inv+")";
+    btn.disabled=!shopCanPurchase(item.id)||(stato?.stamps||0)<Number(item.cost||0);
+    btn.addEventListener("click",()=>{if(isMaster)purchaseShopItem(item.id);else roomClient?.broadcast("game_event",{type:"shop_purchase",itemId:item.id,user:guestName,ts:Date.now()}).catch(()=>{});});
     row.append(info,btn);
+    if((item.id==="retrial"||item.id==="amnesty")&&shopInventory(item.id)>0){
+      const use=document.createElement("button");use.className="btn ghost shop-buy";use.type="button";use.textContent=item.id==="retrial"?"USA RIESAME":"USA AMNISTIA";use.disabled=!shopCanUse(item.id);
+      use.addEventListener("click",()=>{if(isMaster)useShopItem(item.id);else roomClient?.broadcast("game_event",{type:"shop_use",itemId:item.id,user:guestName,ts:Date.now()}).catch(()=>{});});
+      row.appendChild(use);
+    }
     UI.shopList.appendChild(row);
   });
-  if(UI.shopStatus) UI.shopStatus.textContent=isMaster?"Il Master autorizza e applica gli acquisti.":"Gli acquisti vengono verificati dal Master.";
+  if(UI.shopStatus)UI.shopStatus.textContent=isMaster?"Gli upgrade Dossier restano per tutta la run. Riesame e Amnistia restano nell'inventario.":"Gli acquisti vengono verificati dal Master e restano nella run.";
 }
-function openShop(){ renderShop(); UI.shopOverlay?.classList.add("show"); }
-function closeShop(){ UI.shopOverlay?.classList.remove("show"); }
+function openShop(){renderShop();UI.shopOverlay?.classList.add("show");}
+function closeShop(){UI.shopOverlay?.classList.remove("show");}
 
 /* ===== DEBTS / PROMISES / ARCS ===== */
 function applyContractsFromCase(caseObj, decision){
@@ -1429,9 +1427,6 @@ function advanceToNextCase(){
   if (pos < order.length-1){
     stato.currentPos = pos + 1;
     stato.playerDecision = null;
-    stato.shop.dossierOverride = 0;
-    stato.shop.used = [];
-    stato.shop.amnestyActive = false;
     stato.chat.round = stato.currentPos + 1;
     // season progression after run end handled elsewhere
     setPhase("intro");
@@ -1754,7 +1749,8 @@ function mergeLoadedState(data){
   stato.unlocks={...defaultState().unlocks,...(data?.unlocks||{})};
   stato.arcs={...defaultState().arcs,...(data?.arcs||{})};
   stato.shop={...defaultState().shop,...(data?.shop||{})};
-  if(!Array.isArray(stato.shop.used)) stato.shop.used=[];
+  stato.shop.inventory={...defaultState().shop.inventory,...(data?.shop?.inventory||{})};
+  if(!Number.isFinite(Number(stato.shop.purchasedDossier))) stato.shop.purchasedDossier=1;
   if(Array.isArray(data?.runOrder)) order=data.runOrder.slice();
   ensureState();
 }
@@ -1797,10 +1793,9 @@ function handleGameEvent(payload){
     });
     updateObjectiveProgress();saveState();return;
   }
-  if(payload.type==="shop_purchase"){
-    const itemId=String(payload.itemId||"");
-    if(!itemId) return;
-    purchaseShopItem(itemId,"player");
+  if(payload.type==="shop_purchase"||payload.type==="shop_use"){
+    const itemId=String(payload.itemId||"");if(!itemId)return;
+    if(payload.type==="shop_purchase")purchaseShopItem(itemId);else useShopItem(itemId);
     return;
   }
   if(payload.type==="player_decision"){
@@ -1896,7 +1891,8 @@ function mergeLoadedState(data){
   stato.unlocks={...defaultState().unlocks,...(data?.unlocks||{})};
   stato.arcs={...defaultState().arcs,...(data?.arcs||{})};
   stato.shop={...defaultState().shop,...(data?.shop||{})};
-  if(!Array.isArray(stato.shop.used)) stato.shop.used=[];
+  stato.shop.inventory={...defaultState().shop.inventory,...(data?.shop?.inventory||{})};
+  if(!Number.isFinite(Number(stato.shop.purchasedDossier))) stato.shop.purchasedDossier=1;
   if(Array.isArray(data?.runOrder)) order=data.runOrder.slice();
   ensureState();
 }
