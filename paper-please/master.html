@@ -524,8 +524,8 @@ const UI = {
   hudObjectiveType: el("hudObjectiveType"),
   hudObjectiveProgress: el("hudObjectiveProgress"),
   hudObjectiveText: el("hudObjectiveText"),
-  hudUnlocks: el("hudUnlocks"),
-  hudDebts: el("hudDebts"),
+  hudUnlocks: el("hudUnlocks") || {textContent:""},
+  hudDebts: el("hudDebts") || {textContent:""},
   hudCaseIndex: el("hudCaseIndex"),
   hudDossier: el("hudDossier"), uiRoleBadge: el("uiRoleBadge"),
 
