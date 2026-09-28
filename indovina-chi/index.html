@@ -182,19 +182,6 @@ button,select{font:inherit}
   align-items:center;
   gap:4px;
 }
-.round-controls select{
-  width:auto;
-  min-width:70px;
-  max-width:115px;
-  height:28px;
-  padding:3px 5px;
-  border:3px solid var(--line);
-  border-radius:0;
-  background:var(--paper);
-  color:var(--ink);
-  font-size:8px;
-  font-weight:900;
-}
 .btn{
   min-height:30px;
   border:3px solid var(--line);
@@ -515,7 +502,7 @@ button,select{font:inherit}
 }
 .score-fx.negative{color:#d11}
 .score-fx.positive{color:#19d34a}
-.score-fx.show{animation:scoreFxPop .6s steps(3,end) forwards}
+.score-fx.show{animation:scoreFxPop 2s steps(8,end) forwards}
 @keyframes scoreFxPop{
   0%{opacity:0;transform:translate(-50%,-45%) scale(.4) rotate(-5deg)}
   18%{opacity:1;transform:translate(-50%,-52%) scale(1.2) rotate(3deg)}
@@ -909,8 +896,6 @@ let stato = {
   punteggioB: 0,
   playerNameA: null,
   playerNameB: null,
-  roundSrc: "",
-  roundName: "",
   chatVotes: { round: 0, entries: [] }
 };
 
@@ -943,6 +928,8 @@ function resetChatVotes(){
 function normalizeRemoteState(data){
   if(!data || typeof data !== "object") return null;
   const next = { ...stato, ...data };
+  delete next.roundSrc;
+  delete next.roundName;
   if(data.chatVotes && typeof data.chatVotes === "object"){
     next.chatVotes = {
       round: Number(data.chatVotes.round) || 0,
@@ -1008,13 +995,6 @@ function applyRemoteState(payload){
   if(nextRound > previousRound){
     personalCharacter = null;
     try{ localStorage.removeItem(characterStorageKey()); }catch(_){}
-    const select = document.getElementById("roundSelect");
-    const confirm = document.getElementById("confirmCharacter");
-    if(select){
-      select.disabled = false;
-      select.value = "0";
-    }
-    if(confirm) confirm.textContent = "Conferma";
   }
   ensureStateShape();
   aggiornaUI();
@@ -1204,11 +1184,6 @@ function aggiornaUI(){
   if(camALabel) camALabel.textContent = nameA;
   if(camBLabel) camBLabel.textContent = nameB;
 
-  const roundSelect = document.getElementById("roundSelect");
-  const roundImage = document.getElementById("roundImage");
-  if(roundSelect && stato.roundSrc && [...roundSelect.options].some(o => o.value === stato.roundSrc)){
-    roundSelect.value = stato.roundSrc;
-  }
   renderPersonalCharacter();
 
   const gA = document.querySelector(".board[data-board='A'] .grid")?.children || [];
@@ -1465,9 +1440,6 @@ function initTopLayoutSync(){
   aggiornaChatVotesUI();
 })();
 </script>
-</body>
-</html>
-</div>
 
 <div class="reset-modal" id="resetConfirmModal" hidden>
   <div class="reset-backdrop" data-close-reset></div>
@@ -1506,8 +1478,10 @@ function initTopLayoutSync(){
       <div class="rules-section rules-chat rules-new-round">
         <h3>⑧ CHAT E NUOVO ROUND</h3>
         <p>La chat può proporre di segnare un personaggio in <b>rosso</b> o <b>verde</b> usando i comandi dedicati. Le proposte vengono mostrate nella colonna centrale e lo streamer decide se applicarle.</p>
-        <p>L'<b>host</b> può avviare un nuovo round. Le schede vengono azzerate e la partita riparte da zero.</p>
+        <p>L'<b>host</b> può avviare un nuovo round. Le schede e i personaggi segreti vengono azzerati; il punteggio resta invariato.</p>
       </div>
     </div>
   </section>
 </div>
+</body>
+</html>
