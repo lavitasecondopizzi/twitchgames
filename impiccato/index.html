@@ -1634,7 +1634,7 @@ function creaTastiere(){
 
 function aggiornaUI(){
   const nameA = stato.playerNameA || "Giocatore A";
-  const nameB = stato.playerNameB || "Giocatore B";
+  const nameB = chatIsPlayerB ? "CHAT" : (stato.playerNameB || "Giocatore B");
 
   if (webcamLabelA) webcamLabelA.textContent = nameA;
   if (webcamLabelB) webcamLabelB.textContent = nameB;
