@@ -69,6 +69,7 @@ button,select{font:inherit}
 .top{
   flex:0 0 auto;
   width:100%;
+  height:auto;
   min-width:0;
   min-height:0;
   display:grid;
@@ -1360,8 +1361,11 @@ function syncTopLayout(){
   const center = document.querySelector(".top .center");
   if(!top || !cam || !center) return;
 
-  const height = cam.getBoundingClientRect().height;
-  if(!height) return;
+  const width = cam.getBoundingClientRect().width;
+  if(!width) return;
+
+  // 16:9: l'altezza dipende esclusivamente dalla larghezza della webcam.
+  const height = width * 9 / 16;
 
   top.style.height = height + "px";
   center.style.height = height + "px";
