@@ -807,7 +807,8 @@
       }
 
       if (guests.length === 1) {
-        $('roomPlayerLabel').textContent = 'HOST · PIZZI · OSPITE: ' + guest.nickname;
+        state.guestNickname = String(guest.nickname || '').trim();
+        $('roomPlayerLabel').textContent = 'HOST · PIZZI · OSPITE: ' + (state.guestNickname || 'Ospite');
         $('roomNotice').textContent = 'Ospite collegato. Puoi avviare la partita.';
         launchButton.disabled = false;
         state.roomClient?.sendRoomInfo().catch(() => {});
