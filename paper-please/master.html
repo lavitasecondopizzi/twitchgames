@@ -501,6 +501,167 @@ body.master-view .master-side .side-box{
     grid-template-rows:minmax(0,1fr) 190px !important;
   }
 }
+
+/* ===== MASTER FINAL LAYOUT / SINGLE SOURCE OF TRUTH ===== */
+body.master-view #app{
+  display:grid !important;
+  grid-template-rows:auto minmax(0,1fr) !important;
+  gap:10px !important;
+  width:100vw !important;
+  height:100vh !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+}
+body.master-view .master-main{
+  position:relative !important;
+  width:100% !important;
+  height:100% !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  display:grid !important;
+  grid-template-columns:240px minmax(0,1fr) 360px !important;
+  grid-template-rows:minmax(0,1fr) !important;
+  gap:8px !important;
+  overflow:hidden !important;
+}
+body.master-view .master-control,
+body.master-view .master-case-panel,
+body.master-view .master-side{
+  position:static !important;
+  left:auto !important;
+  right:auto !important;
+  top:auto !important;
+  bottom:auto !important;
+  width:auto !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  max-width:none !important;
+  max-height:none !important;
+  margin:0 !important;
+}
+body.master-view .master-control{
+  grid-column:1;
+  grid-row:1;
+  overflow:auto !important;
+  padding:8px !important;
+}
+body.master-view .master-case-panel{
+  grid-column:2;
+  grid-row:1;
+  display:flex !important;
+  flex-direction:column !important;
+  overflow:hidden !important;
+  padding:9px !important;
+}
+body.master-view .master-case-panel .master-dossier-details{
+  flex:1 1 auto !important;
+  min-height:0 !important;
+  width:100% !important;
+  display:grid !important;
+  grid-template-rows:auto auto minmax(0,1fr) auto !important;
+  overflow:hidden !important;
+}
+body.master-view .master-case-panel .notes{
+  min-height:0 !important;
+  overflow:auto !important;
+}
+body.master-view .master-side{
+  grid-column:3;
+  grid-row:1;
+  display:block !important;
+  overflow:hidden !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  padding:0 !important;
+}
+body.master-view .master-side-intel{
+  width:100% !important;
+  height:100% !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  overflow:auto !important;
+  padding:8px !important;
+}
+body.master-view .master-intel-head{
+  position:sticky;
+  top:0;
+  z-index:2;
+  background:#fff;
+  padding-bottom:6px;
+  border-bottom:2px solid var(--line);
+}
+body.master-view .master-effects{
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+}
+body.master-view .master-twists{
+  grid-template-columns:1fr !important;
+}
+body.master-view .master-section{
+  margin-top:9px;
+  padding-top:7px;
+}
+body.master-view .master-section-title{
+  font-size:7px;
+  margin-bottom:5px;
+}
+body.master-view .master-tags span,
+body.master-view .master-condition,
+body.master-view .master-contract,
+body.master-view .master-twist{
+  font-size:7px;
+  line-height:1.4;
+}
+body.master-view .master-twist strong,
+body.master-view .master-contract strong{
+  font-size:7px;
+}
+body.master-view .master-main .decision-btn,
+body.master-view .master-main .controls{
+  display:none !important;
+}
+body.master-view .master-main .master-dossier-actions{
+  display:block !important;
+}
+body.master-view .master-main .outcome{
+  margin-top:0 !important;
+}
+@media(max-width:1100px){
+  body.master-view .master-main{
+    grid-template-columns:210px minmax(0,1fr) 310px !important;
+  }
+  .master-top{grid-template-columns:1.2fr 1.5fr 1fr !important}
+  .master-resources{display:none !important}
+}
+@media(max-width:900px){
+  body.master-view .master-main{
+    grid-template-columns:190px minmax(0,1fr) !important;
+    grid-template-rows:minmax(0,1fr) 280px !important;
+  }
+  body.master-view .master-control{grid-column:1;grid-row:1}
+  body.master-view .master-case-panel{grid-column:2;grid-row:1}
+  body.master-view .master-side{grid-column:1/-1;grid-row:2}
+  .master-top{grid-template-columns:1fr 1fr !important}
+  .master-guest{display:none !important}
+}
+@media(max-width:650px){
+  body.master-view #app{padding:6px !important;gap:6px !important}
+  body.master-view .master-main{
+    grid-template-columns:1fr !important;
+    grid-template-rows:auto minmax(360px,1fr) minmax(300px,1fr) !important;
+    gap:6px !important;
+    overflow:auto !important;
+  }
+  body.master-view .master-control{grid-column:1;grid-row:1;max-height:250px !important}
+  body.master-view .master-case-panel{grid-column:1;grid-row:2}
+  body.master-view .master-side{grid-column:1;grid-row:3}
+  .master-top{grid-template-columns:1fr !important}
+  .master-status,.master-guest{display:none !important}
+}
+
 </style>
 </head>
 
@@ -536,7 +697,7 @@ body.master-view .master-side .side-box{
 
   <main class="master-main">
   <aside class="master-control">
-    <div class="console-head"><div class="panel-title">CONTROLLO MASTER</div><span class="badge vio">HOST</span></div>
+    <div class="console-head"><div class="panel-title">CONTROLLO MASTER</div><span class="badge vio">MASTER</span></div>
     <div class="control-block phase-block">
       <div class="control-label">FASE CORRENTE</div>
       <div class="control-value" id="masterPhaseReadout">INTRO</div>
@@ -767,7 +928,6 @@ const UI = {
   chatLeader: el("chatLeader"),
 
   historyList: el("historyList"),
-
 
   // end overlay
   endOverlay: el("endOverlay"),
@@ -1425,9 +1585,9 @@ function spendStamps(cost){
 function getEffectiveDossierLevel(){return Math.max(Number(stato?.dossierLevel||1),shopPurchasedDossier());}
 
 function maybeAutoDossierUpgrade(){
-  // “sbloccabili gameplay leggeri”: if unlocks/lightLevel or stamps thresholds => bump dossier
-  const target = Math.min(3, 1 + Math.floor(stato.unlocks.lightLevel/2));
-  if (target > stato.dossierLevel) stato.dossierLevel = target;
+  // Il livello Dossier viene acquistato nello Shop e resta valido per tutta la run.
+  // Gli unlock servono come requisiti, non come upgrade automatici.
+  return;
 }
 
 /* ===== SHOP ===== */
@@ -1760,7 +1920,7 @@ function updateUI(){
   UI.btnConfirm.style.display = isMaster ? "" : "none";
   UI.btnNextPhase.disabled = !isMaster || stato.gameOver || stato.runCompleted;
   UI.btnNextPhase.style.display = isMaster ? "" : "none";
-  UI.btnApplyChat.style.display = "none";
+  if(UI.btnApplyChat) UI.btnApplyChat.style.display = "none";
   UI.draftLabel.textContent = "Decisione ospite: " + (playerChoice ? decisionLabel(playerChoice) : "Nessuna");
   const masterDecisionEl = document.getElementById("masterPlayerDecision");
   const masterPhaseEl = document.getElementById("masterPhaseReadout");
@@ -1931,6 +2091,8 @@ function renderObjective(){
 
 /* ===== Render chat lists (no scroll: show top N only) ===== */
 function renderSuggestions(){
+  // La console Master non mostra più Chat/Voto.
+  return;
   const groups = {pro:{}, con:{}};
   (stato.chat.suggestions||[]).forEach(s=>{
     if (!s) return;
@@ -1973,7 +2135,8 @@ function renderCompactList(firstEl, secondContainer, items){
 }
 
 function renderVotes(){
-  // show vote1 bars (vote2 only if active)
+  // La console Master non mostra più Chat/Voto.
+  return;
   let list = stato.chat.votes1 || [];
   const counts = voteCounts(list);
   const sum = counts.pass+counts.deny+counts.arrest+counts.condemn;
@@ -2001,6 +2164,8 @@ function renderVotes(){
 
 /* ===== History ===== */
 function renderHistory(){
+  // Lo storico è stato rimosso dalla console Master.
+  return;
   const total = order.length;
   const pos = stato.currentPos;
   const allKnown = stato.runCompleted || stato.gameOver;
@@ -2229,7 +2394,7 @@ document.querySelectorAll(".decision-btn").forEach(btn=>{
   });
 });
 UI.btnConfirm.addEventListener("click", ()=>{ if(isMaster) confirmDecision(); });
-UI.btnApplyChat.addEventListener("click", ()=>{ if(isMaster) applyDraftFromChat(); });
+UI.btnApplyChat?.addEventListener("click", ()=>{ if(isMaster) applyDraftFromChat(); });
 
 UI.btnNextPhase.addEventListener("click", ()=>{
   if (!isMaster || stato.gameOver || stato.runCompleted) return;
