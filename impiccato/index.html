@@ -528,11 +528,16 @@ button,input,select{font:inherit}
 
 .word-text{
   width:100%;
+  max-width:100%;
+  min-width:0;
   display:block;
   text-align:center;
-  white-space:nowrap;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  word-break:normal;
   overflow:hidden;
   text-overflow:clip;
+  max-height:2.2em;
   font-family:"Arial Black",Impact,Haettenschweiler,sans-serif;
   font-size:clamp(10px,1.35vw,22px);
   line-height:1.05;
@@ -546,8 +551,9 @@ button,input,select{font:inherit}
 }
 
 .word-text .word-part{
-  display:inline-block;
-  white-space:nowrap;
+  display:inline;
+  white-space:normal;
+  overflow-wrap:anywhere;
 }
 
 .word-line{
@@ -1701,7 +1707,7 @@ function renderWord(el, displayWord){
   el.innerHTML = "";
   el.classList.toggle("empty-word", !displayWord);
 
-  // Una sola riga, con uno spazio visivo fisso tra le parole.
+  // Le parole possono andare su due righe senza uscire dal pannello.
   const words = value.split(" ");
   words.forEach((word, index) => {
     if (index > 0) {
