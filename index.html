@@ -930,7 +930,7 @@
     function openMasterRoom() {
       if (state.selectedGame !== 'paper-please' || !state.roomCode) return;
       const masterUrl = buildGameUrl('paper-please', 'host', 'Pizzi', state.gameConfig);
-      if (masterUrl) window.location.href = masterUrl;
+      if (masterUrl) window.open(masterUrl, '_blank', 'noopener,noreferrer');
     }
 
     async function launchRoomGame() {
