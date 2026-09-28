@@ -1733,7 +1733,7 @@ function requestGameState(){
   roomClient?.broadcast("state_request",{requester:"master",_sentAt:Date.now()}).catch(()=>{});
 }
 function applyRemoteState(payload){
-  if(!payload||!isGuest)return;
+  if(!payload)return;
   const incoming=Number(payload._revision)||0;
   if(incoming&&incoming<revision)return;
   revision=Math.max(revision,incoming);
