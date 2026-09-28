@@ -557,7 +557,6 @@ async function loadConfig(){
 
   // pool selection by season/mode (simple: include all unless filtered)
   const mode = (cfg.modes?.default || "standard");
-  UI.modeBadge.textContent = "Modalità: " + mode;
 
   // create initial pool indices
   pool = cases.map((_,i)=>i);
@@ -591,7 +590,6 @@ function buildOrderFromState(){
   // optional recurring arcs weighting: if arcId repeated, ensure spacing (simple attempt)
   order = picked;
 
-  UI.seedBadge.textContent = "Seed: " + seedStr;
 }
 
 /* ===== DOSSIER LEVELS ===== */
@@ -811,7 +809,6 @@ function applyBetweenEvent(eventObj){
     delta: d
   });
 
-  UI.footerHint.textContent = "Evento: " + (eventObj.text || "—");
 }
 
 /* ===== OBJECTIVES (timed chat goals) ===== */
@@ -856,7 +853,6 @@ function updateObjectiveProgress(){
   if (Date.now() > obj.expiresAt){
     stato.objectives.failed.push(obj.id);
     stato.objectives.active = null;
-    UI.footerHint.textContent = "Obiettivo fallito: " + obj.text;
     return;
   }
 
@@ -893,7 +889,6 @@ function updateObjectiveProgress(){
 
     stato.stamps = Math.max(0, Math.round(stato.stamps));
     stato.sanity = clampSanity(stato.sanity);
-    UI.footerHint.textContent = "Obiettivo completato: " + obj.text + " (ricompensa!)";
     stato.objectives.active = null;
   }
 }
@@ -1115,7 +1110,6 @@ function confirmDecision(){
   const twist = computeTwistText(c, draftDecision);
 
   stato.lastOutcome = { pos, decision:draftDecision, text: twist };
-  UI.footerHint.textContent = twist;
 
   // sanity mental extra pressure per decision extreme (optional)
   const sanityRules = cfg?.sanity?.decisionCosts || {};
