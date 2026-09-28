@@ -1348,6 +1348,24 @@ document.addEventListener("click", e => {
   document.body.style.overflow = "hidden";
 });
 
+document.getElementById("subScore").onclick = () => {
+  if(player === "A" && stato.punteggioA > 0) stato.punteggioA--;
+  else if(player === "B" && stato.punteggioB > 0) stato.punteggioB--;
+  else return;
+  aggiornaUI();
+  salvaStato();
+  showScoreFx(-1);
+};
+
+document.getElementById("addScore").onclick = () => {
+  if(player === "A") stato.punteggioA++;
+  else if(player === "B") stato.punteggioB++;
+  else return;
+  aggiornaUI();
+  salvaStato();
+  showScoreFx(+1);
+};
+
 /* ========== TABS ========== */
 
 function initRulesModal(){
