@@ -27,7 +27,7 @@ button,input,select{font:inherit}
   background:var(--dots) 0 0/12px 12px,var(--paper);
 }
 .top{
-  display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,1.25fr) minmax(0,1fr);
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,1.55fr) minmax(0,1fr);
   gap:10px;min-height:0;align-items:start;
 }
 .cam{
@@ -46,13 +46,13 @@ button,input,select{font:inherit}
   font-size:9px;font-weight:900;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .hud{
-  min-width:0;display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:7px;
+  min-width:0;display:grid;grid-template-columns:1.2fr 1fr 1.15fr;gap:7px;
 }
 .hud-card{
   min-width:0;padding:8px;background:var(--paper);
   border:4px solid var(--line);box-shadow:var(--shadow);
 }
-.hud-card.secondary{display:none}
+.hud-card.reputation-card{display:block}
 .hud-title{
   margin-bottom:6px;padding-bottom:4px;border-bottom:3px solid var(--line);
   font-family:Impact,"Arial Black",sans-serif;font-size:15px;line-height:.9;text-transform:uppercase;
@@ -66,6 +66,15 @@ button,input,select{font:inherit}
 .badge.ko{background:var(--red);color:#fff}.badge.warn{background:var(--yellow)}
 .badge.vio{background:var(--purple);color:#fff}
 .bars,.bar-row{display:none}
+.reputation-card .hud-title{font-size:16px}
+.reputation-grid{display:grid;grid-template-columns:1fr;gap:5px}
+.rep-item{display:grid;grid-template-columns:58px minmax(0,1fr) 24px;align-items:center;gap:5px;font-size:7px;font-weight:900}
+.rep-track{height:8px;border:2px solid var(--line);background:#fff;overflow:hidden}
+.rep-fill{height:100%;width:50%;background:var(--green)}
+.rep-fill.regime{background:var(--purple)}
+.rep-fill.popolo{background:var(--green)}
+.rep-fill.ribelli{background:var(--red)}
+.rep-value{text-align:right;font-size:8px}
 .small{font-size:9px;font-weight:700;line-height:1.4}
 .main{
   min-width:0;min-height:0;display:grid;
@@ -194,9 +203,9 @@ button,input,select{font:inherit}
 .end-text{max-width:800px;color:var(--paper);font-size:12px;font-weight:800;line-height:1.5}
 .end-overlay.gameover .end-title{color:var(--red)}.end-overlay.victory .end-title{color:var(--green)}
 @media(max-width:900px){
-  #app{padding:9px;gap:8px}.top{grid-template-columns:minmax(0,1fr) minmax(250px,1.25fr) minmax(0,1fr);gap:7px}
+  #app{padding:9px;gap:8px}.top{grid-template-columns:minmax(0,1fr) minmax(330px,1.55fr) minmax(0,1fr);gap:7px}
   .main{grid-template-columns:minmax(0,55fr) minmax(0,45fr);gap:7px}
-  .hud{gap:5px}.hud-card{padding:6px}.hud-card:nth-child(3){display:none}
+  .hud{gap:5px}.hud-card{padding:7px}.hud-card.reputation-card{display:block}
   .grid-case{grid-template-columns:minmax(150px,.8fr) minmax(0,1.3fr);gap:7px}
 }
 @media(max-width:650px){
@@ -204,7 +213,7 @@ button,input,select{font:inherit}
   .top{gap:4px}.cam{border-width:3px;box-shadow:3px 3px 0 var(--line);padding:4px}.cam::after{display:none}
   .cam .label{padding:3px 4px;border-width:2px;font-size:6px}
   .hud{gap:3px}.hud-card{padding:5px;border-width:3px;box-shadow:3px 3px 0 var(--line)}
-  .hud-title{font-size:10px}.hud-row{font-size:7px}.badge{font-size:6px;padding:2px 3px}
+  .hud-title{font-size:10px}.hud-row{font-size:7px}.badge{font-size:6px;padding:2px 3px}.rep-item{grid-template-columns:48px minmax(0,1fr) 20px;font-size:6px}.rep-value{font-size:7px}.rep-track{height:7px}
   .main{grid-template-columns:minmax(0,1fr) 145px;gap:4px}
   .panel{padding:5px;border-width:3px;box-shadow:4px 4px 0 var(--line)}
   .panel-head{gap:4px;margin-bottom:5px;padding-bottom:5px}.panel-title{font-size:10px;padding:4px}
@@ -254,16 +263,12 @@ body.master-view .decision-btn{cursor:default}
           <span class="badge" id="hudCaseIndex">Persona 1/12</span>
         </div>
       </div>
-      <div class="hud-card secondary">
-        <div class="hud-title">Stato</div>
-        <div class="hud-row"><span class="badge" id="hudUnlocks">Sbloccabili: 0</span><span class="badge" id="hudDebts">Debiti: 0</span></div>
-        <div class="small" id="hudObjectiveText">In attesa…</div>
-        <span class="badge vio" id="hudObjectiveType">—</span>
-        <span class="badge" id="hudObjectiveProgress">0/0</span>
-        <div class="bars">
-          <div class="bar-row"><span>Regime</span><div class="bar-bg"><div id="barRegime" class="bar-fill regime"></div></div><span id="valRegime">50</span></div>
-          <div class="bar-row"><span>Popolo</span><div class="bar-bg"><div id="barPopolo" class="bar-fill popolo"></div></div><span id="valPopolo">50</span></div>
-          <div class="bar-row"><span>Ribelli</span><div class="bar-bg"><div id="barRibelli" class="bar-fill ribelli"></div></div><span id="valRibelli">50</span></div>
+      <div class="hud-card reputation-card">
+        <div class="hud-title">Reputazione</div>
+        <div class="reputation-grid">
+          <div class="rep-item"><span>REGIME</span><div class="rep-track"><div id="barRegime" class="rep-fill regime"></div></div><b class="rep-value" id="valRegime">50</b></div>
+          <div class="rep-item"><span>POPOLO</span><div class="rep-track"><div id="barPopolo" class="rep-fill popolo"></div></div><b class="rep-value" id="valPopolo">50</b></div>
+          <div class="rep-item"><span>RIBELLI</span><div class="rep-track"><div id="barRibelli" class="rep-fill ribelli"></div></div><b class="rep-value" id="valRibelli">50</b></div>
         </div>
       </div>
     </div>
@@ -333,7 +338,7 @@ body.master-view .decision-btn{cursor:default}
         <div class="side-info-head"><div class="panel-title">INFORMAZIONI</div><button class="btn ghost" id="btnRules">REGOLE</button></div>
         <div class="side-columns">
           <section class="side-box chat-box">
-            <div class="side-box-head"><div><div class="side-box-title">CHAT / VOTO</div><div class="side-box-sub">SUGGERIMENTI E CONSENSO DELLA CHAT</div></div><span class="badge warn" id="voteLockBadge">Voto: Aperto</span></div>
+            <div class="side-box-head"><div><div class="side-box-title">CHAT / VOTO</div><div class="side-box-sub">SUGGERIMENTI E CONSENSO DELLA CHAT</div></div><span class="badge warn" id="chatVoteLockBadge">Voto: Aperto</span></div>
             <div class="chat-content">
               <div class="suggestions">
                 <div class="suggestion-col pro-col"><div class="mini-head"><span>PRO</span><small>ARGOMENTI A FAVORE</small></div><div id="prosList" class="suggestion-list"><div class="item"><span class="t">Nessun suggerimento</span><span class="c"></span></div></div><div id="prosList2"></div></div>
@@ -467,9 +472,9 @@ const soloMode  = !masterMode && (urlParams.get("solo")==="1" || urlParams.get("
 const roomCode = (urlParams.get("room") || "").trim().toUpperCase();
 const forcedRole = "guest";
 const isHost = false;
-const streamerName = urlParams.get("streamer") || urlParams.get("player") || "Pizzi";
+const streamerName = urlParams.get("streamer") || "Pizzi";
 const isGuest = true;
-const guestName = isGuest ? (urlParams.get("streamer") || urlParams.get("guest") || "Ospite") : "Ospite";
+const guestName = isGuest ? (urlParams.get("guest") || urlParams.get("player") || "Ospite") : "Ospite";
 let roomClient = null;
 let revision = 0;
 let isApplyingRemoteState = false;
