@@ -1311,6 +1311,64 @@ UI.btnNextPhase.addEventListener("click", ()=>{
 });
 
 /* Tabs */
+/* ===== SUPABASE REALTIME ===== */
+function mergeLoadedState(data){
+  stato={...defaultState(),...(data||{})};
+  stato.playerDecision=data?.playerDecision||null;
+  stato.world={...(cfg.baseWorld||{regime:50,popolo:50,ribelli:50}),...(data?.world||{})};
+  stato.chat={...defaultState().chat,...(data?.chat||{})};
+  stato.objectives={...defaultState().objectives,...(data?.objectives||{})};
+  stato.unlocks={...defaultState().unlocks,...(data?.unlocks||{})};
+  stato.arcs={...defaultState().arcs,...(data?.arcs||{})};
+  if(Array.isArray(data?.runOrder))order=data.runOrder.slice();
+  ensureState();
+}
+function statePayload(){return {...stato,runOrder:order.slice(),_revision:revision,_sender:isHost?"host":"guest",_sentAt:Date.now()};}
+async function broadcastState(){if(!roomClient||!isHost||isApplyingRemoteState)return;revision++;await roomClient.broadcast("game_state",statePayload());}
+async function saveState(){if(!isHost||isApplyingRemoteState)return;try{ensureState();updateUI();await broadcastState();}catch(e){console.error("Errore broadcast stato:",e);}}
+function requestGameState(){roomClient?.broadcast("state_request",{requester:"guest",_sentAt:Date.now()}).catch(()=>{});}
+function applyRemoteState(payload){
+  if(!payload||!isGuest)return;
+  const incoming=Number(payload._revision)||0;if(incoming&&incoming<revision)return;
+  revision=Math.max(revision,incoming);const clean={...payload};delete clean._revision;delete clean._sender;delete clean._sentAt;
+  isApplyingRemoteState=true;mergeLoadedState(clean);updateUI();isApplyingRemoteState=false;
+}
+function handleGameEvent(payload){
+  if(!payload||!isHost)return;
+  if(payload.type==="player_decision"){
+    if(stato.phase!=="decision"||stato.decisionsByPos[stato.currentPos])return;
+    const choice=normalizeChoice(payload.choice);if(!choice)return;
+    stato.playerDecision=choice;saveState();return;
+  }
+  if(stato.phaseLocked)return;
+  if(payload.type==="chat_suggestion"){
+    const text=String(payload.text||"").trim();if(!text)return;
+    stato.chat.suggestions.push({user:String(payload.user||"anon"),side:normSide(payload.side),text,ts:payload.ts||Date.now(),role:payload.role||computeRole(payload.user)});
+    updateObjectiveProgress();saveState();return;
+  }
+  if(payload.type==="chat_vote"||payload.type==="chat_tiebreak"){
+    const choice=normalizeChoice(payload.choice);if(!choice)return;
+    const list=payload.type==="chat_tiebreak"?stato.chat.votes2:stato.chat.votes1;
+    list.push({user:String(payload.user||"anon"),choice,ts:payload.ts||Date.now(),role:payload.role||computeRole(payload.user)});
+    updateObjectiveProgress();saveState();
+  }
+}
+async function connectRoom(){
+  if(!/^[A-Z0-9]{6}$/.test(roomCode)){console.warn("Codice stanza mancante o non valido.");return;}
+  roomClient=new TortelloSupabaseRoom({room:roomCode,role:isHost?"host":"guest",nickname:isHost?streamerName:guestName,game:"paper-please",gameConfig:{seed:urlParams.get("seed")||"",mode:soloMode?"solo":(urlParams.get("mode")||"coop")}});
+  roomClient.on("game-state",applyRemoteState);
+  roomClient.on("game-event",handleGameEvent);
+  roomClient.on("state-request",payload=>{if(isHost&&payload?.requester==="guest")broadcastState().catch(()=>{});});
+  roomClient.on("presence",presence=>{if(isHost&&Object.values(presence||{}).flat().some(e=>e.role==="guest"))broadcastState().catch(()=>{});});
+  try{
+    await roomClient.connect();
+    if(isHost){
+      const seed=urlParams.get("seed")?.trim();if(seed)stato.seed=seed;
+      stato.mode=soloMode?"solo":(urlParams.get("mode")||stato.mode);updateUI();await broadcastState();
+    }else requestGameState();
+  }catch(e){console.error("Supabase Realtime non disponibile:",e);}
+}
+
 /* ===== Bootstrap ===== */
 (async function init(){
   await loadConfig();
