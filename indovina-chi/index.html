@@ -133,6 +133,7 @@ button,select{font:inherit}
 }
 .center>*{position:relative;z-index:1}
 .center-header{
+  width:100%;
   min-width:0;
   display:flex;
   align-items:center;
@@ -171,6 +172,7 @@ button,select{font:inherit}
   white-space:nowrap;
 }
 .round-preview{
+  width:min(78%,360px);
   min-width:0;
   min-height:0;
   display:flex;
@@ -193,7 +195,8 @@ button,select{font:inherit}
   object-fit:contain;
 }
 .scoreboard{
-  width:100%;
+  width:auto;
+  min-width:min(58%,220px);
   margin:0;
   display:flex;
   align-items:center;
