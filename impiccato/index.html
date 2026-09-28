@@ -386,7 +386,7 @@ button,input,select{font:inherit}
   height:100%;
   min-height:0;
   display:grid;
-  grid-template-columns:1fr 1fr;
+  grid-template-columns:minmax(0,1fr) minmax(180px,24%) minmax(0,1fr);
   gap:12px;
 }
 
@@ -852,7 +852,7 @@ button,input,select{font:inherit}
   #app{padding:12px;gap:8px}
   .top{
     flex-basis:25%;
-    grid-template-columns:minmax(0,1fr) minmax(230px,29%) minmax(0,1fr);
+    grid-template-columns:minmax(0,1fr) minmax(170px,24%) minmax(0,1fr);
     gap:8px;
   }
   .hangman-wrapper{flex-basis:40%}
@@ -862,6 +862,7 @@ button,input,select{font:inherit}
 @media (max-width:900px){
   #app{padding:9px;gap:7px}
   .top{flex-basis:24%}
+  .tab-panel[data-tab="0"] .boards{grid-template-columns:minmax(0,1fr) minmax(145px,22%) minmax(0,1fr)}
   .hangman-wrapper{flex-basis:38%}
   .word-row{min-height:40px}
 }
@@ -869,6 +870,8 @@ button,input,select{font:inherit}
 @media (max-width:650px){
   #app{padding:7px;gap:5px}
   .top{flex-basis:23%;grid-template-columns:1fr 1.25fr 1fr}
+  .tab-panel[data-tab="0"] .boards{grid-template-columns:1fr}
+  .tab-panel[data-tab="0"] .votes-panel{min-height:120px}
   .hangman-wrapper{flex-basis:35%}
   .word-row{min-height:32px}
   .letters-row{gap:2px}
@@ -911,8 +914,7 @@ button,input,select{font:inherit}
     <div class="tab-header">
       <button class="tab-btn active" data-tab="0">Gioco</button>
       <button class="tab-btn" data-tab="1">Regole</button>
-      <button class="tab-btn" data-tab="2">Voti chat</button>
-    </div>
+          </div>
 
     <div class="tabs-viewport">
       <div class="tabs-inner">
@@ -950,6 +952,12 @@ button,input,select{font:inherit}
             </section>
 
             <!-- Giocatore B -->
+            <aside class="votes-panel" id="chatVotesPanel">
+              <h2>Voti chat</h2>
+              <p class="votes-subtitle">Qui puoi mostrare le lettere proposte dalla chat.</p>
+              <div id="chatVotesList" class="votes-list">Nessuna integrazione bot ancora configurata.</div>
+            </aside>
+
             <section class="board" data-player="B">
               <div class="board-head">
                 <div class="board-title" id="boardTitleB">Giocatore B</div>
@@ -1015,17 +1023,7 @@ button,input,select{font:inherit}
         </section>
 
         <!-- TAB 2: VOTI CHAT -->
-        <section class="tab-panel" data-tab="2">
-          <div class="votes-panel">
-            <h2>Voti della chat</h2>
-            <p class="votes-subtitle">
-              Qui puoi mostrare le lettere proposte dalla chat.
-            </p>
-            <div id="chatVotesList" class="votes-list">
-              Nessuna integrazione bot ancora configurata.
-            </div>
-          </div>
-        </section>
+        
 
       </div>
     </div>
