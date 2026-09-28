@@ -1592,7 +1592,7 @@ function statePayload(){
   return {...stato,runOrder:order.slice(),_revision:revision,_sender:isHost?"host":"guest",_sentAt:Date.now()};
 }
 async function broadcastState(){
-  if(!roomClient||isMaster||isApplyingRemoteState)return;
+  if(!roomClient||!isMaster||isApplyingRemoteState)return;
   revision++;
   await roomClient.broadcast("game_state",statePayload());
 }
