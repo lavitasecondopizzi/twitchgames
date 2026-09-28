@@ -768,7 +768,8 @@
       if (game === 'paper-please') {
         const seed = encodeURIComponent(gameConfig.seed || '');
         const mode = gameConfig.mode === 'solo' ? '&mode=solo' : '';
-        return './paper-please/index.html?seed=' + seed +
+        const paperPage = role === 'host' ? 'master.html' : 'index.html';
+        return './paper-please/' + paperPage + '?seed=' + seed +
           '&streamer=' + player + mode + '&room=' + room +
           '&role=' + role + '&interaction=' + interaction;
       }
