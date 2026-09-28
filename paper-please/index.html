@@ -203,6 +203,24 @@ button,input,select{font:inherit}
 .rules-note{grid-column:1/-1;padding:9px 11px;border:3px solid var(--line);background:var(--yellow);box-shadow:4px 4px 0 var(--line);font-size:8px;font-weight:900;text-transform:uppercase;line-height:1.4}
 @media(max-width:760px){.rules-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.rules-grid{grid-template-columns:1fr}.rules-block{min-height:0}}
+.shop-overlay{
+  position:fixed;inset:0;z-index:9997;display:flex;align-items:center;justify-content:center;
+  padding:20px;background:rgba(17,17,17,.94);opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.shop-overlay.show{opacity:1;pointer-events:auto}
+.shop-card{width:min(620px,92vw);max-height:86vh;overflow:auto;padding:14px;border:5px solid var(--line);
+  background:var(--paper);box-shadow:10px 10px 0 #000}
+.shop-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.shop-title{font-family:Impact,"Arial Black",sans-serif;font-size:clamp(28px,5vw,52px);line-height:.85;text-transform:uppercase}
+.shop-balance{padding:5px 7px;border:3px solid var(--line);background:var(--yellow);font-size:9px;font-weight:900}
+.shop-list{display:grid;gap:7px}
+.shop-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px;
+  border:3px solid var(--line);background:#fff;box-shadow:3px 3px 0 var(--line)}
+.shop-item h3{margin:0 0 3px;font-size:11px;text-transform:uppercase}
+.shop-item p{margin:0;font-size:8px;font-weight:800;line-height:1.35}
+.shop-buy{min-width:92px}
+.shop-foot{margin-top:10px;font-size:7px;font-weight:900;text-transform:uppercase}
+@media(max-width:520px){.shop-card{padding:9px;border-width:3px;box-shadow:6px 6px 0 #000}.shop-item{grid-template-columns:1fr}.shop-buy{width:100%}}
 .end-overlay{
   position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:24px;text-align:center;background:rgba(17,17,17,.94);opacity:0;pointer-events:none;transition:opacity .2s;
@@ -264,7 +282,7 @@ body.master-view .decision-btn{cursor:default}
       <div class="hud-card">
         <div class="hud-title">Risorse</div>
         <div class="hud-row">
-          <span class="badge ok" id="hudStamps">Timbri: 0</span>
+          <span class="badge ok" id="hudStamps">Timbri: 0</span><button class="btn ghost" id="btnShop" type="button">SHOP</button>
           <span class="badge warn" id="hudSanity">Sanità: 10</span>
         </div>
         <div class="hud-row">
@@ -464,6 +482,21 @@ body.master-view .decision-btn{cursor:default}
   </div>
 </div>
 
+<div id="shopOverlay" class="shop-overlay">
+  <div class="shop-card">
+    <div class="shop-head">
+      <div>
+        <div class="shop-title">SHOP</div>
+        <div class="side-box-sub">TIMBRI · UTILIZZI SPECIALI</div>
+      </div>
+      <div class="shop-balance" id="shopBalance">TIMBRI: 0</div>
+    </div>
+    <div class="shop-list" id="shopList"></div>
+    <div class="shop-foot" id="shopStatus">Gli acquisti vengono verificati dal Master.</div>
+    <button class="btn ghost" id="btnShopClose" style="margin-top:10px;width:100%">CHIUDI</button>
+  </div>
+</div>
+
 <div id="endOverlay" class="end-overlay">
   <div id="endTitle" class="end-title">FINE PARTITA</div>
   <div id="endText" class="end-text">—</div>
@@ -565,12 +598,23 @@ const UI = {
   endText: el("endText"),
   endRestartBtn: el("endRestartBtn"),
 
+  btnShop: el("btnShop"),
+  btnShopClose: el("btnShopClose"),
+  shopOverlay: el("shopOverlay"),
+  shopBalance: el("shopBalance"),
+  shopList: el("shopList"),
+  shopStatus: el("shopStatus"),
+
 };
 
 function el(id){ return document.getElementById(id); }
 
 UI.btnRules.addEventListener("click", ()=>UI.rulesOverlay.classList.add("show"));
 UI.btnRulesClose.addEventListener("click", ()=>UI.rulesOverlay.classList.remove("show"));
+if(UI.btnShop) UI.btnShop.addEventListener("click", openShop);
+if(UI.btnShopClose) UI.btnShopClose.addEventListener("click", closeShop);
+if(UI.shopOverlay) UI.shopOverlay.addEventListener("click", e=>{ if(e.target===UI.shopOverlay) closeShop(); });
+
 UI.rulesOverlay.addEventListener("click", e=>{ if(e.target===UI.rulesOverlay) UI.rulesOverlay.classList.remove("show"); });
 document.addEventListener("keydown", e=>{ if(e.key==="Escape") UI.rulesOverlay.classList.remove("show"); });
 
@@ -638,6 +682,11 @@ function defaultState(){
     phaseLocked: false,     // lock chat vote intake
     phaseEndsAt: 0,         // ms epoch for timer
     dossierLevel: 1,        // 1..3 (global, can be modified by stamps/unlocks)
+    shop: {
+      dossierOverride: 0,
+      used: [],
+      amnestyActive: false
+    },
     stamps: cfg?.economy?.startStamps ?? 0,
     sanity: cfg?.sanity?.start ?? 10,
     world: { ...baseWorld },
@@ -1180,11 +1229,100 @@ function canUseStamps(cost){ return stato.stamps >= cost; }
 function spendStamps(cost){
   stato.stamps = Math.max(0, stato.stamps - cost);
 }
+function getEffectiveDossierLevel(){
+  const base=Number(stato?.dossierLevel||1);
+  const override=Number(stato?.shop?.dossierOverride||0);
+  return Math.max(base,override);
+}
+
 function maybeAutoDossierUpgrade(){
   // “sbloccabili gameplay leggeri”: if unlocks/lightLevel or stamps thresholds => bump dossier
   const target = Math.min(3, 1 + Math.floor(stato.unlocks.lightLevel/2));
   if (target > stato.dossierLevel) stato.dossierLevel = target;
 }
+
+/* ===== SHOP ===== */
+const SHOP_FALLBACK = {
+  dossier2_once:{id:"dossier2_once",label:"Dossier L2",cost:2,description:"Rivela le informazioni del Dossier L2 per questo caso."},
+  dossier3_once:{id:"dossier3_once",label:"Dossier L3",cost:4,description:"Rivela le informazioni del Dossier L3 per questo caso."},
+  retrial:{id:"retrial",label:"Riesame",cost:3,description:"Riapre il voto del caso corrente prima della conferma."},
+  amnesty:{id:"amnesty",label:"Amnistia",cost:3,description:"Dimezza la prossima penalità da Debito o Promessa."}
+};
+function shopDefinitions(){
+  const configured=cfg?.economy?.stampShop;
+  const out={...SHOP_FALLBACK};
+  if(Array.isArray(configured)){
+    configured.forEach(item=>{
+      if(item?.id && out[item.id]) out[item.id]={...out[item.id],...item};
+    });
+  }
+  return Object.values(out);
+}
+function shopUsed(id){ return Array.isArray(stato.shop?.used) && stato.shop.used.includes(id); }
+function shopCanPurchase(id){
+  if(!isMaster && stato?.gameOver) return false;
+  if(!stato?.shop) return false;
+  if(shopUsed(id)) return false;
+  const phase=stato.phase;
+  if(id==="dossier2_once") return phase!=="end" && getEffectiveDossierLevel()<2;
+  if(id==="dossier3_once") return phase!=="end" && getEffectiveDossierLevel()<3;
+  if(id==="retrial") return phase==="decision" && !!stato.playerDecision && !stato.decisionsByPos[stato.currentPos];
+  if(id==="amnesty") return phase==="decision" && !stato.decisionsByPos[stato.currentPos];
+  return false;
+}
+function shopItemById(id){ return shopDefinitions().find(x=>x.id===id) || SHOP_FALLBACK[id]; }
+function purchaseShopItem(id, source="player"){
+  if(!isMaster) return false;
+  const item=shopItemById(id);
+  if(!item || !shopCanPurchase(id) || !canUseStamps(Number(item.cost)||0)) return false;
+  spendStamps(Number(item.cost)||0);
+  stato.shop.used.push(id);
+  if(id==="dossier2_once") stato.shop.dossierOverride=2;
+  if(id==="dossier3_once") stato.shop.dossierOverride=3;
+  if(id==="amnesty") stato.shop.amnestyActive=true;
+  if(id==="retrial"){
+    stato.playerDecision=null;
+    draftDecision=null;
+    stato.chat.votes1=[];
+    stato.chat.votes2=[];
+    stato.chat.tiebreak=null;
+    stato.phaseLocked=false;
+    setPhase("vote1");
+    return true;
+  }
+  updateUI();
+  saveState();
+  return true;
+}
+function renderShop(){
+  if(!UI.shopList) return;
+  const items=shopDefinitions();
+  UI.shopBalance.textContent="TIMBRI: "+Math.max(0,Math.floor(stato?.stamps||0));
+  UI.shopList.innerHTML="";
+  items.forEach(item=>{
+    const row=document.createElement("div");
+    row.className="shop-item";
+    const info=document.createElement("div");
+    info.innerHTML="<h3></h3><p></p>";
+    info.querySelector("h3").textContent=item.label+" · "+item.cost+" TIMBRI";
+    info.querySelector("p").textContent=item.description;
+    const btn=document.createElement("button");
+    btn.className="btn shop-buy";
+    btn.type="button";
+    btn.textContent=shopUsed(item.id)?"USATO":("ACQUISTA · "+item.cost);
+    btn.disabled=!shopCanPurchase(item.id) || (stato?.stamps||0)<Number(item.cost||0);
+    btn.addEventListener("click",()=>{
+      if(isMaster) purchaseShopItem(item.id,"master");
+      else if(roomClient) roomClient.broadcast("game_event",{type:"shop_purchase",itemId:item.id,user:guestName,ts:Date.now(),requestId:guestName+"-"+Date.now()+"-"+Math.random().toString(36).slice(2)}).catch(()=>{});
+      if(!isMaster && UI.shopStatus) UI.shopStatus.textContent="Richiesta inviata al Master.";
+    });
+    row.append(info,btn);
+    UI.shopList.appendChild(row);
+  });
+  if(UI.shopStatus) UI.shopStatus.textContent=isMaster?"Il Master autorizza e applica gli acquisti.":"Gli acquisti vengono verificati dal Master.";
+}
+function openShop(){ renderShop(); UI.shopOverlay?.classList.add("show"); }
+function closeShop(){ UI.shopOverlay?.classList.remove("show"); }
 
 /* ===== DEBTS / PROMISES / ARCS ===== */
 function applyContractsFromCase(caseObj, decision){
@@ -1222,8 +1360,10 @@ function updateDebtsPromisesStatus(){
       d.status="late";
       // penalty
       const p = cfg?.contracts?.lateDebtPenalty || {popolo:-5, sanity:-1};
-      stato.world.popolo += (p.popolo||0);
-      stato.sanity += (p.sanity||0);
+      const factor = stato.shop?.amnestyActive ? 0.5 : 1;
+      stato.world.popolo += (p.popolo||0) * factor;
+      stato.sanity += (p.sanity||0) * factor;
+      if(stato.shop?.amnestyActive) stato.shop.amnestyActive=false;
     }
   });
   stato.promises.forEach(p=>{
@@ -1231,8 +1371,10 @@ function updateDebtsPromisesStatus(){
     if (p.duePos!=null && pos > p.duePos){
       p.status="broken";
       const pen = cfg?.contracts?.brokenPromisePenalty || {ribelli:-5, sanity:-1};
-      stato.world.ribelli += (pen.ribelli||0);
-      stato.sanity += (pen.sanity||0);
+      const factor = stato.shop?.amnestyActive ? 0.5 : 1;
+      stato.world.ribelli += (pen.ribelli||0) * factor;
+      stato.sanity += (pen.sanity||0) * factor;
+      if(stato.shop?.amnestyActive) stato.shop.amnestyActive=false;
     }
   });
 
@@ -1287,6 +1429,9 @@ function advanceToNextCase(){
   if (pos < order.length-1){
     stato.currentPos = pos + 1;
     stato.playerDecision = null;
+    stato.shop.dossierOverride = 0;
+    stato.shop.used = [];
+    stato.shop.amnestyActive = false;
     stato.chat.round = stato.currentPos + 1;
     // season progression after run end handled elsewhere
     setPhase("intro");
@@ -1328,6 +1473,7 @@ function hideEndOverlay(){
 
 /* ===== UI UPDATE ===== */
 function updateUI(){
+  if(UI.shopOverlay) renderShop();
   ensureState();
   maybeAutoDossierUpgrade();
 
@@ -1648,6 +1794,12 @@ function handleGameEvent(payload){
       ts:payload.ts||Date.now(),role:payload.role||computeRole(payload.user)
     });
     updateObjectiveProgress();saveState();return;
+  }
+  if(payload.type==="shop_purchase"){
+    const itemId=String(payload.itemId||"");
+    if(!itemId) return;
+    purchaseShopItem(itemId,"player");
+    return;
   }
   if(payload.type==="player_decision"){
     const choice=normalizeChoice(payload.choice);
