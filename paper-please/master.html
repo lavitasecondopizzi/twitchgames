@@ -509,6 +509,7 @@ const isGuest = !masterMode;
 const guestStorageKey = roomCode ? "tortello:paper:guest:" + roomCode : "";
 const storedGuestName = guestStorageKey ? (localStorage.getItem(guestStorageKey) || "") : "";
 const guestName = urlParams.get("guest") || storedGuestName || "Ospite";
+const stateStorageKey = roomCode ? "tortello:paper:state:" + roomCode : "";
 let roomClient = null;
 let revision = 0;
 let isApplyingRemoteState = false;
@@ -1807,8 +1808,17 @@ async function broadcastState(){
 }
 async function saveState(){
   if(!isMaster||isApplyingRemoteState)return;
-  try{ensureState();updateUI();await broadcastState();}
-  catch(e){console.error("Errore broadcast stato:",e);}
+  try{
+    ensureState();
+    updateUI();
+    if(stateStorageKey){
+      localStorage.setItem(stateStorageKey, JSON.stringify({
+        savedAt:Date.now(),
+        state:statePayload()
+      }));
+    }
+    await broadcastState();
+  }catch(e){console.error("Errore salvataggio stato:",e);}
 }
 function requestGameState(){
   roomClient?.broadcast("state_request",{requester:"master",_sentAt:Date.now()}).catch(()=>{});
@@ -1869,7 +1879,7 @@ async function connectRoom(){
   roomClient.on("game-state",applyRemoteState);
   roomClient.on("game-event",handleGameEvent);
   roomClient.on("state-request",payload=>{
-    if(isMaster && payload?.requester!=="master") return;
+    if(isMaster && payload?.requester!=="master") broadcastState().catch(()=>{});
   });
   roomClient.on("presence",presence=>{
     const guest=Object.values(presence||{}).flat().find(e=>e.role==="guest");
@@ -1953,7 +1963,34 @@ UI.btnNextPhase.addEventListener("click", ()=>{
   stato.mode=gameMode;
   stato.narrativeStyle=narrativeStyle;
   stato.caseCount=caseCount;
-  buildOrderFromState();ensureState();
+
+  let restored=false;
+  if(isMaster && stateStorageKey){
+    try{
+      const raw=localStorage.getItem(stateStorageKey);
+      if(raw){
+        const saved=JSON.parse(raw);
+        const savedState=saved?.state;
+        const sameConfig=savedState &&
+          savedState.mode===gameMode &&
+          savedState.narrativeStyle===narrativeStyle &&
+          Number(savedState.caseCount)===caseCount &&
+          (!seed || savedState.seed===seed);
+        if(sameConfig){
+          mergeLoadedState(savedState);
+          restored=true;
+          revision=Number(savedState._revision)||0;
+        }
+      }
+    }catch(e){
+      console.warn("Impossibile ripristinare la partita salvata:",e);
+    }
+  }
+
+  if(!restored){
+    buildOrderFromState();
+    ensureState();
+  }
   updateUI();
   await connectRoom();
   setInterval(()=>{
