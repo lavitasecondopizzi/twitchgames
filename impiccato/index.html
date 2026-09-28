@@ -892,6 +892,7 @@ button,input,select{font:inherit}
       <div class="label">Round attuale</div>
       <img id="roundImage" alt="">
       <div class="turn-row">Turno: <span id="turnLabel">-</span></div>
+      <div class="turn-row" id="roundResult" style="font-weight:900;">-</div>
       <div class="scoreboard">
         <button class="score-btn" id="subScore">-1</button>
         <span class="value" id="scoreA">0</span>
@@ -1234,6 +1235,7 @@ let stato = {
   game: {
     maxErrors: 6,
     turn: null,   // "A" o "B"
+    roundResult: null, // A | B | draw
     A: {
       theme: "",
       secretWord: "",
@@ -1658,6 +1660,13 @@ function aggiornaUI(){
     else turnLabelEl.textContent = "-";
   }
 
+  if (roundResultEl){
+    if (stato.game.roundResult === "A") roundResultEl.textContent = "ROUND: " + nameA + " VINCE";
+    else if (stato.game.roundResult === "B") roundResultEl.textContent = "ROUND: " + nameB + " VINCE";
+    else if (stato.game.roundResult === "draw") roundResultEl.textContent = "ROUND: PAREGGIO";
+    else roundResultEl.textContent = "-";
+  }
+
   /* evidenzia board del giocatore di turno */
   document.querySelectorAll(".board").forEach(b=>{
     const pid = b.getAttribute("data-player");
@@ -1676,6 +1685,7 @@ function aggiornaUI(){
 const themeAEl   = document.getElementById("theme-A");
 const themeBEl   = document.getElementById("theme-B");
 const turnLabelEl = document.getElementById("turnLabel");
+const roundResultEl = document.getElementById("roundResult");
 
 const connectionStatusEl = document.createElement("span");
 connectionStatusEl.id = "realtimeStatus";
@@ -1777,6 +1787,16 @@ function roundConcluso(){
          ["won","lost"].includes(stato.game.B.status);
 }
 
+function aggiornaEsitoRound(){
+  if (!roundConcluso()){
+    stato.game.roundResult = null;
+    return;
+  }
+  if (stato.game.A.status === "won" && stato.game.B.status === "lost") stato.game.roundResult = "A";
+  else if (stato.game.B.status === "won" && stato.game.A.status === "lost") stato.game.roundResult = "B";
+  else stato.game.roundResult = "draw";
+}
+
 function aggiornaInterattivita(){
   if (subScoreBtn) subScoreBtn.disabled = !player;
   if (addScoreBtn) addScoreBtn.disabled = !player;
@@ -1849,7 +1869,10 @@ async function onLetterClick(playerId, letter, fromHostEvent = false){
   const other = (playerId === "A") ? "B" : "A";
   const otherState = stato.game[other];
 
-  if (roundConcluso()) stato.game.turn = null;
+  if (roundConcluso()){
+    aggiornaEsitoRound();
+    stato.game.turn = null;
+  }
 
   // logica turni:
   if (otherState.status === "playing") {
@@ -1881,6 +1904,7 @@ async function nuovoRound(initial = false){
 
   stato.game.round = nextRound;
   stato.game.turn = startTurn;
+  stato.game.roundResult = null;
   stato.game.A = creaStatoGiocatore(fA.phrase, fA.theme);
   stato.game.B = creaStatoGiocatore(fB.phrase, fB.theme);
 
