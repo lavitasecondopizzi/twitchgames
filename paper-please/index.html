@@ -1662,7 +1662,10 @@ async function connectRoom(){
     const host=entries.find(e=>e.role==="host");
     const guest=entries.find(e=>e.role==="guest");
     if(host && !isHost) document.getElementById("camStreamerLabel").textContent=String(host.nickname||"Pizzi");
-    if(guest && isHost) document.getElementById("camGuestLabel").textContent=String(guest.nickname||"Ospite");
+    if(guest && isHost){
+      const name=String(guest.nickname||guestName||"Ospite").trim() || "Ospite";
+      document.getElementById("camGuestLabel").textContent=name;
+    }
     if(isHost&&guest) broadcastState().catch(()=>{});
   });
   try{
