@@ -1019,8 +1019,21 @@ function applyRemoteState(payload){
   delete clean._sentAt;
 
   isApplyingRemoteState = true;
+  const previousRound = Number(stato.chatVotes?.round) || 0;
   const next = normalizeRemoteState(clean);
   if(next) stato = next;
+  const nextRound = Number(stato.chatVotes?.round) || 0;
+  if(nextRound > previousRound){
+    personalCharacter = null;
+    try{ localStorage.removeItem(characterStorageKey()); }catch(_){}
+    const select = document.getElementById("roundSelect");
+    const confirm = document.getElementById("confirmCharacter");
+    if(select){
+      select.disabled = false;
+      select.value = "0";
+    }
+    if(confirm) confirm.textContent = "Conferma";
+  }
   ensureStateShape();
   aggiornaUI();
   aggiornaChatVotesUI();
