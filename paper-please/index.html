@@ -1496,9 +1496,11 @@ function applyDraftFromChat(){
 /* ===== Events: UI interactions ===== */
 document.querySelectorAll(".decision-btn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
-    if (!isHost || stato.phase!=="decision") return;
-    draftDecision = btn.dataset.decision;
+    if (masterMode || stato.phase!=="decision" || stato.decisionsByPos[stato.currentPos]) return;
+    const choice=btn.dataset.decision;
+    stato.playerDecision=choice;
     updateUI();
+    roomClient?.broadcast("game_event",{type:"player_decision",choice,user:guestName,ts:Date.now()}).catch(()=>{});
   });
 });
 UI.btnConfirm.addEventListener("click", ()=>{ if(isHost) confirmDecision(); });
