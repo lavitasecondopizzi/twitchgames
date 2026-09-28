@@ -1139,6 +1139,9 @@ const DIZIONARIO = [
   { theme: "Vita Reale", phrase: "APPUNTAMENTO DAL MEDICO RIMANDATO" },
   { theme: "Vita Reale", phrase: "PROMESSA DI INIZIARE DA LUNEDI" },
   { theme: "Vita Reale", phrase: "PAVIMENTO CHE SCRICCHIOLA DI NOTTE" },
+  { theme: "Vita Reale", phrase: "L'APERITIVO È GIÀ FINITO" },
+  { theme: "Vita Reale", phrase: "CAFFÈ D'EMERGENZA DEL LUNEDÌ" },
+  { theme: "Vita Reale", phrase: "IL TRAGITTO CASA-LAVORO È LUNGHISSIMO" },
 
   // ==== STREAMING / TWITCH ====
   { theme: "Streaming", phrase: "DROP DI FRAME INEVITABILI" },
@@ -1153,6 +1156,9 @@ const DIZIONARIO = [
   { theme: "Streaming", phrase: "MICROFONO LASCIATO MUTO PER SBAGLIO" },
   { theme: "Streaming", phrase: "LA LIVE SI BLOCCA SUL PIU BELLO" },
   { theme: "Streaming", phrase: "EMOTE PERSONALIZZATE TROPPO BELLE" },
+  { theme: "Streaming", phrase: "LA LIVE È GIÀ IN RITARDO" },
+  { theme: "Streaming", phrase: "L'AUDIO VA E VIENE" },
+  { theme: "Streaming", phrase: "CHAT SOTTO-VOCE PER EVITARE GLI SPOILER" },
 
   // ==== VIDEOGIOCHI ====
   { theme: "Videogiochi", phrase: "PUNTO DI SALVATAGGIO LONTANISSIMO" },
@@ -1170,6 +1176,9 @@ const DIZIONARIO = [
   { theme: "Videogiochi", phrase: "COMPAGNO DI SQUADRA CHE RUSHA SEMPRE" },
   { theme: "Videogiochi", phrase: "MISSIONE STEALTH FALLITA PER SBAGLIO" },
   { theme: "Videogiochi", phrase: "TUTORIAL SALTATO E ORA SEI CONFUSO" },
+  { theme: "Videogiochi", phrase: "L'ULTIMO SALVATAGGIO È DI TRE ORE FA" },
+  { theme: "Videogiochi", phrase: "MISSIONE A TEMPO SENZA CHECKPOINT" },
+  { theme: "Videogiochi", phrase: "BOSS FINALE DALL'ATTACCO IMPREVEDIBILE" },
 
   // ==== ANIME / POP CULTURE ====
   { theme: "Anime", phrase: "POTERE DELL AMICIZIA" },
@@ -1326,8 +1335,10 @@ let roleClaimed = false;
 function maskWord(word){
   let out = "";
   for (let ch of word){
-    if (ch === " " || ch === "-" ) out += ch;
-    else out += "_";
+    // Solo le lettere A-Z vengono nascoste e selezionate dalla tastiera.
+    // Spazi, apostrofi, accenti, trattini e qualsiasi punteggiatura restano visibili.
+    if (/[A-Z]/.test(ch)) out += "_";
+    else out += ch;
   }
   return out;
 }
@@ -1747,18 +1758,40 @@ async function startChatVote(){
 async function finishChatVote(){
   if (forcedRole !== "A" || !chatIsPlayerB || !stato.chatVote?.active) return;
   stopChatVoteTimer();
+
   const votes = stato.chatVote.votes || {};
   const entries = Object.entries(votes).filter(([letter,count]) => /^[A-Z]$/.test(letter) && Number(count) > 0);
-  let winner = null;
-  if (entries.length){
-    const max = Math.max(...entries.map(([,count]) => Number(count)));
-    const tied = entries.filter(([,count]) => Number(count) === max).map(([letter]) => letter).sort();
-    winner = tied[Math.floor(Math.random() * tied.length)];
+
+  // Se nessuno ha ancora votato, concedi altri 30 secondi.
+  // Il turno della chat resta attivo finché non arriva almeno un voto.
+  if (!entries.length){
+    const now = Date.now();
+    stato.chatVote = {
+      ...stato.chatVote,
+      active: true,
+      startedAt: now,
+      endsAt: now + CHAT_VOTE_DURATION
+    };
+    aggiornaUI();
+    await broadcastGameState();
+    chatVoteTimer = setInterval(async () => {
+      renderChatVotes();
+      if (Date.now() >= Number(stato.chatVote.endsAt || 0)) await finishChatVote();
+    }, 100);
+    return;
   }
+
+  const max = Math.max(...entries.map(([,count]) => Number(count)));
+  const tied = entries
+    .filter(([,count]) => Number(count) === max)
+    .map(([letter]) => letter)
+    .sort();
+  const winner = tied[Math.floor(Math.random() * tied.length)];
+
   stato.chatVote = { ...stato.chatVote, active:false, winner };
   aggiornaUI();
   await broadcastGameState();
-  if (winner) await onLetterClick("B", winner, true);
+  await onLetterClick("B", winner, true);
 }
 
 async function registerChatVote(letter){
