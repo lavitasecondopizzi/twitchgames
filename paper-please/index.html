@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Paper Pizzi Please – Player</title>
+<title>Paper Pizzi Please — Giocatore</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
 
 <style>
@@ -462,7 +462,7 @@ body.master-view .decision-btn{cursor:default}
 <script>
 
 const urlParams = new URLSearchParams(location.search);
-const masterMode = /master\.html$/i.test(location.pathname);
+const masterMode = true;
 const soloMode  = !masterMode && (urlParams.get("solo")==="1" || urlParams.get("mode")==="solo");
 const roomCode = (urlParams.get("room") || "").trim().toUpperCase();
 const forcedRole = masterMode ? "host" : "guest";
