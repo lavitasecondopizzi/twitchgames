@@ -1443,9 +1443,11 @@ async function caricaStato(){
       if (forcedRole === "A"){
         const guest = roomClient.getGuest();
         stato.playerNameB = guest?.nickname || null;
+        aggiornaUI();
         aggiornaStatoConnessioneUI();
         broadcastGameState().catch(console.error);
       } else {
+        aggiornaUI();
         aggiornaStatoConnessioneUI();
       }
     });
@@ -1700,7 +1702,7 @@ function aggiornaStatoConnessioneUI(){
     return;
   }
   if (forcedRole === "A"){
-    connectionStatusEl.textContent = roomClient?.hasGuest() ? "B CONNESSO" : "IN ATTESA DI B";
+    connectionStatusEl.textContent = roomClient?.hasGuest() ? "OSPITE CONNESSO" : "IN ATTESA OSPITE";
   } else {
     connectionStatusEl.textContent = "CONNESSO";
   }
