@@ -1403,7 +1403,10 @@ async function caricaStato(){
       if (forcedRole === "A"){
         const guest = roomClient.getGuest();
         stato.playerNameB = guest?.nickname || null;
+        aggiornaStatoConnessioneUI();
         broadcastGameState().catch(console.error);
+      } else {
+        aggiornaStatoConnessioneUI();
       }
     });
   }
@@ -1412,6 +1415,7 @@ async function caricaStato(){
     try{
       await roomClient.connect();
       roomReady = true;
+      aggiornaStatoConnessioneUI();
       decidiRuoloDaStato();
       if (forcedRole === "A"){
         if (!stato.playerNameA) stato.playerNameA = playerNameFromUrl || "Pizzi";
@@ -1425,6 +1429,8 @@ async function caricaStato(){
       }
     }catch(e){
       console.error("Errore Supabase Realtime:", e);
+      roomReady = false;
+      aggiornaStatoConnessioneUI();
       aggiornaUI();
     }
   }
@@ -1626,6 +1632,29 @@ function aggiornaUI(){
 const themeAEl   = document.getElementById("theme-A");
 const themeBEl   = document.getElementById("theme-B");
 const turnLabelEl = document.getElementById("turnLabel");
+
+const connectionStatusEl = document.createElement("span");
+connectionStatusEl.id = "realtimeStatus";
+connectionStatusEl.style.cssText = "display:inline-block;margin-left:8px;font-size:9px;font-weight:900;text-transform:uppercase;";
+const turnRowEl = turnLabelEl?.closest(".turn-row");
+if (turnRowEl) turnRowEl.appendChild(connectionStatusEl);
+
+function aggiornaStatoConnessioneUI(){
+  if (!connectionStatusEl) return;
+  if (!roomCode){
+    connectionStatusEl.textContent = "OFFLINE";
+    return;
+  }
+  if (!roomReady){
+    connectionStatusEl.textContent = "CONNESSIONE…";
+    return;
+  }
+  if (forcedRole === "A"){
+    connectionStatusEl.textContent = roomClient?.hasGuest() ? "B CONNESSO" : "IN ATTESA DI B";
+  } else {
+    connectionStatusEl.textContent = "CONNESSO";
+  }
+}
 
 function renderWord(el, displayWord){
   if (!el) return;
