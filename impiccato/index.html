@@ -982,21 +982,29 @@ button,input,select{font:inherit}
               </div>
               <div class="hangman-wrapper"><svg class="hangman-svg" viewBox="0 0 200 200" role="img" aria-label="Tacchino: stato della partita">
                   <defs>
-                    <g id="turkey-A-base">
-                      <path d="M112 122 C94 110 92 92 105 84 C114 78 122 84 128 92 C132 79 142 72 154 76 C166 80 171 92 167 103 C177 109 181 123 172 134 C163 145 143 150 125 141 C118 137 113 130 112 122Z" fill="var(--paper)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>
-                      <circle cx="141" cy="78" r="23" fill="var(--paper)" stroke="var(--ink)" stroke-width="5"/>
-                      <path d="M129 77 q6 -6 12 0 M145 77 q6 -6 12 0" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
-                      <circle cx="134" cy="75" r="3.5" fill="var(--ink)"/>
-                      <circle cx="151" cy="75" r="3.5" fill="var(--ink)"/>
-                      <path d="M139 86 L157 91 L139 96 L133 91 Z" fill="var(--paper)" stroke="var(--ink)" stroke-width="4" stroke-linejoin="round"/>
-                      <path d="M135 97 Q141 104 147 97 Q145 108 140 108 Q135 107 135 97Z" fill="var(--ink)" stroke="var(--ink)" stroke-width="2"/>
-                      <path d="M111 96 Q94 84 88 96 Q85 107 101 115 Q93 124 103 133 Q114 139 124 125" fill="var(--paper)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>
-                      <path d="M168 101 Q183 91 190 100 Q193 111 178 119 Q187 128 178 137 Q167 142 158 127" fill="var(--paper)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>
-                      <path d="M112 118 Q91 110 83 120 Q80 129 91 136 Q83 143 93 151 Q106 157 120 143" fill="var(--paper)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>
-                      <path d="M160 117 Q180 110 188 120 Q191 130 180 137 Q188 144 178 151 Q165 156 153 141" fill="var(--paper)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>
-                      <path d="M129 143 L126 158 M151 143 L154 158" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round"/>
-                      <path d="M117 159 h18 l-9 5 h-13 Z M145 159 h18 l-9 5 h-13 Z" fill="var(--paper)" stroke="var(--ink)" stroke-width="4" stroke-linejoin="round"/>
-                      <path d="M119 108 Q108 101 101 108 M162 108 Q173 101 180 108" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
+                    <g id="turkey-A-head">
+                      <circle cx="140" cy="70" r="23" fill="var(--paper)" stroke="var(--ink)" stroke-width="5"/>
+                      <path d="M128 69 q6 -6 12 0 M144 69 q6 -6 12 0" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
+                      <circle cx="133" cy="67" r="3.5" fill="var(--ink)"/>
+                      <circle cx="150" cy="67" r="3.5" fill="var(--ink)"/>
+                      <path d="M138 78 L156 83 L138 88 L132 83 Z" fill="var(--paper)" stroke="var(--ink)" stroke-width="4" stroke-linejoin="round"/>
+                      <path d="M134 89 Q140 96 146 89 Q144 100 139 100 Q134 99 134 89Z" fill="var(--ink)" stroke="var(--ink)" stroke-width="2"/>
+                    </g>
+                    <g id="turkey-A-body">
+                      <path d="M112 119 C94 107 92 89 105 81 C114 75 122 81 128 89 C132 76 142 69 154 73 C166 77 171 89 167 100 C177 106 181 120 172 131 C163 142 143 147 125 138 C118 134 113 127 112 119Z" fill="var(--paper)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>
+                    </g>
+                    <g id="turkey-A-wing-left">
+                      <path d="M111 93 Q94 81 88 93 Q85 104 101 112 Q93 121 103 130 Q114 136 124 122" fill="var(--paper)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>
+                    </g>
+                    <g id="turkey-A-wing-right">
+                      <path d="M168 98 Q183 88 190 97 Q193 108 178 116 Q187 125 178 134 Q167 139 158 124" fill="var(--paper)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>
+                    </g>
+                    <g id="turkey-A-legs">
+                      <path d="M129 140 L126 155 M151 140 L154 155" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round"/>
+                      <path d="M117 156 h18 l-9 5 h-13 Z M145 156 h18 l-9 5 h-13 Z" fill="var(--paper)" stroke="var(--ink)" stroke-width="4" stroke-linejoin="round"/>
+                    </g>
+                    <g id="turkey-A-eyes-dead">
+                      <path d="M128 64 l10 10 M138 64 l-10 10 M145 64 l10 10 M155 64 l-10 10" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
                     </g>
                   </defs>
                   <path d="M18 178 H182" class="gallow"/>
@@ -1004,18 +1012,13 @@ button,input,select{font:inherit}
                   <path d="M140 18 V38" class="gallow"/>
                   <path d="M136 38 H144" class="gallow"/>
                   <path d="M140 38 V45" class="rope"/>
-                  <g id="turkey-A-stage-0" class="turkey-stage"><use href="#turkey-A-base"/></g>
-                  <g id="turkey-A-stage-1" class="turkey-stage"><use href="#turkey-A-base" transform="translate(0,-17)"/></g>
-                  <g id="turkey-A-stage-2" class="turkey-stage"><use href="#turkey-A-base" transform="translate(0,-31)"/></g>
-                  <g id="turkey-A-stage-3" class="turkey-stage"><use href="#turkey-A-base" transform="translate(0,-42) rotate(5 140 90)"/></g>
-                  <g id="turkey-A-stage-4" class="turkey-stage"><use href="#turkey-A-base" transform="translate(-2,-43) rotate(12 140 90)"/></g>
-                  <g id="turkey-A-stage-5" class="turkey-stage"><use href="#turkey-A-base" transform="translate(1,-40) rotate(22 140 90)"/></g>
-                  <g id="turkey-A-stage-6" class="turkey-stage">
-                    <g transform="translate(4,-39) rotate(52 140 90)">
-                      <use href="#turkey-A-base"/>
-                      <path d="M128 73 l8 8 M136 73 l-8 8 M145 73 l8 8 M153 73 l-8 8" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
-                    </g>
-                  </g>
+                  <g id="turkey-A-stage-0" class="turkey-stage"></g>
+                  <g id="turkey-A-stage-1" class="turkey-stage"><use href="#turkey-A-head"/></g>
+                  <g id="turkey-A-stage-2" class="turkey-stage"><use href="#turkey-A-head"/><use href="#turkey-A-body"/></g>
+                  <g id="turkey-A-stage-3" class="turkey-stage"><use href="#turkey-A-head"/><use href="#turkey-A-body"/><use href="#turkey-A-wing-left"/></g>
+                  <g id="turkey-A-stage-4" class="turkey-stage"><use href="#turkey-A-head"/><use href="#turkey-A-body"/><use href="#turkey-A-wing-left"/><use href="#turkey-A-wing-right"/></g>
+                  <g id="turkey-A-stage-5" class="turkey-stage"><use href="#turkey-A-head"/><use href="#turkey-A-body"/><use href="#turkey-A-wing-left"/><use href="#turkey-A-wing-right"/><use href="#turkey-A-legs"/></g>
+                  <g id="turkey-A-stage-6" class="turkey-stage"><use href="#turkey-A-head"/><use href="#turkey-A-body"/><use href="#turkey-A-wing-left"/><use href="#turkey-A-wing-right"/><use href="#turkey-A-legs"/><use href="#turkey-A-eyes-dead"/></g>
                 </svg></div>
               <div class="word-row">
                 <span class="word-text" id="word-A">_ _ _</span>
@@ -1041,21 +1044,29 @@ button,input,select{font:inherit}
               </div>
               <div class="hangman-wrapper"><svg class="hangman-svg" viewBox="0 0 200 200" role="img" aria-label="Tacchino: stato della partita">
                   <defs>
-                    <g id="turkey-B-base">
-                      <path d="M112 122 C94 110 92 92 105 84 C114 78 122 84 128 92 C132 79 142 72 154 76 C166 80 171 92 167 103 C177 109 181 123 172 134 C163 145 143 150 125 141 C118 137 113 130 112 122Z" fill="var(--paper)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>
-                      <circle cx="141" cy="78" r="23" fill="var(--paper)" stroke="var(--ink)" stroke-width="5"/>
-                      <path d="M129 77 q6 -6 12 0 M145 77 q6 -6 12 0" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
-                      <circle cx="134" cy="75" r="3.5" fill="var(--ink)"/>
-                      <circle cx="151" cy="75" r="3.5" fill="var(--ink)"/>
-                      <path d="M139 86 L157 91 L139 96 L133 91 Z" fill="var(--paper)" stroke="var(--ink)" stroke-width="4" stroke-linejoin="round"/>
-                      <path d="M135 97 Q141 104 147 97 Q145 108 140 108 Q135 107 135 97Z" fill="var(--ink)" stroke="var(--ink)" stroke-width="2"/>
-                      <path d="M111 96 Q94 84 88 96 Q85 107 101 115 Q93 124 103 133 Q114 139 124 125" fill="var(--paper)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>
-                      <path d="M168 101 Q183 91 190 100 Q193 111 178 119 Q187 128 178 137 Q167 142 158 127" fill="var(--paper)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>
-                      <path d="M112 118 Q91 110 83 120 Q80 129 91 136 Q83 143 93 151 Q106 157 120 143" fill="var(--paper)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>
-                      <path d="M160 117 Q180 110 188 120 Q191 130 180 137 Q188 144 178 151 Q165 156 153 141" fill="var(--paper)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>
-                      <path d="M129 143 L126 158 M151 143 L154 158" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round"/>
-                      <path d="M117 159 h18 l-9 5 h-13 Z M145 159 h18 l-9 5 h-13 Z" fill="var(--paper)" stroke="var(--ink)" stroke-width="4" stroke-linejoin="round"/>
-                      <path d="M119 108 Q108 101 101 108 M162 108 Q173 101 180 108" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
+                    <g id="turkey-B-head">
+                      <circle cx="140" cy="70" r="23" fill="var(--paper)" stroke="var(--ink)" stroke-width="5"/>
+                      <path d="M128 69 q6 -6 12 0 M144 69 q6 -6 12 0" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
+                      <circle cx="133" cy="67" r="3.5" fill="var(--ink)"/>
+                      <circle cx="150" cy="67" r="3.5" fill="var(--ink)"/>
+                      <path d="M138 78 L156 83 L138 88 L132 83 Z" fill="var(--paper)" stroke="var(--ink)" stroke-width="4" stroke-linejoin="round"/>
+                      <path d="M134 89 Q140 96 146 89 Q144 100 139 100 Q134 99 134 89Z" fill="var(--ink)" stroke="var(--ink)" stroke-width="2"/>
+                    </g>
+                    <g id="turkey-B-body">
+                      <path d="M112 119 C94 107 92 89 105 81 C114 75 122 81 128 89 C132 76 142 69 154 73 C166 77 171 89 167 100 C177 106 181 120 172 131 C163 142 143 147 125 138 C118 134 113 127 112 119Z" fill="var(--paper)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>
+                    </g>
+                    <g id="turkey-B-wing-left">
+                      <path d="M111 93 Q94 81 88 93 Q85 104 101 112 Q93 121 103 130 Q114 136 124 122" fill="var(--paper)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>
+                    </g>
+                    <g id="turkey-B-wing-right">
+                      <path d="M168 98 Q183 88 190 97 Q193 108 178 116 Q187 125 178 134 Q167 139 158 124" fill="var(--paper)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>
+                    </g>
+                    <g id="turkey-B-legs">
+                      <path d="M129 140 L126 155 M151 140 L154 155" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round"/>
+                      <path d="M117 156 h18 l-9 5 h-13 Z M145 156 h18 l-9 5 h-13 Z" fill="var(--paper)" stroke="var(--ink)" stroke-width="4" stroke-linejoin="round"/>
+                    </g>
+                    <g id="turkey-B-eyes-dead">
+                      <path d="M128 64 l10 10 M138 64 l-10 10 M145 64 l10 10 M155 64 l-10 10" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
                     </g>
                   </defs>
                   <path d="M18 178 H182" class="gallow"/>
@@ -1063,18 +1074,13 @@ button,input,select{font:inherit}
                   <path d="M140 18 V38" class="gallow"/>
                   <path d="M136 38 H144" class="gallow"/>
                   <path d="M140 38 V45" class="rope"/>
-                  <g id="turkey-B-stage-0" class="turkey-stage"><use href="#turkey-B-base"/></g>
-                  <g id="turkey-B-stage-1" class="turkey-stage"><use href="#turkey-B-base" transform="translate(0,-17)"/></g>
-                  <g id="turkey-B-stage-2" class="turkey-stage"><use href="#turkey-B-base" transform="translate(0,-31)"/></g>
-                  <g id="turkey-B-stage-3" class="turkey-stage"><use href="#turkey-B-base" transform="translate(0,-42) rotate(5 140 90)"/></g>
-                  <g id="turkey-B-stage-4" class="turkey-stage"><use href="#turkey-B-base" transform="translate(-2,-43) rotate(12 140 90)"/></g>
-                  <g id="turkey-B-stage-5" class="turkey-stage"><use href="#turkey-B-base" transform="translate(1,-40) rotate(22 140 90)"/></g>
-                  <g id="turkey-B-stage-6" class="turkey-stage">
-                    <g transform="translate(4,-39) rotate(52 140 90)">
-                      <use href="#turkey-B-base"/>
-                      <path d="M128 73 l8 8 M136 73 l-8 8 M145 73 l8 8 M153 73 l-8 8" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
-                    </g>
-                  </g>
+                  <g id="turkey-B-stage-0" class="turkey-stage"></g>
+                  <g id="turkey-B-stage-1" class="turkey-stage"><use href="#turkey-B-head"/></g>
+                  <g id="turkey-B-stage-2" class="turkey-stage"><use href="#turkey-B-head"/><use href="#turkey-B-body"/></g>
+                  <g id="turkey-B-stage-3" class="turkey-stage"><use href="#turkey-B-head"/><use href="#turkey-B-body"/><use href="#turkey-B-wing-left"/></g>
+                  <g id="turkey-B-stage-4" class="turkey-stage"><use href="#turkey-B-head"/><use href="#turkey-B-body"/><use href="#turkey-B-wing-left"/><use href="#turkey-B-wing-right"/></g>
+                  <g id="turkey-B-stage-5" class="turkey-stage"><use href="#turkey-B-head"/><use href="#turkey-B-body"/><use href="#turkey-B-wing-left"/><use href="#turkey-B-wing-right"/><use href="#turkey-B-legs"/></g>
+                  <g id="turkey-B-stage-6" class="turkey-stage"><use href="#turkey-B-head"/><use href="#turkey-B-body"/><use href="#turkey-B-wing-left"/><use href="#turkey-B-wing-right"/><use href="#turkey-B-legs"/><use href="#turkey-B-eyes-dead"/></g>
                 </svg></div>
               <div class="word-row">
                 <span class="word-text" id="word-B">_ _ _</span>
@@ -1654,7 +1660,7 @@ const subScoreBtn  = document.getElementById("subScore");
 const addScoreBtn  = document.getElementById("addScore");
 const newRoundBtn  = document.getElementById("newRound");
 
-/* Stati del tacchino: 0 errori → attesa, 1–5 → sempre più KO, 6 → game over. */
+/* Stati del tacchino: 0 errori → nessun pezzo, 1 testa, 2 corpo, 3 ala sinistra, 4 ala destra, 5 zampe, 6 occhi X. */
 const turkeyParts = {
   A: Array.from({length:7}, (_,i) => document.getElementById("turkey-A-stage-" + i)),
   B: Array.from({length:7}, (_,i) => document.getElementById("turkey-B-stage-" + i))
