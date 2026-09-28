@@ -889,10 +889,8 @@ button,input,select{font:inherit}
     <div class="cam"><div class="label" id="webcamLabelA">Giocatore A</div></div>
 
     <div class="center">
-      <div class="label">Round attuale</div>
-      <img id="roundImage" alt="">
-      <div class="turn-row">Turno: <span id="turnLabel">-</span></div>
-      <div class="turn-row" id="roundResult" style="font-weight:900;">-</div>
+<img id="roundImage" alt="">
+<div class="turn-row" id="roundResult" style="font-weight:900;">-</div>
       <div class="scoreboard">
         <button class="score-btn" id="subScore">-1</button>
         <span class="value" id="scoreA">0</span>
@@ -901,10 +899,7 @@ button,input,select{font:inherit}
         <button class="score-btn" id="addScore">+1</button>
       </div>
 
-      <select id="roundSelect">
-        <option value="complex">Parole complesse casuali</option>
-      </select>
-      <button class="btn" id="newRound">Nuovo Round</button>
+<button class="btn" id="newRound">Nuovo Round</button>
     </div>
 
     <div class="cam"><div class="label" id="webcamLabelB">Giocatore B</div></div>
@@ -1661,10 +1656,19 @@ function aggiornaUI(){
   }
 
   if (roundResultEl){
-    if (stato.game.roundResult === "A") roundResultEl.textContent = "ROUND: " + nameA + " VINCE";
-    else if (stato.game.roundResult === "B") roundResultEl.textContent = "ROUND: " + nameB + " VINCE";
-    else if (stato.game.roundResult === "draw") roundResultEl.textContent = "ROUND: PAREGGIO";
-    else roundResultEl.textContent = "-";
+    if (stato.game.roundResult === "A"){
+      roundResultEl.textContent = "ROUND: " + nameA + " VINCE";
+      roundResultEl.style.display = "";
+    } else if (stato.game.roundResult === "B"){
+      roundResultEl.textContent = "ROUND: " + nameB + " VINCE";
+      roundResultEl.style.display = "";
+    } else if (stato.game.roundResult === "draw"){
+      roundResultEl.textContent = "ROUND: PAREGGIO";
+      roundResultEl.style.display = "";
+    } else {
+      roundResultEl.textContent = "";
+      roundResultEl.style.display = "none";
+    }
   }
 
   /* evidenzia board del giocatore di turno */
@@ -1684,7 +1688,6 @@ function aggiornaUI(){
 
 const themeAEl   = document.getElementById("theme-A");
 const themeBEl   = document.getElementById("theme-B");
-const turnLabelEl = document.getElementById("turnLabel");
 const roundResultEl = document.getElementById("roundResult");
 
 const connectionStatusEl = document.createElement("span");
@@ -1801,7 +1804,8 @@ function aggiornaInterattivita(){
   if (subScoreBtn) subScoreBtn.disabled = !player;
   if (addScoreBtn) addScoreBtn.disabled = !player;
   if (newRoundBtn){
-    newRoundBtn.disabled = forcedRole !== "A" || !roundConcluso();
+    newRoundBtn.style.display = forcedRole === "A" ? "" : "none";
+    newRoundBtn.disabled = !roundConcluso();
   }
 }
 
