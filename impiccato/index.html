@@ -316,37 +316,36 @@ button,input,select{font:inherit}
 .tab-header{
   flex:0 0 auto;
   display:flex;
-  gap:7px;
+  justify-content:flex-end;
   margin:0;
+  min-height:0;
 }
 
-.tab-btn{
-  border:3px solid var(--line);
+.rules-trigger{
+  border:2px solid var(--line);
   border-radius:0;
   background:var(--paper);
   color:var(--ink);
-  box-shadow:3px 3px 0 var(--line);
-  padding:6px 11px;
+  padding:3px 7px;
   cursor:pointer;
-  font-size:10px;
+  font-size:8px;
   font-weight:900;
+  line-height:1;
+  letter-spacing:.04em;
   text-transform:uppercase;
+  box-shadow:2px 2px 0 var(--line);
 }
 
-.tab-btn:hover,
-.tab-btn:focus-visible{
-  background:var(--paper-2);
+.rules-trigger:hover,
+.rules-trigger:focus-visible{
+  background:var(--ink);
+  color:var(--paper);
   outline:none;
 }
 
-.tab-btn.active{
-  background:var(--ink);
-  color:var(--paper);
-}
-
-.tab-btn:active{
+.rules-trigger:active{
   transform:translate(2px,2px);
-  box-shadow:1px 1px 0 var(--line);
+  box-shadow:none;
 }
 
 .tabs-viewport{
@@ -358,14 +357,13 @@ button,input,select{font:inherit}
 
 .tabs-inner{
   display:flex;
-  width:300%;
+  width:100%;
   height:100%;
-  transition:transform .22s steps(3,end);
 }
 
 .tab-panel{
-  flex:0 0 33.333333%;
-  width:33.333333%;
+  flex:0 0 100%;
+  width:100%;
   height:100%;
   min-height:0;
   padding:2px 2px 5px;
@@ -746,7 +744,7 @@ button,input,select{font:inherit}
   .center .label{font-size:14px}
   .scoreboard{gap:3px;padding:3px;border-width:2px;box-shadow:2px 2px 0 var(--line)}
   .score-btn{width:23px;height:21px}
-  .tab-btn{padding:5px 7px;font-size:8px}
+  .rules-trigger{padding:3px 6px;font-size:7px}
   .tab-panel[data-tab="0"] .boards{gap:5px}
   .board{padding:5px;border-width:3px;box-shadow:3px 3px 0 var(--line)}
   .board.active{padding:4px;border-width:4px;box-shadow:4px 4px 0 var(--line)}
@@ -900,22 +898,46 @@ button,input,select{font:inherit}
 /* ===== REGOLE FULLSCREEN ===== */
 .rules-modal[hidden]{display:none}
 .rules-modal{position:fixed;inset:0;z-index:100000}
-.rules-backdrop{position:absolute;inset:0;background:rgba(17,17,17,.88);backdrop-filter:blur(3px)}
-.rules-dialog{position:absolute;inset:4vh 4vw;overflow:auto;padding:clamp(22px,4vw,60px);border:5px solid var(--line);background:var(--paper);box-shadow:12px 12px 0 #000}
-.rules-dialog-head{border-bottom:4px solid var(--line);padding-bottom:18px;margin-bottom:22px}
+.rules-backdrop{position:absolute;inset:0;background:rgba(17,17,17,.92);backdrop-filter:blur(3px)}
+.rules-dialog{
+  position:absolute;
+  inset:3vh 3vw;
+  overflow:auto;
+  padding:clamp(22px,3.5vw,52px);
+  border:5px solid var(--line);
+  background:var(--paper);
+  box-shadow:12px 12px 0 #000;
+}
+.rules-dialog-head{border-bottom:4px solid var(--line);padding-bottom:18px;margin-bottom:20px}
 .rules-kicker{font-size:clamp(9px,1vw,14px);font-weight:900;letter-spacing:.14em}
-.rules-dialog h2{margin:7px 0 0;font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;font-size:clamp(42px,6vw,88px);line-height:.85;text-transform:uppercase}
+.rules-dialog h2{margin:7px 0 6px;font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;font-size:clamp(42px,6vw,88px);line-height:.85;text-transform:uppercase}
+.rules-intro{max-width:1000px;margin:12px 0 0;font-size:clamp(14px,1.3vw,20px);font-weight:700;line-height:1.4}
 .rules-close{position:absolute;top:16px;right:16px;z-index:2;width:52px;height:52px;border:4px solid var(--line);background:var(--ink);color:var(--paper);font-size:38px;font-weight:900;line-height:1;cursor:pointer}
 .rules-close:hover,.rules-close:focus-visible{background:var(--paper);color:var(--ink);outline:none}
-.rules-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.rules-section{border:4px solid var(--line);padding:18px;margin-bottom:16px;background:var(--paper-2)}
+.rules-section h3,.rules-card h3{margin:0 0 9px;font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;font-size:clamp(19px,2vw,28px);line-height:.95}
+.rules-section p,.rules-card p,.rules-section li{font-size:clamp(13px,1.15vw,18px);font-weight:700;line-height:1.45}
+.rules-section p{margin:0}
+.rules-section p+p{margin-top:9px}
+.rules-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:16px}
 .rules-card{border:4px solid var(--line);background:var(--paper);padding:18px;box-shadow:5px 5px 0 var(--line)}
-.rules-card h3,.rules-chat h3{margin:0 0 8px;font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;font-size:clamp(18px,2vw,28px);line-height:.95}
-.rules-card p,.rules-chat p{margin:0;font-size:clamp(13px,1.2vw,18px);font-weight:700;line-height:1.45}
-.rules-chat{margin-top:18px;padding:20px;border:4px solid var(--line);background:#19d34a;box-shadow:6px 6px 0 var(--line)}
-.rules-chat p+p{margin-top:8px}
-@media (max-width:900px){.rules-dialog{inset:2vh 2vw;padding:24px 18px}.rules-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:600px){.rules-dialog{inset:0;padding:18px 12px}.rules-dialog-head{padding-right:60px}.rules-grid{grid-template-columns:1fr}.rules-close{top:10px;right:10px;width:44px;height:44px;font-size:32px}}
-
+.rules-card p{margin:0}
+.rules-score{background:#e8e8e3}
+.rules-chat{background:#f0f0ec}
+.rules-chat ol{margin:8px 0 0;padding-left:25px}
+.rules-chat li+li{margin-top:5px}
+.rules-note{margin-top:12px!important;padding-top:10px;border-top:2px solid var(--line);font-size:clamp(11px,1vw,15px)!important}
+.rules-new-round{margin-bottom:0}
+@media (max-width:900px){
+  .rules-dialog{inset:2vh 2vw;padding:24px 18px}
+  .rules-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:600px){
+  .rules-dialog{inset:0;padding:18px 12px}
+  .rules-dialog-head{padding-right:60px}
+  .rules-grid{grid-template-columns:1fr}
+  .rules-close{top:10px;right:10px;width:44px;height:44px;font-size:32px}
+}
 </style>
 </head>
 <body>
@@ -924,23 +946,68 @@ button,input,select{font:inherit}
           <div class="rules-backdrop" data-close-rules></div>
           <section class="rules-dialog" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
             <button class="rules-close" id="rulesClose" type="button" aria-label="Chiudi regole">×</button>
+
             <div class="rules-dialog-head">
               <span class="rules-kicker">TORTELLO GAMES / IMPICCATO</span>
               <h2 id="rulesTitle">Come si gioca</h2>
+              <p class="rules-intro">Due giocatori affrontano contemporaneamente una frase segreta ciascuno. Il turno indica chi può scegliere la prossima lettera.</p>
             </div>
+
+            <div class="rules-section">
+              <h3>1 — OBIETTIVO</h3>
+              <p>Ogni giocatore deve scoprire completamente la propria frase prima di accumulare <b>6 errori</b>.</p>
+            </div>
+
             <div class="rules-grid">
-              <article class="rules-card"><h3>OBIETTIVO</h3><p>Completa la tua frase prima di raggiungere <b>6 errori</b>.</p></article>
-              <article class="rules-card"><h3>TURNI</h3><p>Si gioca a turni: quando arriva il tuo turno, scegli una lettera dal tuo lato.</p></article>
-              <article class="rules-card"><h3>LETTERA GIUSTA</h3><p>La lettera viene rivelata in tutte le posizioni in cui compare.</p></article>
-              <article class="rules-card"><h3>LETTERA SBAGLIATA</h3><p>Viene aggiunto un errore e compare una parte dell'omino.</p></article>
-              <article class="rules-card"><h3>FINE DEL ROUND</h3><p>Indovinare la frase assegna <b>+1 punto</b>. Arrivare all'impiccato assegna <b>-1 punto</b>.</p></article>
-              <article class="rules-card"><h3>NUOVO ROUND</h3><p>Genera due nuove frasi e azzera lettere, errori e votazione della chat.</p></article>
+              <article class="rules-card">
+                <h3>LA FRASE</h3>
+                <p>Ogni round vengono generate <b>due frasi diverse</b>, una per A e una per B. Le parole sono separate dagli spazi e le lettere non ancora scoperte vengono mostrate come <b>_</b>.</p>
+              </article>
+              <article class="rules-card">
+                <h3>IL TURNO</h3>
+                <p>Il turno passa da un giocatore all'altro. Può giocare solo chi ha il proprio turno: l'altro deve aspettare.</p>
+              </article>
+              <article class="rules-card">
+                <h3>LETTERA CORRETTA</h3>
+                <p>Se la lettera scelta è presente nella frase, vengono rivelate <b>tutte</b> le sue occorrenze.</p>
+              </article>
+              <article class="rules-card">
+                <h3>LETTERA SBAGLIATA</h3>
+                <p>Se la lettera non compare nella frase, viene aggiunto <b>1 errore</b> e viene disegnata una parte dell'omino.</p>
+              </article>
+              <article class="rules-card">
+                <h3>6 ERRORI</h3>
+                <p>Quando un giocatore raggiunge 6 errori, perde la propria frase. L'altro giocatore può continuare finché non termina anche la sua partita.</p>
+              </article>
+              <article class="rules-card">
+                <h3>FINE DEL ROUND</h3>
+                <p>Il round termina quando entrambi hanno concluso la propria frase. Il risultato viene mostrato al centro dello schermo.</p>
+              </article>
             </div>
-            <div class="rules-chat">
-              <h3>MODALITÀ SOLO CHAT</h3>
-              <p>La chat controlla il lato B collettivamente. Durante il turno della chat ha <b>30 secondi</b> per votare una lettera.</p>
-              <p>Alla scadenza viene selezionata la lettera con più voti. In caso di parità viene scelta casualmente tra quelle a pari merito.</p>
-              <p>Il collegamento al bot Twitch verrà aggiunto in una fase successiva.</p>
+
+            <div class="rules-section rules-score">
+              <h3>2 — PUNTEGGIO</h3>
+              <p>Quando un giocatore completa la propria frase riceve <b>+1</b>. Quando raggiunge 6 errori riceve <b>-1</b>. Il punteggio non può scendere sotto 0.</p>
+              <p>I pulsanti <b>-1</b> e <b>+1</b> permettono inoltre di correggere manualmente il punteggio durante la partita.</p>
+            </div>
+
+            <div class="rules-section rules-chat">
+              <h3>3 — MODALITÀ SOLO CHAT</h3>
+              <p>In questa modalità il lato B non appartiene a un secondo giocatore: <b>B è controllato dalla chat</b>.</p>
+              <ol>
+                <li>Quando è il turno di B, parte una votazione di <b>30 secondi</b>.</li>
+                <li>La chat propone una lettera.</li>
+                <li>Durante il conto alla rovescia vengono mostrati i voti ricevuti.</li>
+                <li>Alla scadenza viene scelta la lettera con il maggior numero di voti.</li>
+                <li>Se più lettere hanno lo stesso numero massimo di voti, ne viene scelta una casualmente tra quelle a pari merito.</li>
+                <li>La lettera scelta viene giocata automaticamente per B e il turno prosegue normalmente.</li>
+              </ol>
+              <p class="rules-note">Il collegamento diretto alla chat Twitch verrà aggiunto dopo la sistemazione di tutti i giochi.</p>
+            </div>
+
+            <div class="rules-section rules-new-round">
+              <h3>4 — NUOVO ROUND</h3>
+              <p>L'host può avviare un nuovo round in qualsiasi momento. Vengono generate due nuove frasi e vengono azzerati stato, errori, lettere e votazione del round precedente.</p>
             </div>
           </section>
         </div>
@@ -977,9 +1044,8 @@ button,input,select{font:inherit}
   <!-- TABS -->
   <div class="tabs">
     <div class="tab-header">
-      <button class="tab-btn active" data-tab="0">Gioco</button>
-      <button class="tab-btn" id="rulesBtn" type="button">Regole</button>
-          </div>
+      <button class="rules-trigger" id="rulesBtn" type="button" aria-label="Apri le regole" title="Regole">? REGOLE</button>
+    </div>
 
     <div class="tabs-viewport">
       <div class="tabs-inner">
@@ -2113,14 +2179,6 @@ addScoreBtn.addEventListener("click", async ()=>{
 
 let currentTab = 0;
 
-function setTab(idx){
-  currentTab = 0;
-  const inner = document.querySelector(".tabs-inner");
-  const btns = document.querySelectorAll(".tab-btn");
-  if (inner) inner.style.transform = "translateX(0)";
-  btns.forEach(b=>b.classList.toggle("active", b.dataset.tab === "0"));
-}
-
 function initTabs(){
   const rulesModal = document.getElementById("rulesModal");
   const rulesBtn = document.getElementById("rulesBtn");
@@ -2143,8 +2201,6 @@ function initTabs(){
   document.addEventListener("keydown", event=>{
     if (event.key === "Escape" && rulesModal && !rulesModal.hidden) closeRules();
   });
-
-  setTab(0);
 }
 
 /* ========= INIT ========= */
