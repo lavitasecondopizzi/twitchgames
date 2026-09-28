@@ -51,10 +51,10 @@
           this.dispatchEvent(new CustomEvent('state-request', { detail: payload }));
         })
         .on('broadcast', { event: 'guest_identity_request' }, ({ payload }) => {
-          this.dispatchEvent(new CustomEvent('guest-identity-request', { detail: payload }));
+          this.dispatchEvent(new CustomEvent('guest_identity_request', { detail: payload }));
         })
         .on('broadcast', { event: 'guest_identity' }, ({ payload }) => {
-          this.dispatchEvent(new CustomEvent('guest-identity', { detail: payload }));
+          this.dispatchEvent(new CustomEvent('guest_identity', { detail: payload }));
         })
         .on('presence', { event: 'sync' }, () => {
           this.dispatchEvent(new CustomEvent('presence', {
