@@ -545,11 +545,6 @@ button,input,select{font:inherit}
   word-break:keep-all;
 }
 
-.word-line{
-  display:inline;
-  white-space:nowrap;
-}
-
 .errors-row{
   flex:0 0 auto;
   min-height:22px;
@@ -609,7 +604,6 @@ button,input,select{font:inherit}
 
 /* ===== RULES / CHAT ===== */
 
-.rules-panel,
 .votes-panel{
   width:100%;
   height:100%;
@@ -621,25 +615,12 @@ button,input,select{font:inherit}
   box-shadow:var(--shadow);
 }
 
-.rules-panel h2,
 .votes-panel h2{
   margin:0 0 10px;
   font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;
   font-size:clamp(22px,2.4vw,34px);
   line-height:.95;
   text-transform:uppercase;
-}
-
-.rules-panel ul{
-  margin:0;
-  padding-left:20px;
-}
-
-.rules-panel li{
-  margin-bottom:7px;
-  font-size:11px;
-  font-weight:700;
-  line-height:1.4;
 }
 
 .votes-panel h2{margin-bottom:6px}
@@ -658,16 +639,6 @@ button,input,select{font:inherit}
   background:var(--paper-2);
   font-size:11px;
   font-weight:800;
-}
-
-.legend{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  margin-top:5px;
-  font-size:8px;
-  font-weight:900;
-  text-transform:uppercase;
 }
 
 @media (max-width:1200px){
@@ -708,8 +679,7 @@ button,input,select{font:inherit}
   .theme-row,.errors-row{font-size:7px}
   .word-text{font-size:clamp(10px,2.5vw,17px)}
   .letter-btn{min-height:22px;font-size:8px;box-shadow:1px 1px 0 var(--line)}
-  .legend{display:none}
-}
+  }
 
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
@@ -792,7 +762,7 @@ button,input,select{font:inherit}
 .letter-btn{
   min-height:32px;
 }
-.rules-panel,.votes-panel{
+.votes-panel{
   padding:14px;
 }
 
@@ -1111,7 +1081,6 @@ const sessionTheme = (urlParams.get("theme") || "Vita Reale").trim();
 const interactionMode = urlParams.get("interaction") === "chat" ? "chat" : "guest";
 const chatIsPlayerB = interactionMode === "chat";
 const playerNameFromUrl = urlParams.get("player") || urlParams.get("name") || null;
-const displayNameB = chatIsPlayerB ? "CHAT" : (playerNameFromUrl || "Giocatore B");
 
 let clientId = sessionStorage.getItem("impiccatoClientId");
 if (!clientId) {
@@ -1637,7 +1606,6 @@ function applyPlayerNameFromUrl(){
 
 const scoreAEl = document.getElementById("scoreA");
 const scoreBEl = document.getElementById("scoreB");
-const roundNumberEl = document.getElementById("roundNumber");
 const webcamLabelA = document.getElementById("webcamLabelA");
 const webcamLabelB = document.getElementById("webcamLabelB");
 const boardTitleA  = document.getElementById("boardTitleA");
@@ -1801,7 +1769,6 @@ function aggiornaUI(){
   if (scoreAEl) scoreAEl.textContent = stato.punteggioA;
   if (scoreBEl) scoreBEl.textContent = stato.punteggioB;
 
-  if (roundNumberEl) roundNumberEl.textContent = stato.game.round || 0;
 
   const gA = stato.game.A;
   const gB = stato.game.B;
@@ -1821,9 +1788,6 @@ function aggiornaUI(){
   if (statusAEl) statusAEl.textContent = statoTestoGiocatore(gA.status, "A");
   if (statusBEl) statusBEl.textContent = statoTestoGiocatore(gB.status, "B");
   
-  if (themeAEl) themeAEl.textContent = gA.theme || "-";
-  if (themeBEl) themeBEl.textContent = gB.theme || "-";
-
   if (currentThemeLabel){
     currentThemeLabel.textContent = "TEMA: " + String(stato.game.theme || sessionTheme || "VITA REALE").toUpperCase();
   }
@@ -1859,8 +1823,6 @@ function aggiornaUI(){
   aggiornaInterattivita();
 }
 
-const themeAEl   = document.getElementById("theme-A");
-const themeBEl   = document.getElementById("theme-B");
 const currentThemeLabel = document.getElementById("currentThemeLabel");
 const roundResultEl = document.getElementById("roundResult");
 
