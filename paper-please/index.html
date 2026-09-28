@@ -1681,7 +1681,7 @@ async function connectRoom(){
       stato.mode=soloMode?"solo":(urlParams.get("mode")||stato.mode);
       updateUI();await broadcastState();
     }else {
-      roomClient.broadcast("guest_identity",{nickname:guestName}).catch(()=>{});
+      if (isGuest) roomClient.broadcast("guest_identity",{nickname:guestName}).catch(()=>{});
       requestGameState();
     }
   }catch(e){console.error("Supabase Realtime non disponibile:",e);}
