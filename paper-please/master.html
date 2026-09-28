@@ -234,14 +234,67 @@ body.master-view .decision-btn{cursor:default}
 .master-status-grid small,.master-resources small{display:block;font-size:5px;font-weight:900}.master-status-grid strong,.master-resources strong{display:block;margin-top:3px;font-size:10px;text-transform:uppercase}
 .master-guest .guest-name{font-family:Impact,"Arial Black",sans-serif;font-size:20px;text-transform:uppercase;margin-top:8px}
 .master-resources{display:grid!important;grid-template-columns:1fr 1fr;gap:5px}.master-resources div{border:2px solid var(--line);padding:5px;background:var(--paper2)}
-.master-main{min-width:0;min-height:0;display:grid;grid-template-columns:240px minmax(0,1fr) 430px;gap:8px}
-.master-control,.master-side{min-width:0;min-height:0;border:4px solid var(--line);background:var(--paper);box-shadow:var(--shadow);padding:8px;overflow:hidden}
-.master-control{display:flex;flex-direction:column;gap:7px}.console-head{display:flex;justify-content:space-between;align-items:center;gap:5px;padding-bottom:7px;border-bottom:4px solid var(--line)}
-.control-block{border:3px solid var(--line);background:var(--paper2);padding:7px;box-shadow:3px 3px 0 var(--line)}.control-label{font-size:6px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}.control-value,.decision-readout{font-family:Impact,"Arial Black",sans-serif;font-size:19px;text-transform:uppercase;margin:5px 0 7px}.decision-readout{background:var(--yellow);border:3px solid var(--line);padding:6px;font-size:16px}.master-primary,.master-confirm{width:100%}.master-confirm{background:var(--green);color:var(--ink)}.master-confirm:disabled{background:var(--paper2);color:var(--ink)}
-.control-mini-row{display:flex;gap:5px;margin-top:6px}.objective-readout{font-size:7px;font-weight:800;line-height:1.35;margin-top:5px}.world-row{display:flex;justify-content:space-between;font-size:6px;font-weight:900;margin-top:6px}.world-bar{height:6px;border:2px solid var(--line);background:#fff}.world-bar i{display:block;height:100%;width:50%;background:var(--green)}
-.master-main>.panel{min-width:0;min-height:0}.master-side{display:flex;flex-direction:column;gap:8px;min-width:0;min-height:0}.master-side>.master-intel{flex:1 1 58%;min-height:0;overflow:auto}.master-side>.side{flex:1 1 42%;min-height:0}.master-side>.side{height:auto;min-height:0}.master-side .side-columns{grid-template-columns:1fr 1fr;grid-template-rows:1fr;gap:6px}.master-side .side-info{height:100%;min-height:0}.master-side .chat-box,.master-side .history-box{min-height:0}
-.master-main .panel-head{margin-bottom:7px}.master-main .grid-case{grid-template-columns:1fr}.master-main .master-dossier-details{grid-template-rows:auto auto minmax(0,1fr) auto}
-.master-dossier-details{width:100%} .master-dossier-details #caseNotes{display:block;-webkit-line-clamp:unset;max-height:none;overflow:auto}.master-dossier-actions{display:none}
+.master-main{
+  min-width:0;min-height:0;
+  display:grid;
+  grid-template-columns:240px minmax(420px,1fr) 430px;
+  gap:8px;
+  overflow:hidden;
+}
+.master-control,
+.master-case-panel,
+.master-side{
+  min-width:0;min-height:0;
+  border:4px solid var(--line);
+  background:var(--paper);
+  box-shadow:var(--shadow);
+  padding:8px;
+  overflow:hidden;
+}
+.master-control{display:flex;flex-direction:column;gap:7px}
+.console-head{display:flex;justify-content:space-between;align-items:center;gap:5px;padding-bottom:7px;border-bottom:4px solid var(--line)}
+.control-block{border:3px solid var(--line);background:var(--paper2);padding:7px;box-shadow:3px 3px 0 var(--line)}
+.control-label{font-size:6px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
+.control-value,.decision-readout{font-family:Impact,"Arial Black",sans-serif;font-size:19px;text-transform:uppercase;margin:5px 0 7px}
+.decision-readout{background:var(--yellow);border:3px solid var(--line);padding:6px;font-size:16px}
+.master-primary,.master-confirm{width:100%}
+.master-confirm{background:var(--green);color:var(--ink)}
+.master-confirm:disabled{background:var(--paper2);color:var(--ink)}
+.control-mini-row{display:flex;gap:5px;margin-top:6px}
+.objective-readout{font-size:7px;font-weight:800;line-height:1.35;margin-top:5px}
+.world-row{display:flex;justify-content:space-between;font-size:6px;font-weight:900;margin-top:6px}
+.world-bar{height:6px;border:2px solid var(--line);background:#fff}
+.world-bar i{display:block;height:100%;width:50%;background:var(--green)}
+
+.master-case-panel{display:flex;flex-direction:column}
+.master-case-panel .panel-head{flex:0 0 auto}
+.master-case-panel .master-dossier-details{flex:1 1 auto;min-height:0;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto}
+.master-dossier-details{width:100%}
+.master-dossier-details #caseNotes{display:block;-webkit-line-clamp:unset;max-height:none;overflow:auto}
+.master-dossier-actions{display:none}
+
+.master-side{
+  display:grid;
+  grid-template-rows:minmax(0,1fr) 250px;
+  gap:8px;
+}
+.master-side-intel{
+  min-width:0;min-height:0;
+  padding:7px;border:3px solid var(--line);
+  background:#fff;box-shadow:3px 3px 0 var(--line);
+  overflow:auto;
+}
+.master-side .side{
+  min-width:0;min-height:0;height:100%;
+}
+.master-side .side-info{height:100%;min-height:0}
+.master-side .side-columns{
+  grid-template-columns:1fr 1fr;
+  grid-template-rows:1fr;
+  gap:6px;
+}
+.master-side .chat-box,.master-side .history-box{min-height:0}
+
 .master-section{margin-top:7px;padding-top:6px;border-top:2px solid var(--line)}
 .master-section-title{font-size:6px;font-weight:900;text-transform:uppercase;margin-bottom:4px}
 .master-tags{display:flex;flex-wrap:wrap;gap:3px}
@@ -254,8 +307,29 @@ body.master-view .decision-btn{cursor:default}
 .master-contracts{font-size:6px;line-height:1.4}
 .master-contract{padding:4px 5px;border:2px solid var(--line);background:var(--paper2);margin-bottom:3px}
 .master-contract strong{display:block;font-size:6px;text-transform:uppercase}
-@media(max-width:900px){.master-main{grid-template-columns:220px minmax(0,1fr) 340px}.master-side{flex-direction:column}}
-@media(max-width:650px){.master-main{grid-template-columns:180px minmax(0,1fr) 280px}.master-side{flex-direction:column}.master-side .side-columns{grid-template-columns:1fr}.master-side .history-box{display:none}.master-twists{grid-template-columns:1fr}}
+
+.master-shop-confirm{max-width:520px}
+.shop-request{padding:10px;border:3px solid var(--line);background:var(--paper2)}
+.shop-request-label{font-size:6px;font-weight:900;text-transform:uppercase}
+.shop-request-item{margin-top:6px;font-size:13px;font-weight:900;text-transform:uppercase}
+.shop-request-meta{margin-top:5px;font-size:7px;font-weight:700}
+.shop-request-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+.shop-request-empty{padding:18px 8px;text-align:center;border:2px dashed var(--line);font-size:7px;font-weight:900;text-transform:uppercase}
+
+@media(max-width:1100px){
+  .master-main{grid-template-columns:220px minmax(360px,1fr) 340px}
+}
+@media(max-width:800px){
+  .master-main{grid-template-columns:190px minmax(320px,1fr) 300px}
+  .master-side{grid-template-rows:minmax(0,1fr) 220px}
+}
+@media(max-width:650px){
+  .master-main{grid-template-columns:170px minmax(300px,1fr) 270px}
+  .master-side{grid-template-rows:minmax(0,1fr) 200px}
+  .master-side .side-columns{grid-template-columns:1fr}
+  .master-side .history-box{display:none}
+  .master-twists{grid-template-columns:1fr}
+}
 
 .master-shop-confirm{max-width:520px}
 .shop-request{padding:10px;border:3px solid var(--line);background:var(--paper2)}
@@ -359,7 +433,7 @@ body.master-view .decision-btn{cursor:default}
       </div>
     </div>
   </aside>
-  <section class="panel" id="panelCase">
+  <section class="panel master-case-panel" id="panelCase">
       <div class="panel-head">
         <div class="panel-title">FASCICOLO DEL CASO</div>
         <div class="panel-actions"><span class="badge role-master">CASO CORRENTE</span></div>
@@ -403,7 +477,7 @@ body.master-view .decision-btn{cursor:default}
       </div>
     </section>
   <aside class="master-side">
-    <div class="master-intel">
+    <div class="master-side-intel">
             <div class="master-intel-head">
               <span class="master-intel-title">FASCICOLO COMPLETO</span>
               <span class="badge vio">MASTER</span>
