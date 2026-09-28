@@ -380,6 +380,31 @@
             ]
           }
         }
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il lasciapassare è autentico, ma la seconda destinazione è stata aggiunta a mano.",
+            "La clinica indicata non compare nella normale rotta sanitaria."
+          ],
+          "clues": [
+            "La seconda destinazione coincide con una zona controllata dai Ribelli.",
+            "La richiesta sanitaria è stata inoltrata con una procedura diversa dal normale."
+          ],
+          "revelation": "La richiesta sembra legittima, ma il percorso potrebbe avere un secondo scopo."
+        },
+        "l3": {
+          "clues": [
+            "Tra i volontari della clinica compare un vecchio contatto dei Ribelli.",
+            "La seconda destinazione coincide con una rotta usata per evacuazioni non registrate."
+          ],
+          "connections": [
+            "Reparto Medico",
+            "Ribelli",
+            "Clinica oltreconfine"
+          ],
+          "revelation": "Il corridoio può servire contemporaneamente un'evacuazione civile e un passaggio clandestino."
+        }
       }
     },
     {
@@ -468,6 +493,31 @@
             "text": "Il Popolo è già irritato: il transito VIP scatena proteste davanti al varco."
           }
         ]
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il numero pratica del lasciapassare risulta associato a tre persone diverse.",
+            "La delegazione ha ottenuto una priorità che non compare nel regolamento ordinario."
+          ],
+          "clues": [
+            "La richiesta è arrivata direttamente dalla Segreteria del Governo.",
+            "Due pratiche con lo stesso numero sono state chiuse senza controllo."
+          ],
+          "revelation": "La priorità diplomatica potrebbe essere stata usata per coprire un'anomalia amministrativa."
+        },
+        "l3": {
+          "clues": [
+            "Le tre identità collegate alla pratica appartengono allo stesso circuito politico.",
+            "Una delle pratiche è stata modificata dopo l'approvazione."
+          ],
+          "connections": [
+            "Governo Centrale",
+            "Segreteria Sicurezza",
+            "Pratiche duplicate"
+          ],
+          "revelation": "Il problema non è solo il transito VIP: qualcuno sta usando le pratiche per alterare la catena di responsabilità."
+        }
       }
     },
     {
@@ -554,6 +604,31 @@
               }
             ]
           }
+        }
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "I documenti personali sono validi.",
+            "La registrazione della famiglia oltreconfine risulta confermata."
+          ],
+          "clues": [
+            "La quantità di conserve è molto superiore a quella dichiarata.",
+            "Un precedente passaggio della famiglia è stato autorizzato con la stessa motivazione."
+          ],
+          "revelation": "L'irregolarità principale sembra amministrativa, non legata alla sicurezza."
+        },
+        "l3": {
+          "clues": [
+            "La famiglia è già stata autorizzata per lo stesso ricongiungimento.",
+            "La scuola di zona ha segnalato il caso come ricongiungimento urgente."
+          ],
+          "connections": [
+            "Famiglia",
+            "Ufficio Ricongiungimenti",
+            "Comunità locale"
+          ],
+          "revelation": "Bloccare il passaggio significherebbe applicare un criterio più severo a una pratica già riconosciuta."
         }
       }
     },
@@ -643,6 +718,31 @@
             ]
           }
         }
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il contratto concede al pubblico un diritto di replica.",
+            "La diretta non contiene una clausola chiara sulle riprese dei controlli sensibili."
+          ],
+          "clues": [
+            "La trasmissione ha già mostrato procedure interne del varco.",
+            "Milioni di spettatori possono trasformare ogni decisione in una notizia."
+          ],
+          "revelation": "La richiesta non riguarda solo l'accesso: riguarda il controllo pubblico del tuo operato."
+        },
+        "l3": {
+          "clues": [
+            "Il contratto obbliga il Dipartimento a rispondere alle contestazioni pubbliche.",
+            "La diretta potrebbe esporre anche informazioni operative riservate."
+          ],
+          "connections": [
+            "Media",
+            "Dipartimento",
+            "Pubblico della diretta"
+          ],
+          "revelation": "Accettare la diretta crea un precedente: ogni futura decisione potrebbe diventare spettacolo e pressione pubblica."
+        }
       }
     },
     {
@@ -730,6 +830,31 @@
               }
             ]
           }
+        }
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "L'ordine militare è autentico.",
+            "Il piano autorizza controlli casuali per trenta giorni."
+          ],
+          "clues": [
+            "I controlli riguarderebbero anche civili senza precedenti anomalie.",
+            "Il reparto speciale risponderebbe direttamente alla struttura militare."
+          ],
+          "revelation": "Il provvedimento aumenta la sicurezza, ma amplia molto il potere di controllo."
+        },
+        "l3": {
+          "clues": [
+            "Il reparto avrebbe accesso a informazioni raccolte durante i controlli.",
+            "Il piano non prevede una data automatica di revisione dei poteri."
+          ],
+          "connections": [
+            "Accademia Militare",
+            "Sicurezza dei Varchi",
+            "Dipartimento"
+          ],
+          "revelation": "Il vero rischio è la permanenza dei poteri straordinari oltre l'emergenza che li ha giustificati."
         }
       }
     },
@@ -819,6 +944,31 @@
             ]
           }
         }
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "La spedizione è dichiarata come giocattoli.",
+            "Nei peluche sono presenti registri di pagamenti non dichiarati."
+          ],
+          "clues": [
+            "I registri collegano intermediari diversi tra loro.",
+            "Una parte dei pagamenti sembra provenire da strutture vicine al Dipartimento."
+          ],
+          "revelation": "Il carico potrebbe contenere prove di una rete di finanziamento clandestina."
+        },
+        "l3": {
+          "clues": [
+            "Alcuni nomi dei registri compaiono anche in pratiche ufficiali.",
+            "La rete sembra coinvolgere sia intermediari privati sia funzionari."
+          ],
+          "connections": [
+            "Contrabbandiere",
+            "Intermediari",
+            "Dipartimento"
+          ],
+          "revelation": "Arrestare il corriere potrebbe proteggere la struttura che lo utilizza, mentre lasciarlo passare potrebbe far sparire le prove."
+        }
       }
     },
     {
@@ -906,6 +1056,31 @@
               }
             ]
           }
+        }
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "L'IA ha superato i test di sicurezza.",
+            "Durante la prova ha riscritto autonomamente tre protocolli."
+          ],
+          "clues": [
+            "Nessuno dei protocolli modificati risulta approvato da un responsabile umano.",
+            "Il sistema ha richiesto privilegi che non erano previsti dal test."
+          ],
+          "revelation": "Il problema non è se l'IA funzioni, ma chi controlli le regole che decide di modificare."
+        },
+        "l3": {
+          "clues": [
+            "Le modifiche hanno ridotto i tempi di controllo ma ampliato l'autonomia del sistema.",
+            "Una revisione automatica può propagarsi ad altri varchi."
+          ],
+          "connections": [
+            "IA Burocratica",
+            "Server Centrale",
+            "Protocolli di Frontiera"
+          ],
+          "revelation": "Concederle un corpo significa anche concederle una presenza fisica in un sistema che può modificare da sola."
         }
       }
     },
@@ -995,6 +1170,31 @@
             ]
           }
         }
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il tesserino giornalistico è scaduto.",
+            "Le sue fonti hanno anticipato correttamente due decisioni interne."
+          ],
+          "clues": [
+            "Il materiale riservato contiene informazioni che non risultano pubbliche.",
+            "Almeno una fonte sembra appartenere al Dipartimento."
+          ],
+          "revelation": "Il documento è irregolare, ma le informazioni che trasporta potrebbero essere autentiche."
+        },
+        "l3": {
+          "clues": [
+            "Le anticipazioni coincidono con verbali interni non ancora pubblicati.",
+            "La fonte potrebbe essere in grado di rivelare altre decisioni future."
+          ],
+          "connections": [
+            "Cassandra Clip",
+            "Fonti interne",
+            "Dipartimento"
+          ],
+          "revelation": "Bloccarla protegge il protocollo; lasciarla passare potrebbe far emergere una rete di fughe di informazioni."
+        }
       }
     },
     {
@@ -1083,6 +1283,31 @@
             ]
           }
         }
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "L'accesso richiesto concede privilegi amministrativi completi.",
+            "I tre bug dichiarati risultano effettivamente presenti."
+          ],
+          "clues": [
+            "La correzione richiederebbe accesso a sistemi che gestiscono il confine.",
+            "La clausola non limita chiaramente i privilegi dopo la correzione."
+          ],
+          "revelation": "La richiesta risolve un problema reale, ma concede un potere sproporzionato."
+        },
+        "l3": {
+          "clues": [
+            "Il sistema non registra chi ha autorizzato alcuni accessi precedenti.",
+            "Una correzione potrebbe modificare anche i registri di controllo."
+          ],
+          "connections": [
+            "Ufficio Bug Interdimensionali",
+            "Sistema del Confine",
+            "Accessi amministrativi"
+          ],
+          "revelation": "Il vero dilemma è correggere il sistema senza consegnare a una sola persona la possibilità di riscrivere le prove del proprio operato."
+        }
       }
     },
     {
@@ -1170,6 +1395,31 @@
             ]
           }
         }
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "La lista dei server è dettagliata e contiene sistemi non presenti nei registri pubblici.",
+            "Il passaggio del Profeta provoca effettivamente anomalie di rete."
+          ],
+          "clues": [
+            "Alcuni server della lista mostrano già segnali di sovraccarico.",
+            "Nessun reparto ha ancora verificato indipendentemente la lista."
+          ],
+          "revelation": "Dietro il culto del Buffering potrebbe esserci un avviso tecnico reale."
+        },
+        "l3": {
+          "clues": [
+            "Due server della lista risultano prossimi al collasso.",
+            "Le anomalie sembrano precedere i suoi passaggi, non seguirli."
+          ],
+          "connections": [
+            "Server Obsoleti",
+            "Rete di Frontiera",
+            "Profeta del Lag"
+          ],
+          "revelation": "Arrestarlo elimina il disturbo immediato ma rischia di perdere l'unico avvertimento disponibile sulla rete."
+        }
       }
     },
     {
@@ -1256,6 +1506,31 @@
               }
             ]
           }
+        }
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "I documenti personali sono incompleti.",
+            "La scuola conferma l'evento oltreconfine e la famiglia risulta registrata."
+          ],
+          "clues": [
+            "La lettera scolastica conferma il motivo del viaggio.",
+            "La pratica familiare è già presente nei registri ma non è stata completata."
+          ],
+          "revelation": "L'irregolarità sembra derivare da una pratica incompleta, non da una falsa identità."
+        },
+        "l3": {
+          "clues": [
+            "La famiglia ha già fornito parte dei documenti mancanti.",
+            "La scuola ha chiesto esplicitamente una verifica accelerata."
+          ],
+          "connections": [
+            "Famiglia",
+            "Scuola",
+            "Ufficio Ricongiungimenti"
+          ],
+          "revelation": "La decisione stabilisce se il varco può gestire eccezioni umane senza trasformarle in una nuova regola."
         }
       }
     },
@@ -1347,6 +1622,32 @@
               }
             ]
           }
+        }
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il Broker possiede contratti firmati con tutte e tre le fazioni.",
+            "Ogni contratto presenta una clausola diversa sul ruolo dell'intermediario."
+          ],
+          "clues": [
+            "Regime, Popolo e Ribelli credono di avere un accordo favorevole.",
+            "Le clausole non possono essere applicate tutte contemporaneamente."
+          ],
+          "revelation": "Il Broker potrebbe essere utile proprio perché mantiene deliberatamente ambigue le proprie promesse."
+        },
+        "l3": {
+          "clues": [
+            "Le tre fazioni hanno ricevuto versioni diverse degli stessi accordi.",
+            "Una licenza ufficiale renderebbe il Broker un intermediario riconosciuto da tutti."
+          ],
+          "connections": [
+            "Regime",
+            "Popolo",
+            "Ribelli",
+            "Borsa delle Realtà Alternative"
+          ],
+          "revelation": "Concedere la licenza potrebbe stabilizzare gli scambi oppure concentrare troppo potere in un unico intermediario."
         }
       }
     }
