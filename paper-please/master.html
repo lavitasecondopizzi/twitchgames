@@ -364,16 +364,17 @@ body.master-view .decision-btn{cursor:default}
 body.master-view #app{
   display:grid;
   grid-template-rows:auto minmax(0,1fr);
-  min-width:1100px;
   width:100%;
+  min-width:0;
   height:100vh;
+  overflow:hidden;
 }
 body.master-view .master-main{
   width:100%;
   min-width:0;
   min-height:0;
   display:grid !important;
-  grid-template-columns:240px minmax(0,1fr) 430px !important;
+  grid-template-columns:20% minmax(0,50%) minmax(0,30%) !important;
   grid-template-rows:minmax(0,1fr);
   gap:8px;
   overflow:hidden;
@@ -381,17 +382,19 @@ body.master-view .master-main{
 body.master-view .master-control,
 body.master-view .master-case-panel,
 body.master-view .master-side{
-  min-width:0;
-  min-height:0;
+  min-width:0 !important;
+  min-height:0 !important;
+  max-width:none !important;
 }
 body.master-view .master-side{
   display:grid !important;
   grid-template-rows:minmax(0,1fr) 250px !important;
   gap:8px;
-  overflow:hidden;
+  overflow:hidden !important;
+  visibility:visible !important;
 }
 body.master-view .master-case-panel{
-  display:flex;
+  display:flex !important;
   flex-direction:column;
 }
 body.master-view .master-case-panel .master-dossier-details{
@@ -404,12 +407,14 @@ body.master-view .master-side-intel{
   overflow:auto;
 }
 body.master-view .master-side .side{
+  display:grid !important;
   min-width:0;
   min-height:0;
   height:100%;
 }
 body.master-view .master-side .side-info,
 body.master-view .master-side .side-columns{
+  min-width:0;
   min-height:0;
   height:100%;
 }
@@ -422,8 +427,18 @@ body.master-view .master-side .side-box{
   min-width:0;
   min-height:0;
 }
-@media(max-width:1100px){
-  body.master-view #app{min-width:1100px}
+@media(max-width:900px){
+  body.master-view .master-main{
+    grid-template-columns:24% minmax(0,46%) minmax(0,30%) !important;
+  }
+}
+@media(max-width:650px){
+  body.master-view .master-main{
+    grid-template-columns:27% minmax(0,43%) minmax(0,30%) !important;
+  }
+  body.master-view .master-side{
+    grid-template-rows:minmax(0,1fr) 190px !important;
+  }
 }
 </style>
 </head>
