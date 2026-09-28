@@ -1722,7 +1722,8 @@ async function connectRoom(){
       const seed=urlParams.get("seed")?.trim();
       if(seed)stato.seed=seed;
       stato.mode=soloMode?"solo":(urlParams.get("mode")||stato.mode);
-      updateUI();await broadcastState();
+      updateUI();
+      roomClient.broadcast("state_request",{requester:"master",_sentAt:Date.now()}).catch(()=>{});
       roomClient.broadcast("guest_identity_request",{requester:"master"}).catch(()=>{});
     }else requestGameState();
   }catch(e){console.error("Supabase Realtime non disponibile:",e);}
