@@ -1,0 +1,1412 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paper Pizzi Please – Master</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+
+<style>
+:root{
+  --ink:#111;--paper:#f7f7f4;--paper2:#e8e8e3;--line:#111;
+  --green:#19d34a;--red:#d11;--yellow:#f1c40f;--purple:#8b4bb3;
+  --shadow:6px 6px 0 #111;
+  --dots:radial-gradient(circle,rgba(0,0,0,.14) 1px,transparent 1.5px);
+}
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0}
+body{
+  overflow:hidden;background:var(--dots) 0 0/12px 12px,var(--paper);
+  color:var(--ink);font-family:Arial,Helvetica,sans-serif;
+}
+button,input,select{font:inherit}
+#app{
+  width:100vw;height:100vh;padding:12px;
+  display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:10px;
+  border:4px solid var(--line);overflow:hidden;
+  background:var(--dots) 0 0/12px 12px,var(--paper);
+}
+.top{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,1.25fr) minmax(0,1fr);
+  gap:10px;min-height:0;align-items:start;
+}
+.cam{
+  position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;
+  display:flex;align-items:flex-end;padding:8px;background:#00ff00;
+  border:4px solid var(--line);box-shadow:var(--shadow);
+}
+.cam-left{transform:rotate(-.4deg)}.cam-right{transform:rotate(.4deg)}
+.cam::after{
+  content:"WEBCAM";position:absolute;top:7px;right:7px;padding:3px 5px;
+  border:2px solid var(--line);background:var(--paper);font-size:7px;font-weight:900;
+}
+.cam .label{
+  position:relative;z-index:2;max-width:80%;padding:5px 7px;
+  border:3px solid var(--line);background:var(--ink);color:var(--paper);
+  font-size:9px;font-weight:900;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.hud{
+  min-width:0;display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:7px;
+}
+.hud-card{
+  min-width:0;padding:8px;background:var(--paper);
+  border:4px solid var(--line);box-shadow:var(--shadow);
+}
+.hud-card.secondary{display:none}
+.hud-title{
+  margin-bottom:6px;padding-bottom:4px;border-bottom:3px solid var(--line);
+  font-family:Impact,"Arial Black",sans-serif;font-size:15px;line-height:.9;text-transform:uppercase;
+}
+.hud-row{display:flex;justify-content:space-between;align-items:center;gap:5px;font-size:9px;font-weight:900}
+.badge{
+  display:inline-block;padding:3px 5px;border:2px solid var(--line);background:var(--paper);
+  font-size:8px;font-weight:900;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.badge.brand{background:var(--ink);color:var(--paper)}.badge.ok{background:var(--green)}
+.badge.ko{background:var(--red);color:#fff}.badge.warn{background:var(--yellow)}
+.badge.vio{background:var(--purple);color:#fff}
+.bars,.bar-row{display:none}
+.small{font-size:9px;font-weight:700;line-height:1.4}
+.main{
+  min-width:0;min-height:0;display:grid;
+  grid-template-columns:minmax(0,55fr) minmax(0,45fr);gap:8px;
+}
+.panel,.tabview,.footer{
+  border:4px solid var(--line);background:var(--paper);box-shadow:var(--shadow);
+}
+.panel{min-width:0;min-height:0;padding:9px;overflow:hidden;position:relative}
+.panel::before{
+  content:"";position:absolute;inset:0;background:var(--dots) 0 0/10px 10px;opacity:.1;pointer-events:none;
+}
+.panel>*{position:relative;z-index:1}
+.panel-head{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  margin-bottom:8px;padding-bottom:7px;border-bottom:4px solid var(--line);
+}
+.panel-title{
+  padding:5px 8px;background:var(--ink);color:var(--paper);border:3px solid var(--line);
+  font-family:Impact,"Arial Black",sans-serif;font-size:17px;line-height:.9;text-transform:uppercase;
+}
+.panel-actions{display:flex;gap:5px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.btn{
+  min-height:29px;padding:5px 8px;border:3px solid var(--line);border-radius:0;
+  background:var(--ink);color:var(--paper);box-shadow:3px 3px 0 var(--line);
+  cursor:pointer;font-size:8px;font-weight:900;text-transform:uppercase;
+}
+.btn:hover:not(:disabled){background:var(--paper);color:var(--ink)}
+.btn:active:not(:disabled){transform:translate(2px,2px);box-shadow:none}
+.btn:disabled{opacity:.4;cursor:not-allowed}.btn.ghost{background:var(--paper);color:var(--ink)}
+.grid-case{
+  height:calc(100% - 50px);min-width:0;min-height:0;
+  display:grid;grid-template-columns:minmax(190px,.9fr) minmax(0,1.35fr);gap:10px;
+}
+.portrait{
+  min-width:0;min-height:0;overflow:hidden;display:flex;align-items:center;justify-content:center;
+  background:#fff;border:4px solid var(--line);box-shadow:var(--shadow);
+}
+.portrait img{width:100%;height:100%;object-fit:contain;background:#fff}
+.details{min-width:0;min-height:0;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;gap:7px}
+.name{
+  min-width:0;padding-bottom:5px;border-bottom:3px solid var(--line);
+  font-family:Impact,"Arial Black",sans-serif;font-size:clamp(20px,1.8vw,32px);
+  line-height:.9;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:5px 10px;font-size:9px;font-weight:800}
+.meta .row{display:flex;gap:5px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta .k{font-weight:900}.meta .v{overflow:hidden;text-overflow:ellipsis}
+.dossier{display:flex;gap:4px;align-items:center;flex-wrap:wrap;margin-top:5px}
+.dossier .badge{font-size:7px}
+.notes,.outcome{
+  min-width:0;min-height:0;overflow:hidden;padding:8px;
+  border:3px solid var(--line);background:var(--paper2);
+}
+.notes{display:flex;flex-direction:column;gap:6px}.notes .title{
+  font-family:Impact,"Arial Black",sans-serif;font-size:15px;text-transform:uppercase;
+}
+.clamp-5,.clamp-3{
+  overflow:hidden;font-size:9px;font-weight:700;line-height:1.35;
+  display:-webkit-box;-webkit-box-orient:vertical;
+}
+.clamp-5{-webkit-line-clamp:6}.clamp-3{-webkit-line-clamp:3}
+.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.decision-btn{
+  min-height:34px;padding:6px;border:3px solid var(--line);border-radius:0;
+  background:var(--paper);color:var(--ink);box-shadow:3px 3px 0 var(--line);
+  cursor:pointer;font-size:9px;font-weight:900;text-transform:uppercase;
+}
+.decision-btn:hover:not(:disabled){background:var(--ink);color:var(--paper)}
+.decision-btn.selected{background:var(--green);color:var(--ink)}
+.decision-btn:disabled{opacity:.4;cursor:not-allowed}.outcome{margin-top:6px}
+.outcome .hud-row{margin-bottom:5px}
+.role-master{background:#fff3b8!important;color:#111!important;border-color:#111!important}.phase-help{margin-top:2px;font-size:6px;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
+.side{min-width:0;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr);gap:7px}
+.side-info{display:grid;grid-template-rows:auto minmax(0,1fr);gap:6px;min-height:0}
+.side-info-head{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.side-columns{display:grid;grid-template-columns:minmax(0,40fr) minmax(0,60fr);gap:7px;min-height:0}
+.side-box{min-width:0;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr);gap:7px;padding:8px;border:3px solid var(--line);background:var(--paper);box-shadow:4px 4px 0 var(--line);overflow:hidden}
+.side-box-head{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;border-bottom:3px solid var(--line);padding-bottom:6px}
+.side-box-title{font-size:10px;font-weight:900;text-transform:uppercase}
+.side-box-sub{margin-top:2px;font-size:6px;font-weight:900;text-transform:uppercase;letter-spacing:.05em}
+.chat-content{display:grid;grid-template-rows:minmax(0,1fr) auto;gap:7px;min-height:0}
+.suggestions{display:grid;grid-template-columns:1fr 1fr;gap:6px;min-height:0}
+.suggestion-col{display:grid;grid-template-rows:auto minmax(0,1fr);min-width:0;border:2px solid var(--line);background:var(--paper2);overflow:hidden}
+.mini-head{display:flex;align-items:baseline;justify-content:space-between;gap:4px;padding:5px;border-bottom:2px solid var(--line);font-weight:900}
+.mini-head span{font-size:8px}.mini-head small{font-size:5px;font-weight:900}
+.pro-col .mini-head{background:rgba(63,159,96,.18)}.con-col .mini-head{background:rgba(198,63,63,.14)}
+.suggestion-list{overflow:hidden;min-height:0;padding:3px}
+.suggestion-list .item{margin-bottom:3px}
+.vote-panel{border:3px solid var(--line);padding:6px;background:var(--paper2);box-shadow:3px 3px 0 var(--line)}
+.vote-head{display:flex;align-items:center;justify-content:space-between;gap:5px;margin-bottom:5px}
+.vbars{display:grid;gap:3px}
+.vrow{display:grid;grid-template-columns:54px minmax(0,1fr) 18px;align-items:center;gap:4px;font-size:7px;font-weight:900}
+.vrow b{text-align:right;font-size:7px}
+.vbg{height:7px;border:1px solid var(--line);background:var(--paper);overflow:hidden}.vfill{height:100%}
+.apply-chat{width:100%;margin-top:6px;min-height:25px}
+.history-wrap{position:relative;min-height:0;overflow:auto;padding:2px 2px 2px 14px}
+.history-line{position:absolute;left:5px;top:4px;bottom:4px;width:2px;background:var(--line)}
+.history-list{display:grid;gap:5px;min-height:0}
+.history-list .item{position:relative;margin:0;padding:6px 7px;border:2px solid var(--line);background:#fff;box-shadow:2px 2px 0 var(--line)}
+.history-list .item::before{content:"";position:absolute;left:-12px;top:9px;width:7px;height:7px;border:2px solid var(--line);background:var(--paper)}
+.history-empty{font-size:7px}
+.rules-overlay{position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(17,17,17,.94);opacity:0;pointer-events:none;transition:opacity .2s}
+.rules-overlay.show{opacity:1;pointer-events:auto}
+.rules-card{width:min(1100px,92vw);max-height:88vh;overflow:auto;padding:14px;border:5px solid var(--line);background:var(--paper);box-shadow:10px 10px 0 #000}
+.rules-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.rules-title{font-family:Impact,"Arial Black",sans-serif;font-size:clamp(28px,5vw,58px);line-height:.85;text-transform:uppercase}
+.rules-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.rules-block{position:relative;padding:11px;border:3px solid var(--line);background:#fff;box-shadow:4px 4px 0 var(--line);min-height:112px}
+.rules-block.role-master{background:#ece4f5}.rules-block.role-player{background:#e5f1e8}.rules-block.role-chat{background:#f5eed7}
+.rules-block.phase{background:var(--paper2)}
+.rules-block h3{margin:0 0 7px;font-size:12px;text-transform:uppercase;letter-spacing:.02em}
+.rules-block p{margin:0;font-size:9px;font-weight:800;line-height:1.45}
+.rules-block ul{margin:0;padding-left:15px;font-size:8px;font-weight:800;line-height:1.5}
+.rules-block li+li{margin-top:2px}
+.rules-tag{display:inline-block;margin-bottom:5px;padding:2px 4px;border:2px solid var(--line);font-size:6px;font-weight:900;text-transform:uppercase;background:#fff}
+.rules-note{grid-column:1/-1;padding:9px 11px;border:3px solid var(--line);background:var(--yellow);box-shadow:4px 4px 0 var(--line);font-size:8px;font-weight:900;text-transform:uppercase;line-height:1.4}
+@media(max-width:760px){.rules-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.rules-grid{grid-template-columns:1fr}.rules-block{min-height:0}}
+.end-overlay{
+  position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px;text-align:center;background:rgba(17,17,17,.94);opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.end-overlay.show{opacity:1;pointer-events:auto}
+.end-title{margin-bottom:14px;font-family:Impact,"Arial Black",sans-serif;font-size:clamp(42px,7vw,96px);line-height:.85;text-transform:uppercase;color:var(--paper)}
+.end-text{max-width:800px;color:var(--paper);font-size:12px;font-weight:800;line-height:1.5}
+.end-overlay.gameover .end-title{color:var(--red)}.end-overlay.victory .end-title{color:var(--green)}
+@media(max-width:900px){
+  #app{padding:9px;gap:8px}.top{grid-template-columns:minmax(0,1fr) minmax(250px,1.25fr) minmax(0,1fr);gap:7px}
+  .main{grid-template-columns:minmax(0,55fr) minmax(0,45fr);gap:7px}
+  .hud{gap:5px}.hud-card{padding:6px}.hud-card:nth-child(3){display:none}
+  .grid-case{grid-template-columns:minmax(150px,.8fr) minmax(0,1.3fr);gap:7px}
+}
+@media(max-width:650px){
+  #app{padding:6px;border-width:3px;gap:5px}
+  .top{gap:4px}.cam{border-width:3px;box-shadow:3px 3px 0 var(--line);padding:4px}.cam::after{display:none}
+  .cam .label{padding:3px 4px;border-width:2px;font-size:6px}
+  .hud{gap:3px}.hud-card{padding:5px;border-width:3px;box-shadow:3px 3px 0 var(--line)}
+  .hud-title{font-size:10px}.hud-row{font-size:7px}.badge{font-size:6px;padding:2px 3px}
+  .main{grid-template-columns:minmax(0,1fr) 145px;gap:4px}
+  .panel{padding:5px;border-width:3px;box-shadow:4px 4px 0 var(--line)}
+  .panel-head{gap:4px;margin-bottom:5px;padding-bottom:5px}.panel-title{font-size:10px;padding:4px}
+  .panel-actions{gap:2px}.btn{min-height:24px;padding:4px;font-size:6px}
+  .grid-case{height:calc(100% - 39px);grid-template-columns:1fr;gap:5px}
+  .portrait{min-height:105px;max-height:30%}.name{font-size:17px}.meta{font-size:7px}
+  .notes{padding:5px}.notes .title{font-size:11px}.clamp-5,.clamp-3{font-size:7px}
+  .decision-btn{min-height:26px;font-size:6px;padding:4px}
+  .side-info{gap:4px}.side-columns{grid-template-columns:minmax(0,40fr) minmax(0,60fr);gap:4px}.side-box{padding:5px;border-width:2px;box-shadow:2px 2px 0 var(--line)}.side-box-title{font-size:7px}.side-box-sub{font-size:4px}.mini-head{padding:3px}.mini-head span{font-size:6px}.mini-head small{font-size:4px}.vrow{grid-template-columns:43px minmax(0,1fr) 15px;font-size:6px}.history-wrap{padding-left:11px}.history-line{left:4px}
+  .rules-card{padding:8px;border-width:3px;box-shadow:6px 6px 0 #000}.rules-grid{grid-template-columns:1fr;gap:5px}.rules-block{padding:6px;border-width:2px;box-shadow:2px 2px 0 var(--line)}.rules-block h3{font-size:8px}.rules-block p{font-size:6px}
+}
+.master-only{display:none!important}
+.player-only{display:block}
+body.master-view .master-only{display:flex!important}
+body.master-view .player-only{display:none!important}
+body.master-view .decision-btn{cursor:default}
+.master-console{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
+@media(max-width:650px){.master-console{grid-template-columns:1fr}}
+</style>
+</head>
+
+<body class="master-view">
+<div id="app">
+  <header class="top">
+    <div class="cam cam-left"><div class="label" id="camStreamerLabel">Streamer</div></div>
+
+    <div class="hud">
+      <div class="hud-card">
+        <div class="hud-title">Paper Pizzi Please</div>
+        <div class="hud-row">
+          <span id="hudRound">Caso 1/12</span>
+          <span class="badge brand" id="hudSeason">Stagione 1</span><span class="badge role-master" id="uiRoleBadge">MASTER / NARRATORE</span>
+        </div>
+        <div class="hud-row">
+          <span class="badge" id="hudPhase">Intro</span>
+          <span class="badge warn" id="hudTimer">00:00</span>
+        </div>
+      </div>
+      <div class="hud-card">
+        <div class="hud-title">Risorse</div>
+        <div class="hud-row">
+          <span class="badge ok" id="hudStamps">Timbri: 0</span>
+          <span class="badge warn" id="hudSanity">Sanità: 10</span>
+        </div>
+        <div class="hud-row">
+          <span class="badge" id="hudDossier">Dossier L1</span>
+          <span class="badge" id="hudCaseIndex">Persona 1/12</span>
+        </div>
+      </div>
+      <div class="hud-card secondary">
+        <div class="hud-title">Stato</div>
+        <div class="hud-row"><span class="badge" id="hudUnlocks">Sbloccabili: 0</span><span class="badge" id="hudDebts">Debiti: 0</span></div>
+        <div class="small" id="hudObjectiveText">In attesa…</div>
+        <span class="badge vio" id="hudObjectiveType">—</span>
+        <span class="badge" id="hudObjectiveProgress">0/0</span>
+        <div class="bars">
+          <div class="bar-row"><span>Regime</span><div class="bar-bg"><div id="barRegime" class="bar-fill regime"></div></div><span id="valRegime">50</span></div>
+          <div class="bar-row"><span>Popolo</span><div class="bar-bg"><div id="barPopolo" class="bar-fill popolo"></div></div><span id="valPopolo">50</span></div>
+          <div class="bar-row"><span>Ribelli</span><div class="bar-bg"><div id="barRibelli" class="bar-fill ribelli"></div></div><span id="valRibelli">50</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cam cam-right"><div class="label" id="camGuestLabel">Ospite</div></div>
+  </header>
+
+  <main class="main">
+    <section class="panel" id="panelCase">
+      <div class="panel-head">
+        <div class="panel-title">POSTAZIONE DI FRONTIERA</div>
+        <div class="panel-actions">
+          <button class="btn ghost master-only" id="btnNextPhase">AVANZA FASE</button>
+          <button class="btn master-only" id="btnConfirm" disabled>APPLICA DECISIONE</button>
+        </div>
+      </div>
+
+      <div class="grid-case">
+        <div class="portrait"><img id="casePortrait" alt="Candidato"></div>
+
+        <div class="details">
+          <div>
+            <div class="name" id="caseName">In attesa…</div>
+            <div class="dossier" id="caseDossierBadges"></div>
+          </div>
+
+          <div class="meta" id="metaGrid">
+            <div class="row"><span class="k">Origine:</span><span class="v" id="caseOrigin">—</span></div>
+            <div class="row"><span class="k">Lavoro:</span><span class="v" id="caseJob">—</span></div>
+            <div class="row" style="grid-column:1/-1"><span class="k">Motivo:</span><span class="v" id="caseReason">—</span></div>
+          </div>
+
+          <div class="notes">
+            <div class="hud-row">
+              <span class="badge" id="caseArcBadge">Arco: —</span>
+              <span class="badge" id="caseTagBadge">Tag: —</span>
+            </div>
+            <div class="title">DOCUMENTI / NOTE</div>
+            <div class="clamp-5" id="caseNotes">—</div>
+            <div class="hud-row">
+              <span class="badge" id="casePromise">Promessa: —</span>
+              <span class="badge" id="caseDebt">Debito: —</span>
+            </div>
+          </div>
+
+          <div>
+            <div class="controls">
+              <button class="decision-btn" data-decision="pass">Fai passare</button>
+              <button class="decision-btn" data-decision="deny">Respingi</button>
+              <button class="decision-btn" data-decision="arrest">Arresta</button>
+              <button class="decision-btn" data-decision="condemn">Condanna</button>
+            </div>
+            <div class="outcome">
+              <div class="hud-row">
+                <span class="badge" id="draftLabel">Bozza: Nessuna</span>
+                <span class="badge warn" id="voteLockBadge">Voto: Aperto</span>
+              </div>
+              <div class="clamp-3" id="outcomeText">Scegli una decisione. La conferma è disponibile solo in “Fase Decisione”.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="side">
+      <div class="side-info">
+        <div class="side-info-head"><div class="panel-title">INFORMAZIONI</div><button class="btn ghost" id="btnRules">REGOLE</button></div>
+        <div class="side-columns">
+          <section class="side-box chat-box">
+            <div class="side-box-head"><div><div class="side-box-title">CHAT / VOTO</div><div class="side-box-sub">SUGGERIMENTI E CONSENSO DELLA CHAT</div></div><span class="badge warn" id="voteLockBadge">Voto: Aperto</span></div>
+            <div class="chat-content">
+              <div class="suggestions">
+                <div class="suggestion-col pro-col"><div class="mini-head"><span>PRO</span><small>ARGOMENTI A FAVORE</small></div><div id="prosList" class="suggestion-list"><div class="item"><span class="t">Nessun suggerimento</span><span class="c"></span></div></div><div id="prosList2"></div></div>
+                <div class="suggestion-col con-col"><div class="mini-head"><span>CONTRO</span><small>ARGOMENTI CONTRARI</small></div><div id="consList" class="suggestion-list"><div class="item"><span class="t">Nessun suggerimento</span><span class="c"></span></div></div><div id="consList2"></div></div>
+              </div>
+              <div class="vote-panel">
+                <div class="vote-head"><div><div class="mini-head"><span>VOTO CHAT</span><small>DECISIONE COLLETTIVA</small></div></div><span class="badge" id="chatLeader">Leader: —</span></div>
+                <div class="vbars">
+                  <div class="vrow"><span>Passa</span><div class="vbg"><div id="vPass" class="vfill pass"></div></div><b id="cPass">0</b></div>
+                  <div class="vrow"><span>Nega</span><div class="vbg"><div id="vDeny" class="vfill deny"></div></div><b id="cDeny">0</b></div>
+                  <div class="vrow"><span>Arresta</span><div class="vbg"><div id="vArrest" class="vfill arrest"></div></div><b id="cArrest">0</b></div>
+                  <div class="vrow"><span>Condanna</span><div class="vbg"><div id="vCondemn" class="vfill condemn"></div></div><b id="cCondemn">0</b></div>
+                </div>
+                <button class="btn ghost apply-chat" id="btnApplyChat">IMPOSTA BOZZA DA VOTO</button>
+              </div>
+            </div>
+          </section>
+          <section class="side-box history-box">
+            <div class="side-box-head"><div><div class="side-box-title">STORICO</div><div class="side-box-sub">DECISIONI DEI CASI PRECEDENTI</div></div></div>
+            <div class="history-wrap"><div class="history-line"></div><div class="list history-list" id="historyList"><div class="item history-empty"><span class="t">Nessun caso concluso</span></div></div></div>
+          </section>
+        </div>
+      </div>
+    </aside>  </main>
+
+</div>
+
+<div id="rulesOverlay" class="rules-overlay">
+  <div class="rules-card">
+    <div class="rules-head">
+      <div>
+        <div class="rules-title">REGOLE</div>
+        <div class="side-box-sub">PAPER PIZZI PLEASE · GUIDA RAPIDA</div>
+      </div>
+      <button class="btn ghost" id="btnRulesClose">CHIUDI</button>
+    </div>
+
+    <div class="rules-grid">
+      <div class="rules-block role-master">
+        <span class="rules-tag">MASTER</span>
+        <h3>01 · Host / Narratore</h3>
+        <ul>
+          <li>Presenta il caso e gestisce le fasi.</li>
+          <li>Non prende la decisione al posto dell'Ospite.</li>
+          <li>Applica la decisione finale e narra la conseguenza.</li>
+        </ul>
+      </div>
+
+      <div class="rules-block role-player">
+        <span class="rules-tag">GIOCATORE</span>
+        <h3>02 · Ospite / Decisore</h3>
+        <ul>
+          <li>Analizza il dossier e ascolta la discussione.</li>
+          <li>Considera proposte e voto della Chat.</li>
+          <li>Sceglie personalmente la decisione finale.</li>
+        </ul>
+      </div>
+
+      <div class="rules-block role-chat">
+        <span class="rules-tag">GIOCATORI</span>
+        <h3>03 · Chat Twitch</h3>
+        <ul>
+          <li>Propone argomenti PRO e CONTRO.</li>
+          <li>Vota durante le fasi di voto.</li>
+          <li>Il voto indica il consenso della Chat: non decide automaticamente.</li>
+        </ul>
+      </div>
+
+      <div class="rules-block phase">
+        <span class="rules-tag">CICLO</span>
+        <h3>04 · Un caso</h3>
+        <p><strong>Intro</strong> → presentazione del dossier.<br>
+        <strong>Discussione</strong> → PRO / CONTRO.<br>
+        <strong>Voto 1</strong> → voto della Chat.<br>
+        <strong>Voto 2</strong> → spareggio, se necessario.<br>
+        <strong>Decisione</strong> → scelta finale dell'Ospite.<br>
+        <strong>Evento</strong> → conseguenza e passaggio al caso successivo.</p>
+      </div>
+
+      <div class="rules-block phase">
+        <span class="rules-tag">DOSSIER</span>
+        <h3>05 · Informazioni</h3>
+        <p>Il dossier mostra le informazioni disponibili sulla persona. Il livello del dossier può aumentare durante la partita, rivelando ulteriori dettagli utili alla decisione.</p>
+      </div>
+
+      <div class="rules-block phase">
+        <span class="rules-tag">DECISIONI</span>
+        <h3>06 · Quattro scelte</h3>
+        <p>Ogni caso può essere <strong>Fatto passare</strong>, <strong>Respinto</strong>, <strong>Arrestato</strong> o <strong>Condannato</strong>. La scelta modifica lo stato del mondo e può generare conseguenze.</p>
+      </div>
+
+      <div class="rules-block phase">
+        <span class="rules-tag">RISORSE</span>
+        <h3>07 · Timbri e Sanità</h3>
+        <p>I <strong>Timbri</strong> alimentano le meccaniche del dossier e degli sbloccabili. La <strong>Sanità</strong> rappresenta la tenuta del personaggio: se arriva a 0, la partita termina.</p>
+      </div>
+
+      <div class="rules-block phase">
+        <span class="rules-tag">MONDO</span>
+        <h3>08 · Le tre fazioni</h3>
+        <p><strong>Regime</strong>, <strong>Popolo</strong> e <strong>Ribelli</strong> cambiano in base alle decisioni e agli eventi. Se una delle tre fazioni arriva a 0, la partita termina.</p>
+      </div>
+
+      <div class="rules-block phase">
+        <span class="rules-tag">RUN</span>
+        <h3>09 · Stagioni</h3>
+        <p>Una run comprende <strong>12 casi</strong>. Al termine della sequenza si chiude la stagione e viene mostrato l'esito della partita.</p>
+      </div>
+
+      <div class="rules-note">
+        REGOLA FONDAMENTALE: <strong>LA CHAT CONSIGLIA · L'OSPITE DECIDE · IL MASTER NARRA</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="endOverlay" class="end-overlay">
+  <div id="endTitle" class="end-title">FINE PARTITA</div>
+  <div id="endText" class="end-text">—</div>
+  <button class="btn" id="endRestartBtn" style="margin-top:16px">Nuova partita</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../shared/supabase-config.js"></script>
+<script src="../shared/supabase-room.js"></script>
+<script>
+
+const urlParams = new URLSearchParams(location.search);
+const masterMode = true;
+const soloMode  = !masterMode && (urlParams.get("solo")==="1" || urlParams.get("mode")==="solo");
+const roomCode = (urlParams.get("room") || "").trim().toUpperCase();
+const forcedRole = masterMode ? "host" : "guest";
+const isHost = masterMode;
+const streamerName = urlParams.get("streamer") || urlParams.get("player") || "Pizzi";
+const isGuest = !masterMode;
+const guestName = isGuest ? (urlParams.get("streamer") || urlParams.get("guest") || "Ospite") : "Ospite";
+let roomClient = null;
+let revision = 0;
+let isApplyingRemoteState = false;
+
+document.getElementById("camStreamerLabel").textContent = streamerName;
+document.getElementById("camGuestLabel").textContent    = guestName;
+
+/* ===== CONFIG ===== */
+const CASES_CONFIG_URL = "cases.json";
+const IMG_BASE_PATH    = "img/";
+
+/* ===== UI refs ===== */
+const UI = {
+  // hud
+  hudRound: el("hudRound"),
+  hudSeason: el("hudSeason"),
+  hudPhase: el("hudPhase"),
+  hudTimer: el("hudTimer"),
+  hudStamps: el("hudStamps"),
+  hudSanity: el("hudSanity"),
+  hudObjectiveType: el("hudObjectiveType"),
+  hudObjectiveProgress: el("hudObjectiveProgress"),
+  hudObjectiveText: el("hudObjectiveText"),
+  hudUnlocks: el("hudUnlocks"),
+  hudDebts: el("hudDebts"),
+  hudCaseIndex: el("hudCaseIndex"),
+  hudDossier: el("hudDossier"), uiRoleBadge: el("uiRoleBadge"),
+
+  // bars
+  barRegime: el("barRegime"), barPopolo: el("barPopolo"), barRibelli: el("barRibelli"),
+  valRegime: el("valRegime"), valPopolo: el("valPopolo"), valRibelli: el("valRibelli"),
+
+  // case
+  casePortrait: el("casePortrait"),
+  caseName: el("caseName"),
+  caseOrigin: el("caseOrigin"),
+  caseJob: el("caseJob"),
+  caseReason: el("caseReason"),
+  caseNotes: el("caseNotes"),
+  caseArcBadge: el("caseArcBadge"),
+  caseTagBadge: el("caseTagBadge"),
+  casePromise: el("casePromise"),
+  caseDebt: el("caseDebt"),
+  caseDossierBadges: el("caseDossierBadges"),
+
+  // decisions
+  draftLabel: el("draftLabel"),
+  outcomeText: el("outcomeText"),
+  voteLockBadge: el("voteLockBadge"),
+  btnConfirm: el("btnConfirm"),
+  btnNextPhase: el("btnNextPhase"),
+  btnApplyChat: el("btnApplyChat"),
+
+  // chat
+  prosList: el("prosList"), prosList2: el("prosList2"),
+  consList: el("consList"), consList2: el("consList2"),
+  vPass: el("vPass"), vDeny: el("vDeny"), vArrest: el("vArrest"), vCondemn: el("vCondemn"),
+  cPass: el("cPass"), cDeny: el("cDeny"), cArrest: el("cArrest"), cCondemn: el("cCondemn"),
+  chatLeader: el("chatLeader"),
+
+  historyList: el("historyList"),
+
+  btnRules: el("btnRules"),
+  btnRulesClose: el("btnRulesClose"),
+  rulesOverlay: el("rulesOverlay"),
+
+  // end overlay
+  endOverlay: el("endOverlay"),
+  endTitle: el("endTitle"),
+  endText: el("endText"),
+  endRestartBtn: el("endRestartBtn"),
+
+};
+
+function el(id){ return document.getElementById(id); }
+
+UI.btnRules.addEventListener("click", ()=>UI.rulesOverlay.classList.add("show"));
+UI.btnRulesClose.addEventListener("click", ()=>UI.rulesOverlay.classList.remove("show"));
+UI.rulesOverlay.addEventListener("click", e=>{ if(e.target===UI.rulesOverlay) UI.rulesOverlay.classList.remove("show"); });
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") UI.rulesOverlay.classList.remove("show"); });
+
+/* ===== GAME DATA ===== */
+let cfg = null;
+let cases = [];
+let pool = [];     // indices into cases (eligible this season/mode)
+let order = [];    // actual randomized order of case indices for this run
+let betweenEvents = []; // pool events
+
+/* ===== RNG (seeded) ===== */
+function xmur3(str){
+  let h=1779033703^str.length;
+  for(let i=0;i<str.length;i++){
+    h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
+    h = (h<<13) | (h>>>19);
+  }
+  return function(){
+    h = Math.imul(h ^ (h>>>16), 2246822507);
+    h = Math.imul(h ^ (h>>>13), 3266489909);
+    return (h ^= (h>>>16)) >>> 0;
+  }
+}
+function sfc32(a,b,c,d){
+  return function(){
+    a|=0; b|=0; c|=0; d|=0;
+    let t = (a + b |0) + d |0;
+    d = d + 1 |0;
+    a = b ^ b>>>9;
+    b = c + (c<<3) |0;
+    c = (c<<21 | c>>>11);
+    c = c + t |0;
+    return (t>>>0) / 4294967296;
+  }
+}
+function makeRng(seedStr){
+  const seed = xmur3(seedStr);
+  return sfc32(seed(), seed(), seed(), seed());
+}
+function shuffle(arr, rng){
+  const a = arr.slice();
+  for (let i=a.length-1;i>0;i--){
+    const j = Math.floor(rng()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+/* ===== STATE (sync) ===== */
+let stato = null;
+let isSaving=false;
+
+function defaultState(){
+  const baseWorld = cfg?.baseWorld || {regime:50,popolo:50,ribelli:50};
+  return {
+    version: 2,
+    runId: "run_"+Date.now(),
+    season: cfg?.seasons?.startSeason || 1,
+    mode: cfg?.modes?.default || "standard",
+    seed: (cfg?.settings?.seed || String(Date.now())),
+    currentPos: 0,          // position in order array
+    phase: "intro",         // intro | discuss | vote1 | vote2 | decision | event | end
+    phaseLocked: false,     // lock chat vote intake
+    phaseEndsAt: 0,         // ms epoch for timer
+    dossierLevel: 1,        // 1..3 (global, can be modified by stamps/unlocks)
+    stamps: cfg?.economy?.startStamps ?? 0,
+    sanity: cfg?.sanity?.start ?? 10,
+    world: { ...baseWorld },
+    decisionsByPos: [],     // same length as order, values or null
+    lastOutcome: { pos:null, decision:null, text:"" },
+    playerDecision: null,
+    chat: {
+      round: 1,
+      suggestions: [],      // {user,side,text,ts,role}
+      votes1: [],           // {user,choice,ts,role}
+      votes2: [],           // {user,choice,ts,role} for tiebreak
+      tiebreak: null        // {A:"pass",B:"deny"}
+    },
+    objectives: {
+      active: null,         // {id,type,text,target,progress,expiresAt,reward}
+      completed: [],
+      failed: []
+    },
+    unlocks: {
+      items: [],            // ["dossier2", "dossier3", "retrial", ...]
+      lightLevel: 0
+    },
+    arcs: {
+      active: {},           // arcId -> {score, flags:{}}
+      history: []           // logs
+    },
+    debts: [],              // [{id,from,to,text,duePos,status}]
+    promises: [],           // [{id,to,text,duePos,status}]
+    eventLog: [],           // [{pos,type,text,delta:{...}}]
+    runCompleted:false,
+    gameOver:false,
+    gameOverCause:"",
+    gameOverReason:""
+  };
+}
+
+function ensureState(){
+  if (!stato) stato = defaultState();
+  if (!Array.isArray(stato.decisionsByPos)) stato.decisionsByPos = [];
+  // resize
+  while (stato.decisionsByPos.length < order.length) stato.decisionsByPos.push(null);
+  if (stato.decisionsByPos.length > order.length) stato.decisionsByPos = stato.decisionsByPos.slice(0, order.length);
+}
+
+/* ===== LOAD CONFIG + PREPARE POOLS/ORDER ===== */
+async function loadConfig(){
+  const res = await fetch(CASES_CONFIG_URL + "?_=" + Date.now(), {cache:"no-store"});
+  cfg = await res.json();
+
+  cases = Array.isArray(cfg.cases) ? cfg.cases : [];
+  betweenEvents = Array.isArray(cfg.betweenEvents) ? cfg.betweenEvents : [];
+
+  // pool selection by season/mode (simple: include all unless filtered)
+  const mode = (cfg.modes?.default || "standard");
+
+  // create initial pool indices
+  pool = cases.map((_,i)=>i);
+
+  // apply per-case filters (season min/max, modes include/exclude)
+  pool = pool.filter(i=>{
+    const c = cases[i] || {};
+    if (c.seasons && typeof c.seasons==="object"){
+      const sMin = Number(c.seasons.min ?? -999);
+      const sMax = Number(c.seasons.max ??  999);
+      const s = cfg.seasons?.startSeason || 1;
+      if (s < sMin || s > sMax) return false;
+    }
+    if (Array.isArray(c.modesOnly) && c.modesOnly.length){
+      if (!c.modesOnly.includes(mode)) return false;
+    }
+    if (Array.isArray(c.modesExclude) && c.modesExclude.includes(mode)) return false;
+    return true;
+  });
+}
+
+/* ===== ORDER GENERATION (pool + random) ===== */
+function buildOrderFromState(){
+  const seedStr = (stato?.seed || cfg?.settings?.seed || String(Date.now()));
+  const rng = makeRng(seedStr);
+
+  // pool cases; take cfg.settings.caseCount (default 12)
+  const desired = Math.min(pool.length, Number(cfg?.settings?.caseCount ?? 12));
+  const picked = shuffle(pool, rng).slice(0, desired);
+
+  // optional recurring arcs weighting: if arcId repeated, ensure spacing (simple attempt)
+  order = picked;
+
+}
+
+/* ===== DOSSIER LEVELS ===== */
+function dossierInfoFor(caseObj, level){
+  // level 1: name + portrait + origin + job + reason (base)
+  // level 2: notes + arc label + basic tag hint
+  // level 3: show tags + contracts (debts/promises) + conditional hints
+  const out = {
+    name: caseObj.name || "Sconosciuto",
+    origin: caseObj.origin || "—",
+    job: caseObj.job || "—",
+    reason: caseObj.reason || "—",
+    notes: (caseObj.notes || ""),
+    tags: Array.isArray(caseObj.tags) ? caseObj.tags : [],
+    arc: caseObj.arc || null,
+    contracts: caseObj.contracts || null
+  };
+
+  if (level === 1){
+    out.notes = "—";
+    out.tags = [];
+    out.arc = null;
+    out.contracts = null;
+  } else if (level === 2){
+    // hide raw tags but show “indizi”
+    out.tags = (caseObj.tagHints || []).slice(0,2);
+    out.contracts = null;
+  } else {
+    // full
+  }
+  return out;
+}
+
+/* ===== EFFECTS / MUTATIONS ===== */
+function clamp01(x){ return Math.max(0, Math.min(100, Math.round(x))); }
+function clampSanity(x){ return Math.max(0, Math.min(cfg?.sanity?.max ?? 10, Math.round(x))); }
+
+function applyDecisionEffects(pos, decision){
+  const caseIdx = order[pos];
+  const c = cases[caseIdx];
+  const eff = c?.effects?.[decision] || null;
+
+  // base effects
+  if (eff){
+    if (typeof eff.regime==="number")  stato.world.regime += eff.regime;
+    if (typeof eff.popolo==="number")  stato.world.popolo += eff.popolo;
+    if (typeof eff.ribelli==="number") stato.world.ribelli+= eff.ribelli;
+    if (typeof eff.stamps==="number")  stato.stamps += eff.stamps;
+    if (typeof eff.sanity==="number")  stato.sanity += eff.sanity;
+  }
+
+  // global tag mutations (from cfg.tagMutations)
+  const tags = Array.isArray(c?.tags) ? c.tags : [];
+  const muts = cfg?.tagMutations || {};
+  tags.forEach(t=>{
+    const m = muts[t]?.[decision];
+    if (!m) return;
+    if (typeof m.regime==="number")  stato.world.regime += m.regime;
+    if (typeof m.popolo==="number")  stato.world.popolo += m.popolo;
+    if (typeof m.ribelli==="number") stato.world.ribelli+= m.ribelli;
+    if (typeof m.stamps==="number")  stato.stamps += m.stamps;
+    if (typeof m.sanity==="number")  stato.sanity += m.sanity;
+
+    // arc nudges
+    if (m.arc && typeof m.arc==="object"){
+      Object.keys(m.arc).forEach(arcId=>{
+        const delta = Number(m.arc[arcId]||0);
+        if (!stato.arcs.active[arcId]) stato.arcs.active[arcId]={score:0, flags:{}};
+        stato.arcs.active[arcId].score += delta;
+      });
+    }
+  });
+
+  // clamp
+  stato.world.regime = clamp01(stato.world.regime);
+  stato.world.popolo = clamp01(stato.world.popolo);
+  stato.world.ribelli= clamp01(stato.world.ribelli);
+  stato.stamps = Math.max(0, Math.round(stato.stamps));
+  stato.sanity = clampSanity(stato.sanity);
+}
+
+function checkGameOver(){
+  if (stato.gameOver) return;
+
+  const w = stato.world;
+  let cause="", reason="";
+  if (w.popolo<=0){ cause="popolo"; reason="Il Popolo collassa e la postazione viene travolta."; }
+  else if (w.regime<=0){ cause="regime"; reason="Il Regime crolla e ti scarica come capro espiatorio."; }
+  else if (w.ribelli<=0){ cause="ribelli"; reason="I Ribelli vengono annientati e il mondo diventa troppo 'pulito'."; }
+  else if (stato.sanity<=0){ cause="sanity"; reason="Burnout totale. La tua Sanità Mentale va a zero."; }
+
+  if (cause){
+    stato.gameOver=true;
+    stato.gameOverCause=cause;
+    stato.gameOverReason=reason;
+    showEndOverlay(false, reason);
+  }
+}
+
+/* ===== TWIST CONDIZIONALE ===== */
+function computeTwistText(caseObj, decision){
+  // base twist
+  let txt = caseObj?.twist?.[decision] || ("Hai scelto: " + decision.toUpperCase());
+
+  // conditional twist blocks (array of {if:{...}, text})
+  const blocks = Array.isArray(caseObj?.twistConditional?.[decision]) ? caseObj.twistConditional[decision] : [];
+  const ctx = {
+    world: stato.world,
+    sanity: stato.sanity,
+    stamps: stato.stamps,
+    arcs: stato.arcs.active,
+    pos: stato.currentPos,
+    season: stato.season,
+    mode: stato.mode
+  };
+
+  for (const b of blocks){
+    if (matchCond(b?.if, ctx)){
+      txt = b.text || txt;
+      break;
+    }
+  }
+  return txt;
+}
+
+function matchCond(cond, ctx){
+  if (!cond || typeof cond!=="object") return false;
+
+  // supports: world.regime >=, <= ; sanity ; stamps ; arcScore ; season ; mode
+  const ops = { ">=":(a,b)=>a>=b, "<=":(a,b)=>a<=b, ">":(a,b)=>a>b, "<":(a,b)=>a<b, "==":(a,b)=>a==b, "!=":(a,b)=>a!=b };
+  function test(field, rule){
+    if (!rule || typeof rule!=="object") return true;
+    const v = getField(field, ctx);
+    for (const k of Object.keys(rule)){
+      const fn = ops[k];
+      if (!fn) continue;
+      if (!fn(Number(v), Number(rule[k]))) return false;
+    }
+    return true;
+  }
+  return (
+    test("world.regime", cond["world.regime"]) &&
+    test("world.popolo", cond["world.popolo"]) &&
+    test("world.ribelli",cond["world.ribelli"]) &&
+    test("sanity", cond["sanity"]) &&
+    test("stamps", cond["stamps"]) &&
+    test("season", cond["season"]) &&
+    (cond.mode ? (String(ctx.mode)===String(cond.mode)) : true) &&
+    (cond.arcScore
+      ? Object.keys(cond.arcScore).every(arcId=>{
+          const score = Number(ctx.arcs?.[arcId]?.score || 0);
+          return testArc(score, cond.arcScore[arcId]);
+        })
+      : true)
+  );
+
+  function testArc(score, rule){
+    for (const k of Object.keys(rule||{})){
+      const fn = ops[k];
+      if (!fn) continue;
+      if (!fn(Number(score), Number(rule[k]))) return false;
+    }
+    return true;
+  }
+}
+function getField(path, obj){
+  return path.split(".").reduce((a,k)=> (a && a[k]!==undefined) ? a[k] : undefined, obj);
+}
+
+/* ===== BETWEEN-ROUND EVENTS ===== */
+function pickBetweenEvent(rng){
+  // events have weights + conditions
+  const season = stato.season;
+  const mode = stato.mode;
+  const w = stato.world;
+
+  const eligible = betweenEvents.filter(e=>{
+    if (e.seasonMin && season < e.seasonMin) return false;
+    if (e.seasonMax && season > e.seasonMax) return false;
+    if (Array.isArray(e.modesOnly) && e.modesOnly.length && !e.modesOnly.includes(mode)) return false;
+    if (Array.isArray(e.modesExclude) && e.modesExclude.includes(mode)) return false;
+    if (e.if && !matchCond(e.if, {world:w, sanity:stato.sanity, stamps:stato.stamps, arcs:stato.arcs.active, pos:stato.currentPos, season, mode})) return false;
+    return true;
+  });
+  if (!eligible.length) return null;
+
+  const total = eligible.reduce((s,e)=>s + (Number(e.weight)||1), 0);
+  let roll = rng() * total;
+  for (const e of eligible){
+    roll -= (Number(e.weight)||1);
+    if (roll<=0) return e;
+  }
+  return eligible[eligible.length-1];
+}
+
+function applyBetweenEvent(eventObj){
+  if (!eventObj) return;
+
+  const d = eventObj.delta || {};
+  if (typeof d.regime==="number")  stato.world.regime += d.regime;
+  if (typeof d.popolo==="number")  stato.world.popolo += d.popolo;
+  if (typeof d.ribelli==="number") stato.world.ribelli+= d.ribelli;
+  if (typeof d.stamps==="number")  stato.stamps += d.stamps;
+  if (typeof d.sanity==="number")  stato.sanity += d.sanity;
+
+  stato.world.regime = clamp01(stato.world.regime);
+  stato.world.popolo = clamp01(stato.world.popolo);
+  stato.world.ribelli= clamp01(stato.world.ribelli);
+  stato.stamps = Math.max(0, Math.round(stato.stamps));
+  stato.sanity = clampSanity(stato.sanity);
+
+  stato.eventLog.push({
+    pos: stato.currentPos,
+    type: "between",
+    id: eventObj.id || null,
+    text: eventObj.text || "Evento tra-round.",
+    delta: d
+  });
+
+}
+
+/* ===== OBJECTIVES (timed chat goals) ===== */
+function maybeStartObjective(){
+  if (stato.objectives.active) return;
+
+  const poolObj = Array.isArray(cfg?.objectives?.pool) ? cfg.objectives.pool : [];
+  if (!poolObj.length) return;
+
+  // simple chance per round
+  const chance = Number(cfg?.objectives?.chancePerRound ?? 0.6);
+  const rng = makeRng(stato.seed + "_obj_" + stato.chat.round);
+  if (rng() > chance) return;
+
+  // pick eligible
+  const eligible = poolObj.filter(o=>{
+    if (o.if && !matchCond(o.if, {world:stato.world, sanity:stato.sanity, stamps:stato.stamps, arcs:stato.arcs.active, pos:stato.currentPos, season:stato.season, mode:stato.mode})) return false;
+    return true;
+  });
+  if (!eligible.length) return;
+
+  const o = eligible[Math.floor(rng()*eligible.length)];
+  const seconds = Number(o.seconds ?? cfg.objectives.defaultSeconds ?? 60);
+
+  stato.objectives.active = {
+    id: o.id,
+    type: o.type,
+    text: o.text,
+    target: Number(o.target||1),
+    progress: 0,
+    expiresAt: Date.now() + seconds*1000,
+    reward: o.reward || { stamps: 1 }
+  };
+}
+
+/* objective progress from chat bridge writing into stato.chat.suggestions/votes already */
+function updateObjectiveProgress(){
+  const obj = stato.objectives.active;
+  if (!obj) return;
+
+  // expire
+  if (Date.now() > obj.expiresAt){
+    stato.objectives.failed.push(obj.id);
+    stato.objectives.active = null;
+    return;
+  }
+
+  // progress rules by type
+  // "pros": count pro suggestions
+  // "votes": total votes in vote1
+  // "uniqueVoters": unique voters
+  if (obj.type==="pros"){
+    obj.progress = stato.chat.suggestions.filter(s=>normSide(s.side)==="pro").length;
+  } else if (obj.type==="cons"){
+    obj.progress = stato.chat.suggestions.filter(s=>normSide(s.side)==="con").length;
+  } else if (obj.type==="votes"){
+    obj.progress = stato.chat.votes1.length;
+  } else if (obj.type==="uniqueVoters"){
+    obj.progress = new Set(stato.chat.votes1.map(v=>String(v.user||"").toLowerCase())).size;
+  } else if (obj.type==="streakNoToxic"){
+    // example: no "toxic" tags in suggestions
+    const tox = stato.chat.suggestions.some(s=>String(s.text||"").toLowerCase().includes("insulto"));
+    obj.progress = tox ? 0 : obj.target;
+  } else {
+    // default
+    obj.progress = Math.min(obj.target, obj.progress);
+  }
+
+  if (obj.progress >= obj.target){
+    // complete
+    stato.objectives.completed.push(obj.id);
+    // reward
+    const r = obj.reward || {};
+    if (typeof r.stamps==="number") stato.stamps += r.stamps;
+    if (typeof r.sanity==="number") stato.sanity += r.sanity;
+    if (typeof r.unlockLight==="number") stato.unlocks.lightLevel += r.unlockLight;
+    if (Array.isArray(r.unlockItems)) stato.unlocks.items.push(...r.unlockItems);
+
+    stato.stamps = Math.max(0, Math.round(stato.stamps));
+    stato.sanity = clampSanity(stato.sanity);
+    stato.objectives.active = null;
+  }
+}
+
+/* ===== ROLES (chat) ===== */
+function computeRole(user){
+  const u = String(user||"").toLowerCase();
+  const roles = cfg?.roles || {};
+  if (Array.isArray(roles.admins) && roles.admins.map(x=>String(x).toLowerCase()).includes(u)) return "admin";
+  if (Array.isArray(roles.mods) && roles.mods.map(x=>String(x).toLowerCase()).includes(u)) return "mod";
+  if (Array.isArray(roles.vips) && roles.vips.map(x=>String(x).toLowerCase()).includes(u)) return "vip";
+  return "viewer";
+}
+function roleWeight(role){
+  const w = cfg?.roles?.weights || {admin:2, mod:1.5, vip:1.2, viewer:1};
+  return Number(w[role] || 1);
+}
+
+/* ===== CHAT NORMALIZATION ===== */
+function normSide(s){
+  const v = String(s||"").toLowerCase().trim();
+  if (v.startsWith("con") || v==="-" || v==="neg" || v==="contro") return "con";
+  return "pro";
+}
+function normalizeChoice(raw){
+  const v = String(raw||"").toLowerCase().trim();
+  if (["passa","pass","ok","si","sì","entra","allow","yes"].includes(v)) return "pass";
+  if (["nega","no","stop","rimanda","rifiuta","deny","blocca"].includes(v)) return "deny";
+  if (["arresta","arrest","prigione","jail"].includes(v)) return "arrest";
+  if (["condanna","condannalo","esilio","elim","elimina"].includes(v)) return "condemn";
+  return null;
+}
+
+/* ===== VOTE (2 phases + lock) ===== */
+function voteCounts(list){
+  const counts = {pass:0, deny:0, arrest:0, condemn:0};
+  list.forEach(v=>{
+    const c = normalizeChoice(v?.choice);
+    if (!c) return;
+    const w = roleWeight(v?.role || "viewer");
+    counts[c] += w;
+  });
+  return counts;
+}
+function leaderFromCounts(counts){
+  const arr = Object.keys(counts).map(k=>({k,v:counts[k]})).sort((a,b)=>b.v-a.v);
+  const top = arr[0];
+  const second = arr[1];
+  if (!top || top.v<=0) return {leader:null, tie:false, A:null, B:null};
+  const tie = second && Math.abs(top.v - second.v) < 0.0001;
+  return {leader: top.k, tie, A: top.k, B: tie ? second.k : null};
+}
+
+/* ===== PHASES & TIMER ===== */
+const PHASES = ["intro","discuss","vote1","vote2","decision","event","end"];
+
+function phaseDurationSeconds(phase){
+  const t = cfg?.timers || {};
+  if (phase==="intro") return Number(t.intro ?? 25);
+  if (phase==="discuss") return Number(t.discuss ?? 70);
+  if (phase==="vote1") return Number(t.vote1 ?? 35);
+  if (phase==="vote2") return Number(t.vote2 ?? 20);
+  if (phase==="decision") return Number(t.decision ?? 35);
+  if (phase==="event") return Number(t.event ?? 18);
+  return 0;
+}
+function setPhase(phase){
+  if(!isHost) return;
+  stato.phase = phase;
+  stato.phaseLocked = (phase==="decision" || phase==="event" || phase==="end");
+  const sec = phaseDurationSeconds(phase);
+  stato.phaseEndsAt = sec ? (Date.now() + sec*1000) : 0;
+
+  // per-phase resets
+  if (phase==="intro"){
+    // dossier base; optionally start objective soon
+  }
+  if (phase==="discuss"){
+    maybeStartObjective();
+  }
+  if (phase==="vote1"){
+    // lock suggestions? (optional)
+  }
+  if (phase==="vote2"){
+    // create tiebreak if needed
+  }
+  if (phase==="decision"){
+    // lock votes intake
+    stato.phaseLocked = true;
+  }
+  if (phase==="event"){
+    // apply one between-round event
+    const rng = makeRng(stato.seed + "_ev_" + stato.chat.round);
+    const ev = pickBetweenEvent(rng);
+    applyBetweenEvent(ev);
+  }
+  updateUI();
+  saveState();
+}
+function tickPhase(){
+  if (!isHost || stato.gameOver || stato.runCompleted) return;
+
+  if (stato.phaseEndsAt && Date.now() >= stato.phaseEndsAt){
+    // auto-advance
+    if (stato.phase==="intro") return setPhase("discuss");
+    if (stato.phase==="discuss") return setPhase("vote1");
+    if (stato.phase==="vote1"){
+      const counts = voteCounts(stato.chat.votes1);
+      const lead = leaderFromCounts(counts);
+      if (lead.tie){
+        // setup tiebreak pair
+        stato.chat.tiebreak = {A: lead.A, B: lead.B};
+        return setPhase("vote2");
+      }
+      // no tie -> go to decision
+      return setPhase("decision");
+    }
+    if (stato.phase==="vote2"){
+      return setPhase("decision");
+    }
+    if (stato.phase==="decision"){
+      // if no confirm, keep but allow manual; do not auto confirm
+      stato.phaseEndsAt = 0;
+      return;
+    }
+    if (stato.phase==="event"){
+      // move to next case
+      return advanceToNextCase();
+    }
+  }
+}
+
+/* ===== STAMPS economy (light unlocks) ===== */
+function canUseStamps(cost){ return stato.stamps >= cost; }
+function spendStamps(cost){
+  stato.stamps = Math.max(0, stato.stamps - cost);
+}
+function maybeAutoDossierUpgrade(){
+  // “sbloccabili gameplay leggeri”: if unlocks/lightLevel or stamps thresholds => bump dossier
+  const target = Math.min(3, 1 + Math.floor(stato.unlocks.lightLevel/2));
+  if (target > stato.dossierLevel) stato.dossierLevel = target;
+}
+
+/* ===== DEBTS / PROMISES / ARCS ===== */
+function applyContractsFromCase(caseObj, decision){
+  // contracts structure:
+  // { onDecision: { pass:{debts:[...], promises:[...]}, ... } }
+  const on = caseObj?.contracts?.onDecision?.[decision];
+  if (!on) return;
+
+  (on.debts || []).forEach(d=>{
+    stato.debts.push({
+      id: "debt_"+Date.now()+"_"+Math.random().toString(16).slice(2),
+      from: d.from || "Sconosciuto",
+      to: d.to || "Tu",
+      text: d.text || "Debito non specificato",
+      duePos: (typeof d.dueOffset==="number") ? (stato.currentPos + d.dueOffset) : (d.duePos ?? null),
+      status:"open"
+    });
+  });
+  (on.promises || []).forEach(p=>{
+    stato.promises.push({
+      id: "prom_"+Date.now()+"_"+Math.random().toString(16).slice(2),
+      to: p.to || "Sconosciuto",
+      text: p.text || "Promessa non specificata",
+      duePos: (typeof p.dueOffset==="number") ? (stato.currentPos + p.dueOffset) : (p.duePos ?? null),
+      status:"open"
+    });
+  });
+}
+
+function updateDebtsPromisesStatus(){
+  const pos = stato.currentPos;
+  stato.debts.forEach(d=>{
+    if (d.status!=="open") return;
+    if (d.duePos!=null && pos > d.duePos){
+      d.status="late";
+      // penalty
+      const p = cfg?.contracts?.lateDebtPenalty || {popolo:-5, sanity:-1};
+      stato.world.popolo += (p.popolo||0);
+      stato.sanity += (p.sanity||0);
+    }
+  });
+  stato.promises.forEach(p=>{
+    if (p.status!=="open") return;
+    if (p.duePos!=null && pos > p.duePos){
+      p.status="broken";
+      const pen = cfg?.contracts?.brokenPromisePenalty || {ribelli:-5, sanity:-1};
+      stato.world.ribelli += (pen.ribelli||0);
+      stato.sanity += (pen.sanity||0);
+    }
+  });
+
+  stato.world.regime = clamp01(stato.world.regime);
+  stato.world.popolo = clamp01(stato.world.popolo);
+  stato.world.ribelli= clamp01(stato.world.ribelli);
+  stato.sanity = clampSanity(stato.sanity);
+}
+
+/* ===== ADVANCE ===== */
+let draftDecision = null;
+
+function confirmDecision(){
+  if (!isHost || stato.phase !== "decision") return;
+  const pos = stato.currentPos;
+  if (stato.decisionsByPos[pos]) return;
+  const finalDecision = stato.playerDecision;
+  if (!finalDecision) return;
+
+  const caseIdx = order[pos];
+  const c = cases[caseIdx];
+
+  stato.decisionsByPos[pos] = finalDecision;
+  applyDecisionEffects(pos, finalDecision);
+  applyContractsFromCase(c, finalDecision);
+  updateDebtsPromisesStatus();
+
+  const twist = computeTwistText(c, finalDecision);
+  stato.lastOutcome = { pos, decision:finalDecision, text: twist };
+
+  const sanityRules = cfg?.sanity?.decisionCosts || {};
+  if (typeof sanityRules[finalDecision]==="number"){
+    stato.sanity = clampSanity(stato.sanity + sanityRules[finalDecision]);
+  }
+
+  checkGameOver();
+  if (stato.gameOver) return saveState();
+
+  draftDecision = null;
+  stato.playerDecision = null;
+  stato.chat.suggestions = [];
+  stato.chat.votes1 = [];
+  stato.chat.votes2 = [];
+  stato.chat.tiebreak = null;
+  stato.objectives.active = null;
+
+  setPhase("event");
+}
+
+function advanceToNextCase(){
+  const pos = stato.currentPos;
+  if (pos < order.length-1){
+    stato.currentPos = pos + 1;
+    stato.playerDecision = null;
+    stato.chat.round = stato.currentPos + 1;
+    // season progression after run end handled elsewhere
+    setPhase("intro");
+    saveState();
+    return;
+  }
+
+  // run completed -> season advance (stagioni)
+  stato.runCompleted = true;
+  // next season increments
+  stato.season = (stato.season || 1) + 1;
+  showEndOverlay(true, pickVictoryText());
+  saveState();
+}
+
+/* ===== ENDINGS ===== */
+function pickVictoryText(){
+  const w = stato.world;
+  const p = w.popolo, r=w.regime, rb=w.ribelli;
+  const pools = cfg?.endings?.victory || {};
+  let key = "statusQuo";
+  if (p>=60 && rb>=60 && r<=40) key="revolution";
+  else if (r>=75 && p<=45 && rb<=55) key="regimeIron";
+  else if (p>=65 && r>=40 && rb>=35) key="peopleFirst";
+  const arr = pools[key] || pools.statusQuo || ["Hai completato la run."];
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function showEndOverlay(victory, text){
+  UI.endOverlay.classList.remove("gameover","victory");
+  UI.endOverlay.classList.add(victory ? "victory" : "gameover");
+  UI.endTitle.textContent = "FINE PARTITA";
+  UI.endText.textContent = text || (victory ? "Run completata." : "Game over.");
+  UI.endOverlay.classList.add("show");
+}
+function hideEndOverlay(){
+  UI.endOverlay.classList.remove("show","gameover","victory");
+}
+
+/* ===== UI UPDATE ===== */
+function updateUI(){
+  ensureState();
+  maybeAutoDossierUpgrade();
+
+  const pos = stato.currentPos;
+  const total = order.length;
+
+  UI.hudRound.textContent = "Round " + (pos+1) + "/" + total;
+  UI.hudSeason.textContent = "Stagione " + (stato.season || 1);
+  UI.hudCaseIndex.textContent = "Persona " + (pos+1) + "/" + total;
+
+  // phase
+  UI.hudPhase.textContent = phaseLabel(stato.phase);
+  UI.uiRoleBadge.textContent = masterMode ? "MASTER / NARRATORE" : "GIOCATORE / OSPITE";
+  UI.uiRoleBadge.className = "badge " + (masterMode ? "role-master" : "ok");
+  UI.voteLockBadge.textContent = "Voto: " + (stato.phaseLocked ? "LOCK" : "Aperto");
+  UI.voteLockBadge.className = "badge " + (stato.phaseLocked ? "ko" : "ok");
+
+  // timer
+  updateTimerUI();
+
+  // resources
+  UI.hudStamps.textContent = "Timbri: " + stato.stamps;
+  UI.hudSanity.textContent = "Sanità: " + stato.sanity;
+
+  // world
+  setWorldBar(UI.valRegime, UI.barRegime, stato.world.regime);
+  setWorldBar(UI.valPopolo, UI.barPopolo, stato.world.popolo);
+  setWorldBar(UI.valRibelli,UI.barRibelli, stato.world.ribelli);
+
+  // dossier
+  UI.hudDossier.textContent = "Dossier L" + stato.dossierLevel;
+
+  // objective
+  renderObjective();
+
+  // case panel
+  const caseIdx = order[pos];
+  const c = cases[caseIdx];
+  const imgFolder = (cfg.imageFolder || "").replace(/\/+$/,"");
+  const prefix = imgFolder ? (imgFolder + "/") : "";
+  UI.casePortrait.src = IMG_BASE_PATH + prefix + (c.file || "");
+  UI.caseName.textContent = c.name || "—";
+
+  const d = dossierInfoFor(c, stato.dossierLevel);
+  UI.caseOrigin.textContent = d.origin;
+  UI.caseJob.textContent    = d.job;
+  UI.caseReason.textContent = d.reason;
+
+  UI.caseNotes.textContent = (d.notes && d.notes.trim()) ? d.notes : "—";
+
+  // badges
+  UI.caseArcBadge.textContent = "Arco: " + (d.arc || "—");
+  UI.caseTagBadge.textContent = "Tag: " + (d.tags && d.tags.length ? d.tags.join(", ") : "—");
+
+  // contracts
+  const debtOpen = stato.debts.filter(x=>x.status==="open").length;
+  const promOpen = stato.promises.filter(x=>x.status==="open").length;
+  UI.hudDebts.textContent = "Debiti: " + debtOpen;
+  UI.hudUnlocks.textContent = "Sbloccabili: " + (stato.unlocks.items.length || 0);
+
+  // show case-specific “promise/debt” hint
+  UI.casePromise.textContent = promOpen ? "Promesse aperte: "+promOpen : "Promessa: —";
+  UI.caseDebt.textContent    = debtOpen ? "Debiti aperti: "+debtOpen : "Debito: —";
+
+  // dossier badges row
+  UI.caseDossierBadges.innerHTML = "";
+  addBadge(UI.caseDossierBadges, "Modalità: " + stato.mode, "badge");
+  addBadge(UI.caseDossierBadges, "Arc attivi: " + Object.keys(stato.arcs.active||{}).length, "badge vio");
+  addBadge(UI.caseDossierBadges, "Unlock L: " + stato.unlocks.lightLevel, "badge brand");
+
+  // decisions lock
+  const decided = !!stato.decisionsByPos[pos];
+  const locked = stato.gameOver || stato.runCompleted || decided || (stato.phase!=="decision");
+  const canChoose = !masterMode && !locked;
+  document.querySelectorAll(".decision-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    if (masterMode || stato.phase!=="decision" || stato.decisionsByPos[stato.currentPos]) return;
+    const choice = btn.dataset.decision;
+    stato.playerDecision = choice;
+    updateUI();
+    roomClient?.broadcast("game_event",{
+      type:"player_decision",choice,user:guestName,ts:Date.now()
+    }).catch(()=>{});
+  });
+});
+UI.btnConfirm.addEventListener("click", ()=>{ if(isHost) confirmDecision(); });
+UI.btnApplyChat.addEventListener("click", ()=>{ if(isHost) applyDraftFromChat(); });
+
+UI.btnNextPhase.addEventListener("click", ()=>{
+  if (!isHost || stato.gameOver || stato.runCompleted) return;
+  // manual phase advance (respects order)
+  if (stato.phase==="intro") return setPhase("discuss");
+  if (stato.phase==="discuss") return setPhase("vote1");
+  if (stato.phase==="vote1"){
+    const counts = voteCounts(stato.chat.votes1);
+    const lead = leaderFromCounts(counts);
+    if (lead.tie){
+      stato.chat.tiebreak = {A: lead.A, B: lead.B};
+      return setPhase("vote2");
+    }
+    return setPhase("decision");
+  }
+  if (stato.phase==="vote2") return setPhase("decision");
+  if (stato.phase==="decision") return; // decision is manual confirm
+  if (stato.phase==="event") return advanceToNextCase();
+});
+
+/* Tabs */
+/* ===== Bootstrap ===== */
+(async function init(){
+  await loadConfig();
+  stato=defaultState();
+  const seed=urlParams.get("seed")?.trim();
+  if(seed)stato.seed=seed;
+  if(urlParams.get("mode"))stato.mode=soloMode?"solo":urlParams.get("mode");
+  buildOrderFromState();ensureState();
+  updateUI();
+  await connectRoom();
+  setInterval(()=>{
+    if(isHost)tickPhase();
+    updateTimerUI();
+    if(isHost&&stato.objectives.active)renderObjective();
+  },250);
+})();</script>
+</body>
+</html>
