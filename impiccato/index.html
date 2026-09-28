@@ -1866,19 +1866,16 @@ async function onLetterClick(playerId, letter, fromHostEvent = false){
 
 async function nuovoRound(initial = false){
   if (roomCode && forcedRole !== "A") return;
-  // scegli due frasi tematiche diverse
+  if (!initial && stato.game.A.status === "playing" && stato.game.B.status === "playing") return;
+
   const fA = nuovaFraseCasuale();
   const fB = nuovaFraseCasuale(fA.phrase);
 
-  // alterna il giocatore che inizia (se vuoi)
-  const prevTurn = stato.game.turn;
-  let startTurn = "A";
-  if (prevTurn === "A") startTurn = "B";
-  else if (prevTurn === "B") startTurn = "A";
+  const nextRound = (stato.game.round || 0) + 1;
+  const startTurn = nextRound % 2 === 1 ? "A" : "B";
 
-  stato.game.round = (stato.game.round || 0) + 1;
-  stato.game.turn  = startTurn;
-
+  stato.game.round = nextRound;
+  stato.game.turn = startTurn;
   stato.game.A = creaStatoGiocatore(fA.phrase, fA.theme);
   stato.game.B = creaStatoGiocatore(fB.phrase, fB.theme);
 
