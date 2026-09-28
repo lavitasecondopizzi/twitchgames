@@ -173,10 +173,18 @@ button,input,select{font:inherit}
 .rules-card{width:min(1100px,92vw);max-height:88vh;overflow:auto;padding:14px;border:5px solid var(--line);background:var(--paper);box-shadow:10px 10px 0 #000}
 .rules-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
 .rules-title{font-family:Impact,"Arial Black",sans-serif;font-size:clamp(28px,5vw,58px);line-height:.85;text-transform:uppercase}
-.rules-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.rules-block{padding:10px;border:3px solid var(--line);background:#fff;box-shadow:4px 4px 0 var(--line)}
-.rules-block h3{margin:0 0 6px;font-size:12px;text-transform:uppercase}
+.rules-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.rules-block{position:relative;padding:11px;border:3px solid var(--line);background:#fff;box-shadow:4px 4px 0 var(--line);min-height:112px}
+.rules-block.role-master{background:#ece4f5}.rules-block.role-player{background:#e5f1e8}.rules-block.role-chat{background:#f5eed7}
+.rules-block.phase{background:var(--paper2)}
+.rules-block h3{margin:0 0 7px;font-size:12px;text-transform:uppercase;letter-spacing:.02em}
 .rules-block p{margin:0;font-size:9px;font-weight:800;line-height:1.45}
+.rules-block ul{margin:0;padding-left:15px;font-size:8px;font-weight:800;line-height:1.5}
+.rules-block li+li{margin-top:2px}
+.rules-tag{display:inline-block;margin-bottom:5px;padding:2px 4px;border:2px solid var(--line);font-size:6px;font-weight:900;text-transform:uppercase;background:#fff}
+.rules-note{grid-column:1/-1;padding:9px 11px;border:3px solid var(--line);background:var(--yellow);box-shadow:4px 4px 0 var(--line);font-size:8px;font-weight:900;text-transform:uppercase;line-height:1.4}
+@media(max-width:760px){.rules-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.rules-grid{grid-template-columns:1fr}.rules-block{min-height:0}}
 .end-overlay{
   position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:24px;text-align:center;background:rgba(17,17,17,.94);opacity:0;pointer-events:none;transition:opacity .2s;
@@ -348,14 +356,89 @@ button,input,select{font:inherit}
 
 <div id="rulesOverlay" class="rules-overlay">
   <div class="rules-card">
-    <div class="rules-head"><div class="rules-title">REGOLE</div><button class="btn ghost" id="btnRulesClose">CHIUDI</button></div>
+    <div class="rules-head">
+      <div>
+        <div class="rules-title">REGOLE</div>
+        <div class="side-box-sub">PAPER PIZZI PLEASE · GUIDA RAPIDA</div>
+      </div>
+      <button class="btn ghost" id="btnRulesClose">CHIUDI</button>
+    </div>
+
     <div class="rules-grid">
-      <div class="rules-block"><h3>01 · Il caso</h3><p>Ogni caso passa attraverso Intro → Discussione → Voto → Decisione → Evento.</p></div>
-      <div class="rules-block"><h3>02 · Dossier</h3><p>Il dossier può sbloccarsi con Timbri e obiettivi.</p></div>
-      <div class="rules-block"><h3>03 · Decisioni</h3><p>Le decisioni influenzano risorse, fazioni, archi ed eventi.</p></div>
-      <div class="rules-block"><h3>04 · Sanità</h3><p>La Sanità a 0 causa il game over.</p></div>
-      <div class="rules-block"><h3>05 · Stagioni</h3><p>Ogni 12 casi termina una stagione.</p></div>
-      <div class="rules-block"><h3>06 · Fasi</h3><p>Segui il timer e la fase indicata nell'HUD per sapere cosa sta accadendo.</p></div>
+      <div class="rules-block role-master">
+        <span class="rules-tag">MASTER</span>
+        <h3>01 · Host / Narratore</h3>
+        <ul>
+          <li>Presenta il caso e gestisce le fasi.</li>
+          <li>Non prende la decisione al posto dell'Ospite.</li>
+          <li>Applica la decisione finale e narra la conseguenza.</li>
+        </ul>
+      </div>
+
+      <div class="rules-block role-player">
+        <span class="rules-tag">GIOCATORE</span>
+        <h3>02 · Ospite / Decisore</h3>
+        <ul>
+          <li>Analizza il dossier e ascolta la discussione.</li>
+          <li>Considera proposte e voto della Chat.</li>
+          <li>Sceglie personalmente la decisione finale.</li>
+        </ul>
+      </div>
+
+      <div class="rules-block role-chat">
+        <span class="rules-tag">GIOCATORI</span>
+        <h3>03 · Chat Twitch</h3>
+        <ul>
+          <li>Propone argomenti PRO e CONTRO.</li>
+          <li>Vota durante le fasi di voto.</li>
+          <li>Il voto indica il consenso della Chat: non decide automaticamente.</li>
+        </ul>
+      </div>
+
+      <div class="rules-block phase">
+        <span class="rules-tag">CICLO</span>
+        <h3>04 · Un caso</h3>
+        <p><strong>Intro</strong> → presentazione del dossier.<br>
+        <strong>Discussione</strong> → PRO / CONTRO.<br>
+        <strong>Voto 1</strong> → voto della Chat.<br>
+        <strong>Voto 2</strong> → spareggio, se necessario.<br>
+        <strong>Decisione</strong> → scelta finale dell'Ospite.<br>
+        <strong>Evento</strong> → conseguenza e passaggio al caso successivo.</p>
+      </div>
+
+      <div class="rules-block phase">
+        <span class="rules-tag">DOSSIER</span>
+        <h3>05 · Informazioni</h3>
+        <p>Il dossier mostra le informazioni disponibili sulla persona. Il livello del dossier può aumentare durante la partita, rivelando ulteriori dettagli utili alla decisione.</p>
+      </div>
+
+      <div class="rules-block phase">
+        <span class="rules-tag">DECISIONI</span>
+        <h3>06 · Quattro scelte</h3>
+        <p>Ogni caso può essere <strong>Fatto passare</strong>, <strong>Respinto</strong>, <strong>Arrestato</strong> o <strong>Condannato</strong>. La scelta modifica lo stato del mondo e può generare conseguenze.</p>
+      </div>
+
+      <div class="rules-block phase">
+        <span class="rules-tag">RISORSE</span>
+        <h3>07 · Timbri e Sanità</h3>
+        <p>I <strong>Timbri</strong> alimentano le meccaniche del dossier e degli sbloccabili. La <strong>Sanità</strong> rappresenta la tenuta del personaggio: se arriva a 0, la partita termina.</p>
+      </div>
+
+      <div class="rules-block phase">
+        <span class="rules-tag">MONDO</span>
+        <h3>08 · Le tre fazioni</h3>
+        <p><strong>Regime</strong>, <strong>Popolo</strong> e <strong>Ribelli</strong> cambiano in base alle decisioni e agli eventi. Se una delle tre fazioni arriva a 0, la partita termina.</p>
+      </div>
+
+      <div class="rules-block phase">
+        <span class="rules-tag">RUN</span>
+        <h3>09 · Stagioni</h3>
+        <p>Una run comprende <strong>12 casi</strong>. Al termine della sequenza si chiude la stagione e viene mostrato l'esito della partita.</p>
+      </div>
+
+      <div class="rules-note">
+        REGOLA FONDAMENTALE: <strong>LA CHAT CONSIGLIA · L'OSPITE DECIDE · IL MASTER NARRA</strong>
+      </div>
     </div>
   </div>
 </div>
