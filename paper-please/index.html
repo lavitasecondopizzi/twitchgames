@@ -329,16 +329,8 @@ body.master-view .decision-btn{cursor:default}
           </div>
 
           <div class="notes">
-            <div class="hud-row">
-              <span class="badge" id="caseArcBadge">Arco: —</span>
-              <span class="badge" id="caseTagBadge">Tag: —</span>
-            </div>
             <div class="title">DOCUMENTI / NOTE</div>
             <div class="clamp-5" id="caseNotes">—</div>
-            <div class="hud-row">
-              <span class="badge" id="casePromise">Promessa: —</span>
-              <span class="badge" id="caseDebt">Debito: —</span>
-            </div>
           </div>
 
           <div>
@@ -565,10 +557,6 @@ const UI = {
   caseJob: el("caseJob"),
   caseReason: el("caseReason"),
   caseNotes: el("caseNotes"),
-  caseArcBadge: el("caseArcBadge"),
-  caseTagBadge: el("caseTagBadge"),
-  casePromise: el("casePromise"),
-  caseDebt: el("caseDebt"),
   caseDossierBadges: el("caseDossierBadges"),
 
   // decisions
@@ -1529,23 +1517,11 @@ function updateUI(){
 
   UI.caseNotes.textContent = (d.notes && d.notes.trim()) ? d.notes : "—";
 
-  // badges
-  UI.caseArcBadge.textContent = "Arco: " + (d.arc || "—");
-  UI.caseTagBadge.textContent = "Tag: " + (d.tags && d.tags.length ? d.tags.join(", ") : "—");
-
-  // contracts
-  const debtOpen = stato.debts.filter(x=>x.status==="open").length;
-  const promOpen = stato.promises.filter(x=>x.status==="open").length;
-
-  // show case-specific “promise/debt” hint
-  UI.casePromise.textContent = promOpen ? "Promesse aperte: "+promOpen : "Promessa: —";
-  UI.caseDebt.textContent    = debtOpen ? "Debiti aperti: "+debtOpen : "Debito: —";
-
-  // dossier badges row
+  // Il giocatore vede solo le informazioni effettivamente sbloccate dal Dossier.
+  // Metadati tecnici, arco narrativo, tag interni, stato degli unlock e contratti
+  // restano informazioni del Master.
   UI.caseDossierBadges.innerHTML = "";
-  addBadge(UI.caseDossierBadges, "Modalità: " + stato.mode, "badge");
-  addBadge(UI.caseDossierBadges, "Arc attivi: " + Object.keys(stato.arcs.active||{}).length, "badge vio");
-  addBadge(UI.caseDossierBadges, "Unlock L: " + stato.unlocks.lightLevel, "badge brand");
+  addBadge(UI.caseDossierBadges, "DOSSIER L" + getEffectiveDossierLevel(), "badge");
 
   // decisione finale del giocatore
   const decided = !!stato.decisionsByPos[pos];
