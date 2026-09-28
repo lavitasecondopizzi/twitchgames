@@ -405,9 +405,9 @@ button,input,select{font:inherit}
 const urlParams = new URLSearchParams(location.search);
 const soloMode  = urlParams.get("solo")==="1" || urlParams.get("mode")==="solo";
 const roomCode = (urlParams.get("room") || "").trim().toUpperCase();
-const streamerName = isHost ? (urlParams.get("streamer") || urlParams.get("player") || "Pizzi") : "Pizzi";
 const forcedRole = urlParams.get("role") || "host";
 const isHost = forcedRole === "host" || forcedRole === "A";
+const streamerName = isHost ? (urlParams.get("streamer") || urlParams.get("player") || "Pizzi") : "Pizzi";
 const isGuest = forcedRole === "guest" || forcedRole === "B";
 const guestName = isGuest ? (urlParams.get("streamer") || urlParams.get("guest") || "Ospite") : "Ospite";
 let roomClient = null;
