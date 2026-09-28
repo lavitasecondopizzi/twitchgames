@@ -1999,10 +1999,13 @@ newRoundBtn.addEventListener("click", () => {
 
 (async function init(){
   creaTastiere();
-  await caricaStato();   // primo sync (decide ruolo + aggiorna)
+  await caricaStato();
   initTabs();
   aggiornaUI();
 
+  if (forcedRole !== "A" && newRoundBtn){
+    newRoundBtn.remove();
+  }
 })();
 </script>
 </body>
