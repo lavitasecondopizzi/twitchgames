@@ -890,6 +890,8 @@ button,input,select{font:inherit}
     <div class="center">
 <img id="roundImage" alt="">
 <div class="turn-row" id="roundResult" style="font-weight:900;display:none;"></div>
+            <div class="label" id="currentThemeLabel">TEMA: VITA REALE</div>
+      <select id="themeSelect" aria-label="Tema del round"></select>
       <div class="scoreboard">
         <button class="score-btn" id="subScore">-1</button>
         <span class="value" id="scoreA">0</span>
@@ -1263,11 +1265,15 @@ function maskWord(word){
   return out;
 }
 
-function nuovaFraseCasuale(excludePhrase = ""){
+const TEMI = [...new Set(DIZIONARIO.map(item => item.theme))];
+
+function nuovaFraseCasuale(theme = "", excludePhrase = ""){
+  const pool = DIZIONARIO.filter(item => !theme || item.theme === theme);
+  const source = pool.length ? pool : DIZIONARIO;
   let obj;
   do {
-    obj = DIZIONARIO[Math.floor(Math.random() * DIZIONARIO.length)];
-  } while (obj.phrase === excludePhrase && DIZIONARIO.length > 1);
+    obj = source[Math.floor(Math.random() * source.length)];
+  } while (obj.phrase === excludePhrase && source.length > 1);
   return {
     theme: obj.theme,
     phrase: obj.phrase.toUpperCase()
@@ -1650,6 +1656,14 @@ function aggiornaUI(){
   if (themeAEl) themeAEl.textContent = gA.theme || "-";
   if (themeBEl) themeBEl.textContent = gB.theme || "-";
 
+  if (currentThemeLabel){
+    currentThemeLabel.textContent = "TEMA: " + String(stato.game.theme || "VITA REALE").toUpperCase();
+  }
+  if (themeSelectEl){
+    themeSelectEl.value = stato.game.theme || TEMI[0];
+    themeSelectEl.style.display = forcedRole === "A" ? "" : "none";
+  }
+
   if (roundResultEl){
     if (stato.game.roundResult === "A"){
       roundResultEl.textContent = "ROUND: " + nameA + " VINCE";
@@ -1684,6 +1698,18 @@ function aggiornaUI(){
 const themeAEl   = document.getElementById("theme-A");
 const themeBEl   = document.getElementById("theme-B");
 const roundResultEl = document.getElementById("roundResult");
+const currentThemeLabel = document.getElementById("currentThemeLabel");
+const themeSelectEl = document.getElementById("themeSelect");
+
+if (themeSelectEl){
+  TEMI.forEach(theme => {
+    const option = document.createElement("option");
+    option.value = theme;
+    option.textContent = theme;
+    themeSelectEl.appendChild(option);
+  });
+  themeSelectEl.value = stato.game.theme || TEMI[0];
+}
 
 const connectionStatusEl = document.createElement("span");
 connectionStatusEl.id = "realtimeStatus";
@@ -1895,13 +1921,15 @@ async function nuovoRound(initial = false){
   if (roomCode && forcedRole !== "A") return;
   if (!initial && stato.game.A.status === "playing" && stato.game.B.status === "playing") return;
 
-  const fA = nuovaFraseCasuale();
-  const fB = nuovaFraseCasuale(fA.phrase);
+  const selectedTheme = themeSelectEl?.value || stato.game.theme || TEMI[0];
+  const fA = nuovaFraseCasuale(selectedTheme);
+  const fB = nuovaFraseCasuale(selectedTheme, fA.phrase);
 
   const nextRound = (stato.game.round || 0) + 1;
   const startTurn = nextRound % 2 === 1 ? "A" : "B";
 
   stato.game.round = nextRound;
+  stato.game.theme = selectedTheme;
   stato.game.turn = startTurn;
   stato.game.roundResult = null;
   stato.game.A = creaStatoGiocatore(fA.phrase, fA.theme);
