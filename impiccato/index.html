@@ -1632,6 +1632,81 @@ function creaTastiere(){
   });
 }
 
+function stopChatVoteTimer(){
+  if (chatVoteTimer){ clearInterval(chatVoteTimer); chatVoteTimer = null; }
+}
+
+function renderChatVotes(){
+  const timer = document.getElementById("chatVoteTimer");
+  const fill = document.getElementById("chatVoteFill");
+  const countdown = document.getElementById("chatVoteCountdown");
+  const list = document.getElementById("chatVotesList");
+  if (!timer || !fill || !countdown || !list) return;
+
+  const vote = stato.chatVote || {};
+  if (!chatIsPlayerB || !vote.active){
+    timer.hidden = true;
+    if (vote.winner) list.textContent = "Lettera scelta dalla chat: " + vote.winner;
+    else list.textContent = chatIsPlayerB ? "In attesa del turno della chat." : "La votazione è disponibile solo in modalità Solo Chat.";
+    return;
+  }
+
+  timer.hidden = false;
+  const remaining = Math.max(0, Number(vote.endsAt || 0) - Date.now());
+  const ratio = Math.max(0, Math.min(1, remaining / CHAT_VOTE_DURATION));
+  fill.style.width = (ratio * 100) + "%";
+  countdown.textContent = Math.ceil(remaining / 1000) + "s";
+
+  const votes = vote.votes || {};
+  const entries = Object.entries(votes).sort((a,b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  if (!entries.length){
+    list.innerHTML = "Nessun voto ancora.";
+    return;
+  }
+  list.innerHTML = entries.slice(0, 12).map(([letter,count]) =>
+    '<div class="chat-vote-option"><strong>' + letter + '</strong><span class="count">' + count + ' vot' + (count === 1 ? 'o' : 'i') + '</span></div>'
+  ).join('');
+}
+
+async function startChatVote(){
+  if (forcedRole !== "A" || !chatIsPlayerB || stato.game.turn !== "B" || stato.game.B.status !== "playing") return;
+  stopChatVoteTimer();
+  stato.chatVote = { active:true, startedAt:Date.now(), endsAt:Date.now() + CHAT_VOTE_DURATION, votes:{}, winner:null };
+  aggiornaUI();
+  await broadcastGameState();
+  chatVoteTimer = setInterval(async () => {
+    renderChatVotes();
+    if (Date.now() >= Number(stato.chatVote.endsAt || 0)) await finishChatVote();
+  }, 100);
+}
+
+async function finishChatVote(){
+  if (forcedRole !== "A" || !chatIsPlayerB || !stato.chatVote?.active) return;
+  stopChatVoteTimer();
+  const votes = stato.chatVote.votes || {};
+  const entries = Object.entries(votes).filter(([letter,count]) => /^[A-Z]$/.test(letter) && Number(count) > 0);
+  let winner = null;
+  if (entries.length){
+    const max = Math.max(...entries.map(([,count]) => Number(count)));
+    const tied = entries.filter(([,count]) => Number(count) === max).map(([letter]) => letter).sort();
+    winner = tied[Math.floor(Math.random() * tied.length)];
+  }
+  stato.chatVote = { ...stato.chatVote, active:false, winner };
+  aggiornaUI();
+  await broadcastGameState();
+  if (winner) await onLetterClick("B", winner, true);
+}
+
+async function registerChatVote(letter){
+  if (forcedRole !== "A" || !chatIsPlayerB || !stato.chatVote?.active) return;
+  letter = String(letter || "").trim().toUpperCase();
+  if (!/^[A-Z]$/.test(letter)) return;
+  if (stato.game.B.correctLetters.includes(letter) || stato.game.B.wrongLetters.includes(letter)) return;
+  stato.chatVote.votes[letter] = Number(stato.chatVote.votes[letter] || 0) + 1;
+  aggiornaUI();
+  await broadcastGameState();
+}
+
 function aggiornaUI(){
   const nameA = stato.playerNameA || "Giocatore A";
   const nameB = chatIsPlayerB ? "CHAT" : (stato.playerNameB || "Giocatore B");
