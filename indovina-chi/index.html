@@ -603,6 +603,14 @@ button,select{font:inherit}
 .rules-section p+p{margin-top:8px}
 .rules-chat{background:#f0f0ec}
 .rules-new-round{margin-bottom:0}
+.rules-bottom-grid{
+  display:grid;
+  grid-template-columns:minmax(0,2fr) minmax(0,1fr);
+  gap:12px;
+  margin-bottom:12px;
+}
+.rules-bottom-grid .rules-section{margin-bottom:0}
+
 
 @media(max-width:900px){
   #app{padding:10px;gap:8px}
@@ -1450,19 +1458,17 @@ function initTopLayoutSync(){
       <article class="rules-card"><h3>⑥ PUNTEGGIO</h3><p>I pulsanti <b>-1</b> e <b>+1</b> modificano il tuo punteggio. Il punteggio non può scendere sotto <b>0</b> e viene sincronizzato tra i due giocatori.</p></article>
     </div>
 
-    <div class="rules-section">
-      <h3>⑦ INDIZIO / AIUTO</h3>
-      <p>Ogni giocatore può chiedere <b>un solo indizio per round</b>. L'avversario può rispondere sinceramente oppure <b>depistare</b>. Lo stesso indizio, una volta richiesto, <b>non può più essere chiesto dall'altro giocatore</b> per tutto il round. L'indizio può anche essere usato per <b>bandire una domanda specifica</b>: quella domanda non potrà più essere fatta da nessuno dei due giocatori per il resto del round.</p>
-    </div>
+    <div class="rules-bottom-grid">
+      <div class="rules-section rules-help">
+        <h3>⑦ INDIZIO / AIUTO</h3>
+        <p>Ogni giocatore può chiedere <b>un solo indizio per round</b>. L'avversario può rispondere sinceramente oppure <b>depistare</b>. Lo stesso indizio, una volta richiesto, <b>non può più essere chiesto dall'altro giocatore</b> per tutto il round. L'indizio può anche essere usato per <b>bandire una domanda specifica</b>: quella domanda non potrà più essere fatta da nessuno dei due giocatori per il resto del round.</p>
+      </div>
 
-    <div class="rules-section rules-chat">
-      <h3>⑧ VOTI DELLA CHAT</h3>
-      <p>La chat può proporre di segnare un personaggio in <b>rosso</b> o <b>verde</b> usando i comandi dedicati. Le proposte vengono mostrate nella colonna centrale e lo streamer decide se applicarle.</p>
-    </div>
-
-    <div class="rules-section rules-new-round">
-      <h3>⑨ NUOVO ROUND</h3>
-      <p>L'<b>host</b> può avviare un nuovo round. Le schede vengono azzerate e l'utilizzo dell'indizio/aiuto viene ripristinato.</p>
+      <div class="rules-section rules-chat rules-new-round">
+        <h3>⑧ CHAT E NUOVO ROUND</h3>
+        <p>La chat può proporre di segnare un personaggio in <b>rosso</b> o <b>verde</b> usando i comandi dedicati. Le proposte vengono mostrate nella colonna centrale e lo streamer decide se applicarle.</p>
+        <p>L'<b>host</b> può avviare un nuovo round. Le schede vengono azzerate e la partita riparte da zero.</p>
+      </div>
     </div>
   </section>
 </div>
