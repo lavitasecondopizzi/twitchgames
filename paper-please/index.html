@@ -1720,7 +1720,7 @@ function statePayload(){
   return {...stato,runOrder:order.slice(),_revision:revision,_sender:isHost?"host":"guest",_sentAt:Date.now()};
 }
 async function broadcastState(){
-  if(!roomClient||!isHost||isApplyingRemoteState)return;
+  if(!roomClient||!isMaster||isApplyingRemoteState)return;
   revision++;
   await roomClient.broadcast("game_state",statePayload());
 }
@@ -1745,7 +1745,7 @@ function applyRemoteState(payload){
   isApplyingRemoteState=false;
 }
 function handleGameEvent(payload){
-  if(!payload||!isHost||stato.phaseLocked)return;
+  if(!payload||!isMaster||stato.phaseLocked)return;
   if(payload.type==="chat_suggestion"){
     const text=String(payload.text||"").trim();
     if(!text)return;
@@ -1778,7 +1778,9 @@ async function connectRoom(){
   roomClient.on("game-state",applyRemoteState);
   roomClient.on("game-event",handleGameEvent);
   roomClient.on("state-request",payload=>{
-    if(isHost&&payload?.requester==="guest")broadcastState().catch(()=>{});
+    if(isHost && payload?.requester==="master"){
+      roomClient.broadcast("game_state",statePayload()).catch(()=>{});
+    }
   });
   roomClient.on("presence",presence=>{
     if(isHost&&Object.values(presence||{}).flat().some(e=>e.role==="guest"))
@@ -1826,7 +1828,7 @@ document.querySelectorAll(".decision-btn").forEach(btn=>{
     roomClient?.broadcast("game_event",{type:"player_decision",choice,user:guestName,ts:Date.now()}).catch(()=>{});
   });
 });
-UI.btnConfirm.addEventListener("click", ()=>{ if(isHost) confirmDecision(); });
+UI.btnConfirm.addEventListener("click", ()=>{ if(isMaster) confirmDecision(); });
 
 UI.btnNextPhase.addEventListener("click", ()=>{
   if (!isMaster || stato.gameOver || stato.runCompleted) return;
