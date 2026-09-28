@@ -946,7 +946,7 @@
 
       try {
         await state.roomClient.startGame();
-        const gameUrl = buildGameUrl(state.selectedGame, 'host', 'Pizzi', state.gameConfig);
+        const gameUrl = buildGameUrl(state.selectedGame, 'host', 'Pizzi', state.gameConfig, 'player', state.guestNickname || '');
         if (gameUrl) window.location.href = gameUrl;
       } catch (_) {
         $('roomNotice').textContent = 'Non è stato possibile avviare la partita.';
