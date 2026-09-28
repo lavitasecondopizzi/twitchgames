@@ -1962,6 +1962,15 @@ async function onLetterClick(playerId, letter, fromHostEvent = false){
 
   aggiornaUI();
   await salvaStato();
+
+  if (forcedRole === "A" && chatIsPlayerB){
+    if (stato.game.turn === "B" && g.status === "playing") await startChatVote();
+    else if (stato.game.turn !== "B" && stato.chatVote?.active){
+      stopChatVoteTimer();
+      stato.chatVote = { ...stato.chatVote, active:false, winner:null };
+      await broadcastGameState();
+    }
+  }
 }
 
 /* ========= NUOVO ROUND ========= */
@@ -1984,6 +1993,7 @@ async function nuovoRound(initial = false){
 
   aggiornaUI();
   await salvaStato();
+  if (forcedRole === "A" && chatIsPlayerB && startTurn === "B") await startChatVote();
 }
 
 /* ========= PUNTEGGIO ======== */
@@ -2117,6 +2127,7 @@ newRoundBtn.addEventListener("click", () => {
   await caricaStato();
   initTabs();
   aggiornaUI();
+  if (chatIsPlayerB) setInterval(renderChatVotes, 100);
 
   if (forcedRole !== "A" && newRoundBtn){
     newRoundBtn.remove();
