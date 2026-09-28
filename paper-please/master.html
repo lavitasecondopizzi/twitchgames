@@ -1780,7 +1780,7 @@ function requestGameState(){
   roomClient?.broadcast("state_request",{requester:"master",_sentAt:Date.now()}).catch(()=>{});
 }
 function applyRemoteState(payload){
-  if(!payload||!isGuest)return;
+  if(!payload)return;
   const incoming=Number(payload._revision)||0;
   if(incoming&&incoming<revision)return;
   revision=Math.max(revision,incoming);
@@ -1825,20 +1825,26 @@ async function connectRoom(){
   roomClient.on("game-state",applyRemoteState);
   roomClient.on("game-event",handleGameEvent);
   roomClient.on("state-request",payload=>{
-    if(isMaster&&payload?.requester!=="master")broadcastState().catch(()=>{});
+    if(isMaster && payload?.requester!=="master") return;
   });
   roomClient.on("presence",presence=>{
-    if(isMaster&&Object.values(presence||{}).flat().some(e=>e.role==="guest"))
-      broadcastState().catch(()=>{});
+    const guest=Object.values(presence||{}).flat().find(e=>e.role==="guest");
+    const name=String(guest?.nickname || guestName || "Ospite").trim() || "Ospite";
+    const guestEl=document.getElementById("masterGuestName");
+    const statusEl=document.getElementById("masterGuestStatus");
+    const camGuest=document.getElementById("camGuestLabel");
+    if(guestEl)guestEl.textContent=name;
+    if(statusEl)statusEl.textContent=guest ? "COLLEGATO" : "IN ATTESA";
+    if(camGuest)camGuest.textContent=name;
   });
   try{
     await roomClient.connect();
-    if(isMaster){
-      const seed=urlParams.get("seed")?.trim();
-      if(seed)stato.seed=seed;
-      stato.mode=soloMode?"solo":(urlParams.get("mode")||stato.mode);
-      updateUI();await broadcastState();
-    }else requestGameState();
+    const seed=urlParams.get("seed")?.trim();
+    if(seed)stato.seed=seed;
+    stato.mode=soloMode?"solo":(urlParams.get("mode")||stato.mode);
+    updateUI();
+    roomClient.broadcast("state_request",{requester:"master",_sentAt:Date.now()}).catch(()=>{});
+    roomClient.broadcast("guest_identity_request",{requester:"master"}).catch(()=>{});
   }catch(e){console.error("Supabase Realtime non disponibile:",e);}
 }
 
