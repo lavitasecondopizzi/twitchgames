@@ -1236,7 +1236,7 @@ function updateDebtsPromisesStatus(){
 let draftDecision = null;
 
 function confirmDecision(){
-  if (!isHost || stato.phase !== "decision") return;
+  if (!isMaster || stato.phase !== "decision") return;
   const pos = stato.currentPos;
   if (stato.decisionsByPos[pos]) return;
   const finalDecision = stato.playerDecision;
@@ -1330,8 +1330,8 @@ function updateUI(){
 
   // phase
   UI.hudPhase.textContent = phaseLabel(stato.phase);
-  UI.uiRoleBadge.textContent = soloMode ? "MASTER + GIOCATORE" : (isHost ? "MASTER / NARRATORE" : "GIOCATORE / OSPITE");
-  UI.uiRoleBadge.className = "badge " + (soloMode ? "brand" : (isHost ? "role-master" : "ok"));
+  UI.uiRoleBadge.textContent = soloMode ? "MASTER + GIOCATORE" : (isMaster ? "MASTER / NARRATORE" : "GIOCATORE / OSPITE");
+  UI.uiRoleBadge.className = "badge " + (soloMode ? "brand" : (isMaster ? "role-master" : "ok"));
   UI.voteLockBadge.textContent = "Voto: " + (stato.phaseLocked ? "LOCK" : "Aperto");
   UI.voteLockBadge.className = "badge " + (stato.phaseLocked ? "ko" : "ok");
 
@@ -1397,9 +1397,9 @@ function updateUI(){
     btn.disabled = true;
     btn.classList.toggle("selected", v === playerChoice);
   });
-  UI.btnConfirm.disabled = !isHost || locked || !playerChoice;
-  UI.btnConfirm.style.display = isHost ? "" : "none";
-  UI.btnNextPhase.disabled = !isHost || stato.gameOver || stato.runCompleted;
+  UI.btnConfirm.disabled = !isMaster || locked || !playerChoice;
+  UI.btnConfirm.style.display = isMaster ? "" : "none";
+  UI.btnNextPhase.disabled = !isMaster || stato.gameOver || stato.runCompleted;
   UI.btnNextPhase.style.display = isHost ? "" : "none";
   UI.btnApplyChat.style.display = "none";
   UI.draftLabel.textContent = "Decisione ospite: " + (playerChoice ? decisionLabel(playerChoice) : "Nessuna");
@@ -1640,7 +1640,7 @@ function applyRemoteState(payload){
   isApplyingRemoteState=false;
 }
 function handleGameEvent(payload){
-  if(!payload||!isHost)return;
+  if(!payload||!isMaster)return;
   if(payload.type==="player_decision"){
     if(stato.phase!=="decision" || stato.decisionsByPos[stato.currentPos]) return;
     const choice=normalizeChoice(payload.choice);
@@ -1763,7 +1763,7 @@ function mergeLoadedState(data){
   ensureState();
 }
 function statePayload(){
-  return {...stato,runOrder:order.slice(),_revision:revision,_sender:isHost?"host":"guest",_sentAt:Date.now()};
+  return {...stato,runOrder:order.slice(),_revision:revision,_sender:"master",_sentAt:Date.now()};
 }
 async function broadcastState(){
   if(!roomClient||!isHost||isApplyingRemoteState)return;
@@ -1817,14 +1817,14 @@ async function connectRoom(){
     console.warn("Codice stanza mancante o non valido.");return;
   }
   roomClient=new TortelloSupabaseRoom({
-    room:roomCode,role:isHost?"host":"guest",
-    nickname:isHost?streamerName:guestName,game:"paper-please",
+    room:roomCode,role:"master",
+    nickname:streamerName,game:"paper-please",
     gameConfig:{seed:urlParams.get("seed")||"",mode:soloMode?"solo":(urlParams.get("mode")||"coop")}
   });
   roomClient.on("game-state",applyRemoteState);
   roomClient.on("game-event",handleGameEvent);
   roomClient.on("state-request",payload=>{
-    if(isHost&&payload?.requester==="guest")broadcastState().catch(()=>{});
+    if(isMaster&&payload?.requester!=="master")broadcastState().catch(()=>{});
   });
   roomClient.on("presence",presence=>{
     if(isHost&&Object.values(presence||{}).flat().some(e=>e.role==="guest"))
@@ -1832,7 +1832,7 @@ async function connectRoom(){
   });
   try{
     await roomClient.connect();
-    if(isHost){
+    if(isMaster){
       const seed=urlParams.get("seed")?.trim();
       if(seed)stato.seed=seed;
       stato.mode=soloMode?"solo":(urlParams.get("mode")||stato.mode);
@@ -1906,7 +1906,7 @@ UI.btnNextPhase.addEventListener("click", ()=>{
   setInterval(()=>{
     if(isMaster)tickPhase();
     updateTimerUI();
-    if(isHost&&stato.objectives.active)renderObjective();
+    if(isMaster&&stato.objectives.active)renderObjective();
   },250);
 })();</script>
 </body>
