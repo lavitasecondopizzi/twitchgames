@@ -41,12 +41,12 @@ button,select{font:inherit}
   letter-spacing:.18em;opacity:.45;pointer-events:none;
 }
 .top{
-  flex:0 0 36%;
-  min-height:0;
+  flex:0 0 auto;
+  align-items:stretch;
   display:grid;
   grid-template-columns:minmax(0,24%) minmax(0,52%) minmax(0,24%);
   gap:12px;
-  align-items:stretch;
+  min-height:0;
 }
 .cam{
   position:relative;
@@ -60,6 +60,10 @@ button,select{font:inherit}
   background:#00ff00;
   border:4px solid var(--line);
   box-shadow:var(--shadow);
+  width:100%;
+  height:auto;
+  aspect-ratio:16 / 9;
+  align-self:center;
 }
 .cam:nth-child(1){transform:rotate(-.5deg)}
 .cam:nth-child(3){transform:rotate(.5deg)}
