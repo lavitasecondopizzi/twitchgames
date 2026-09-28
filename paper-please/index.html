@@ -236,7 +236,7 @@ body.master-view .decision-btn{cursor:default}
         <div class="hud-title">Paper Pizzi Please</div>
         <div class="hud-row">
           <span id="hudRound">Caso 1/12</span>
-          <span class="badge brand" id="hudSeason">Stagione 1</span><span class="badge role-master" id="uiRoleBadge">MASTER / NARRATORE</span>
+          <span class="badge brand" id="hudSeason">Stagione 1</span><span class="badge ok" id="uiRoleBadge">GIOCATORE / OSPITE</span>
         </div>
         <div class="hud-row">
           <span class="badge" id="hudPhase">Intro</span>
@@ -462,13 +462,13 @@ body.master-view .decision-btn{cursor:default}
 <script>
 
 const urlParams = new URLSearchParams(location.search);
-const masterMode = true;
+const masterMode = false;
 const soloMode  = !masterMode && (urlParams.get("solo")==="1" || urlParams.get("mode")==="solo");
 const roomCode = (urlParams.get("room") || "").trim().toUpperCase();
-const forcedRole = masterMode ? "host" : "guest";
-const isHost = masterMode;
+const forcedRole = "guest";
+const isHost = false;
 const streamerName = urlParams.get("streamer") || urlParams.get("player") || "Pizzi";
-const isGuest = !masterMode;
+const isGuest = true;
 const guestName = isGuest ? (urlParams.get("streamer") || urlParams.get("guest") || "Ospite") : "Ospite";
 let roomClient = null;
 let revision = 0;
@@ -1358,17 +1358,7 @@ function updateUI(){
   const decided = !!stato.decisionsByPos[pos];
   const locked = stato.gameOver || stato.runCompleted || decided || (stato.phase!=="decision");
   const canChoose = !masterMode && !locked;
-  document.querySelectorAll(".decision-btn").forEach(btn=>{
-  btn.addEventListener("click", ()=>{
-    if (masterMode || stato.phase!=="decision" || stato.decisionsByPos[stato.currentPos]) return;
-    const choice = btn.dataset.decision;
-    stato.playerDecision = choice;
-    updateUI();
-    roomClient?.broadcast("game_event",{
-      type:"player_decision",choice,user:guestName,ts:Date.now()
-    }).catch(()=>{});
-  });
-});
+  UI.btnConfirm.disabled = true;
 UI.btnConfirm.addEventListener("click", ()=>{ if(isHost) confirmDecision(); });
 UI.btnApplyChat.addEventListener("click", ()=>{ if(isHost) applyDraftFromChat(); });
 
