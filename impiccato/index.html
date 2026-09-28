@@ -913,7 +913,7 @@ button,input,select{font:inherit}
 <button class="btn" id="newRound">Nuovo Round</button>
     </div>
 
-    <div class="cam"><div class="label" id="webcamLabelB">Giocatore B</div></div>
+    <div class="cam"><div class="label" id="webcamLabelB">CHAT</div></div>
   </div>
 
   <!-- TABS -->
@@ -967,7 +967,7 @@ button,input,select{font:inherit}
 
             <section class="board" data-player="B">
               <div class="board-head">
-                <div class="board-title" id="boardTitleB">Giocatore B</div>
+                <div class="board-title" id="boardTitleB">CHAT</div>
                 <div class="board-status" id="status-B">In attesa…</div>
               </div>
               <div class="hangman-wrapper"><svg class="hangman-svg" viewBox="0 0 200 200" aria-label="Stato impiccato">
@@ -1046,7 +1046,10 @@ button,input,select{font:inherit}
 const urlParams   = new URLSearchParams(window.location.search);
 const forcedRole  = urlParams.get("role");   // "A", "B" oppure null
 const sessionTheme = (urlParams.get("theme") || "Vita Reale").trim();
+const interactionMode = urlParams.get("interaction") === "chat" ? "chat" : "guest";
+const chatIsPlayerB = interactionMode === "chat";
 const playerNameFromUrl = urlParams.get("player") || urlParams.get("name") || null;
+const displayNameB = chatIsPlayerB ? "CHAT" : (playerNameFromUrl || "Giocatore B");
 
 let clientId = sessionStorage.getItem("impiccatoClientId");
 if (!clientId) {
@@ -1445,7 +1448,9 @@ async function caricaStato(){
 
       processingHostAction = true;
       Promise.resolve().then(async () => {
-        if (event.type === "letter" && ["A","B"].includes(event.playerId)) {
+        if (event.type === "chat_letter" && event.playerId === "B" && chatIsPlayerB) {
+          await onLetterClick("B", event.letter, true);
+        } else if (event.type === "letter" && ["A","B"].includes(event.playerId)) {
           await onLetterClick(event.playerId, event.letter, true);
         } else if (event.type === "score_adjust" && ["A","B"].includes(event.playerId)) {
           await adjustScore(event.playerId, Number(event.delta) || 0, true);
@@ -1753,6 +1758,7 @@ function aggiornaLettereUI(playerId){
     btn.disabled =
       used.has(letter) ||
       g.status !== "playing" ||
+      (chatIsPlayerB && playerId === "B") ||
       !puoControllare(playerId) ||
       stato.game.turn !== playerId;   // <-- nuovo: blocca se non è il tuo turno
   });
