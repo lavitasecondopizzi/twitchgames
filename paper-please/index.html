@@ -1393,6 +1393,148 @@ UI.btnNextPhase.addEventListener("click", ()=>{
 
 /* Tabs */
 /* ===== Bootstrap ===== */
+function mergeLoadedState(data){
+  stato={...defaultState(),...(data||{})};
+  stato.world={...(cfg.baseWorld||{regime:50,popolo:50,ribelli:50}),...(data?.world||{})};
+  stato.chat={...defaultState().chat,...(data?.chat||{})};
+  stato.objectives={...defaultState().objectives,...(data?.objectives||{})};
+  stato.unlocks={...defaultState().unlocks,...(data?.unlocks||{})};
+  stato.arcs={...defaultState().arcs,...(data?.arcs||{})};
+  if(Array.isArray(data?.runOrder)) order=data.runOrder.slice();
+  ensureState();
+}
+function statePayload(){
+  return {...stato,runOrder:order.slice(),_revision:revision,_sender:isHost?"host":"guest",_sentAt:Date.now()};
+}
+async function broadcastState(){
+  if(!roomClient||!isHost||isApplyingRemoteState)return;
+  revision++;
+  await roomClient.broadcast("game_state",statePayload());
+}
+async function saveState(){
+  if(!isHost||isApplyingRemoteState)return;
+  try{ensureState();updateUI();await broadcastState();}
+  catch(e){console.error("Errore broadcast stato:",e);}
+}
+function requestGameState(){
+  roomClient?.broadcast("state_request",{requester:"guest",_sentAt:Date.now()}).catch(()=>{});
+}
+function applyRemoteState(payload){
+  if(!payload||!isGuest)return;
+  const incoming=Number(payload._revision)||0;
+  if(incoming&&incoming<revision)return;
+  revision=Math.max(revision,incoming);
+  const clean={...payload};
+  delete clean._revision;delete clean._sender;delete clean._sentAt;
+  isApplyingRemoteState=true;
+  mergeLoadedState(clean);
+  updateUI();
+  isApplyingRemoteState=false;
+}
+function handleGameEvent(payload){
+  if(!payload||!isHost||stato.phaseLocked)return;
+  if(payload.type==="chat_suggestion"){
+    const text=String(payload.text||"").trim();
+    if(!text)return;
+    stato.chat.suggestions.push({
+      user:String(payload.user||"anon"),side:normSide(payload.side),text,
+      ts:payload.ts||Date.now(),role:payload.role||computeRole(payload.user)
+    });
+    updateObjectiveProgress();saveState();return;
+  }
+  if(payload.type==="chat_vote"||payload.type==="chat_tiebreak"){
+    const choice=normalizeChoice(payload.choice);
+    if(!choice)return;
+    const list=payload.type==="chat_tiebreak"?stato.chat.votes2:stato.chat.votes1;
+    list.push({
+      user:String(payload.user||"anon"),choice,ts:payload.ts||Date.now(),
+      role:payload.role||computeRole(payload.user)
+    });
+    updateObjectiveProgress();saveState();
+  }
+}
+async function connectRoom(){
+  if(!/^[A-Z0-9]{6}$/.test(roomCode)){
+    console.warn("Codice stanza mancante o non valido.");return;
+  }
+  roomClient=new TortelloSupabaseRoom({
+    room:roomCode,role:isHost?"host":"guest",
+    nickname:isHost?streamerName:guestName,game:"paper-please",
+    gameConfig:{seed:urlParams.get("seed")||"",mode:soloMode?"solo":(urlParams.get("mode")||"coop")}
+  });
+  roomClient.on("game-state",applyRemoteState);
+  roomClient.on("game-event",handleGameEvent);
+  roomClient.on("state-request",payload=>{
+    if(isHost&&payload?.requester==="guest")broadcastState().catch(()=>{});
+  });
+  roomClient.on("presence",presence=>{
+    if(isHost&&Object.values(presence||{}).flat().some(e=>e.role==="guest"))
+      broadcastState().catch(()=>{});
+  });
+  try{
+    await roomClient.connect();
+    if(isHost){
+      const seed=urlParams.get("seed")?.trim();
+      if(seed)stato.seed=seed;
+      stato.mode=soloMode?"solo":(urlParams.get("mode")||stato.mode);
+      updateUI();await broadcastState();
+    }else requestGameState();
+  }catch(e){console.error("Supabase Realtime non disponibile:",e);}
+}
+
+/* ===== Chat intake lock behavior =====
+   Nota: il bot/bridge dovrebbe rispettare stato.phaseLocked e scrivere in chat.suggestions/votes solo se non locked.
+   Qui ci limitiamo a renderizzare e applicare la bozza.
+*/
+function applyDraftFromChat(){
+  if (stato.phase !== "decision") return;
+  const counts1 = voteCounts(stato.chat.votes1 || []);
+  const lead1 = leaderFromCounts(counts1);
+  if (!lead1.leader){
+    return;
+  }
+  if (lead1.tie && stato.phase==="decision" && Array.isArray(stato.chat.votes2) && stato.chat.votes2.length){
+    const counts2 = voteCounts(stato.chat.votes2);
+    const lead2 = leaderFromCounts(counts2);
+    if (lead2.leader) draftDecision = lead2.leader;
+  } else {
+    draftDecision = lead1.leader;
+  }
+  updateUI();
+}
+
+/* ===== Events: UI interactions ===== */
+document.querySelectorAll(".decision-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    if (!isHost || stato.phase!=="decision") return;
+    draftDecision = btn.dataset.decision;
+    updateUI();
+  });
+});
+UI.btnConfirm.addEventListener("click", ()=>{ if(isHost) confirmDecision(); });
+UI.btnApplyChat.addEventListener("click", ()=>{ if(isHost) applyDraftFromChat(); });
+
+UI.btnNextPhase.addEventListener("click", ()=>{
+  if (!isHost || stato.gameOver || stato.runCompleted) return;
+  // manual phase advance (respects order)
+  if (stato.phase==="intro") return setPhase("discuss");
+  if (stato.phase==="discuss") return setPhase("vote1");
+  if (stato.phase==="vote1"){
+    const counts = voteCounts(stato.chat.votes1);
+    const lead = leaderFromCounts(counts);
+    if (lead.tie){
+      stato.chat.tiebreak = {A: lead.A, B: lead.B};
+      return setPhase("vote2");
+    }
+    return setPhase("decision");
+  }
+  if (stato.phase==="vote2") return setPhase("decision");
+  if (stato.phase==="decision") return; // decision is manual confirm
+  if (stato.phase==="event") return advanceToNextCase();
+});
+
+/* Tabs */
+/* ===== Bootstrap ===== */
 (async function init(){
   await loadConfig();
   stato=defaultState();
