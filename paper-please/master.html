@@ -312,6 +312,10 @@ body.master-view .decision-btn{cursor:default}
       <button class="btn master-confirm" id="btnConfirm" disabled>APPLICA DECISIONE</button>
     </div>
     <div class="control-block">
+      <div class="control-label">ECONOMIA</div>
+      <button class="btn ghost master-primary" id="btnShop" type="button">APRI SHOP · TIMBRI</button>
+    </div>
+    <div class="control-block">
       <div class="control-label">OBIETTIVO</div>
       <div class="objective-readout" id="hudObjectiveText">Nessun obiettivo attivo.</div>
       <div class="control-mini-row"><span class="badge vio" id="hudObjectiveType">—</span><span class="badge" id="hudObjectiveProgress">0/0</span></div>
@@ -1521,7 +1525,7 @@ function updateUI(){
   setWorldBar(UI.valRibelli,UI.barRibelli, stato.world.ribelli);
 
   // dossier
-  UI.hudDossier.textContent = "Dossier L" + stato.dossierLevel;
+  UI.hudDossier.textContent = "Dossier L" + getEffectiveDossierLevel();
 
   // objective
   renderObjective();
@@ -1534,7 +1538,7 @@ function updateUI(){
   UI.casePortrait.src = IMG_BASE_PATH + prefix + (c.file || "");
   UI.caseName.textContent = c.name || "—";
 
-  const d = dossierInfoFor(c, stato.dossierLevel);
+  const d = dossierInfoFor(c, getEffectiveDossierLevel());
   UI.caseOrigin.textContent = d.origin;
   UI.caseJob.textContent    = d.job;
   UI.caseReason.textContent = d.reason;
@@ -1781,6 +1785,8 @@ function mergeLoadedState(data){
   stato.objectives={...defaultState().objectives,...(data?.objectives||{})};
   stato.unlocks={...defaultState().unlocks,...(data?.unlocks||{})};
   stato.arcs={...defaultState().arcs,...(data?.arcs||{})};
+  stato.shop={...defaultState().shop,...(data?.shop||{})};
+  if(!Array.isArray(stato.shop.used)) stato.shop.used=[];
   if(Array.isArray(data?.runOrder)) order=data.runOrder.slice();
   ensureState();
 }
@@ -1947,6 +1953,8 @@ function mergeLoadedState(data){
   stato.objectives={...defaultState().objectives,...(data?.objectives||{})};
   stato.unlocks={...defaultState().unlocks,...(data?.unlocks||{})};
   stato.arcs={...defaultState().arcs,...(data?.arcs||{})};
+  stato.shop={...defaultState().shop,...(data?.shop||{})};
+  if(!Array.isArray(stato.shop.used)) stato.shop.used=[];
   if(Array.isArray(data?.runOrder)) order=data.runOrder.slice();
   ensureState();
 }
