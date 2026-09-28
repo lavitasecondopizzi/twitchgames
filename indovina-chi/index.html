@@ -1332,7 +1332,11 @@ document.addEventListener("click", e => {
   const modal = document.getElementById("resetConfirmModal");
   if(!modal) return;
   const board = btn.closest(".board").dataset.board;
-  const closeModal = () => { modal.hidden = true; document.body.style.overflow = ""; };
+  const closeModal = () => {
+    modal.hidden = true;
+    document.body.style.overflow = "";
+  };
+
   document.getElementById("resetConfirm").onclick = () => {
     stato["celle" + board] = Array(IMG_COUNT).fill("");
     closeModal();
@@ -1342,6 +1346,25 @@ document.addEventListener("click", e => {
   modal.querySelector("[data-close-reset]").onclick = closeModal;
   modal.hidden = false;
   document.body.style.overflow = "hidden";
+});
+
+/* ========== TABS ========== */
+
+function initRulesModal(){
+  const modal = document.getElementById("rulesModal");
+  const open = document.getElementById("rulesBtn");
+  const close = document.getElementById("rulesClose");
+  if(!modal || !open || !close) return;
+
+  const setOpen = (value) => {
+    modal.hidden = !value;
+    document.body.style.overflow = value ? "hidden" : "";
+  };
+
+  open.addEventListener("click", () => setOpen(true));
+  close.addEventListener("click", () => setOpen(false));
+  modal.querySelectorAll("[data-close-rules]").forEach(el => {
+    el.addEventListener("click", () => setOpen(false));
   });
   document.addEventListener("keydown", event => {
     if(event.key === "Escape" && !modal.hidden) setOpen(false);
