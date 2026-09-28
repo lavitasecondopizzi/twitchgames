@@ -474,7 +474,7 @@ body.master-view .decision-btn{cursor:default}
               <span class="badge vio">MASTER</span>
             </div>
             <div class="master-section master-case-identity">
-              <div class="master-section-title">IDENTITÀ DEL SOGGETTO</div>
+              <div class="master-section-title">DOSSIER L1 — IDENTITÀ DEL SOGGETTO</div>
               <div class="master-identity-grid">
                 <div><small>NOME</small><strong id="masterIdentityName">—</strong></div>
                 <div><small>FILE</small><strong id="masterIdentityFile">—</strong></div>
@@ -486,27 +486,27 @@ body.master-view .decision-btn{cursor:default}
               </div>
             </div>
             <div class="master-section">
-              <div class="master-section-title">TAG INTERNI</div>
+              <div class="master-section-title">MASTER ONLY — TAG INTERNI</div>
               <div class="master-tags" id="masterTags">—</div>
             </div>
             <div class="master-section">
-              <div class="master-section-title">INDIZI / TAG HINTS</div>
+              <div class="master-section-title">DOSSIER L2 → L3 — INDIZI</div>
               <div class="master-tags master-hints" id="masterTagHints">—</div>
             </div>
             <div class="master-section">
-              <div class="master-section-title">CONSEGUENZE PREVISTE</div>
+              <div class="master-section-title">MASTER ONLY — CONSEGUENZE PREVISTE</div>
               <div class="master-effects" id="masterEffects"></div>
             </div>
             <div class="master-section">
-              <div class="master-section-title">TWIST</div>
+              <div class="master-section-title">MASTER ONLY — TWIST</div>
               <div class="master-twists" id="masterTwists"></div>
             </div>
             <div class="master-section">
-              <div class="master-section-title">TWIST CONDIZIONALI</div>
+              <div class="master-section-title">MASTER ONLY — TWIST CONDIZIONALI</div>
               <div class="master-conditions" id="masterConditions">—</div>
             </div>
             <div class="master-section">
-              <div class="master-section-title">CONTRATTI</div>
+              <div class="master-section-title">DOSSIER L3 — DEBITI / PROMESSE</div>
               <div class="master-contracts" id="masterContracts">—</div>
             </div>
           </div>
@@ -1713,12 +1713,15 @@ function renderMasterDossier(caseObj){
   const hints=Array.isArray(caseObj.tagHints)?caseObj.tagHints:[];
   if(UI.masterTagHints){
     UI.masterTagHints.innerHTML="";
-    if(!hints.length) UI.masterTagHints.textContent="Nessun indizio.";
-    else hints.forEach(hint=>{
-      const el=document.createElement("span");
-      el.textContent=hint;
-      UI.masterTagHints.appendChild(el);
-    });
+    if(!hints.length){
+      UI.masterTagHints.textContent="Nessun indizio.";
+    }else{
+      hints.forEach((hint,index)=>{
+        const el=document.createElement("span");
+        el.textContent=(index<2 ? "L2 · " : "L3 · ")+hint;
+        UI.masterTagHints.appendChild(el);
+      });
+    }
   }
 
   renderMasterEffects(caseObj);
