@@ -562,17 +562,38 @@
           </select>
         </div>
 
+        <div class="field" id="ppModeField" hidden>
+          <label for="ppGameMode">Modalità partita</label>
+          <select id="ppGameMode">
+            <option value="standard">Standard — esperienza base</option>
+            <option value="hardcore">Hardcore — sanità e conseguenze più severe</option>
+            <option value="chaos">Chaos — eventi più forti e imprevedibili</option>
+          </select>
+        </div>
+
+        <div class="field" id="ppNarrativeField" hidden>
+          <label for="ppNarrative">Stile narrativo</label>
+          <select id="ppNarrative">
+            <option value="balanced">Bilanciato — tutte le fazioni</option>
+            <option value="regime">Regime — più casi legati al Dipartimento</option>
+            <option value="people">Popolo — più casi legati al consenso</option>
+            <option value="rebellion">Ribelli — più casi legati alla ribellione</option>
+            <option value="chaos">Caos — distribuzione imprevedibile</option>
+          </select>
+        </div>
+
+        <div class="field" id="ppCaseCountField" hidden>
+          <label for="ppCaseCount">Numero di casi</label>
+          <select id="ppCaseCount">
+            <option value="6">6 casi — partita breve</option>
+            <option value="9">9 casi — partita media</option>
+            <option value="12" selected>12 casi — stagione completa</option>
+          </select>
+        </div>
+
         <div class="field" id="seedField" hidden>
           <label for="ppSeed">Seed iniziale</label>
           <input id="ppSeed" placeholder="Lascia vuoto per casuale" />
-        </div>
-
-        <div class="field" id="modeField" hidden>
-          <label for="ppMode">Modalità</label>
-          <select id="ppMode">
-            <option value="solo">Solo streamer</option>
-            <option value="coop">Streamer + ospite</option>
-          </select>
         </div>
         <div class="field" id="hangmanThemeField" hidden>
           <label for="hangmanTheme">Tema</label>
@@ -692,14 +713,16 @@
             : 'Impiccato';
 
       $('seedField').hidden = game !== 'paper-please';
-      $('modeField').hidden = game !== 'paper-please';
+      $('ppModeField').hidden = game !== 'paper-please';
+      $('ppNarrativeField').hidden = game !== 'paper-please';
+      $('ppCaseCountField').hidden = game !== 'paper-please';
       $('hangmanThemeField').hidden = game !== 'impiccato';
       $('guessWhoThemeField').hidden = game !== 'indovina-chi';
       if (game === 'impiccato') $('hangmanTheme').focus();
       if (game === 'indovina-chi') $('guessWhoTheme').focus();
       $('configModal').hidden = false;
 
-      if (game === 'paper-please') $('ppSeed').focus();
+      if (game === 'paper-please') $('ppMode').focus();
       else $('startGame').focus();
     }
 
@@ -742,7 +765,9 @@
       if (state.selectedGame === 'paper-please') {
         return {
           seed: $('ppSeed').value.trim(),
-          mode: $('ppMode').value,
+          gameMode: $('ppGameMode').value,
+          narrativeStyle: $('ppNarrative').value,
+          caseCount: Number($('ppCaseCount').value),
           interactionMode: $('interactionMode').value
         };
       }
@@ -768,13 +793,16 @@
 
       if (game === 'paper-please') {
         const seed = encodeURIComponent(gameConfig.seed || '');
-        const mode = gameConfig.mode === 'solo' ? '&mode=solo' : '';
+        const gameMode = encodeURIComponent(gameConfig.gameMode || 'standard');
+        const narrativeStyle = encodeURIComponent(gameConfig.narrativeStyle || 'balanced');
+        const caseCount = Math.max(1, Number(gameConfig.caseCount || 12));
         const paperPage = view === 'master' ? 'master.html' : 'index.html';
         const streamer = encodeURIComponent('Pizzi');
         const guestName = guestNickname || (role === 'guest' ? nickname : '');
         const guest = guestName ? '&guest=' + encodeURIComponent(guestName) : '';
         return './paper-please/' + paperPage + '?seed=' + seed +
-          '&streamer=' + streamer + mode + '&room=' + room +
+          '&streamer=' + streamer + '&gameMode=' + gameMode +
+          '&narrative=' + narrativeStyle + '&caseCount=' + caseCount + '&room=' + room +
           '&role=' + role + '&interaction=' + interaction + guest +
           (view === 'master' ? '&master=1' : '');
       }
