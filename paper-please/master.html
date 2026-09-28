@@ -242,6 +242,14 @@ body.master-view .decision-btn{cursor:default}
 .master-main>.panel{min-width:0;min-height:0}.master-side>.side{height:100%}.master-side .side-columns{grid-template-columns:1fr;grid-template-rows:minmax(0,1.15fr) minmax(0,.85fr)}.master-side .side-info{height:100%}.master-side .chat-box,.master-side .history-box{min-height:0}
 .master-main .panel-head{margin-bottom:7px}.master-main .grid-case{grid-template-columns:minmax(180px,.82fr) minmax(0,1.18fr)}
 .master-dossier-details{width:100%}
+.master-shop-confirm{max-width:520px}
+.shop-request{padding:10px;border:3px solid var(--line);background:var(--paper2)}
+.shop-request-label{font-size:6px;font-weight:900;text-transform:uppercase}
+.shop-request-item{margin-top:6px;font-size:13px;font-weight:900;text-transform:uppercase}
+.shop-request-meta{margin-top:5px;font-size:7px;font-weight:700}
+.shop-request-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+.shop-request-empty{padding:18px 8px;text-align:center;border:2px dashed var(--line);font-size:7px;font-weight:900;text-transform:uppercase}
+
 .master-intel{min-width:0;min-height:0;padding:7px;border:3px solid var(--line);background:#fff;box-shadow:3px 3px 0 var(--line);overflow:hidden}
 .master-intel-head{display:flex;align-items:center;justify-content:space-between;gap:5px;margin-bottom:5px}
 .master-intel-title{font-size:8px;font-weight:900;text-transform:uppercase}
@@ -424,15 +432,24 @@ body.master-view .decision-btn{cursor:default}
 </div>
 
 <div id="shopOverlay" class="shop-overlay">
-  <div class="shop-card">
+  <div class="shop-card master-shop-confirm">
     <div class="shop-head">
       <div>
-        <div class="shop-title">SHOP</div>
-        <div class="side-box-sub">TIMBRI</div>
+        <div class="shop-title">RICHIESTA SHOP</div>
+        <div class="side-box-sub">CONFERMA ACQUISTO</div>
       </div>
       <div class="shop-balance" id="shopBalance">TIMBRI: 0</div>
     </div>
-    <div class="shop-list" id="shopList"></div>
+    <div id="shopRequestEmpty" class="shop-request-empty">Nessuna richiesta in attesa.</div>
+    <div id="shopRequest" class="shop-request" hidden>
+      <div class="shop-request-label">OSPITE RICHIEDE</div>
+      <div class="shop-request-item" id="shopRequestItem">—</div>
+      <div class="shop-request-meta" id="shopRequestMeta">—</div>
+      <div class="shop-request-actions">
+        <button class="btn" id="btnShopApprove" type="button">CONFERMA ACQUISTO</button>
+        <button class="btn ghost" id="btnShopReject" type="button">RIFIUTA</button>
+      </div>
+    </div>
     <button class="btn ghost" id="btnShopClose" style="margin-top:10px;width:100%">CHIUDI</button>
   </div>
 </div>
@@ -469,6 +486,7 @@ const stateStorageKey = roomCode ? "tortello:paper:state:" + roomCode : "";
 let roomClient = null;
 let revision = 0;
 let isApplyingRemoteState = false;
+let pendingShopRequest = null;
 
 document.getElementById("camStreamerLabel").textContent = streamerName;
 document.getElementById("camGuestLabel").textContent    = guestName;
@@ -545,11 +563,21 @@ const UI = {
   btnShopClose: el("btnShopClose"),
   shopOverlay: el("shopOverlay"),
   shopBalance: el("shopBalance"),
-  shopList: el("shopList"),
+  shopRequest: el("shopRequest"),
+  shopRequestEmpty: el("shopRequestEmpty"),
+  shopRequestItem: el("shopRequestItem"),
+  shopRequestMeta: el("shopRequestMeta"),
+  btnShopApprove: el("btnShopApprove"),
+  btnShopReject: el("btnShopReject"),
+    shopList: el("shopList"),
 
 };
 
 function el(id){ return document.getElementById(id); }
+
+UI.btnShopApprove?.addEventListener("click",()=>resolveShopRequest(true));
+UI.btnShopReject?.addEventListener("click",()=>resolveShopRequest(false));
+
 
 if(UI.btnShop) UI.btnShop.addEventListener("click", openShop);
 if(UI.btnShopClose) UI.btnShopClose.addEventListener("click", closeShop);
@@ -1233,31 +1261,40 @@ function useShopItem(id){
   return false;
 }
 function renderShop(){
-  if(!UI.shopList)return;
+  if(!UI.shopOverlay)return;
   UI.shopBalance.textContent="TIMBRI: "+Math.max(0,Math.floor(stato?.stamps||0));
-  UI.shopList.innerHTML="";
-  shopDefinitions().forEach(item=>{
-    const row=document.createElement("div");row.className="shop-item";
-    const info=document.createElement("div");const req=shopRequirementText(item);
-    const inv=(item.id==="retrial"||item.id==="amnesty")?shopInventory(item.id):0;
-    info.innerHTML="<h3></h3><p></p>";
-    info.querySelector("h3").textContent=item.label+" · "+item.cost+" TIMBRI";
-    info.querySelector("p").textContent=item.description+(req==="Requisiti soddisfatti"?"":" ["+req+"]");
-    const btn=document.createElement("button");btn.className="btn shop-buy";btn.type="button";
-    btn.textContent=(item.id==="dossier2_once"&&shopPurchasedDossier()>=2)||(item.id==="dossier3_once"&&shopPurchasedDossier()>=3)?"SBLOCCATO":"ACQUISTA · "+item.cost+" ("+inv+")";
-    btn.disabled=!shopCanPurchase(item.id)||(stato?.stamps||0)<Number(item.cost||0);
-    btn.addEventListener("click",()=>{if(isMaster)purchaseShopItem(item.id);else roomClient?.broadcast("game_event",{type:"shop_purchase",itemId:item.id,user:guestName,ts:Date.now()}).catch(()=>{});});
-    row.append(info,btn);
-    if((item.id==="retrial"||item.id==="amnesty")&&shopInventory(item.id)>0){
-      const use=document.createElement("button");use.className="btn ghost shop-buy";use.type="button";use.textContent=item.id==="retrial"?"USA RIESAME":"USA AMNISTIA";use.disabled=!shopCanUse(item.id);
-      use.addEventListener("click",()=>{if(isMaster)useShopItem(item.id);else roomClient?.broadcast("game_event",{type:"shop_use",itemId:item.id,user:guestName,ts:Date.now()}).catch(()=>{});});
-      row.appendChild(use);
-    }
-    UI.shopList.appendChild(row);
-  });
+  const req=pendingShopRequest;
+  UI.shopRequest.hidden=!req;
+  UI.shopRequestEmpty.hidden=!!req;
+  if(!req)return;
+  const item=shopItemById(req.itemId);
+  UI.shopRequestItem.textContent=item ? (item.label+" · "+item.cost+" TIMBRI") : ("ARTICOLO SCONOSCIUTO · "+req.itemId);
+  UI.shopRequestMeta.textContent="Richiesta da "+String(req.user||"Ospite");
+  const valid=!!item && shopCanPurchase(req.itemId) && canUseStamps(Number(item.cost)||0);
+  UI.btnShopApprove.disabled=!valid;
 }
 function openShop(){renderShop();UI.shopOverlay?.classList.add("show");}
 function closeShop(){UI.shopOverlay?.classList.remove("show");}
+function resolveShopRequest(approved){
+  const req=pendingShopRequest;
+  if(!req)return;
+  const itemId=req.itemId;
+  const target=String(req.user||"").trim();
+  pendingShopRequest=null;
+  if(approved)purchaseShopItem(itemId);
+  if(roomClient && target){
+    roomClient.broadcast("game_event",{
+      type:"shop_request_result",
+      requestId:req.requestId||"",
+      approved:!!approved,
+      itemId,
+      user:target,
+      ts:Date.now()
+    }).catch(()=>{});
+  }
+  renderShop();
+}
+
 
 /* ===== DEBTS / PROMISES / ARCS ===== */
 function applyContractsFromCase(caseObj, decision){
@@ -1775,9 +1812,24 @@ function applyRemoteState(payload){
 }
 function handleGameEvent(payload){
   if(!payload||!isMaster)return;
-  if(payload.type==="shop_purchase"||payload.type==="shop_use"){
+  if(payload.type==="shop_purchase"){
     const itemId=String(payload.itemId||"");if(!itemId)return;
-    if(payload.type==="shop_purchase")purchaseShopItem(itemId);else useShopItem(itemId);
+    if(pendingShopRequest)return;
+    const item=shopItemById(itemId);
+    if(!item)return;
+    pendingShopRequest={
+      requestId:String(payload.requestId||("shop-"+Date.now())),
+      itemId,
+      user:String(payload.user||guestName||"Ospite"),
+      ts:payload.ts||Date.now()
+    };
+    renderShop();
+    openShop();
+    return;
+  }
+  if(payload.type==="shop_use"){
+    const itemId=String(payload.itemId||"");if(!itemId)return;
+    useShopItem(itemId);
     return;
   }
   if(payload.type==="player_decision"){
