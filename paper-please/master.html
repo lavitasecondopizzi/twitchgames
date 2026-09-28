@@ -1357,6 +1357,9 @@ function updateUI(){
   // decisions lock
   const decided = !!stato.decisionsByPos[pos];
   const locked = stato.gameOver || stato.runCompleted || decided || (stato.phase!=="decision");
+  UI.draftLabel.textContent = stato.playerDecision ? "Decisione ospite: " + String(stato.playerDecision).toUpperCase() : "Decisione ospite: Nessuna";
+  UI.outcomeText.textContent = stato.playerDecision ? "L'Ospite ha scelto. Il Master può applicare la decisione e narrare la conseguenza." : "In attesa della scelta finale dell'Ospite.";
+  UI.btnConfirm.disabled = !(masterMode && stato.phase==="decision" && !!stato.playerDecision && !decided && !stato.gameOver);
   const canChoose = !masterMode && !locked;
   document.querySelectorAll(".decision-btn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
