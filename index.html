@@ -578,6 +578,10 @@
           <label for="hangmanTheme">Tema</label>
           <select id="hangmanTheme"></select>
         </div>
+        <div class="field" id="guessWhoThemeField" hidden>
+          <label for="guessWhoTheme">Tema della sessione</label>
+          <select id="guessWhoTheme"></select>
+        </div>
         <div class="notice">
           Il creator crea la stanza e condivide il codice. L'ospite inserisce il codice e sceglie il proprio nick quando entra.
         </div>
@@ -689,7 +693,9 @@
       $('seedField').hidden = game !== 'paper-please';
       $('modeField').hidden = game !== 'paper-please';
       $('hangmanThemeField').hidden = game !== 'impiccato';
+      $('guessWhoThemeField').hidden = game !== 'indovina-chi';
       if (game === 'impiccato') $('hangmanTheme').focus();
+      if (game === 'indovina-chi') $('guessWhoTheme').focus();
       $('configModal').hidden = false;
 
       if (game === 'paper-please') $('ppSeed').focus();
@@ -706,6 +712,15 @@
       'Cibo','Viaggi','Scuola','Lavoro','Meme','Feste','Streamer Life'
     ];
 
+    const INDOVINA_CHI_THEMES = ['nintendo'];
+
+    INDOVINA_CHI_THEMES.forEach((theme) => {
+      const option = document.createElement('option');
+      option.value = theme;
+      option.textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
+      $('guessWhoTheme').appendChild(option);
+    });
+
     HANGMAN_THEMES.forEach((theme) => {
       const option = document.createElement('option');
       option.value = theme;
@@ -716,6 +731,12 @@
     function readGameConfig() {
       if (state.selectedGame === 'impiccato') {
         return { theme: $('hangmanTheme').value, interactionMode: $('interactionMode').value };
+      }
+      if (state.selectedGame === 'indovina-chi') {
+        return {
+          theme: $('guessWhoTheme').value,
+          interactionMode: $('interactionMode').value
+        };
       }
       if (state.selectedGame === 'paper-please') {
         return {
@@ -739,8 +760,9 @@
       }
 
       if (game === 'indovina-chi') {
+        const theme = encodeURIComponent(gameConfig.theme || 'nintendo');
         return './indovina-chi/index.html?role=' + (role === 'host' ? 'A' : 'B') +
-          '&player=' + player + '&room=' + room + '&interaction=' + interaction;
+          '&player=' + player + '&room=' + room + '&theme=' + theme + '&interaction=' + interaction;
       }
 
       if (game === 'paper-please') {
