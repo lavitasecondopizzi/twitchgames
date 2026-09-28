@@ -58,12 +58,6 @@ button,input,select{font:inherit}
   font-family:Impact,"Arial Black",sans-serif;font-size:15px;line-height:.9;text-transform:uppercase;
 }
 .hud-row{display:flex;justify-content:space-between;align-items:center;gap:5px;font-size:9px;font-weight:900}
-.role-badge{display:inline-flex;align-items:center;justify-content:center;padding:5px 7px;border:3px solid var(--line);background:var(--yellow);box-shadow:3px 3px 0 var(--line);font-size:8px;font-weight:900;text-transform:uppercase}
-.role-badge.master{background:var(--purple);color:#fff}.role-badge.player{background:var(--green)}.role-badge.solo{background:var(--yellow)}
-.decision-state{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px;margin-top:6px;padding:6px;border:3px solid var(--line);background:#fff}
-.decision-state .label{font-size:7px;font-weight:900;text-transform:uppercase}.decision-state .value{font-size:8px;font-weight:900;text-transform:uppercase}
-.master-hint{margin-top:5px;padding:5px 6px;border:2px dashed var(--line);font-size:6px;font-weight:900;line-height:1.35;text-transform:uppercase}
-.chat-readonly{margin-top:5px;font-size:6px;font-weight:900;text-transform:uppercase;opacity:.8}
 .badge{
   display:inline-block;padding:3px 5px;border:2px solid var(--line);background:var(--paper);
   font-size:8px;font-weight:900;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
@@ -75,7 +69,7 @@ button,input,select{font:inherit}
 .small{font-size:9px;font-weight:700;line-height:1.4}
 .main{
   min-width:0;min-height:0;display:grid;
-  grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:10px;
+  grid-template-columns:minmax(0,2.2fr) minmax(260px,.85fr);gap:10px;
 }
 .panel,.tabview,.footer{
   border:4px solid var(--line);background:var(--paper);box-shadow:var(--shadow);
@@ -228,7 +222,6 @@ button,input,select{font:inherit}
           <span id="hudRound">Caso 1/12</span>
           <span class="badge brand" id="hudSeason">Stagione 1</span>
         </div>
-        <div class="hud-row"><span class="badge" id="hudRole">—</span><span class="role-badge" id="roleBadge">—</span></div>
         <div class="hud-row">
           <span class="badge" id="hudPhase">Intro</span>
           <span class="badge warn" id="hudTimer">00:00</span>
@@ -268,7 +261,7 @@ button,input,select{font:inherit}
         <div class="panel-title">POSTAZIONE DI FRONTIERA</div>
         <div class="panel-actions">
           <button class="btn ghost" id="btnNextPhase">Avanza fase</button>
-          <button class="btn" id="btnConfirm" disabled>APPLICA DECISIONE</button>
+          <button class="btn" id="btnConfirm" disabled>Conferma</button>
         </div>
       </div>
 
@@ -309,12 +302,10 @@ button,input,select{font:inherit}
             </div>
             <div class="outcome">
               <div class="hud-row">
-                <span class="badge" id="draftLabel">Decisione ospite: Nessuna</span>
-                <span class="badge" id="decisionPhaseBadge">Decisione: —</span>
+                <span class="badge" id="draftLabel">Bozza: Nessuna</span>
+                <span class="badge warn" id="voteLockBadge">Voto: Aperto</span>
               </div>
-              <div class="decision-state"><span class="label">Stato decisione</span><span class="value" id="decisionStateValue">In attesa</span></div>
-              <div class="clamp-3" id="outcomeText">L'ospite sceglie la decisione finale. La chat può proporre e votare, ma non decide.</div>
-              <div class="master-hint" id="masterHint">MASTER: quando l'ospite ha scelto, applica la decisione e narra la conseguenza.</div>
+              <div class="clamp-3" id="outcomeText">Scegli una decisione. La conferma è disponibile solo in “Fase Decisione”.</div>
             </div>
           </div>
         </div>
@@ -340,7 +331,7 @@ button,input,select{font:inherit}
                   <div class="vrow"><span>Arresta</span><div class="vbg"><div id="vArrest" class="vfill arrest"></div></div><b id="cArrest">0</b></div>
                   <div class="vrow"><span>Condanna</span><div class="vbg"><div id="vCondemn" class="vfill condemn"></div></div><b id="cCondemn">0</b></div>
                 </div>
-                <div class="chat-readonly">Il voto della chat è un suggerimento per l'ospite. La decisione finale resta sua.</div>
+                <button class="btn ghost apply-chat" id="btnApplyChat">IMPOSTA BOZZA DA VOTO</button>
               </div>
             </div>
           </section>
@@ -414,7 +405,6 @@ const UI = {
   hudDebts: el("hudDebts"),
   hudCaseIndex: el("hudCaseIndex"),
   hudDossier: el("hudDossier"),
-  hudRole: el("hudRole"), roleBadge: el("roleBadge"),
 
   // bars
   barRegime: el("barRegime"), barPopolo: el("barPopolo"), barRibelli: el("barRibelli"),
@@ -434,12 +424,13 @@ const UI = {
   caseDossierBadges: el("caseDossierBadges"),
 
   // decisions
-  draftLabel: el("draftLabel"), outcomeText: el("outcomeText"),
-  decisionStateValue: el("decisionStateValue"), masterHint: el("masterHint"),
-  decisionPhaseBadge: el("decisionPhaseBadge"),
+  draftLabel: el("draftLabel"),
+  outcomeText: el("outcomeText"),
   voteLockBadge: el("voteLockBadge"),
   btnConfirm: el("btnConfirm"),
-  btnNextPhase: el("btnNextPhase"),
+  btnNextPhase: el("btnNextPhase"),
+  btnApplyChat: el("btnApplyChat"),
+
   // chat
   prosList: el("prosList"), prosList2: el("prosList2"),
   consList: el("consList"), consList2: el("consList2"),
@@ -533,8 +524,7 @@ function defaultState(){
     stamps: cfg?.economy?.startStamps ?? 0,
     sanity: cfg?.sanity?.start ?? 10,
     world: { ...baseWorld },
-    decisionsByPos: [],
-    playerDecision: null,
+    decisionsByPos: [],     // same length as order, values or null
     lastOutcome: { pos:null, decision:null, text:"" },
     chat: {
       round: 1,
@@ -991,8 +981,7 @@ function setPhase(phase){
 
   // per-phase resets
   if (phase==="intro"){
-    stato.playerDecision=null;
-    draftDecision=null;
+    // dossier base; optionally start objective soon
   }
   if (phase==="discuss"){
     maybeStartObjective();
@@ -1121,35 +1110,37 @@ let draftDecision = null;
 
 function confirmDecision(){
   if (stato.phase !== "decision") return;
-  const pos=stato.currentPos;
-  if(stato.decisionsByPos[pos])return;
-  const finalDecision=stato.playerDecision;
-  if(!finalDecision)return;
+  const pos = stato.currentPos;
+  if (stato.decisionsByPos[pos]) return;
+  if (!draftDecision) return;
+
   const caseIdx = order[pos];
   const c = cases[caseIdx];
 
   // apply decision
-  stato.decisionsByPos[pos]=finalDecision;
-  applyDecisionEffects(pos,finalDecision);
-  applyContractsFromCase(c,finalDecision);
+  stato.decisionsByPos[pos] = draftDecision;
+  applyDecisionEffects(pos, draftDecision);
+  applyContractsFromCase(c, draftDecision);
   updateDebtsPromisesStatus();
 
   // compute twist
-  const twist=computeTwistText(c,finalDecision);
-  stato.lastOutcome={pos,decision:finalDecision,text:twist};
+  const twist = computeTwistText(c, draftDecision);
+
+  stato.lastOutcome = { pos, decision:draftDecision, text: twist };
 
   // sanity mental extra pressure per decision extreme (optional)
   const sanityRules = cfg?.sanity?.decisionCosts || {};
-  if(typeof sanityRules[finalDecision]==="number") stato.sanity=clampSanity(stato.sanity+sanityRules[finalDecision]);
+  if (typeof sanityRules[draftDecision]==="number"){
+    stato.sanity = clampSanity(stato.sanity + sanityRules[draftDecision]);
+  }
 
   // check game over
   checkGameOver();
   if (stato.gameOver) return saveState();
 
   // go to event phase
-  stato.playerDecision=null;
-  draftDecision=null;
-  stato.chat.suggestions=[];
+  draftDecision = null;
+  stato.chat.suggestions = [];
   stato.chat.votes1 = [];
   stato.chat.votes2 = [];
   stato.chat.tiebreak = null;
@@ -1202,19 +1193,13 @@ function hideEndOverlay(){
 }
 
 /* ===== UI UPDATE ===== */
-function canPlayerDecide(){return isGuest||soloMode;}
-function updateRoleUI(){
-  UI.hudRole.textContent=soloMode?"Modalità Solo":(isHost?"Stanza: Master":"Stanza: Giocatore");
-  UI.roleBadge.textContent=soloMode?"MASTER + GIOCATORE":(isHost?"MASTER / NARRATORE":"GIOCATORE / OSPITE");
-  UI.roleBadge.className="role-badge "+(soloMode?"solo":(isHost?"master":"player"));
-}
 function updateUI(){
   ensureState();
   maybeAutoDossierUpgrade();
 
   const pos = stato.currentPos;
-  const total=order.length;
-  updateRoleUI();
+  const total = order.length;
+
   UI.hudRound.textContent = "Round " + (pos+1) + "/" + total;
   UI.hudSeason.textContent = "Stagione " + (stato.season || 1);
   UI.hudCaseIndex.textContent = "Persona " + (pos+1) + "/" + total;
@@ -1223,8 +1208,6 @@ function updateUI(){
   UI.hudPhase.textContent = phaseLabel(stato.phase);
   UI.voteLockBadge.textContent = "Voto: " + (stato.phaseLocked ? "LOCK" : "Aperto");
   UI.voteLockBadge.className = "badge " + (stato.phaseLocked ? "ko" : "ok");
-  UI.decisionPhaseBadge.textContent = stato.phase==="decision" ? "Decisione: OSPITE" : "Fase: " + phaseLabel(stato.phase);
-  UI.decisionPhaseBadge.className = "badge " + (stato.phase==="decision" ? "ok" : "");
 
   // timer
   updateTimerUI();
@@ -1282,17 +1265,329 @@ function updateUI(){
   // decisions lock
   const decided = !!stato.decisionsByPos[pos];
   const locked = stato.gameOver || stato.runCompleted || decided || (stato.phase!=="decision");
-  const decided=!!stato.decisionsByPos[pos];
-  const locked=stato.gameOver||stato.runCompleted||decided||(stato.phase!=="decision");
-  const playerChoice=stato.playerDecision||null;
   document.querySelectorAll(".decision-btn").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    if(!canPlayerDecide()||stato.phase!=="decision")return;
-    const choice=btn.dataset.decision;stato.playerDecision=choice;updateUI();
-    if(isGuest&&roomClient)roomClient.broadcast("game_event",{type:"player_decision",choice,user:guestName,ts:Date.now()}).catch(()=>{});
+    const v = btn.dataset.decision;
+    btn.disabled = !isHost || locked;
+    btn.classList.toggle("selected", v === (decided ? stato.decisionsByPos[pos] : draftDecision));
+  });
+
+  UI.btnConfirm.disabled = !isHost || locked || !draftDecision;
+  UI.btnNextPhase.disabled = !isHost || stato.gameOver || stato.runCompleted;
+  UI.btnConfirm.style.display = isHost ? "" : "none";
+  UI.btnNextPhase.style.display = isHost ? "" : "none";
+  UI.btnApplyChat.style.display = isHost ? "" : "none";
+
+  UI.draftLabel.textContent = "Bozza: " + (draftDecision ? decisionLabel(draftDecision) : "Nessuna");
+
+  const last = stato.lastOutcome;
+  if (last && last.pos===pos && decided && last.text){
+    UI.outcomeText.textContent = last.text;
+  } else if (decided){
+    UI.outcomeText.textContent = computeTwistText(c, stato.decisionsByPos[pos]);
+  } else {
+    UI.outcomeText.textContent = phaseHelpText(stato.phase);
+  }
+
+  // chat UI
+  renderSuggestions();
+  renderVotes();
+
+  // history
+  renderHistory();
+
+  // extras
+
+  // endings overlay
+  if (stato.gameOver){
+    showEndOverlay(false, stato.gameOverReason || "Game over.");
+  } else if (stato.runCompleted){
+    showEndOverlay(true, pickVictoryText());
+  } else {
+    hideEndOverlay();
+  }
+}
+
+function addBadge(container, text, className){
+  const s = document.createElement("span");
+  s.className = className || "badge";
+  s.textContent = text;
+  container.appendChild(s);
+}
+
+function setWorldBar(valEl, barEl, val){
+  const v = clamp01(val);
+  valEl.textContent = v;
+  barEl.style.width = v + "%";
+}
+
+function phaseLabel(p){
+  const map = {intro:"Intro", discuss:"Discussione", vote1:"Voto 1", vote2:"Voto 2", decision:"Decisione", event:"Evento", end:"Fine"};
+  return map[p] || p;
+}
+function decisionLabel(d){
+  return ({pass:"Fai passare", deny:"Respingi", arrest:"Arresta", condemn:"Condanna"})[d] || "—";
+}
+function phaseHelpText(phase){
+  if (phase==="intro") return "Fase INTRO: presentazione dossier. Avanza fase o attendi il timer.";
+  if (phase==="discuss") return "DISCUSSIONE: la chat manda +pro / -contro. Obiettivo a tempo può apparire.";
+  if (phase==="vote1") return "VOTO 1: la chat vota !passa / !nega / !arresta / !condanna.";
+  if (phase==="vote2") return "VOTO 2: spareggio attivo. La chat vota tra le due opzioni indicate.";
+  if (phase==="decision") return "DECISIONE: scegli una bozza e premi Conferma.";
+  if (phase==="event") return "EVENTO: applico un evento tra-round, poi si passa alla prossima persona.";
+  return "—";
+}
+
+function updateTimerUI(){
+  if (!stato.phaseEndsAt){ UI.hudTimer.textContent="--:--"; return; }
+  const ms = Math.max(0, stato.phaseEndsAt - Date.now());
+  const s = Math.ceil(ms/1000);
+  const mm = String(Math.floor(s/60)).padStart(2,"0");
+  const ss = String(s%60).padStart(2,"0");
+  UI.hudTimer.textContent = mm+":"+ss;
+}
+
+function renderObjective(){
+  updateObjectiveProgress();
+  const obj = stato.objectives.active;
+  if (!obj){
+    UI.hudObjectiveType.textContent = "—";
+    UI.hudObjectiveProgress.textContent = "0/0";
+    UI.hudObjectiveText.textContent = "Nessun obiettivo attivo.";
+    return;
+  }
+  UI.hudObjectiveType.textContent = obj.type || "goal";
+  UI.hudObjectiveProgress.textContent = (obj.progress||0) + "/" + (obj.target||0);
+  UI.hudObjectiveText.textContent = obj.text || "—";
+}
+
+/* ===== Render chat lists (no scroll: show top N only) ===== */
+function renderSuggestions(){
+  const groups = {pro:{}, con:{}};
+  (stato.chat.suggestions||[]).forEach(s=>{
+    if (!s) return;
+    const side = normSide(s.side);
+    const txt = String(s.text||"").trim();
+    if (!txt) return;
+    const key = txt.toLowerCase();
+    if (!groups[side][key]) groups[side][key] = {text:txt, count:0};
+    groups[side][key].count++;
+  });
+
+  function topItems(obj){
+    const keys = Object.keys(obj).sort((a,b)=>obj[b].count - obj[a].count);
+    return keys.slice(0,3).map(k=>obj[k]);
+  }
+
+  renderCompactList(UI.prosList, UI.prosList2, topItems(groups.pro));
+  renderCompactList(UI.consList, UI.consList2, topItems(groups.con));
+}
+
+function renderCompactList(firstEl, secondContainer, items){
+  // firstEl is a single .item already present, secondContainer is empty div
+  secondContainer.innerHTML = "";
+  if (!items.length){
+    firstEl.querySelector(".t").textContent = "Nessun suggerimento";
+    firstEl.querySelector(".c").textContent = "";
+    return;
+  }
+  firstEl.querySelector(".t").textContent = items[0].text;
+  firstEl.querySelector(".c").textContent = "×" + items[0].count;
+
+  for (let i=1;i<items.length;i++){
+    const it = document.createElement("div");
+    it.className = "item";
+    it.innerHTML = '<span class="t"></span><span class="c"></span>';
+    it.querySelector(".t").textContent = items[i].text;
+    it.querySelector(".c").textContent = "×" + items[i].count;
+    secondContainer.appendChild(it);
+  }
+}
+
+function renderVotes(){
+  // show vote1 bars (vote2 only if active)
+  let list = stato.chat.votes1 || [];
+  const counts = voteCounts(list);
+  const sum = counts.pass+counts.deny+counts.arrest+counts.condemn;
+  const max = Math.max(counts.pass,counts.deny,counts.arrest,counts.condemn,1);
+
+  function setVote(barEl, countEl, v){
+    const pct = sum ? (15 + (v/max)*85) : 0;
+    barEl.style.width = pct + "%";
+    countEl.textContent = String(Math.round(v*10)/10);
+  }
+  setVote(UI.vPass, UI.cPass, counts.pass);
+  setVote(UI.vDeny, UI.cDeny, counts.deny);
+  setVote(UI.vArrest, UI.cArrest, counts.arrest);
+  setVote(UI.vCondemn, UI.cCondemn, counts.condemn);
+
+  const lead = leaderFromCounts(counts);
+  if (!lead.leader){
+    UI.chatLeader.textContent = "Leader: —";
+  } else if (lead.tie && stato.chat.tiebreak){
+    UI.chatLeader.textContent = "Pari: " + lead.A + " vs " + lead.B;
+  } else {
+    UI.chatLeader.textContent = "Leader: " + decisionLabel(lead.leader);
+  }
+}
+
+/* ===== History ===== */
+function renderHistory(){
+  const total = order.length;
+  const pos = stato.currentPos;
+  const allKnown = stato.runCompleted || stato.gameOver;
+
+  // show max 10 rows (no scroll)
+  const showN = Math.min(total, 10);
+  UI.historyList.innerHTML = "";
+
+  // center around current pos if many
+  let start = 0;
+  if (total > showN){
+    start = Math.max(0, Math.min(total - showN, pos - Math.floor(showN/2)));
+  }
+
+  for (let i=start;i<start+showN;i++){
+    const caseIdx = order[i];
+    const c = cases[caseIdx] || {};
+    const dec = stato.decisionsByPos[i];
+
+    const row = document.createElement("div");
+    row.className = "item";
+    const left = document.createElement("span");
+    left.className = "t";
+    const right = document.createElement("span");
+    right.className = "c";
+
+    const known = allKnown || i <= pos;
+    left.textContent = "Pers. " + (i+1) + " — " + (known ? (c.name||"Sconosciuto") : "???");
+    right.textContent = known ? (dec ? decisionLabel(dec) : (i===pos ? "In corso" : "—")) : "—";
+
+    row.appendChild(left); row.appendChild(right);
+    UI.historyList.appendChild(row);
+  }
+}
+
+/* ===== SUPABASE REALTIME ===== */
+function mergeLoadedState(data){
+  stato={...defaultState(),...(data||{})};
+  stato.world={...(cfg.baseWorld||{regime:50,popolo:50,ribelli:50}),...(data?.world||{})};
+  stato.chat={...defaultState().chat,...(data?.chat||{})};
+  stato.objectives={...defaultState().objectives,...(data?.objectives||{})};
+  stato.unlocks={...defaultState().unlocks,...(data?.unlocks||{})};
+  stato.arcs={...defaultState().arcs,...(data?.arcs||{})};
+  if(Array.isArray(data?.runOrder)) order=data.runOrder.slice();
+  ensureState();
+}
+function statePayload(){
+  return {...stato,runOrder:order.slice(),_revision:revision,_sender:isHost?"host":"guest",_sentAt:Date.now()};
+}
+async function broadcastState(){
+  if(!roomClient||!isHost||isApplyingRemoteState)return;
+  revision++;
+  await roomClient.broadcast("game_state",statePayload());
+}
+async function saveState(){
+  if(!isHost||isApplyingRemoteState)return;
+  try{ensureState();updateUI();await broadcastState();}
+  catch(e){console.error("Errore broadcast stato:",e);}
+}
+function requestGameState(){
+  roomClient?.broadcast("state_request",{requester:"guest",_sentAt:Date.now()}).catch(()=>{});
+}
+function applyRemoteState(payload){
+  if(!payload||!isGuest)return;
+  const incoming=Number(payload._revision)||0;
+  if(incoming&&incoming<revision)return;
+  revision=Math.max(revision,incoming);
+  const clean={...payload};
+  delete clean._revision;delete clean._sender;delete clean._sentAt;
+  isApplyingRemoteState=true;
+  mergeLoadedState(clean);
+  updateUI();
+  isApplyingRemoteState=false;
+}
+function handleGameEvent(payload){
+  if(!payload||!isHost||stato.phaseLocked)return;
+  if(payload.type==="chat_suggestion"){
+    const text=String(payload.text||"").trim();
+    if(!text)return;
+    stato.chat.suggestions.push({
+      user:String(payload.user||"anon"),side:normSide(payload.side),text,
+      ts:payload.ts||Date.now(),role:payload.role||computeRole(payload.user)
+    });
+    updateObjectiveProgress();saveState();return;
+  }
+  if(payload.type==="chat_vote"||payload.type==="chat_tiebreak"){
+    const choice=normalizeChoice(payload.choice);
+    if(!choice)return;
+    const list=payload.type==="chat_tiebreak"?stato.chat.votes2:stato.chat.votes1;
+    list.push({
+      user:String(payload.user||"anon"),choice,ts:payload.ts||Date.now(),
+      role:payload.role||computeRole(payload.user)
+    });
+    updateObjectiveProgress();saveState();
+  }
+}
+async function connectRoom(){
+  if(!/^[A-Z0-9]{6}$/.test(roomCode)){
+    console.warn("Codice stanza mancante o non valido.");return;
+  }
+  roomClient=new TortelloSupabaseRoom({
+    room:roomCode,role:isHost?"host":"guest",
+    nickname:isHost?streamerName:guestName,game:"paper-please",
+    gameConfig:{seed:urlParams.get("seed")||"",mode:soloMode?"solo":(urlParams.get("mode")||"coop")}
+  });
+  roomClient.on("game-state",applyRemoteState);
+  roomClient.on("game-event",handleGameEvent);
+  roomClient.on("state-request",payload=>{
+    if(isHost&&payload?.requester==="guest")broadcastState().catch(()=>{});
+  });
+  roomClient.on("presence",presence=>{
+    if(isHost&&Object.values(presence||{}).flat().some(e=>e.role==="guest"))
+      broadcastState().catch(()=>{});
+  });
+  try{
+    await roomClient.connect();
+    if(isHost){
+      const seed=urlParams.get("seed")?.trim();
+      if(seed)stato.seed=seed;
+      stato.mode=soloMode?"solo":(urlParams.get("mode")||stato.mode);
+      updateUI();await broadcastState();
+    }else requestGameState();
+  }catch(e){console.error("Supabase Realtime non disponibile:",e);}
+}
+
+/* ===== Chat intake lock behavior =====
+   Nota: il bot/bridge dovrebbe rispettare stato.phaseLocked e scrivere in chat.suggestions/votes solo se non locked.
+   Qui ci limitiamo a renderizzare e applicare la bozza.
+*/
+function applyDraftFromChat(){
+  if (stato.phase !== "decision") return;
+  const counts1 = voteCounts(stato.chat.votes1 || []);
+  const lead1 = leaderFromCounts(counts1);
+  if (!lead1.leader){
+    return;
+  }
+  if (lead1.tie && stato.phase==="decision" && Array.isArray(stato.chat.votes2) && stato.chat.votes2.length){
+    const counts2 = voteCounts(stato.chat.votes2);
+    const lead2 = leaderFromCounts(counts2);
+    if (lead2.leader) draftDecision = lead2.leader;
+  } else {
+    draftDecision = lead1.leader;
+  }
+  updateUI();
+}
+
+/* ===== Events: UI interactions ===== */
+document.querySelectorAll(".decision-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    if (!isHost || stato.phase!=="decision") return;
+    draftDecision = btn.dataset.decision;
+    updateUI();
   });
 });
-UI.btnConfirm.addEventListener("click",()=>{if(isHost)confirmDecision();});
+UI.btnConfirm.addEventListener("click", ()=>{ if(isHost) confirmDecision(); });
+UI.btnApplyChat.addEventListener("click", ()=>{ if(isHost) applyDraftFromChat(); });
 
 UI.btnNextPhase.addEventListener("click", ()=>{
   if (!isHost || stato.gameOver || stato.runCompleted) return;
@@ -1314,64 +1609,6 @@ UI.btnNextPhase.addEventListener("click", ()=>{
 });
 
 /* Tabs */
-/* ===== SUPABASE REALTIME ===== */
-function mergeLoadedState(data){
-  stato={...defaultState(),...(data||{})};
-  stato.playerDecision=data?.playerDecision||null;
-  stato.world={...(cfg.baseWorld||{regime:50,popolo:50,ribelli:50}),...(data?.world||{})};
-  stato.chat={...defaultState().chat,...(data?.chat||{})};
-  stato.objectives={...defaultState().objectives,...(data?.objectives||{})};
-  stato.unlocks={...defaultState().unlocks,...(data?.unlocks||{})};
-  stato.arcs={...defaultState().arcs,...(data?.arcs||{})};
-  if(Array.isArray(data?.runOrder))order=data.runOrder.slice();
-  ensureState();
-}
-function statePayload(){return {...stato,runOrder:order.slice(),_revision:revision,_sender:isHost?"host":"guest",_sentAt:Date.now()};}
-async function broadcastState(){if(!roomClient||!isHost||isApplyingRemoteState)return;revision++;await roomClient.broadcast("game_state",statePayload());}
-async function saveState(){if(!isHost||isApplyingRemoteState)return;try{ensureState();updateUI();await broadcastState();}catch(e){console.error("Errore broadcast stato:",e);}}
-function requestGameState(){roomClient?.broadcast("state_request",{requester:"guest",_sentAt:Date.now()}).catch(()=>{});}
-function applyRemoteState(payload){
-  if(!payload||!isGuest)return;
-  const incoming=Number(payload._revision)||0;if(incoming&&incoming<revision)return;
-  revision=Math.max(revision,incoming);const clean={...payload};delete clean._revision;delete clean._sender;delete clean._sentAt;
-  isApplyingRemoteState=true;mergeLoadedState(clean);updateUI();isApplyingRemoteState=false;
-}
-function handleGameEvent(payload){
-  if(!payload||!isHost)return;
-  if(payload.type==="player_decision"){
-    if(stato.phase!=="decision"||stato.decisionsByPos[stato.currentPos])return;
-    const choice=normalizeChoice(payload.choice);if(!choice)return;
-    stato.playerDecision=choice;saveState();return;
-  }
-  if(stato.phaseLocked)return;
-  if(payload.type==="chat_suggestion"){
-    const text=String(payload.text||"").trim();if(!text)return;
-    stato.chat.suggestions.push({user:String(payload.user||"anon"),side:normSide(payload.side),text,ts:payload.ts||Date.now(),role:payload.role||computeRole(payload.user)});
-    updateObjectiveProgress();saveState();return;
-  }
-  if(payload.type==="chat_vote"||payload.type==="chat_tiebreak"){
-    const choice=normalizeChoice(payload.choice);if(!choice)return;
-    const list=payload.type==="chat_tiebreak"?stato.chat.votes2:stato.chat.votes1;
-    list.push({user:String(payload.user||"anon"),choice,ts:payload.ts||Date.now(),role:payload.role||computeRole(payload.user)});
-    updateObjectiveProgress();saveState();
-  }
-}
-async function connectRoom(){
-  if(!/^[A-Z0-9]{6}$/.test(roomCode)){console.warn("Codice stanza mancante o non valido.");return;}
-  roomClient=new TortelloSupabaseRoom({room:roomCode,role:isHost?"host":"guest",nickname:isHost?streamerName:guestName,game:"paper-please",gameConfig:{seed:urlParams.get("seed")||"",mode:soloMode?"solo":(urlParams.get("mode")||"coop")}});
-  roomClient.on("game-state",applyRemoteState);
-  roomClient.on("game-event",handleGameEvent);
-  roomClient.on("state-request",payload=>{if(isHost&&payload?.requester==="guest")broadcastState().catch(()=>{});});
-  roomClient.on("presence",presence=>{if(isHost&&Object.values(presence||{}).flat().some(e=>e.role==="guest"))broadcastState().catch(()=>{});});
-  try{
-    await roomClient.connect();
-    if(isHost){
-      const seed=urlParams.get("seed")?.trim();if(seed)stato.seed=seed;
-      stato.mode=soloMode?"solo":(urlParams.get("mode")||stato.mode);updateUI();await broadcastState();
-    }else requestGameState();
-  }catch(e){console.error("Supabase Realtime non disponibile:",e);}
-}
-
 /* ===== Bootstrap ===== */
 (async function init(){
   await loadConfig();
