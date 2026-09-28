@@ -1504,7 +1504,7 @@ function updateUI(){
   setWorldBar(UI.valRibelli,UI.barRibelli, stato.world.ribelli);
 
   // dossier
-  UI.hudDossier.textContent = "Dossier L" + stato.dossierLevel;
+  UI.hudDossier.textContent = "Dossier L" + getEffectiveDossierLevel();
 
   // objective
   renderObjective();
@@ -1518,7 +1518,7 @@ function updateUI(){
   UI.casePortrait.alt = c.name || "Candidato";
   UI.caseName.textContent = c.name || "—";
 
-  const d = dossierInfoFor(c, stato.dossierLevel);
+  const d = dossierInfoFor(c, getEffectiveDossierLevel());
   UI.caseOrigin.textContent = d.origin;
   UI.caseJob.textContent    = d.job;
   UI.caseReason.textContent = d.reason;
@@ -1753,6 +1753,8 @@ function mergeLoadedState(data){
   stato.objectives={...defaultState().objectives,...(data?.objectives||{})};
   stato.unlocks={...defaultState().unlocks,...(data?.unlocks||{})};
   stato.arcs={...defaultState().arcs,...(data?.arcs||{})};
+  stato.shop={...defaultState().shop,...(data?.shop||{})};
+  if(!Array.isArray(stato.shop.used)) stato.shop.used=[];
   if(Array.isArray(data?.runOrder)) order=data.runOrder.slice();
   ensureState();
 }
@@ -1893,6 +1895,8 @@ function mergeLoadedState(data){
   stato.objectives={...defaultState().objectives,...(data?.objectives||{})};
   stato.unlocks={...defaultState().unlocks,...(data?.unlocks||{})};
   stato.arcs={...defaultState().arcs,...(data?.arcs||{})};
+  stato.shop={...defaultState().shop,...(data?.shop||{})};
+  if(!Array.isArray(stato.shop.used)) stato.shop.used=[];
   if(Array.isArray(data?.runOrder)) order=data.runOrder.slice();
   ensureState();
 }
