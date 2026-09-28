@@ -168,23 +168,6 @@ button,input,select{font:inherit}
 .history-list .item{position:relative;margin:0;padding:6px 7px;border:2px solid var(--line);background:#fff;box-shadow:2px 2px 0 var(--line)}
 .history-list .item::before{content:"";position:absolute;left:-12px;top:9px;width:7px;height:7px;border:2px solid var(--line);background:var(--paper)}
 .history-empty{font-size:7px}
-.rules-overlay{position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(17,17,17,.94);opacity:0;pointer-events:none;transition:opacity .2s}
-.rules-overlay.show{opacity:1;pointer-events:auto}
-.rules-card{width:min(1100px,92vw);max-height:88vh;overflow:auto;padding:14px;border:5px solid var(--line);background:var(--paper);box-shadow:10px 10px 0 #000}
-.rules-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
-.rules-title{font-family:Impact,"Arial Black",sans-serif;font-size:clamp(28px,5vw,58px);line-height:.85;text-transform:uppercase}
-.rules-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.rules-block{position:relative;padding:11px;border:3px solid var(--line);background:#fff;box-shadow:4px 4px 0 var(--line);min-height:112px}
-.rules-block.role-master{background:#ece4f5}.rules-block.role-player{background:#e5f1e8}.rules-block.role-chat{background:#f5eed7}
-.rules-block.phase{background:var(--paper2)}
-.rules-block h3{margin:0 0 7px;font-size:12px;text-transform:uppercase;letter-spacing:.02em}
-.rules-block p{margin:0;font-size:9px;font-weight:800;line-height:1.45}
-.rules-block ul{margin:0;padding-left:15px;font-size:8px;font-weight:800;line-height:1.5}
-.rules-block li+li{margin-top:2px}
-.rules-tag{display:inline-block;margin-bottom:5px;padding:2px 4px;border:2px solid var(--line);font-size:6px;font-weight:900;text-transform:uppercase;background:#fff}
-.rules-note{grid-column:1/-1;padding:9px 11px;border:3px solid var(--line);background:var(--yellow);box-shadow:4px 4px 0 var(--line);font-size:8px;font-weight:900;text-transform:uppercase;line-height:1.4}
-@media(max-width:760px){.rules-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:520px){.rules-grid{grid-template-columns:1fr}.rules-block{min-height:0}}
 .shop-overlay{
   position:fixed;inset:0;z-index:9997;display:flex;align-items:center;justify-content:center;
   padding:20px;background:rgba(17,17,17,.94);opacity:0;pointer-events:none;transition:opacity .2s;
@@ -201,7 +184,6 @@ button,input,select{font:inherit}
 .shop-item h3{margin:0 0 3px;font-size:11px;text-transform:uppercase}
 .shop-item p{margin:0;font-size:8px;font-weight:800;line-height:1.35}
 .shop-buy{min-width:92px}
-.shop-foot{margin-top:10px;font-size:7px;font-weight:900;text-transform:uppercase}
 @media(max-width:520px){.shop-card{padding:9px;border-width:3px;box-shadow:6px 6px 0 #000}.shop-item{grid-template-columns:1fr}.shop-buy{width:100%}}
 .end-overlay{
   position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -256,8 +238,8 @@ body.master-view .decision-btn{cursor:default}
 .master-main{min-width:0;min-height:0;display:grid;grid-template-columns:240px minmax(0,1fr) 360px;gap:8px}
 .master-control,.master-side{min-width:0;min-height:0;border:4px solid var(--line);background:var(--paper);box-shadow:var(--shadow);padding:8px;overflow:hidden}
 .master-control{display:flex;flex-direction:column;gap:7px}.console-head{display:flex;justify-content:space-between;align-items:center;gap:5px;padding-bottom:7px;border-bottom:4px solid var(--line)}
-.control-block{border:3px solid var(--line);background:var(--paper2);padding:7px;box-shadow:3px 3px 0 var(--line)}.control-label{font-size:6px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}.control-value,.decision-readout{font-family:Impact,"Arial Black",sans-serif;font-size:19px;text-transform:uppercase;margin:5px 0 7px}.decision-readout{background:var(--yellow);border:3px solid var(--line);padding:6px;font-size:16px}.control-help{font-size:6px;font-weight:900;line-height:1.35;margin-bottom:7px}.master-primary,.master-confirm{width:100%}.master-confirm{background:var(--green);color:var(--ink)}.master-confirm:disabled{background:var(--paper2);color:var(--ink)}
-.control-mini-row{display:flex;gap:5px;margin-top:6px}.objective-readout{font-size:7px;font-weight:800;line-height:1.35;margin-top:5px}.world-row{display:flex;justify-content:space-between;font-size:6px;font-weight:900;margin-top:6px}.world-bar{height:6px;border:2px solid var(--line);background:#fff}.world-bar i{display:block;height:100%;width:50%;background:var(--green)}.master-rules{margin-top:auto;width:100%}
+.control-block{border:3px solid var(--line);background:var(--paper2);padding:7px;box-shadow:3px 3px 0 var(--line)}.control-label{font-size:6px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}.control-value,.decision-readout{font-family:Impact,"Arial Black",sans-serif;font-size:19px;text-transform:uppercase;margin:5px 0 7px}.decision-readout{background:var(--yellow);border:3px solid var(--line);padding:6px;font-size:16px}.master-primary,.master-confirm{width:100%}.master-confirm{background:var(--green);color:var(--ink)}.master-confirm:disabled{background:var(--paper2);color:var(--ink)}
+.control-mini-row{display:flex;gap:5px;margin-top:6px}.objective-readout{font-size:7px;font-weight:800;line-height:1.35;margin-top:5px}.world-row{display:flex;justify-content:space-between;font-size:6px;font-weight:900;margin-top:6px}.world-bar{height:6px;border:2px solid var(--line);background:#fff}.world-bar i{display:block;height:100%;width:50%;background:var(--green)}
 .master-main>.panel{min-width:0;min-height:0}.master-side>.side{height:100%}.master-side .side-columns{grid-template-columns:1fr;grid-template-rows:minmax(0,1.15fr) minmax(0,.85fr)}.master-side .side-info{height:100%}.master-side .chat-box,.master-side .history-box{min-height:0}
 .master-main .panel-head{margin-bottom:7px}.master-main .grid-case{grid-template-columns:minmax(180px,.82fr) minmax(0,1.18fr)}
 .master-main .decision-btn{display:none}.master-main .controls{display:none}.master-main .outcome{margin-top:0}.master-main .side-info-head{display:none}
@@ -272,7 +254,7 @@ body.master-view .decision-btn{cursor:default}
   <div class="master-brand">
     <div class="master-kicker">PAPER PIZZI PLEASE</div>
     <div class="master-title">MASTER CONSOLE</div>
-    <div class="master-sub">REGIA · NARRAZIONE · CONTROLLO PARTITA</div>
+    
     <span id="camStreamerLabel" class="compat">Pizzi</span><span id="camGuestLabel" class="compat">Ospite</span>
   </div>
   <div class="master-status">
@@ -287,7 +269,6 @@ body.master-view .decision-btn{cursor:default}
   <div class="master-guest">
     <div class="master-status-head"><span>OSPITE</span><span class="badge ok" id="masterGuestStatus">IN ATTESA</span></div>
     <div class="guest-name" id="masterGuestName">Ospite</div>
-    <div class="master-guest-meta">DECISIONE FINALE IN MANO AL GIOCATORE</div>
   </div>
   <div class="master-resources">
     <div><small>TIMBRI</small><strong id="hudStamps">0</strong></div>
@@ -308,7 +289,6 @@ body.master-view .decision-btn{cursor:default}
     <div class="control-block decision-block">
       <div class="control-label">DECISIONE OSPITE</div>
       <div class="decision-readout" id="masterPlayerDecision">NESSUNA</div>
-      <div class="control-help">La chat consiglia. L'ospite sceglie. Il Master applica.</div>
       <button class="btn master-confirm" id="btnConfirm" disabled>APPLICA DECISIONE</button>
     </div>
     <div class="control-block">
@@ -329,7 +309,6 @@ body.master-view .decision-btn{cursor:default}
       <div class="world-row"><span>RIBELLI</span><b id="valRibelli">50</b></div>
       <div class="world-bar"><i id="barRibelli"></i></div>
     </div>
-    <button class="btn ghost master-rules" id="btnRules">REGOLE MASTER</button>
   </aside>
   <section class="panel" id="panelCase">
       <div class="panel-head">
@@ -384,14 +363,14 @@ body.master-view .decision-btn{cursor:default}
         <div class="side-info-head"></div>
         <div class="side-columns">
           <section class="side-box chat-box">
-            <div class="side-box-head"><div><div class="side-box-title">CHAT / VOTO</div><div class="side-box-sub">SUGGERIMENTI E CONSENSO DELLA CHAT</div></div><span class="badge warn" id="chatVoteLockBadge">Voto: Aperto</span></div>
+            <div class="side-box-head"><div><div class="side-box-title">CHAT / VOTO</div></div><span class="badge warn" id="chatVoteLockBadge">Voto: Aperto</span></div>
             <div class="chat-content">
               <div class="suggestions">
-                <div class="suggestion-col pro-col"><div class="mini-head"><span>PRO</span><small>ARGOMENTI A FAVORE</small></div><div id="prosList" class="suggestion-list"><div class="item"><span class="t">Nessun suggerimento</span><span class="c"></span></div></div><div id="prosList2"></div></div>
-                <div class="suggestion-col con-col"><div class="mini-head"><span>CONTRO</span><small>ARGOMENTI CONTRARI</small></div><div id="consList" class="suggestion-list"><div class="item"><span class="t">Nessun suggerimento</span><span class="c"></span></div></div><div id="consList2"></div></div>
+                <div class="suggestion-col pro-col"><div class="mini-head"><span>PRO</span></div><div id="prosList" class="suggestion-list"><div class="item"><span class="t">Nessun suggerimento</span><span class="c"></span></div></div><div id="prosList2"></div></div>
+                <div class="suggestion-col con-col"><div class="mini-head"><span>CONTRO</span></div><div id="consList" class="suggestion-list"><div class="item"><span class="t">Nessun suggerimento</span><span class="c"></span></div></div><div id="consList2"></div></div>
               </div>
               <div class="vote-panel">
-                <div class="vote-head"><div><div class="mini-head"><span>VOTO CHAT</span><small>DECISIONE COLLETTIVA</small></div></div><span class="badge" id="chatLeader">Leader: —</span></div>
+                <div class="vote-head"><div><div class="mini-head"><span>VOTO CHAT</span></div></div><span class="badge" id="chatLeader">Leader: —</span></div>
                 <div class="vbars">
                   <div class="vrow"><span>Passa</span><div class="vbg"><div id="vPass" class="vfill pass"></div></div><b id="cPass">0</b></div>
                   <div class="vrow"><span>Nega</span><div class="vbg"><div id="vDeny" class="vfill deny"></div></div><b id="cDeny">0</b></div>
@@ -403,7 +382,7 @@ body.master-view .decision-btn{cursor:default}
             </div>
           </section>
           <section class="side-box history-box">
-            <div class="side-box-head"><div><div class="side-box-title">STORICO</div><div class="side-box-sub">DECISIONI DEI CASI PRECEDENTI</div></div></div>
+            <div class="side-box-head"><div><div class="side-box-title">STORICO</div></div></div>
             <div class="history-wrap"><div class="history-line"></div><div class="list history-list" id="historyList"><div class="item history-empty"><span class="t">Nessun caso concluso</span></div></div></div>
           </section>
         </div>
@@ -412,95 +391,6 @@ body.master-view .decision-btn{cursor:default}
   </aside>
 </main>
 
-</div>
-
-<div id="rulesOverlay" class="rules-overlay">
-  <div class="rules-card">
-    <div class="rules-head">
-      <div>
-        <div class="rules-title">REGOLE</div>
-        <div class="side-box-sub">PAPER PIZZI PLEASE · GUIDA RAPIDA</div>
-      </div>
-      <button class="btn ghost" id="btnRulesClose">CHIUDI</button>
-    </div>
-
-    <div class="rules-grid">
-      <div class="rules-block role-master">
-        <span class="rules-tag">MASTER</span>
-        <h3>01 · Host / Narratore</h3>
-        <ul>
-          <li>Presenta il caso e gestisce le fasi.</li>
-          <li>Non prende la decisione al posto dell'Ospite.</li>
-          <li>Applica la decisione finale e narra la conseguenza.</li>
-        </ul>
-      </div>
-
-      <div class="rules-block role-player">
-        <span class="rules-tag">GIOCATORE</span>
-        <h3>02 · Ospite / Decisore</h3>
-        <ul>
-          <li>Analizza il dossier e ascolta la discussione.</li>
-          <li>Considera proposte e voto della Chat.</li>
-          <li>Sceglie personalmente la decisione finale.</li>
-        </ul>
-      </div>
-
-      <div class="rules-block role-chat">
-        <span class="rules-tag">GIOCATORI</span>
-        <h3>03 · Chat Twitch</h3>
-        <ul>
-          <li>Propone argomenti PRO e CONTRO.</li>
-          <li>Vota durante le fasi di voto.</li>
-          <li>Il voto indica il consenso della Chat: non decide automaticamente.</li>
-        </ul>
-      </div>
-
-      <div class="rules-block phase">
-        <span class="rules-tag">CICLO</span>
-        <h3>04 · Un caso</h3>
-        <p><strong>Intro</strong> → presentazione del dossier.<br>
-        <strong>Discussione</strong> → PRO / CONTRO.<br>
-        <strong>Voto 1</strong> → voto della Chat.<br>
-        <strong>Voto 2</strong> → spareggio, se necessario.<br>
-        <strong>Decisione</strong> → scelta finale dell'Ospite.<br>
-        <strong>Evento</strong> → conseguenza e passaggio al caso successivo.</p>
-      </div>
-
-      <div class="rules-block phase">
-        <span class="rules-tag">DOSSIER</span>
-        <h3>05 · Informazioni</h3>
-        <p>Il dossier mostra le informazioni disponibili sulla persona. Il livello del dossier può aumentare durante la partita, rivelando ulteriori dettagli utili alla decisione.</p>
-      </div>
-
-      <div class="rules-block phase">
-        <span class="rules-tag">DECISIONI</span>
-        <h3>06 · Quattro scelte</h3>
-        <p>Ogni caso può essere <strong>Fatto passare</strong>, <strong>Respinto</strong>, <strong>Arrestato</strong> o <strong>Condannato</strong>. La scelta modifica lo stato del mondo e può generare conseguenze.</p>
-      </div>
-
-      <div class="rules-block phase">
-        <span class="rules-tag">RISORSE</span>
-        <h3>07 · Timbri e Sanità</h3>
-        <p>I <strong>Timbri</strong> alimentano le meccaniche del dossier e degli sbloccabili. La <strong>Sanità</strong> rappresenta la tenuta del personaggio: se arriva a 0, la partita termina.</p>
-      </div>
-
-      <div class="rules-block phase">
-        <span class="rules-tag">MONDO</span>
-        <h3>08 · Le tre fazioni</h3>
-        <p><strong>Regime</strong>, <strong>Popolo</strong> e <strong>Ribelli</strong> cambiano in base alle decisioni e agli eventi. Se una delle tre fazioni arriva a 0, la partita termina.</p>
-      </div>
-
-      <div class="rules-block phase">
-        <span class="rules-tag">RUN</span>
-        <h3>09 · Stagioni</h3>
-        <p>Una run comprende il numero di casi scelto nella lobby. Al termine della sequenza si chiude la stagione e viene mostrato l'esito della partita.</p>
-      </div>
-
-      <div class="rules-note">
-        REGOLA FONDAMENTALE: <strong>LA CHAT CONSIGLIA · L'OSPITE DECIDE · IL MASTER NARRA</strong>
-      </div>
-    </div>
-  </div>
 </div>
 
 <div id="shopOverlay" class="shop-overlay">
@@ -513,7 +403,6 @@ body.master-view .decision-btn{cursor:default}
       <div class="shop-balance" id="shopBalance">TIMBRI: 0</div>
     </div>
     <div class="shop-list" id="shopList"></div>
-    <div class="shop-foot" id="shopStatus">Gli acquisti vengono verificati dal Master.</div>
     <button class="btn ghost" id="btnShopClose" style="margin-top:10px;width:100%">CHIUDI</button>
   </div>
 </div>
@@ -609,9 +498,6 @@ const UI = {
 
   historyList: el("historyList"),
 
-  btnRules: el("btnRules"),
-  btnRulesClose: el("btnRulesClose"),
-  rulesOverlay: el("rulesOverlay"),
 
   // end overlay
   endOverlay: el("endOverlay"),
@@ -630,8 +516,6 @@ const UI = {
 
 function el(id){ return document.getElementById(id); }
 
-UI.btnRules.addEventListener("click", ()=>UI.rulesOverlay.classList.add("show"));
-UI.btnRulesClose.addEventListener("click", ()=>UI.rulesOverlay.classList.remove("show"));
 if(UI.btnShop) UI.btnShop.addEventListener("click", openShop);
 if(UI.btnShopClose) UI.btnShopClose.addEventListener("click", closeShop);
 if(UI.shopOverlay) UI.shopOverlay.addEventListener("click", e=>{ if(e.target===UI.shopOverlay) closeShop(); });
