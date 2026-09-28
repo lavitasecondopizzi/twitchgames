@@ -736,6 +736,7 @@ const urlParams = new URLSearchParams(window.location.search);
 const forcedRole = urlParams.get("role"); // "A" o "B"
 const playerNameFromUrl = (urlParams.get("player") || urlParams.get("name") || "").trim();
 const roomCode = (urlParams.get("room") || "").trim().toUpperCase();
+const sessionTheme = (urlParams.get("theme") || "nintendo").trim().replace(/^\/+|\/+$/g, "");
 
 const player = forcedRole === "A" ? "A" : forcedRole === "B" ? "B" : null;
 const isHost = player === "A";
@@ -811,6 +812,10 @@ async function loadConfigAndImages(){
     }
   }catch(e){
     console.warn("Errore labels.json:", e);
+  }
+
+  if(sessionTheme){
+    imageFolder = sessionTheme;
   }
 
   let fileList = [];
