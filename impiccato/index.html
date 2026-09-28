@@ -897,6 +897,25 @@ button,input,select{font:inherit}
   align-self:center;
 }
 
+/* ===== REGOLE FULLSCREEN ===== */
+.rules-modal[hidden]{display:none}
+.rules-modal{position:fixed;inset:0;z-index:100000}
+.rules-backdrop{position:absolute;inset:0;background:rgba(17,17,17,.88);backdrop-filter:blur(3px)}
+.rules-dialog{position:absolute;inset:4vh 4vw;overflow:auto;padding:clamp(22px,4vw,60px);border:5px solid var(--line);background:var(--paper);box-shadow:12px 12px 0 #000}
+.rules-dialog-head{border-bottom:4px solid var(--line);padding-bottom:18px;margin-bottom:22px}
+.rules-kicker{font-size:clamp(9px,1vw,14px);font-weight:900;letter-spacing:.14em}
+.rules-dialog h2{margin:7px 0 0;font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;font-size:clamp(42px,6vw,88px);line-height:.85;text-transform:uppercase}
+.rules-close{position:absolute;top:16px;right:16px;z-index:2;width:52px;height:52px;border:4px solid var(--line);background:var(--ink);color:var(--paper);font-size:38px;font-weight:900;line-height:1;cursor:pointer}
+.rules-close:hover,.rules-close:focus-visible{background:var(--paper);color:var(--ink);outline:none}
+.rules-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.rules-card{border:4px solid var(--line);background:var(--paper);padding:18px;box-shadow:5px 5px 0 var(--line)}
+.rules-card h3,.rules-chat h3{margin:0 0 8px;font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;font-size:clamp(18px,2vw,28px);line-height:.95}
+.rules-card p,.rules-chat p{margin:0;font-size:clamp(13px,1.2vw,18px);font-weight:700;line-height:1.45}
+.rules-chat{margin-top:18px;padding:20px;border:4px solid var(--line);background:#19d34a;box-shadow:6px 6px 0 var(--line)}
+.rules-chat p+p{margin-top:8px}
+@media (max-width:900px){.rules-dialog{inset:2vh 2vw;padding:24px 18px}.rules-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.rules-dialog{inset:0;padding:18px 12px}.rules-dialog-head{padding-right:60px}.rules-grid{grid-template-columns:1fr}.rules-close{top:10px;right:10px;width:44px;height:44px;font-size:32px}}
+
 </style>
 </head>
 <body>
@@ -933,7 +952,7 @@ button,input,select{font:inherit}
   <div class="tabs">
     <div class="tab-header">
       <button class="tab-btn active" data-tab="0">Gioco</button>
-      <button class="tab-btn" data-tab="1">Regole</button>
+      <button class="tab-btn" id="rulesBtn" type="button">Regole</button>
           </div>
 
     <div class="tabs-viewport">
@@ -1008,42 +1027,31 @@ button,input,select{font:inherit}
           </div>
         </section>
 
-        <!-- TAB 1: REGOLE -->
-        <section class="tab-panel" data-tab="1">
-          <div class="rules-panel">
-            <h2>Regole dell'impiccato 1v1</h2>
-            <ul>
-              <li>Ogni giocatore ha una <b>parola segreta diversa</b>, generata in modo casuale e complessa.</li>
-              <li>Le parole possono avere più termini: gli spazi sono mostrati, le lettere sono nascoste con <b>_</b>.</li>
-              <li>A turno i giocatori scelgono una lettera dal proprio lato.</li>
-              <li>Se la lettera è presente, viene rivelata in tutte le posizioni corrispondenti.</li>
-              <li>Se la lettera non è presente, si aggiunge un errore e viene disegnata una parte dell’omino.</li>
-              <li>Ogni giocatore ha a disposizione <b>6 errori</b>. Al settimo sarebbe “impiccato”.</li>
-              <li>Un giocatore vince il round quando completa tutte le lettere della propria parola.</li>
-              <li>Ogni giocatore può gestire il suo punteggio <b>-1 / +1</b>.</li>
-              <li>Se il giocatore indovina la parola aggiunge <b>+1</b> al suo punteggio.</li>
-              <li>Se il giocatore arriva all'“impiccato” sottrae <b>-1</b> al suo punteggio.</li>
-              <li>Il tasto <b>Nuovo Round</b> genera due nuove parole casuali, resetta errori, lettere e voti della chat.</li>
-			  <li>Durante questa modalità, la chat può suggerire lettere da provare.</li>
-			  <li>La decisione finale su quali suggerimenti seguire spetta sempre al giocatore.</li>
-            </ul>
-	
-	        <!-- MODALITÀ STREAMER VS CHAT -->
-            <h2 style="margin-top:10px;">Modalità Streamer vs Chat</h2>
-            <ul>
-              <li>La chat gioca dal lato B in modo <b>collettivo</b>: propone le lettere tramite messaggi in chat.</li>
-              <li>Il bot raccoglie le proposte della chat e farà clic sulla lettera più votata
-                quando è il <b>turno della chat</b>, la chat avrà 120 secondi a turno per votare.</li>
-              <li>Verrà presa in considerazione solo la prima lettera proposta da ogni utente.</li>
-              <li>La chat voterà ad ogni turno una penitenza che lo streamer dovrà mettere in pratica tutte le volte che la
-	            chat indovina la frase.</li>
-	          <li>In questa modalità il punteggio verrà ignorato.</li>
-            </ul>
-          </div>
-        </section>
-
-        <!-- TAB 2: VOTI CHAT -->
-        
+        <!-- MODALE REGOLE -->
+        <div class="rules-modal" id="rulesModal" hidden>
+          <div class="rules-backdrop" data-close-rules></div>
+          <section class="rules-dialog" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
+            <button class="rules-close" id="rulesClose" type="button" aria-label="Chiudi regole">×</button>
+            <div class="rules-dialog-head">
+              <span class="rules-kicker">TORTELLO GAMES / IMPICCATO</span>
+              <h2 id="rulesTitle">Come si gioca</h2>
+            </div>
+            <div class="rules-grid">
+              <article class="rules-card"><h3>OBIETTIVO</h3><p>Completa la tua frase prima di raggiungere <b>6 errori</b>.</p></article>
+              <article class="rules-card"><h3>TURNI</h3><p>Si gioca a turni: quando arriva il tuo turno, scegli una lettera dal tuo lato.</p></article>
+              <article class="rules-card"><h3>LETTERA GIUSTA</h3><p>La lettera viene rivelata in tutte le posizioni in cui compare.</p></article>
+              <article class="rules-card"><h3>LETTERA SBAGLIATA</h3><p>Viene aggiunto un errore e compare una parte dell'omino.</p></article>
+              <article class="rules-card"><h3>FINE DEL ROUND</h3><p>Indovinare la frase assegna <b>+1 punto</b>. Arrivare all'impiccato assegna <b>-1 punto</b>.</p></article>
+              <article class="rules-card"><h3>NUOVO ROUND</h3><p>Genera due nuove frasi e azzera lettere, errori e votazione della chat.</p></article>
+            </div>
+            <div class="rules-chat">
+              <h3>MODALITÀ SOLO CHAT</h3>
+              <p>La chat controlla il lato B collettivamente. Durante il turno della chat ha <b>30 secondi</b> per votare una lettera.</p>
+              <p>Alla scadenza viene selezionata la lettera con più voti. In caso di parità viene scelta casualmente tra quelle a pari merito.</p>
+              <p>Il collegamento al bot Twitch verrà aggiunto in una fase successiva.</p>
+            </div>
+          </section>
+        </div>
 
       </div>
     </div>
@@ -2106,26 +2114,36 @@ addScoreBtn.addEventListener("click", async ()=>{
 let currentTab = 0;
 
 function setTab(idx){
-  currentTab = idx;
+  currentTab = 0;
   const inner = document.querySelector(".tabs-inner");
-  const btns  = document.querySelectorAll(".tab-btn");
-  if (inner){
-    inner.style.transform = `translateX(${-idx * 33.333333}%)`;
-  }
-  btns.forEach(b=>{
-    const t = parseInt(b.dataset.tab,10);
-    b.classList.toggle("active", t === idx);
-  });
+  const btns = document.querySelectorAll(".tab-btn");
+  if (inner) inner.style.transform = "translateX(0)";
+  btns.forEach(b=>b.classList.toggle("active", b.dataset.tab === "0"));
 }
 
 function initTabs(){
-  const btns = document.querySelectorAll(".tab-btn");
-  btns.forEach(b=>{
-    b.addEventListener("click", ()=>{
-      const idx = parseInt(b.dataset.tab,10);
-      if (!isNaN(idx)) setTab(idx);
-    });
+  const rulesModal = document.getElementById("rulesModal");
+  const rulesBtn = document.getElementById("rulesBtn");
+  const rulesClose = document.getElementById("rulesClose");
+
+  rulesBtn?.addEventListener("click", ()=>{
+    if (!rulesModal) return;
+    rulesModal.hidden = false;
+    rulesClose?.focus();
   });
+
+  const closeRules = ()=>{
+    if (!rulesModal) return;
+    rulesModal.hidden = true;
+    rulesBtn?.focus();
+  };
+
+  rulesClose?.addEventListener("click", closeRules);
+  rulesModal?.querySelector("[data-close-rules]")?.addEventListener("click", closeRules);
+  document.addEventListener("keydown", event=>{
+    if (event.key === "Escape" && rulesModal && !rulesModal.hidden) closeRules();
+  });
+
   setTab(0);
 }
 
