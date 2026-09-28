@@ -1622,8 +1622,11 @@ function updateUI(){
     Array.isArray(caseContracts[id]?.debts) && caseContracts[id].debts.length
   );
 
-  // I metadati tecnici del caso non vengono più scritti nel Fascicolo del caso centrale:
-  // il Master li vede nel Fascicolo Completo laterale.
+  // Il Fascicolo del caso del Master mostra anche i metadati e i contratti specifici del caso.
+  UI.caseArcBadge.textContent = "Arco: " + String(c.arc || "—").toUpperCase();
+  UI.caseTagBadge.textContent = "Tag: " + (caseTags.length ? caseTags.join(" · ") : "—");
+  UI.casePromise.textContent = "Promessa: " + (promiseDecisions.length ? promiseDecisions.map(id=>decisionLabel(id)).join(" · ") : "—");
+  UI.caseDebt.textContent = "Debito: " + (debtDecisions.length ? debtDecisions.map(id=>decisionLabel(id)).join(" · ") : "—");
   UI.caseNotes.textContent = (c.notes && String(c.notes).trim()) ? String(c.notes) : "Nessuna nota.";
   renderInvestigation(c, getEffectiveDossierLevel());
 
