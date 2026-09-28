@@ -566,6 +566,10 @@
             <option value="coop">Streamer + ospite</option>
           </select>
         </div>
+        <div class="field" id="hangmanThemeField" hidden>
+          <label for="hangmanTheme">Tema</label>
+          <select id="hangmanTheme"></select>
+        </div>
         <div class="notice">
           Il creator crea la stanza e condivide il codice. L'ospite inserisce il codice e sceglie il proprio nick quando entra.
         </div>
@@ -675,6 +679,8 @@
 
       $('seedField').hidden = game !== 'paper-please';
       $('modeField').hidden = game !== 'paper-please';
+      $('hangmanThemeField').hidden = game !== 'impiccato';
+      if (game === 'impiccato') $('hangmanTheme').focus();
       $('configModal').hidden = false;
 
       if (game === 'paper-please') $('ppSeed').focus();
@@ -686,12 +692,29 @@
       state.selectedGame = null;
     }
 
+    const HANGMAN_THEMES = [
+      'Vita Reale','Streaming','Videogiochi','Anime','Fantasy','Horror',
+      'Cibo','Viaggi','Scuola','Lavoro','Meme','Feste','Streamer Life'
+    ];
+
+    HANGMAN_THEMES.forEach((theme) => {
+      const option = document.createElement('option');
+      option.value = theme;
+      option.textContent = theme;
+      $('hangmanTheme').appendChild(option);
+    });
+
     function readGameConfig() {
-      if (state.selectedGame !== 'paper-please') return {};
-      return {
-        seed: $('ppSeed').value.trim(),
-        mode: $('ppMode').value
-      };
+      if (state.selectedGame === 'impiccato') {
+        return { theme: $('hangmanTheme').value };
+      }
+      if (state.selectedGame === 'paper-please') {
+        return {
+          seed: $('ppSeed').value.trim(),
+          mode: $('ppMode').value
+        };
+      }
+      return {};
     }
 
     function buildGameUrl(game, role, nickname, gameConfig = {}) {
@@ -699,8 +722,9 @@
       const room = encodeURIComponent(state.roomCode);
 
       if (game === 'impiccato') {
+        const theme = encodeURIComponent(gameConfig.theme || 'Vita Reale');
         return './impiccato/index.html?role=' + (role === 'host' ? 'A' : 'B') +
-          '&player=' + player + '&room=' + room;
+          '&player=' + player + '&room=' + room + '&theme=' + theme;
       }
 
       if (game === 'indovina-chi') {
