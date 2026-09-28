@@ -891,7 +891,6 @@ button,input,select{font:inherit}
 <img id="roundImage" alt="">
 <div class="turn-row" id="roundResult" style="font-weight:900;display:none;"></div>
             <div class="label" id="currentThemeLabel">TEMA: VITA REALE</div>
-      <select id="themeSelect" aria-label="Tema del round"></select>
       <div class="scoreboard">
         <button class="score-btn" id="subScore">-1</button>
         <span class="value" id="scoreA">0</span>
@@ -1046,6 +1045,7 @@ button,input,select{font:inherit}
 
 const urlParams   = new URLSearchParams(window.location.search);
 const forcedRole  = urlParams.get("role");   // "A", "B" oppure null
+const sessionTheme = (urlParams.get("theme") || "Vita Reale").trim();
 const playerNameFromUrl = urlParams.get("player") || urlParams.get("name") || null;
 
 let clientId = sessionStorage.getItem("impiccatoClientId");
@@ -1657,11 +1657,7 @@ function aggiornaUI(){
   if (themeBEl) themeBEl.textContent = gB.theme || "-";
 
   if (currentThemeLabel){
-    currentThemeLabel.textContent = "TEMA: " + String(stato.game.theme || "VITA REALE").toUpperCase();
-  }
-  if (themeSelectEl){
-    themeSelectEl.value = stato.game.theme || TEMI[0];
-    themeSelectEl.style.display = forcedRole === "A" ? "" : "none";
+    currentThemeLabel.textContent = "TEMA: " + String(stato.game.theme || sessionTheme || "VITA REALE").toUpperCase();
   }
 
   if (roundResultEl){
@@ -1699,17 +1695,6 @@ const themeAEl   = document.getElementById("theme-A");
 const themeBEl   = document.getElementById("theme-B");
 const roundResultEl = document.getElementById("roundResult");
 const currentThemeLabel = document.getElementById("currentThemeLabel");
-const themeSelectEl = document.getElementById("themeSelect");
-
-if (themeSelectEl){
-  TEMI.forEach(theme => {
-    const option = document.createElement("option");
-    option.value = theme;
-    option.textContent = theme;
-    themeSelectEl.appendChild(option);
-  });
-  themeSelectEl.value = stato.game.theme || TEMI[0];
-}
 
 const connectionStatusEl = document.createElement("span");
 connectionStatusEl.id = "realtimeStatus";
@@ -1921,7 +1906,7 @@ async function nuovoRound(initial = false){
   if (roomCode && forcedRole !== "A") return;
   if (!initial && stato.game.A.status === "playing" && stato.game.B.status === "playing") return;
 
-  const selectedTheme = themeSelectEl?.value || stato.game.theme || TEMI[0];
+  const selectedTheme = stato.game.theme || sessionTheme || TEMI[0];
   const fA = nuovaFraseCasuale(selectedTheme);
   const fB = nuovaFraseCasuale(selectedTheme, fA.phrase);
 
