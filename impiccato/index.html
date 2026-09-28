@@ -678,34 +678,35 @@ button,input,select{font:inherit}
 /* ===== SCORE FX ===== */
 
 .score-fx{
-  position:absolute;
-  left:50%;
-  top:50%;
-  z-index:50;
-  transform:translate(-50%,-50%);
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   pointer-events:none;
   opacity:0;
   font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;
-  font-size:clamp(70px,10vw,150px);
+  font-size:clamp(140px,22vw,360px);
   font-weight:900;
   line-height:.8;
   letter-spacing:.02em;
-  color:var(--ink);
-  -webkit-text-stroke:4px var(--paper);
-  text-shadow:7px 7px 0 var(--ink);
+  -webkit-text-stroke:8px #111;
+  text-shadow:12px 12px 0 #111;
 }
 
-.score-fx.positive,.score-fx.negative{color:var(--paper)}
+.score-fx.positive{color:#19d34a}
+.score-fx.negative{color:#e32626}
 
 .score-fx.show{
-  animation:scoreFxPop .55s steps(4,end) forwards;
+  animation:scoreFxPop .65s steps(5,end) forwards;
 }
 
 @keyframes scoreFxPop{
-  0%{opacity:0;transform:translate(-50%,-35%) scale(.45) rotate(-5deg)}
-  18%{opacity:1;transform:translate(-50%,-52%) scale(1.15) rotate(3deg)}
-  45%{opacity:1;transform:translate(-50%,-55%) scale(1) rotate(-2deg)}
-  100%{opacity:0;transform:translate(-50%,-72%) scale(.8) rotate(0)}
+  0%{opacity:0;transform:scale(.35) rotate(-6deg)}
+  15%{opacity:1;transform:scale(1.2) rotate(3deg)}
+  45%{opacity:1;transform:scale(1) rotate(-2deg)}
+  100%{opacity:0;transform:scale(1.15) rotate(0)}
 }
 
 /* ===== RESPONSIVE / OBS ===== */
