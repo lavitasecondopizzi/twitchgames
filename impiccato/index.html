@@ -1772,13 +1772,16 @@ function puoControllare(playerId){
   return player && player.toUpperCase() === playerId;
 }
 
+function roundConcluso(){
+  return ["won","lost"].includes(stato.game.A.status) &&
+         ["won","lost"].includes(stato.game.B.status);
+}
+
 function aggiornaInterattivita(){
-  // punteggio: può modificarlo solo chi è A o B (entrambi i lati usano punteggio proprio)
-  if (subScoreBtn){
-    subScoreBtn.disabled = !player;
-  }
-  if (addScoreBtn){
-    addScoreBtn.disabled = !player;
+  if (subScoreBtn) subScoreBtn.disabled = !player;
+  if (addScoreBtn) addScoreBtn.disabled = !player;
+  if (newRoundBtn){
+    newRoundBtn.disabled = forcedRole !== "A" || !roundConcluso();
   }
 }
 
@@ -1845,6 +1848,8 @@ async function onLetterClick(playerId, letter, fromHostEvent = false){
 
   const other = (playerId === "A") ? "B" : "A";
   const otherState = stato.game[other];
+
+  if (roundConcluso()) stato.game.turn = null;
 
   // logica turni:
   if (otherState.status === "playing") {
@@ -1961,7 +1966,7 @@ function initTabs(){
 /* ========= INIT ========= */
 
 newRoundBtn.addEventListener("click", () => {
-  if (player === "A") nuovoRound();
+  if (forcedRole === "A" && roundConcluso()) nuovoRound();
 });
 
 (async function init(){
