@@ -1607,6 +1607,9 @@ function updateUI(){
   // il Master li vede nel Fascicolo Completo laterale.
   UI.caseNotes.textContent = (c.notes && String(c.notes).trim()) ? String(c.notes) : "Nessuna nota.";
 
+  // Il Fascicolo Completo laterale usa i dati completi del caso e deve essere aggiornato ad ogni cambio di stato.
+  renderMasterDossier(c);
+
   // Dati globali della run restano nell'area Master, non vengono spacciati per dati del caso.
   const debtOpen = stato.debts.filter(x=>x.status==="open").length;
   const promOpen = stato.promises.filter(x=>x.status==="open").length;
