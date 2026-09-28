@@ -23,7 +23,7 @@
       if (!/^[A-Z0-9]{6}$/.test(this.room)) {
         throw new Error('Codice stanza non valido.');
       }
-      if (!['host', 'guest'].includes(this.role)) {
+      if (!['host', 'guest', 'master'].includes(this.role)) {
         throw new Error('Ruolo stanza non valido.');
       }
 
