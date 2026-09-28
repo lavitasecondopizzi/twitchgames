@@ -1308,7 +1308,16 @@ function renderShop(){
     const btn=document.createElement("button");btn.className="btn shop-buy";btn.type="button";
     btn.textContent=(item.id==="dossier2_once"&&shopPurchasedDossier()>=2)||(item.id==="dossier3_once"&&shopPurchasedDossier()>=3)?"SBLOCCATO":"ACQUISTA · "+item.cost+" ("+inv+")";
     btn.disabled=!shopCanPurchase(item.id)||(stato?.stamps||0)<Number(item.cost||0);
-    btn.addEventListener("click",()=>{if(isMaster)purchaseShopItem(item.id);else roomClient?.broadcast("game_event",{type:"shop_purchase",itemId:item.id,user:guestName,ts:Date.now()}).catch(()=>{});});
+    btn.addEventListener("click",()=>{
+      if(isMaster)purchaseShopItem(item.id);
+      else roomClient?.broadcast("game_event",{
+        type:"shop_purchase",
+        itemId:item.id,
+        user:guestName,
+        requestId:guestName+"-"+Date.now()+"-"+Math.random().toString(36).slice(2),
+        ts:Date.now()
+      }).catch(()=>{});
+    });
     row.append(info,btn);
     if((item.id==="retrial"||item.id==="amnesty")&&shopInventory(item.id)>0){
       const use=document.createElement("button");use.className="btn ghost shop-buy";use.type="button";use.textContent=item.id==="retrial"?"USA RIESAME":"USA AMNISTIA";use.disabled=!shopCanUse(item.id);
