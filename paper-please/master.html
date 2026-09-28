@@ -1684,7 +1684,7 @@ async function connectRoom(){
   });
   roomClient.on("presence",presence=>{
     const guest=Object.values(presence||{}).flat().find(e=>e.role==="guest");
-    const name=guest?.nickname || "Ospite";
+    const name=String(guest?.nickname || guestName || "Ospite").trim() || "Ospite";
     const guestEl=document.getElementById("masterGuestName");
     const statusEl=document.getElementById("masterGuestStatus");
     if(guestEl)guestEl.textContent=name;
