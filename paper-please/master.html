@@ -276,6 +276,13 @@ body.master-view .decision-btn{cursor:default}
 .master-section-title{font-size:6px;font-weight:900;text-transform:uppercase;margin-bottom:4px}
 .master-tags{display:flex;flex-wrap:wrap;gap:3px}
 .master-tags span{padding:3px 4px;border:2px solid var(--line);background:var(--paper2);font-size:6px;font-weight:900}
+.master-identity-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.master-identity-grid>div{min-width:0;padding:4px;border:2px solid var(--line);background:var(--paper2)}
+.master-identity-grid>div.wide{grid-column:1/-1}
+.master-identity-grid small{display:block;font-size:5px;font-weight:900;text-transform:uppercase;margin-bottom:2px}
+.master-identity-grid strong,.master-identity-grid span{display:block;font-size:6px;line-height:1.35;overflow-wrap:anywhere}
+.master-identity-grid strong{text-transform:uppercase}
+.master-hints span{background:#fff}
 .master-twists{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
 .master-twist{padding:5px;border:2px solid var(--line);background:#fff;font-size:6px;line-height:1.35}
 .master-twist strong{display:block;font-size:7px;margin-bottom:3px;text-transform:uppercase}
@@ -465,9 +472,25 @@ body.master-view .decision-btn{cursor:default}
               <span class="master-intel-title">FASCICOLO COMPLETO</span>
               <span class="badge vio">MASTER</span>
             </div>
+            <div class="master-section master-case-identity">
+              <div class="master-section-title">IDENTITÀ DEL SOGGETTO</div>
+              <div class="master-identity-grid">
+                <div><small>NOME</small><strong id="masterIdentityName">—</strong></div>
+                <div><small>FILE</small><strong id="masterIdentityFile">—</strong></div>
+                <div><small>ORIGINE</small><span id="masterIdentityOrigin">—</span></div>
+                <div><small>LAVORO</small><span id="masterIdentityJob">—</span></div>
+                <div class="wide"><small>MOTIVO DEL TRANSITO</small><span id="masterIdentityReason">—</span></div>
+                <div class="wide"><small>NOTE COMPLETE</small><span id="masterIdentityNotes">—</span></div>
+                <div><small>ARCO NARRATIVO</small><strong id="masterIdentityArc">—</strong></div>
+              </div>
+            </div>
             <div class="master-section">
-              <div class="master-section-title">INDIZI / TAG INTERNI</div>
+              <div class="master-section-title">TAG INTERNI</div>
               <div class="master-tags" id="masterTags">—</div>
+            </div>
+            <div class="master-section">
+              <div class="master-section-title">INDIZI / TAG HINTS</div>
+              <div class="master-tags master-hints" id="masterTagHints">—</div>
             </div>
             <div class="master-section">
               <div class="master-section-title">CONSEGUENZE PREVISTE</div>
@@ -617,6 +640,14 @@ const UI = {
 
   masterEffects: el("masterEffects"),
   masterTags: el("masterTags"),
+  masterTagHints: el("masterTagHints"),
+  masterIdentityName: el("masterIdentityName"),
+  masterIdentityFile: el("masterIdentityFile"),
+  masterIdentityOrigin: el("masterIdentityOrigin"),
+  masterIdentityJob: el("masterIdentityJob"),
+  masterIdentityReason: el("masterIdentityReason"),
+  masterIdentityNotes: el("masterIdentityNotes"),
+  masterIdentityArc: el("masterIdentityArc"),
   masterTwists: el("masterTwists"),
   masterConditions: el("masterConditions"),
   masterContracts: el("masterContracts"),
@@ -1641,12 +1672,42 @@ function updateUI(){
 
 function renderMasterDossier(caseObj){
   if(!caseObj)return;
+
+  // Tutti i campi del caso vengono esposti al Master.
+  const identity = {
+    name: caseObj.name || "—",
+    file: caseObj.file || "—",
+    origin: caseObj.origin || "—",
+    job: caseObj.job || "—",
+    reason: caseObj.reason || "—",
+    notes: caseObj.notes || "—",
+    arc: caseObj.arc || "—"
+  };
+  if(UI.masterIdentityName) UI.masterIdentityName.textContent=identity.name;
+  if(UI.masterIdentityFile) UI.masterIdentityFile.textContent=identity.file;
+  if(UI.masterIdentityOrigin) UI.masterIdentityOrigin.textContent=identity.origin;
+  if(UI.masterIdentityJob) UI.masterIdentityJob.textContent=identity.job;
+  if(UI.masterIdentityReason) UI.masterIdentityReason.textContent=identity.reason;
+  if(UI.masterIdentityNotes) UI.masterIdentityNotes.textContent=identity.notes;
+  if(UI.masterIdentityArc) UI.masterIdentityArc.textContent=identity.arc;
+
   const tags=Array.isArray(caseObj.tags)?caseObj.tags:[];
   UI.masterTags.innerHTML="";
   if(!tags.length) UI.masterTags.textContent="Nessun tag interno.";
   else tags.forEach(tag=>{
     const el=document.createElement("span");el.textContent=tag;UI.masterTags.appendChild(el);
   });
+
+  const hints=Array.isArray(caseObj.tagHints)?caseObj.tagHints:[];
+  if(UI.masterTagHints){
+    UI.masterTagHints.innerHTML="";
+    if(!hints.length) UI.masterTagHints.textContent="Nessun indizio.";
+    else hints.forEach(hint=>{
+      const el=document.createElement("span");
+      el.textContent=hint;
+      UI.masterTagHints.appendChild(el);
+    });
+  }
 
   renderMasterEffects(caseObj);
 
