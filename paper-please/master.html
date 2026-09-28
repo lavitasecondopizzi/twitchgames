@@ -1676,7 +1676,7 @@ async function connectRoom(){
     console.warn("Codice stanza mancante o non valido.");return;
   }
   roomClient=new TortelloSupabaseRoom({
-    room:roomCode,role:"master",
+    room:roomCode,role:"host",
     nickname:streamerName,game:"paper-please",
     gameConfig:{seed:urlParams.get("seed")||"",mode:soloMode?"solo":(urlParams.get("mode")||"coop")}
   });
