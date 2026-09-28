@@ -950,64 +950,49 @@ button,input,select{font:inherit}
             <div class="rules-dialog-head">
               <span class="rules-kicker">TORTELLO GAMES / IMPICCATO</span>
               <h2 id="rulesTitle">Come si gioca</h2>
-              <p class="rules-intro">Due giocatori affrontano contemporaneamente una frase segreta ciascuno. Il turno indica chi può scegliere la prossima lettera.</p>
-            </div>
-
-            <div class="rules-section">
-              <h3>1 — OBIETTIVO</h3>
-              <p>Ogni giocatore deve scoprire completamente la propria frase prima di accumulare <b>6 errori</b>.</p>
+              <p class="rules-intro"><b>Scopri la tua frase</b> prima di fare 6 errori. Si gioca a turno: scegli una lettera e passa la mano.</p>
             </div>
 
             <div class="rules-grid">
               <article class="rules-card">
-                <h3>LA FRASE</h3>
-                <p>Ogni round vengono generate <b>due frasi diverse</b>, una per A e una per B. Le parole sono separate dagli spazi e le lettere non ancora scoperte vengono mostrate come <b>_</b>.</p>
+                <h3>① IL TURNO</h3>
+                <p>Gioca solo chi è indicato al centro. Dopo la scelta, il turno passa all'altro.</p>
               </article>
               <article class="rules-card">
-                <h3>IL TURNO</h3>
-                <p>Il turno passa da un giocatore all'altro. Può giocare solo chi ha il proprio turno: l'altro deve aspettare.</p>
+                <h3>② LETTERA GIUSTA</h3>
+                <p>La lettera compare nella frase? Vengono scoperte <b>tutte</b> le sue occorrenze.</p>
               </article>
               <article class="rules-card">
-                <h3>LETTERA CORRETTA</h3>
-                <p>Se la lettera scelta è presente nella frase, vengono rivelate <b>tutte</b> le sue occorrenze.</p>
+                <h3>③ LETTERA SBAGLIATA</h3>
+                <p>La lettera non c'è? Fai <b>1 errore</b>. A 6 errori perdi la tua frase.</p>
               </article>
-              <article class="rules-card">
-                <h3>LETTERA SBAGLIATA</h3>
-                <p>Se la lettera non compare nella frase, viene aggiunto <b>1 errore</b> e viene disegnata una parte dell'omino.</p>
-              </article>
-              <article class="rules-card">
-                <h3>6 ERRORI</h3>
-                <p>Quando un giocatore raggiunge 6 errori, perde la propria frase. L'altro giocatore può continuare finché non termina anche la sua partita.</p>
-              </article>
-              <article class="rules-card">
-                <h3>FINE DEL ROUND</h3>
-                <p>Il round termina quando entrambi hanno concluso la propria frase. Il risultato viene mostrato al centro dello schermo.</p>
-              </article>
+            </div>
+
+            <div class="rules-section">
+              <h3>FINE DEL ROUND</h3>
+              <p>Ogni giocatore continua finché non completa la frase o arriva a 6 errori. Quando entrambi hanno finito, il round termina.</p>
             </div>
 
             <div class="rules-section rules-score">
-              <h3>2 — PUNTEGGIO</h3>
-              <p>Quando un giocatore completa la propria frase riceve <b>+1</b>. Quando raggiunge 6 errori riceve <b>-1</b>. Il punteggio non può scendere sotto 0.</p>
-              <p>I pulsanti <b>-1</b> e <b>+1</b> permettono inoltre di correggere manualmente il punteggio durante la partita.</p>
+              <h3>PUNTEGGIO</h3>
+              <p><b>+1</b> se completi la frase · <b>-1</b> se arrivi a 6 errori · il punteggio non scende sotto 0.</p>
+              <p>I pulsanti <b>-1</b> e <b>+1</b> servono per correggere manualmente il punteggio.</p>
             </div>
 
             <div class="rules-section rules-chat">
-              <h3>3 — MODALITÀ SOLO CHAT</h3>
-              <p>In questa modalità il lato B non appartiene a un secondo giocatore: <b>B è controllato dalla chat</b>.</p>
+              <h3>SOLO CHAT</h3>
+              <p>In questa modalità <b>B è la chat</b>. Quando tocca a B:</p>
               <ol>
-                <li>Quando è il turno di B, parte una votazione di <b>30 secondi</b>.</li>
-                <li>La chat propone una lettera.</li>
-                <li>Durante il conto alla rovescia vengono mostrati i voti ricevuti.</li>
-                <li>Alla scadenza viene scelta la lettera con il maggior numero di voti.</li>
-                <li>Se più lettere hanno lo stesso numero massimo di voti, ne viene scelta una casualmente tra quelle a pari merito.</li>
-                <li>La lettera scelta viene giocata automaticamente per B e il turno prosegue normalmente.</li>
+                <li>parte una votazione di <b>30 secondi</b>;</li>
+                <li>la chat vota una lettera;</li>
+                <li>vince la lettera con più voti e viene giocata automaticamente.</li>
               </ol>
-              <p class="rules-note">Il collegamento diretto alla chat Twitch verrà aggiunto dopo la sistemazione di tutti i giochi.</p>
+              <p class="rules-note">A pari merito viene scelta una delle lettere casualmente.</p>
             </div>
 
             <div class="rules-section rules-new-round">
-              <h3>4 — NUOVO ROUND</h3>
-              <p>L'host può avviare un nuovo round in qualsiasi momento. Vengono generate due nuove frasi e vengono azzerati stato, errori, lettere e votazione del round precedente.</p>
+              <h3>NUOVO ROUND</h3>
+              <p>L'host può iniziarne uno in qualsiasi momento: nuove frasi, errori e lettere vengono azzerati.</p>
             </div>
           </section>
         </div>
