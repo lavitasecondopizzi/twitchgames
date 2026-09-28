@@ -1297,6 +1297,47 @@ let roomClient = null;
 let roomReady = false;
 let stateRevision = 0;
 
+function hostSnapshotKey(){
+  return roomCode ? "impiccatoHostState:" + roomCode : null;
+}
+
+function loadHostSnapshot(){
+  if (forcedRole !== "A" || !roomCode) return false;
+  try{
+    const raw = sessionStorage.getItem(hostSnapshotKey());
+    if (!raw) return false;
+    const saved = JSON.parse(raw);
+    if (!saved || typeof saved !== "object" || !saved.game) return false;
+    stato = {
+      ...stato,
+      ...saved,
+      game: {
+        ...stato.game,
+        ...saved.game,
+        A: { ...stato.game.A, ...(saved.game.A || {}) },
+        B: { ...stato.game.B, ...(saved.game.B || {}) }
+      }
+    };
+    stateRevision = Number(saved._revision || 0);
+    return true;
+  }catch(e){
+    console.warn("Snapshot host non valido:", e);
+    return false;
+  }
+}
+
+function saveHostSnapshot(){
+  if (forcedRole !== "A" || !roomCode) return;
+  try{
+    sessionStorage.setItem(hostSnapshotKey(), JSON.stringify({
+      ...stato,
+      _revision: stateRevision
+    }));
+  }catch(e){
+    console.warn("Impossibile salvare snapshot host:", e);
+  }
+}
+
 function mergeGameState(data){
   if (!data || typeof data !== "object") return;
   stato = {
@@ -1328,6 +1369,7 @@ async function broadcastGameState(){
     _sender: clientId
   };
   stato = { ...stato, _revision: stateRevision };
+  saveHostSnapshot();
   await roomClient.broadcast("game_state", publicState);
 }
 
@@ -1352,6 +1394,7 @@ async function salvaStato(overrides = {}){
     };
     stato = payload;
     aggiornaUI();
+    if (forcedRole === "A") saveHostSnapshot();
     if (!roomCode || forcedRole === "A") await broadcastGameState();
   }catch(e){
     console.error("Errore invio stato realtime:", e);
@@ -1361,6 +1404,7 @@ async function salvaStato(overrides = {}){
 }
 
 async function caricaStato(){
+  if (forcedRole === "A") loadHostSnapshot();
   if (!roomCode || !["A","B"].includes(forcedRole)){
     decidiRuoloDaStato();
     aggiornaUI();
