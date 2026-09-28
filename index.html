@@ -554,6 +554,14 @@
       </div>
 
       <div class="options">
+        <div class="field" id="interactionModeField">
+          <label for="interactionMode">Modalità di gioco</label>
+          <select id="interactionMode">
+            <option value="guest">Ospite + Chat</option>
+            <option value="chat">Solo Chat</option>
+          </select>
+        </div>
+
         <div class="field" id="seedField" hidden>
           <label for="ppSeed">Seed iniziale</label>
           <input id="ppSeed" placeholder="Lascia vuoto per casuale" />
@@ -661,6 +669,7 @@
       roomRole: null,
       roomClient: null,
       gameConfig: {},
+      interactionMode: 'guest',
       roomInfoReceived: false,
       gameStarted: false
     };
@@ -706,12 +715,13 @@
 
     function readGameConfig() {
       if (state.selectedGame === 'impiccato') {
-        return { theme: $('hangmanTheme').value };
+        return { theme: $('hangmanTheme').value, interactionMode: $('interactionMode').value };
       }
       if (state.selectedGame === 'paper-please') {
         return {
           seed: $('ppSeed').value.trim(),
-          mode: $('ppMode').value
+          mode: $('ppMode').value,
+          interactionMode: $('interactionMode').value
         };
       }
       return {};
@@ -720,16 +730,17 @@
     function buildGameUrl(game, role, nickname, gameConfig = {}) {
       const player = encodeURIComponent(nickname || (role === 'host' ? 'Pizzi' : 'Ospite'));
       const room = encodeURIComponent(state.roomCode);
+      const interaction = encodeURIComponent(gameConfig.interactionMode || 'guest');
 
       if (game === 'impiccato') {
         const theme = encodeURIComponent(gameConfig.theme || 'Vita Reale');
         return './impiccato/index.html?role=' + (role === 'host' ? 'A' : 'B') +
-          '&player=' + player + '&room=' + room + '&theme=' + theme;
+          '&player=' + player + '&room=' + room + '&theme=' + theme + '&interaction=' + interaction;
       }
 
       if (game === 'indovina-chi') {
         return './indovina-chi/index.html?role=' + (role === 'host' ? 'A' : 'B') +
-          '&player=' + player + '&room=' + room;
+          '&player=' + player + '&room=' + room + '&interaction=' + interaction;
       }
 
       if (game === 'paper-please') {
@@ -737,12 +748,12 @@
         const mode = gameConfig.mode === 'solo' ? '&mode=solo' : '';
         return './paper-please/index.html?seed=' + seed +
           '&streamer=' + player + mode + '&room=' + room +
-          '&role=' + role;
+          '&role=' + role + '&interaction=' + interaction;
       }
 
       if (game === 'quiz-pizzi') {
         return './quiz-pizzi/index.html?room=' + room +
-          '&role=' + role + '&player=' + player;
+          '&role=' + role + '&player=' + player + '&interaction=' + interaction;
       }
 
       return null;
@@ -760,6 +771,14 @@
       const guests = entries.filter((entry) => entry.role === 'guest');
       const guest = guests[0];
       const launchButton = $('launchRoomGame');
+      const chatMode = state.interactionMode === 'chat';
+
+      if (chatMode) {
+        $('roomPlayerLabel').textContent = 'HOST · PIZZI · SOLO CHAT';
+        $('roomNotice').textContent = 'Modalità Solo Chat: non serve un ospite. La chat sarà il secondo giocatore.';
+        launchButton.disabled = false;
+        return;
+      }
 
       if (guests.length === 1) {
         $('roomPlayerLabel').textContent = 'HOST · PIZZI · OSPITE: ' + guest.nickname;
@@ -824,6 +843,7 @@
       state.roomCode = createRoomCode();
       state.roomRole = 'host';
       state.gameConfig = readGameConfig();
+      state.interactionMode = state.gameConfig.interactionMode || 'guest';
 
       try {
         const client = new TortelloSupabaseRoom({
@@ -840,9 +860,11 @@
         await client.sendRoomInfo();
 
         $('roomCodeDisplay').textContent = state.roomCode;
-        $('roomGameLabel').textContent = gameLabel(state.selectedGame);
+        $('roomGameLabel').textContent = gameLabel(state.selectedGame) + ' · ' + (state.interactionMode === 'chat' ? 'SOLO CHAT' : 'OSPITE + CHAT');
         $('roomPlayerLabel').textContent = 'HOST · PIZZI · IN ATTESA DELL’OSPITE';
-        $('roomNotice').textContent = 'Condividi il codice con il tuo ospite. Quando entra, il suo nick comparirà qui.';
+        $('roomNotice').textContent = state.interactionMode === 'chat'
+          ? 'Modalità Solo Chat: puoi avviare subito. La chat sarà il secondo giocatore.'
+          : 'Condividi il codice con il tuo ospite. Quando entra, il suo nick comparirà qui.';
         $('roomModal').hidden = false;
         updateHostPresence(client.presenceState());
       } catch (error) {
@@ -883,7 +905,7 @@
     async function launchRoomGame() {
       if (!state.roomClient || !state.roomCode || !state.selectedGame) return;
 
-      if (!state.roomClient.hasGuest()) {
+      if (state.interactionMode !== 'chat' && !state.roomClient.hasGuest()) {
         $('roomNotice').textContent = 'L’ospite non è ancora entrato nella stanza.';
         return;
       }
