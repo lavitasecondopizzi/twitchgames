@@ -1683,7 +1683,7 @@ async function connectRoom(){
   roomClient.on("game-state",applyRemoteState);
   roomClient.on("game-event",handleGameEvent);
   roomClient.on("state-request",payload=>{
-    if(isMaster&&payload?.requester==="guest")broadcastState().catch(()=>{});
+    if(isMaster&&payload?.requester!=="master")broadcastState().catch(()=>{});
   });
   roomClient.on("guest_identity",payload=>{
     const name=String(payload?.nickname||"").trim();
