@@ -478,7 +478,6 @@ body.master-view .decision-btn{cursor:default}
 const urlParams = new URLSearchParams(location.search);
 const masterMode = urlParams.get("master")==="1";
 const roomRole = urlParams.get("role") === "host" ? "host" : "guest";
-const soloMode  = roomRole === "guest" && (urlParams.get("solo")==="1" || urlParams.get("mode")==="solo");
 const roomCode = (urlParams.get("room") || "").trim().toUpperCase();
 const forcedRole = roomRole;
 const isHost = roomRole === "host";
