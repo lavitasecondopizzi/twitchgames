@@ -108,7 +108,7 @@ button,select{font:inherit}
   min-width:0;
   min-height:0;
   display:grid;
-  grid-template-rows:auto 1fr auto;
+  grid-template-rows:auto minmax(0,1fr) auto;
   gap:7px;
   padding:10px;
   background:var(--paper);
@@ -164,6 +164,7 @@ button,select{font:inherit}
   white-space:nowrap;
 }
 .round-preview{
+  min-width:0;
   min-height:0;
   display:flex;
   align-items:center;
@@ -176,6 +177,8 @@ button,select{font:inherit}
 }
 .round-preview img{
   display:block;
+  min-width:0;
+  min-height:0;
   width:100%;
   height:100%;
   max-width:100%;
