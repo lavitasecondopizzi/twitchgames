@@ -670,8 +670,7 @@ button,select{font:inherit}
       <div class="center-header">
         <div class="label">Il tuo personaggio</div>
         <div class="round-controls">
-          <select id="roundSelect" aria-label="Scegli il tuo personaggio"></select>
-          <button class="btn" id="confirmCharacter">Conferma</button>
+          <button class="btn" id="chooseCharacter">Scegli</button>
           <button class="btn" id="newRound">Nuovo Round</button>
         </div>
       </div>
@@ -873,32 +872,13 @@ function buildGrids(){
 }
 
 function setupRoundSection(){
-  const roundSelect = document.getElementById("roundSelect");
-  const confirmButton = document.getElementById("confirmCharacter");
-  if(!roundSelect || !confirmButton) return;
+  const chooseButton = document.getElementById("chooseCharacter");
 
-  roundSelect.innerHTML = "";
-  images.forEach((img, index) => {
-    const opt = document.createElement("option");
-    opt.value = String(index);
-    opt.textContent = img.name;
-    roundSelect.append(opt);
-  });
-
-  if(personalCharacter?.src){
-    const current = images.findIndex(img => img.src === personalCharacter.src);
-    if(current >= 0) roundSelect.value = String(current);
-  }
-
-  confirmButton.onclick = () => {
+  chooseButton.onclick = () => {
     if(!player) return;
-    const selected = images[Number(roundSelect.value)];
-    if(!selected) return;
-    savePersonalCharacter(selected);
-    confirmButton.textContent = "Confermato";
-    roundSelect.disabled = true;
-    renderPersonalCharacter();
-    aggiornaUI();
+    const board = document.querySelector(".board[data-board='" + player + "']");
+    const choosing = board?.classList.toggle("choosing-character");
+    chooseButton.textContent = choosing ? "Annulla" : (personalCharacter ? "Cambia" : "Scegli");
   };
 
   document.getElementById("newRound").onclick = () => {
@@ -909,9 +889,6 @@ function setupRoundSection(){
     localStorage.removeItem("tortello-indovina-chi:" + roomCode + ":A:character");
     localStorage.removeItem("tortello-indovina-chi:" + roomCode + ":B:character");
     personalCharacter = null;
-    roundSelect.disabled = false;
-    roundSelect.value = "0";
-    confirmButton.textContent = "Conferma";
     renderPersonalCharacter();
     aggiornaUI();
     salvaStato();
