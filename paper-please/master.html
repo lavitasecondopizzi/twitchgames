@@ -496,8 +496,9 @@ const urlParams = new URLSearchParams(location.search);
 const masterMode = true;
 const soloMode  = !masterMode && (urlParams.get("solo")==="1" || urlParams.get("mode")==="solo");
 const roomCode = (urlParams.get("room") || "").trim().toUpperCase();
-const forcedRole = masterMode ? "host" : "guest";
-const isHost = masterMode;
+const forcedRole = "master";
+const isMaster = true;
+const isHost = false;
 const streamerName = urlParams.get("streamer") || "Pizzi";
 const isGuest = !masterMode;
 const guestStorageKey = roomCode ? "tortello:paper:guest:" + roomCode : "";
@@ -1132,7 +1133,7 @@ function setPhase(phase){
   saveState();
 }
 function tickPhase(){
-  if (!isHost || stato.gameOver || stato.runCompleted) return;
+  if (!isMaster || stato.gameOver || stato.runCompleted) return;
 
   if (stato.phaseEndsAt && Date.now() >= stato.phaseEndsAt){
     // auto-advance
@@ -1611,15 +1612,15 @@ function mergeLoadedState(data){
   ensureState();
 }
 function statePayload(){
-  return {...stato,runOrder:order.slice(),_revision:revision,_sender:isHost?"host":"guest",_sentAt:Date.now()};
+  return {...stato,runOrder:order.slice(),_revision:revision,_sender:"master",_sentAt:Date.now()};
 }
 async function broadcastState(){
-  if(!roomClient||!isHost||isApplyingRemoteState)return;
+  if(!roomClient||!isMaster||isApplyingRemoteState)return;
   revision++;
   await roomClient.broadcast("game_state",statePayload());
 }
 async function saveState(){
-  if(!isHost||isApplyingRemoteState)return;
+  if(!isMaster||isApplyingRemoteState)return;
   try{ensureState();updateUI();await broadcastState();}
   catch(e){console.error("Errore broadcast stato:",e);}
 }
@@ -1627,7 +1628,7 @@ function requestGameState(){
   roomClient?.broadcast("state_request",{requester:"guest",_sentAt:Date.now()}).catch(()=>{});
 }
 function applyRemoteState(payload){
-  if(!payload||!isGuest)return;
+  if(!payload)return;
   const incoming=Number(payload._revision)||0;
   if(incoming&&incoming<revision)return;
   revision=Math.max(revision,incoming);
@@ -1675,14 +1676,14 @@ async function connectRoom(){
     console.warn("Codice stanza mancante o non valido.");return;
   }
   roomClient=new TortelloSupabaseRoom({
-    room:roomCode,role:isHost?"host":"guest",
-    nickname:isHost?streamerName:guestName,game:"paper-please",
+    room:roomCode,role:"master",
+    nickname:streamerName,game:"paper-please",
     gameConfig:{seed:urlParams.get("seed")||"",mode:soloMode?"solo":(urlParams.get("mode")||"coop")}
   });
   roomClient.on("game-state",applyRemoteState);
   roomClient.on("game-event",handleGameEvent);
   roomClient.on("state-request",payload=>{
-    if(isHost&&payload?.requester==="guest")broadcastState().catch(()=>{});
+    if(isMaster&&payload?.requester==="guest")broadcastState().catch(()=>{});
   });
   roomClient.on("guest_identity",payload=>{
     const name=String(payload?.nickname||"").trim();
@@ -1703,11 +1704,11 @@ async function connectRoom(){
     if(statusEl)statusEl.textContent=guest ? "COLLEGATO" : "IN ATTESA";
     const camGuest=document.getElementById("camGuestLabel");
     if(camGuest)camGuest.textContent=name;
-    if(isHost&&guest) broadcastState().catch(()=>{});
+    if(isMaster&&guest) broadcastState().catch(()=>{});
   });
   try{
     await roomClient.connect();
-    if(isHost){
+    if(isMaster){
       const guest=roomClient.getGuest();
       if(guest){
         const name=String(guest.nickname||"").trim() || guestName || "Ospite";
@@ -1903,7 +1904,7 @@ UI.btnNextPhase.addEventListener("click", ()=>{
   updateUI();
   await connectRoom();
   setInterval(()=>{
-    if(isHost)tickPhase();
+    if(isMaster)tickPhase();
     updateTimerUI();
     if(isHost&&stato.objectives.active)renderObjective();
   },250);
