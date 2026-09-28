@@ -1909,6 +1909,7 @@ async function adjustScore(playerId, delta, fromHostEvent = false){
 function showScoreFx(delta){
   const fx = document.getElementById("scoreFx");
   if (!fx) return;
+  if (fx.parentElement !== document.body) document.body.appendChild(fx);
 
   const sfxUp   = document.getElementById("sfxUp");
   const sfxDown = document.getElementById("sfxDown");
