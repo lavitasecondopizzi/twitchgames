@@ -242,6 +242,20 @@ body.master-view .decision-btn{cursor:default}
 .master-main>.panel{min-width:0;min-height:0}.master-side>.side{height:100%}.master-side .side-columns{grid-template-columns:1fr;grid-template-rows:minmax(0,1.15fr) minmax(0,.85fr)}.master-side .side-info{height:100%}.master-side .chat-box,.master-side .history-box{min-height:0}
 .master-main .panel-head{margin-bottom:7px}.master-main .grid-case{grid-template-columns:minmax(180px,.82fr) minmax(0,1.18fr)}
 .master-dossier-details{width:100%}
+.master-section{margin-top:7px;padding-top:6px;border-top:2px solid var(--line)}
+.master-section-title{font-size:6px;font-weight:900;text-transform:uppercase;margin-bottom:4px}
+.master-tags{display:flex;flex-wrap:wrap;gap:3px}
+.master-tags span{padding:3px 4px;border:2px solid var(--line);background:var(--paper2);font-size:6px;font-weight:900}
+.master-twists{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+.master-twist{padding:5px;border:2px solid var(--line);background:#fff;font-size:6px;line-height:1.35}
+.master-twist strong{display:block;font-size:7px;margin-bottom:3px;text-transform:uppercase}
+.master-conditions{font-size:6px;line-height:1.4}
+.master-condition{padding:4px 5px;border:2px solid var(--line);background:var(--paper2);margin-bottom:3px}
+.master-contracts{font-size:6px;line-height:1.4}
+.master-contract{padding:4px 5px;border:2px solid var(--line);background:var(--paper2);margin-bottom:3px}
+.master-contract strong{display:block;font-size:6px;text-transform:uppercase}
+@media(max-width:650px){.master-twists{grid-template-columns:1fr}}
+
 .master-shop-confirm{max-width:520px}
 .shop-request{padding:10px;border:3px solid var(--line);background:var(--paper2)}
 .shop-request-label{font-size:6px;font-weight:900;text-transform:uppercase}
@@ -376,10 +390,29 @@ body.master-view .decision-btn{cursor:default}
           </div>
           <div class="master-intel">
             <div class="master-intel-head">
-              <span class="master-intel-title">CONSEGUENZE PREVISTE</span>
-              <span class="badge vio" id="masterIntelTag">MASTER</span>
+              <span class="master-intel-title">FASCICOLO COMPLETO</span>
+              <span class="badge vio">MASTER</span>
             </div>
-            <div class="master-effects" id="masterEffects"></div>
+            <div class="master-section">
+              <div class="master-section-title">INDIZI / TAG INTERNI</div>
+              <div class="master-tags" id="masterTags">—</div>
+            </div>
+            <div class="master-section">
+              <div class="master-section-title">CONSEGUENZE PREVISTE</div>
+              <div class="master-effects" id="masterEffects"></div>
+            </div>
+            <div class="master-section">
+              <div class="master-section-title">TWIST</div>
+              <div class="master-twists" id="masterTwists"></div>
+            </div>
+            <div class="master-section">
+              <div class="master-section-title">TWIST CONDIZIONALI</div>
+              <div class="master-conditions" id="masterConditions">—</div>
+            </div>
+            <div class="master-section">
+              <div class="master-section-title">CONTRATTI</div>
+              <div class="master-contracts" id="masterContracts">—</div>
+            </div>
           </div>
 
           <div>
@@ -554,6 +587,10 @@ const UI = {
   endRestartBtn: el("endRestartBtn"),
 
   masterEffects: el("masterEffects"),
+  masterTags: el("masterTags"),
+  masterTwists: el("masterTwists"),
+  masterConditions: el("masterConditions"),
+  masterContracts: el("masterContracts"),
   masterMode: el("masterMode"),
   masterNarrative: el("masterNarrative"),
   masterCaseCount: el("masterCaseCount"),
@@ -1496,12 +1533,12 @@ function updateUI(){
   UI.caseJob.textContent    = d.job;
   UI.caseReason.textContent = d.reason;
 
-  UI.caseNotes.textContent = (d.notes && d.notes.trim()) ? d.notes : "—";
+  UI.caseNotes.textContent = (c.notes && String(c.notes).trim()) ? String(c.notes) : "—";
 
   // badges
   UI.caseArcBadge.textContent = "Arco: " + (d.arc || "—");
   UI.caseTagBadge.textContent = "Tag: " + (d.tags && d.tags.length ? d.tags.join(", ") : "—");
-  renderMasterEffects(c);
+  renderMasterDossier(c);
 
 
 
@@ -1573,38 +1610,80 @@ function updateUI(){
   }
 }
 
+function renderMasterDossier(caseObj){
+  if(!caseObj)return;
+  const tags=Array.isArray(caseObj.tags)?caseObj.tags:[];
+  UI.masterTags.innerHTML="";
+  if(!tags.length) UI.masterTags.textContent="Nessun tag interno.";
+  else tags.forEach(tag=>{
+    const el=document.createElement("span");el.textContent=tag;UI.masterTags.appendChild(el);
+  });
+
+  renderMasterEffects(caseObj);
+
+  UI.masterTwists.innerHTML="";
+  const decisions=[["pass","PASSA"],["deny","NEGA"],["arrest","ARRESTA"],["condemn","CONDANNA"]];
+  decisions.forEach(([id,label])=>{
+    const box=document.createElement("div");box.className="master-twist";
+    const title=document.createElement("strong");title.textContent=label;
+    const body=document.createElement("div");body.textContent=caseObj?.twist?.[id]||"Nessun twist.";
+    box.append(title,body);UI.masterTwists.appendChild(box);
+  });
+
+  UI.masterConditions.innerHTML="";
+  let conditionCount=0;
+  decisions.forEach(([id,label])=>{
+    const blocks=Array.isArray(caseObj?.twistConditional?.[id])?caseObj.twistConditional[id]:[];
+    blocks.forEach(block=>{
+      conditionCount++;
+      const row=document.createElement("div");row.className="master-condition";
+      const cond=JSON.stringify(block?.if||{}).replace(/[{}"]/g,"").replace(/,/g," · ");
+      row.textContent=label+" · SE "+(cond||"condizione")+" → "+String(block?.text||"—");
+      UI.masterConditions.appendChild(row);
+    });
+  });
+  if(!conditionCount)UI.masterConditions.textContent="Nessuna condizione.";
+
+  UI.masterContracts.innerHTML="";
+  const contract=caseObj?.contracts?.onDecision||{};
+  let contractCount=0;
+  decisions.forEach(([id,label])=>{
+    const data=contract[id];
+    if(!data)return;
+    ["debts","promises"].forEach(kind=>{
+      (Array.isArray(data[kind])?data[kind]:[]).forEach(item=>{
+        contractCount++;
+        const row=document.createElement("div");row.className="master-contract";
+        const type=kind==="debts"?"DEBITO":"PROMESSA";
+        row.innerHTML="<strong></strong><span></span>";
+        row.querySelector("strong").textContent=label+" · "+type;
+        const due=typeof item.dueOffset==="number"?" · scadenza +"+item.dueOffset+" casi":"";
+        row.querySelector("span").textContent=String(item.text||"—")+due;
+        UI.masterContracts.appendChild(row);
+      });
+    });
+  });
+  if(!contractCount)UI.masterContracts.textContent="Nessun contratto.";
+}
+
 function renderMasterEffects(caseObj){
   if(!UI.masterEffects)return;
   const effects=caseObj?.effects||{};
-  const defs=[
-    ["pass","PASSA"],["deny","NEGA"],["arrest","ARRESTA"],["condemn","CONDANNA"]
-  ];
+  const defs=[["pass","PASSA"],["deny","NEGA"],["arrest","ARRESTA"],["condemn","CONDANNA"]];
   const labels={regime:"REG",popolo:"POP",ribelli:"RIB",stamps:"TIM",sanity:"SAN"};
   UI.masterEffects.innerHTML="";
   defs.forEach(([id,label])=>{
-    const box=document.createElement("div");
-    box.className="master-effect";
-    const title=document.createElement("strong");
-    title.textContent=label;
-    box.appendChild(title);
-    const delta=document.createElement("div");
-    delta.className="delta";
+    const box=document.createElement("div");box.className="master-effect";
+    const title=document.createElement("strong");title.textContent=label;box.appendChild(title);
+    const delta=document.createElement("div");delta.className="delta";
     const values=effects[id]||{};
-    const keys=["regime","popolo","ribelli","stamps","sanity"];
-    keys.forEach(k=>{
-      if(typeof values[k]!=="number" || values[k]===0)return;
-      const span=document.createElement("span");
-      span.className=values[k]>0?"pos":"neg";
-      span.textContent=labels[k]+" "+(values[k]>0?"+":"")+values[k];
-      delta.appendChild(span);
+    ["regime","popolo","ribelli","stamps","sanity"].forEach(k=>{
+      if(typeof values[k]!=="number"||values[k]===0)return;
+      const span=document.createElement("span");span.className=values[k]>0?"pos":"neg";
+      span.textContent=labels[k]+" "+(values[k]>0?"+":"")+values[k];delta.appendChild(span);
     });
-    if(!delta.childElementCount){
-      const span=document.createElement("span");
-      span.textContent="NESSUN CAMBIO";
-      delta.appendChild(span);
-    }
-    box.appendChild(delta);
-    UI.masterEffects.appendChild(box);
+    if(!delta.childElementCount){const span=document.createElement("span");span.textContent="NESSUN CAMBIO";delta.appendChild(span);}
+    box.appendChild(delta);UI.masterEffects.appendChild(box);
   });
 }
 
