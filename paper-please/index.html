@@ -310,7 +310,7 @@ button,input,select{font:inherit}
             <div class="outcome">
               <div class="hud-row">
                 <span class="badge" id="draftLabel">Decisione ospite: Nessuna</span>
-                <span class="badge warn" id="voteLockBadge">Voto: Aperto</span>
+                <span class="badge" id="decisionPhaseBadge">Decisione: —</span>
               </div>
               <div class="decision-state"><span class="label">Stato decisione</span><span class="value" id="decisionStateValue">In attesa</span></div>
               <div class="clamp-3" id="outcomeText">L'ospite sceglie la decisione finale. La chat può proporre e votare, ma non decide.</div>
@@ -436,6 +436,7 @@ const UI = {
   // decisions
   draftLabel: el("draftLabel"), outcomeText: el("outcomeText"),
   decisionStateValue: el("decisionStateValue"), masterHint: el("masterHint"),
+  decisionPhaseBadge: el("decisionPhaseBadge"),
   voteLockBadge: el("voteLockBadge"),
   btnConfirm: el("btnConfirm"),
   btnNextPhase: el("btnNextPhase"),
@@ -1222,6 +1223,8 @@ function updateUI(){
   UI.hudPhase.textContent = phaseLabel(stato.phase);
   UI.voteLockBadge.textContent = "Voto: " + (stato.phaseLocked ? "LOCK" : "Aperto");
   UI.voteLockBadge.className = "badge " + (stato.phaseLocked ? "ko" : "ok");
+  UI.decisionPhaseBadge.textContent = stato.phase==="decision" ? "Decisione: OSPITE" : "Fase: " + phaseLabel(stato.phase);
+  UI.decisionPhaseBadge.className = "badge " + (stato.phase==="decision" ? "ok" : "");
 
   // timer
   updateTimerUI();
