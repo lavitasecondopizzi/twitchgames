@@ -42,11 +42,13 @@ button,select{font:inherit}
 }
 .top{
   flex:0 0 auto;
-  align-items:stretch;
+  align-items:center;
   display:grid;
   grid-template-columns:minmax(0,24%) minmax(0,52%) minmax(0,24%);
+  grid-template-rows:auto;
   gap:12px;
   min-height:0;
+  overflow:hidden;
 }
 .cam{
   position:relative;
@@ -107,6 +109,8 @@ button,select{font:inherit}
   position:relative;
   min-width:0;
   min-height:0;
+  height:100%;
+  align-self:stretch;
   display:grid;
   grid-template-rows:auto minmax(0,1fr) auto;
   gap:7px;
