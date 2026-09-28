@@ -1296,8 +1296,8 @@ function updateUI(){
 
   // phase
   UI.hudPhase.textContent = phaseLabel(stato.phase);
-  UI.uiRoleBadge.textContent = masterMode ? "MASTER / NARRATORE" : "GIOCATORE / OSPITE";
-  UI.uiRoleBadge.className = "badge " + (masterMode ? "role-master" : "ok");
+  UI.uiRoleBadge.textContent = soloMode ? "MASTER + GIOCATORE" : (isHost ? "MASTER / NARRATORE" : "GIOCATORE / OSPITE");
+  UI.uiRoleBadge.className = "badge " + (soloMode ? "brand" : (isHost ? "role-master" : "ok"));
   UI.voteLockBadge.textContent = "Voto: " + (stato.phaseLocked ? "LOCK" : "Aperto");
   UI.voteLockBadge.className = "badge " + (stato.phaseLocked ? "ko" : "ok");
 
@@ -1354,45 +1354,321 @@ function updateUI(){
   addBadge(UI.caseDossierBadges, "Arc attivi: " + Object.keys(stato.arcs.active||{}).length, "badge vio");
   addBadge(UI.caseDossierBadges, "Unlock L: " + stato.unlocks.lightLevel, "badge brand");
 
-  // decisions lock
+  // console decisione Master: applica solo la scelta già fatta dall'Ospite
   const decided = !!stato.decisionsByPos[pos];
   const locked = stato.gameOver || stato.runCompleted || decided || (stato.phase!=="decision");
-  UI.draftLabel.textContent = stato.playerDecision ? "Decisione ospite: " + String(stato.playerDecision).toUpperCase() : "Decisione ospite: Nessuna";
-  UI.outcomeText.textContent = stato.playerDecision ? "L'Ospite ha scelto. Il Master può applicare la decisione e narrare la conseguenza." : "In attesa della scelta finale dell'Ospite.";
-  UI.btnConfirm.disabled = !(masterMode && stato.phase==="decision" && !!stato.playerDecision && !decided && !stato.gameOver);
-  const canChoose = !masterMode && !locked;
+  const playerChoice = stato.playerDecision || null;
   document.querySelectorAll(".decision-btn").forEach(btn=>{
-  btn.addEventListener("click", ()=>{
-    if (masterMode || stato.phase!=="decision" || stato.decisionsByPos[stato.currentPos]) return;
-    const choice = btn.dataset.decision;
-    stato.playerDecision = choice;
-    updateUI();
-    roomClient?.broadcast("game_event",{
-      type:"player_decision",choice,user:guestName,ts:Date.now()
-    }).catch(()=>{});
+    const v = btn.dataset.decision;
+    btn.disabled = true;
+    btn.classList.toggle("selected", v === playerChoice);
   });
-});
-UI.btnConfirm.addEventListener("click", ()=>{ if(isHost) confirmDecision(); });
-UI.btnApplyChat.addEventListener("click", ()=>{ if(isHost) applyDraftFromChat(); });
+  UI.btnConfirm.disabled = !isHost || locked || !playerChoice;
+  UI.btnConfirm.style.display = isHost ? "" : "none";
+  UI.btnNextPhase.disabled = !isHost || stato.gameOver || stato.runCompleted;
+  UI.btnNextPhase.style.display = isHost ? "" : "none";
+  UI.btnApplyChat.style.display = "none";
+  UI.draftLabel.textContent = "Decisione ospite: " + (playerChoice ? decisionLabel(playerChoice) : "Nessuna");
 
-UI.btnNextPhase.addEventListener("click", ()=>{
-  if (!isHost || stato.gameOver || stato.runCompleted) return;
-  // manual phase advance (respects order)
-  if (stato.phase==="intro") return setPhase("discuss");
-  if (stato.phase==="discuss") return setPhase("vote1");
-  if (stato.phase==="vote1"){
-    const counts = voteCounts(stato.chat.votes1);
-    const lead = leaderFromCounts(counts);
-    if (lead.tie){
-      stato.chat.tiebreak = {A: lead.A, B: lead.B};
-      return setPhase("vote2");
-    }
-    return setPhase("decision");
+  const last = stato.lastOutcome;
+  if (last && last.pos===pos && decided && last.text){
+    UI.outcomeText.textContent = last.text;
+  } else if (decided){
+    UI.outcomeText.textContent = computeTwistText(c, stato.decisionsByPos[pos]);
+  } else {
+    UI.outcomeText.textContent = phaseHelpText(stato.phase);
   }
-  if (stato.phase==="vote2") return setPhase("decision");
-  if (stato.phase==="decision") return; // decision is manual confirm
-  if (stato.phase==="event") return advanceToNextCase();
-});
+
+  // chat UI
+  renderSuggestions();
+  renderVotes();
+
+  // history
+  renderHistory();
+
+  // extras
+
+  // endings overlay
+  if (stato.gameOver){
+    showEndOverlay(false, stato.gameOverReason || "Game over.");
+  } else if (stato.runCompleted){
+    showEndOverlay(true, pickVictoryText());
+  } else {
+    hideEndOverlay();
+  }
+}
+
+function addBadge(container, text, className){
+  const s = document.createElement("span");
+  s.className = className || "badge";
+  s.textContent = text;
+  container.appendChild(s);
+}
+
+function setWorldBar(valEl, barEl, val){
+  const v = clamp01(val);
+  valEl.textContent = v;
+  barEl.style.width = v + "%";
+}
+
+function phaseLabel(p){
+  const map = {intro:"Intro", discuss:"Discussione", vote1:"Voto 1", vote2:"Voto 2", decision:"Decisione", event:"Evento", end:"Fine"};
+  return map[p] || p;
+}
+function decisionLabel(d){
+  return ({pass:"Fai passare", deny:"Respingi", arrest:"Arresta", condemn:"Condanna"})[d] || "—";
+}
+function phaseHelpText(phase){
+  if (phase==="intro") return "Fase INTRO: presentazione dossier. Avanza fase o attendi il timer.";
+  if (phase==="discuss") return "DISCUSSIONE: la chat manda +pro / -contro. Obiettivo a tempo può apparire.";
+  if (phase==="vote1") return "VOTO 1: la chat vota !passa / !nega / !arresta / !condanna.";
+  if (phase==="vote2") return "VOTO 2: spareggio attivo. La chat vota tra le due opzioni indicate.";
+  if (phase==="decision") return "DECISIONE: scegli una bozza e premi Conferma.";
+  if (phase==="event") return "EVENTO: applico un evento tra-round, poi si passa alla prossima persona.";
+  return "—";
+}
+
+function updateTimerUI(){
+  if (!stato.phaseEndsAt){ UI.hudTimer.textContent="--:--"; return; }
+  const ms = Math.max(0, stato.phaseEndsAt - Date.now());
+  const s = Math.ceil(ms/1000);
+  const mm = String(Math.floor(s/60)).padStart(2,"0");
+  const ss = String(s%60).padStart(2,"0");
+  UI.hudTimer.textContent = mm+":"+ss;
+}
+
+function renderObjective(){
+  updateObjectiveProgress();
+  const obj = stato.objectives.active;
+  if (!obj){
+    UI.hudObjectiveType.textContent = "—";
+    UI.hudObjectiveProgress.textContent = "0/0";
+    UI.hudObjectiveText.textContent = "Nessun obiettivo attivo.";
+    return;
+  }
+  UI.hudObjectiveType.textContent = obj.type || "goal";
+  UI.hudObjectiveProgress.textContent = (obj.progress||0) + "/" + (obj.target||0);
+  UI.hudObjectiveText.textContent = obj.text || "—";
+}
+
+/* ===== Render chat lists (no scroll: show top N only) ===== */
+function renderSuggestions(){
+  const groups = {pro:{}, con:{}};
+  (stato.chat.suggestions||[]).forEach(s=>{
+    if (!s) return;
+    const side = normSide(s.side);
+    const txt = String(s.text||"").trim();
+    if (!txt) return;
+    const key = txt.toLowerCase();
+    if (!groups[side][key]) groups[side][key] = {text:txt, count:0};
+    groups[side][key].count++;
+  });
+
+  function topItems(obj){
+    const keys = Object.keys(obj).sort((a,b)=>obj[b].count - obj[a].count);
+    return keys.slice(0,3).map(k=>obj[k]);
+  }
+
+  renderCompactList(UI.prosList, UI.prosList2, topItems(groups.pro));
+  renderCompactList(UI.consList, UI.consList2, topItems(groups.con));
+}
+
+function renderCompactList(firstEl, secondContainer, items){
+  // firstEl is a single .item already present, secondContainer is empty div
+  secondContainer.innerHTML = "";
+  if (!items.length){
+    firstEl.querySelector(".t").textContent = "Nessun suggerimento";
+    firstEl.querySelector(".c").textContent = "";
+    return;
+  }
+  firstEl.querySelector(".t").textContent = items[0].text;
+  firstEl.querySelector(".c").textContent = "×" + items[0].count;
+
+  for (let i=1;i<items.length;i++){
+    const it = document.createElement("div");
+    it.className = "item";
+    it.innerHTML = '<span class="t"></span><span class="c"></span>';
+    it.querySelector(".t").textContent = items[i].text;
+    it.querySelector(".c").textContent = "×" + items[i].count;
+    secondContainer.appendChild(it);
+  }
+}
+
+function renderVotes(){
+  // show vote1 bars (vote2 only if active)
+  let list = stato.chat.votes1 || [];
+  const counts = voteCounts(list);
+  const sum = counts.pass+counts.deny+counts.arrest+counts.condemn;
+  const max = Math.max(counts.pass,counts.deny,counts.arrest,counts.condemn,1);
+
+  function setVote(barEl, countEl, v){
+    const pct = sum ? (15 + (v/max)*85) : 0;
+    barEl.style.width = pct + "%";
+    countEl.textContent = String(Math.round(v*10)/10);
+  }
+  setVote(UI.vPass, UI.cPass, counts.pass);
+  setVote(UI.vDeny, UI.cDeny, counts.deny);
+  setVote(UI.vArrest, UI.cArrest, counts.arrest);
+  setVote(UI.vCondemn, UI.cCondemn, counts.condemn);
+
+  const lead = leaderFromCounts(counts);
+  if (!lead.leader){
+    UI.chatLeader.textContent = "Leader: —";
+  } else if (lead.tie && stato.chat.tiebreak){
+    UI.chatLeader.textContent = "Pari: " + lead.A + " vs " + lead.B;
+  } else {
+    UI.chatLeader.textContent = "Leader: " + decisionLabel(lead.leader);
+  }
+}
+
+/* ===== History ===== */
+function renderHistory(){
+  const total = order.length;
+  const pos = stato.currentPos;
+  const allKnown = stato.runCompleted || stato.gameOver;
+
+  // show max 10 rows (no scroll)
+  const showN = Math.min(total, 10);
+  UI.historyList.innerHTML = "";
+
+  // center around current pos if many
+  let start = 0;
+  if (total > showN){
+    start = Math.max(0, Math.min(total - showN, pos - Math.floor(showN/2)));
+  }
+
+  for (let i=start;i<start+showN;i++){
+    const caseIdx = order[i];
+    const c = cases[caseIdx] || {};
+    const dec = stato.decisionsByPos[i];
+
+    const row = document.createElement("div");
+    row.className = "item";
+    const left = document.createElement("span");
+    left.className = "t";
+    const right = document.createElement("span");
+    right.className = "c";
+
+    const known = allKnown || i <= pos;
+    left.textContent = "Pers. " + (i+1) + " — " + (known ? (c.name||"Sconosciuto") : "???");
+    right.textContent = known ? (dec ? decisionLabel(dec) : (i===pos ? "In corso" : "—")) : "—";
+
+    row.appendChild(left); row.appendChild(right);
+    UI.historyList.appendChild(row);
+  }
+}
+
+/* ===== SUPABASE REALTIME ===== */
+function mergeLoadedState(data){
+  stato={...defaultState(),...(data||{})};
+  stato.world={...(cfg.baseWorld||{regime:50,popolo:50,ribelli:50}),...(data?.world||{})};
+  stato.chat={...defaultState().chat,...(data?.chat||{})};
+  stato.objectives={...defaultState().objectives,...(data?.objectives||{})};
+  stato.unlocks={...defaultState().unlocks,...(data?.unlocks||{})};
+  stato.arcs={...defaultState().arcs,...(data?.arcs||{})};
+  if(Array.isArray(data?.runOrder)) order=data.runOrder.slice();
+  ensureState();
+}
+function statePayload(){
+  return {...stato,runOrder:order.slice(),_revision:revision,_sender:isHost?"host":"guest",_sentAt:Date.now()};
+}
+async function broadcastState(){
+  if(!roomClient||!isHost||isApplyingRemoteState)return;
+  revision++;
+  await roomClient.broadcast("game_state",statePayload());
+}
+async function saveState(){
+  if(!isHost||isApplyingRemoteState)return;
+  try{ensureState();updateUI();await broadcastState();}
+  catch(e){console.error("Errore broadcast stato:",e);}
+}
+function requestGameState(){
+  roomClient?.broadcast("state_request",{requester:"guest",_sentAt:Date.now()}).catch(()=>{});
+}
+function applyRemoteState(payload){
+  if(!payload||!isGuest)return;
+  const incoming=Number(payload._revision)||0;
+  if(incoming&&incoming<revision)return;
+  revision=Math.max(revision,incoming);
+  const clean={...payload};
+  delete clean._revision;delete clean._sender;delete clean._sentAt;
+  isApplyingRemoteState=true;
+  mergeLoadedState(clean);
+  updateUI();
+  isApplyingRemoteState=false;
+}
+function handleGameEvent(payload){
+  if(!payload||!isHost||stato.phaseLocked)return;
+  if(payload.type==="chat_suggestion"){
+    const text=String(payload.text||"").trim();
+    if(!text)return;
+    stato.chat.suggestions.push({
+      user:String(payload.user||"anon"),side:normSide(payload.side),text,
+      ts:payload.ts||Date.now(),role:payload.role||computeRole(payload.user)
+    });
+    updateObjectiveProgress();saveState();return;
+  }
+  if(payload.type==="chat_vote"||payload.type==="chat_tiebreak"){
+    const choice=normalizeChoice(payload.choice);
+    if(!choice)return;
+    const list=payload.type==="chat_tiebreak"?stato.chat.votes2:stato.chat.votes1;
+    list.push({
+      user:String(payload.user||"anon"),choice,ts:payload.ts||Date.now(),
+      role:payload.role||computeRole(payload.user)
+    });
+    updateObjectiveProgress();saveState();
+  }
+}
+async function connectRoom(){
+  if(!/^[A-Z0-9]{6}$/.test(roomCode)){
+    console.warn("Codice stanza mancante o non valido.");return;
+  }
+  roomClient=new TortelloSupabaseRoom({
+    room:roomCode,role:isHost?"host":"guest",
+    nickname:isHost?streamerName:guestName,game:"paper-please",
+    gameConfig:{seed:urlParams.get("seed")||"",mode:soloMode?"solo":(urlParams.get("mode")||"coop")}
+  });
+  roomClient.on("game-state",applyRemoteState);
+  roomClient.on("game-event",handleGameEvent);
+  roomClient.on("state-request",payload=>{
+    if(isHost&&payload?.requester==="guest")broadcastState().catch(()=>{});
+  });
+  roomClient.on("presence",presence=>{
+    if(isHost&&Object.values(presence||{}).flat().some(e=>e.role==="guest"))
+      broadcastState().catch(()=>{});
+  });
+  try{
+    await roomClient.connect();
+    if(isHost){
+      const seed=urlParams.get("seed")?.trim();
+      if(seed)stato.seed=seed;
+      stato.mode=soloMode?"solo":(urlParams.get("mode")||stato.mode);
+      updateUI();await broadcastState();
+    }else requestGameState();
+  }catch(e){console.error("Supabase Realtime non disponibile:",e);}
+}
+
+/* ===== Chat intake lock behavior =====
+   Nota: il bot/bridge dovrebbe rispettare stato.phaseLocked e scrivere in chat.suggestions/votes solo se non locked.
+   Qui ci limitiamo a renderizzare e applicare la bozza.
+*/
+function applyDraftFromChat(){
+  if (stato.phase !== "decision") return;
+  const counts1 = voteCounts(stato.chat.votes1 || []);
+  const lead1 = leaderFromCounts(counts1);
+  if (!lead1.leader){
+    return;
+  }
+  if (lead1.tie && stato.phase==="decision" && Array.isArray(stato.chat.votes2) && stato.chat.votes2.length){
+    const counts2 = voteCounts(stato.chat.votes2);
+    const lead2 = leaderFromCounts(counts2);
+    if (lead2.leader) draftDecision = lead2.leader;
+  } else {
+    draftDecision = lead1.leader;
+  }
+  updateUI();
+}
+
 
 /* Tabs */
 /* ===== Bootstrap ===== */
