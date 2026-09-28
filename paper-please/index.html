@@ -1453,6 +1453,9 @@ function updateTimerUI(){
 }
 
 function renderObjective(){
+  // Gli obiettivi non hanno più un pannello nella UI giocatore.
+  // Evita riferimenti null e modifiche locali allo stato del Guest.
+  if (!UI.hudObjectiveType || !UI.hudObjectiveProgress || !UI.hudObjectiveText) return;
   updateObjectiveProgress();
   const obj = stato.objectives.active;
   if (!obj){
