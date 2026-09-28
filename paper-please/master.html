@@ -1596,28 +1596,39 @@ function updateUI(){
 
   UI.caseNotes.textContent = (c.notes && String(c.notes).trim()) ? String(c.notes) : "—";
 
-  // badges
-  UI.caseArcBadge.textContent = "Arco: " + (d.arc || "—");
-  UI.caseTagBadge.textContent = "Tag: " + (d.tags && d.tags.length ? d.tags.join(", ") : "—");
-  renderMasterDossier(c);
+  // Il pannello centrale del Master è il fascicolo operativo del caso:
+  // usa direttamente i dati del cases.json, non il livello Dossier del giocatore.
+  const caseTags = Array.isArray(c.tags) ? c.tags : [];
+  const caseHints = Array.isArray(c.tagHints) ? c.tagHints : [];
+  const caseContracts = c.contracts?.onDecision || {};
+  const promiseDecisions = Object.keys(caseContracts).filter(id =>
+    Array.isArray(caseContracts[id]?.promises) && caseContracts[id].promises.length
+  );
+  const debtDecisions = Object.keys(caseContracts).filter(id =>
+    Array.isArray(caseContracts[id]?.debts) && caseContracts[id].debts.length
+  );
 
+  UI.caseArcBadge.textContent = "Arco: " + (c.arc || "—");
+  UI.caseTagBadge.textContent = "Tag: " + (caseTags.length ? caseTags.join(", ") : "Nessuno");
+  UI.caseNotes.textContent = (c.notes && String(c.notes).trim()) ? String(c.notes) : "Nessuna nota.";
+  UI.casePromise.textContent = promiseDecisions.length
+    ? "Promesse: " + promiseDecisions.map(id=>decisionLabel(id)).join(" · ")
+    : "Promessa: nessuna prevista";
+  UI.caseDebt.textContent = debtDecisions.length
+    ? "Debiti: " + debtDecisions.map(id=>decisionLabel(id)).join(" · ")
+    : "Debito: nessuno previsto";
 
-
-  // contracts
+  // Dati globali della run restano nell'area Master, non vengono spacciati per dati del caso.
   const debtOpen = stato.debts.filter(x=>x.status==="open").length;
   const promOpen = stato.promises.filter(x=>x.status==="open").length;
   UI.hudDebts.textContent = "Debiti: " + debtOpen;
   UI.hudUnlocks.textContent = "Sbloccabili: " + (stato.unlocks.items.length || 0);
 
-  // show case-specific “promise/debt” hint
-  UI.casePromise.textContent = promOpen ? "Promesse aperte: "+promOpen : "Promessa: —";
-  UI.caseDebt.textContent    = debtOpen ? "Debiti aperti: "+debtOpen : "Debito: —";
-
-  // dossier badges row
   UI.caseDossierBadges.innerHTML = "";
-  addBadge(UI.caseDossierBadges, "Modalità: " + stato.mode, "badge");
-  addBadge(UI.caseDossierBadges, "Arc attivi: " + Object.keys(stato.arcs.active||{}).length, "badge vio");
-  addBadge(UI.caseDossierBadges, "Unlock L: " + stato.unlocks.lightLevel, "badge brand");
+  addBadge(UI.caseDossierBadges, "Modalità: " + String(stato.mode || "standard").toUpperCase(), "badge");
+  addBadge(UI.caseDossierBadges, "Arco: " + String(c.arc || "—").toUpperCase(), "badge vio");
+  addBadge(UI.caseDossierBadges, "Tag: " + caseTags.length, "badge brand");
+  if(caseHints.length) addBadge(UI.caseDossierBadges, "Indizi: " + caseHints.length, "badge");
 
   // console decisione Master: applica solo la scelta già fatta dall'Ospite
   const decided = !!stato.decisionsByPos[pos];
