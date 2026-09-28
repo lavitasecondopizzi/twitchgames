@@ -504,11 +504,6 @@ const UI = {
   hudTimer: el("hudTimer"),
   hudStamps: el("hudStamps"),
   hudSanity: el("hudSanity"),
-  hudObjectiveType: el("hudObjectiveType"),
-  hudObjectiveProgress: el("hudObjectiveProgress"),
-  hudObjectiveText: el("hudObjectiveText"),
-  hudUnlocks: el("hudUnlocks"),
-  hudDebts: el("hudDebts"),
   hudCaseIndex: el("hudCaseIndex"),
   hudDossier: el("hudDossier"), uiRoleBadge: el("uiRoleBadge"),
 
@@ -1338,7 +1333,8 @@ function updateUI(){
   const c = cases[caseIdx];
   const imgFolder = (cfg.imageFolder || "").replace(/\/+$/,"");
   const prefix = imgFolder ? (imgFolder + "/") : "";
-  UI.casePortrait.src = IMG_BASE_PATH + prefix + (c.file || "");
+  UI.casePortrait.removeAttribute("src");
+  UI.casePortrait.alt = c.name || "Candidato";
   UI.caseName.textContent = c.name || "—";
 
   const d = dossierInfoFor(c, stato.dossierLevel);
@@ -1355,8 +1351,6 @@ function updateUI(){
   // contracts
   const debtOpen = stato.debts.filter(x=>x.status==="open").length;
   const promOpen = stato.promises.filter(x=>x.status==="open").length;
-  UI.hudDebts.textContent = "Debiti: " + debtOpen;
-  UI.hudUnlocks.textContent = "Sbloccabili: " + (stato.unlocks.items.length || 0);
 
   // show case-specific “promise/debt” hint
   UI.casePromise.textContent = promOpen ? "Promesse aperte: "+promOpen : "Promessa: —";
@@ -1811,7 +1805,6 @@ document.querySelectorAll(".decision-btn").forEach(btn=>{
   });
 });
 UI.btnConfirm.addEventListener("click", ()=>{ if(isHost) confirmDecision(); });
-UI.btnApplyChat.addEventListener("click", ()=>{ if(isHost) applyDraftFromChat(); });
 
 UI.btnNextPhase.addEventListener("click", ()=>{
   if (!isHost || stato.gameOver || stato.runCompleted) return;
