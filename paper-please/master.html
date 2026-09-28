@@ -241,6 +241,23 @@ body.master-view .decision-btn{cursor:default}
 .control-mini-row{display:flex;gap:5px;margin-top:6px}.objective-readout{font-size:7px;font-weight:800;line-height:1.35;margin-top:5px}.world-row{display:flex;justify-content:space-between;font-size:6px;font-weight:900;margin-top:6px}.world-bar{height:6px;border:2px solid var(--line);background:#fff}.world-bar i{display:block;height:100%;width:50%;background:var(--green)}
 .master-main>.panel{min-width:0;min-height:0}.master-side>.side{height:100%}.master-side .side-columns{grid-template-columns:1fr;grid-template-rows:minmax(0,1.15fr) minmax(0,.85fr)}.master-side .side-info{height:100%}.master-side .chat-box,.master-side .history-box{min-height:0}
 .master-main .panel-head{margin-bottom:7px}.master-main .grid-case{grid-template-columns:minmax(180px,.82fr) minmax(0,1.18fr)}
+.master-intel{min-width:0;min-height:0;padding:7px;border:3px solid var(--line);background:#fff;box-shadow:3px 3px 0 var(--line);overflow:hidden}
+.master-intel-head{display:flex;align-items:center;justify-content:space-between;gap:5px;margin-bottom:5px}
+.master-intel-title{font-size:8px;font-weight:900;text-transform:uppercase}
+.master-effects{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+.master-effect{min-width:0;padding:4px;border:2px solid var(--line);background:var(--paper2)}
+.master-effect strong{display:block;font-size:7px;text-transform:uppercase;margin-bottom:3px}
+.master-effect .delta{display:flex;flex-wrap:wrap;gap:2px}
+.master-effect .delta span{padding:2px 3px;border:1px solid var(--line);font-size:5px;font-weight:900;white-space:nowrap}
+.master-effect .delta .pos{background:var(--green)}.master-effect .delta .neg{background:var(--red);color:#fff}
+.master-runmeta{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.master-runmeta div{border:2px solid var(--line);padding:4px;background:var(--paper2)}
+.master-runmeta small{display:block;font-size:5px;font-weight:900}.master-runmeta strong{display:block;margin-top:2px;font-size:7px;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.master-status-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.master-status-strip div{padding:4px;border:2px solid var(--line);background:var(--paper2)}
+.master-status-strip small{display:block;font-size:5px;font-weight:900}.master-status-strip strong{display:block;margin-top:2px;font-size:8px}
+@media(max-width:650px){.master-effects{grid-template-columns:repeat(2,1fr)}.master-runmeta{grid-template-columns:repeat(2,1fr)}}
+
 .master-main .decision-btn{display:none}.master-main .controls{display:none}.master-main .outcome{margin-top:0}.master-main .side-info-head{display:none}
 @media(max-width:1100px){.master-top{grid-template-columns:1.3fr 1.5fr 1fr}.master-resources{display:none!important}.master-main{grid-template-columns:200px minmax(0,1fr) 300px}}
 @media(max-width:800px){.master-top{grid-template-columns:1fr 1fr}.master-guest{display:none}.master-main{grid-template-columns:180px minmax(0,1fr)}.master-side{display:none}}
@@ -308,6 +325,15 @@ body.master-view .decision-btn{cursor:default}
       <div class="world-row"><span>RIBELLI</span><b id="valRibelli">50</b></div>
       <div class="world-bar"><i id="barRibelli"></i></div>
     </div>
+    <div class="control-block">
+      <div class="control-label">RUN</div>
+      <div class="master-runmeta">
+        <div><small>MODALITÀ</small><strong id="masterMode">STANDARD</strong></div>
+        <div><small>ARCO</small><strong id="masterNarrative">BALANCED</strong></div>
+        <div><small>CASI</small><strong id="masterCaseCount">12</strong></div>
+        <div><small>SEED</small><strong id="masterSeed">—</strong></div>
+      </div>
+    </div>
   </aside>
   <section class="panel" id="panelCase">
       <div class="panel-head">
@@ -342,15 +368,22 @@ body.master-view .decision-btn{cursor:default}
               <span class="badge" id="caseDebt">Debito: —</span>
             </div>
           </div>
+          <div class="master-intel">
+            <div class="master-intel-head">
+              <span class="master-intel-title">CONSEGUENZE PREVISTE</span>
+              <span class="badge vio" id="masterIntelTag">MASTER</span>
+            </div>
+            <div class="master-effects" id="masterEffects"></div>
+          </div>
 
           <div>
             <div class="controls compat"><button class="decision-btn" data-decision="pass">Fai passare</button><button class="decision-btn" data-decision="deny">Respingi</button><button class="decision-btn" data-decision="arrest">Arresta</button><button class="decision-btn" data-decision="condemn">Condanna</button></div>
             <div class="outcome">
               <div class="hud-row">
-                <span class="badge" id="draftLabel">Bozza: Nessuna</span>
+                <span class="badge" id="draftLabel">Decisione ospite: Nessuna</span>
                 <span class="badge warn" id="voteLockBadge">Voto: Aperto</span>
               </div>
-              <div class="clamp-3" id="outcomeText">Scegli una decisione. La conferma è disponibile solo in “Fase Decisione”.</div>
+              <div class="clamp-3" id="outcomeText">Nessuna conseguenza ancora applicata.</div>
             </div>
           </div>
         </div>
@@ -503,6 +536,12 @@ const UI = {
   endTitle: el("endTitle"),
   endText: el("endText"),
   endRestartBtn: el("endRestartBtn"),
+
+  masterEffects: el("masterEffects"),
+  masterMode: el("masterMode"),
+  masterNarrative: el("masterNarrative"),
+  masterCaseCount: el("masterCaseCount"),
+  masterSeed: el("masterSeed"),
 
   btnShop: el("btnShop"),
   btnShopClose: el("btnShopClose"),
@@ -1404,6 +1443,11 @@ function updateUI(){
   // objective
   renderObjective();
 
+  if(UI.masterMode) UI.masterMode.textContent = String(stato.mode || gameMode || "standard").toUpperCase();
+  if(UI.masterNarrative) UI.masterNarrative.textContent = String(stato.narrativeStyle || narrativeStyle || "balanced").toUpperCase();
+  if(UI.masterCaseCount) UI.masterCaseCount.textContent = String(total);
+  if(UI.masterSeed) UI.masterSeed.textContent = String(stato.seed || "—");
+
   // case panel
   const caseIdx = order[pos];
   const c = cases[caseIdx];
@@ -1422,6 +1466,9 @@ function updateUI(){
   // badges
   UI.caseArcBadge.textContent = "Arco: " + (d.arc || "—");
   UI.caseTagBadge.textContent = "Tag: " + (d.tags && d.tags.length ? d.tags.join(", ") : "—");
+  renderMasterEffects(c);
+
+
 
   // contracts
   const debtOpen = stato.debts.filter(x=>x.status==="open").length;
@@ -1489,6 +1536,41 @@ function updateUI(){
   } else {
     hideEndOverlay();
   }
+}
+
+function renderMasterEffects(caseObj){
+  if(!UI.masterEffects)return;
+  const effects=caseObj?.effects||{};
+  const defs=[
+    ["pass","PASSA"],["deny","NEGA"],["arrest","ARRESTA"],["condemn","CONDANNA"]
+  ];
+  const labels={regime:"REG",popolo:"POP",ribelli:"RIB",stamps:"TIM",sanity:"SAN"};
+  UI.masterEffects.innerHTML="";
+  defs.forEach(([id,label])=>{
+    const box=document.createElement("div");
+    box.className="master-effect";
+    const title=document.createElement("strong");
+    title.textContent=label;
+    box.appendChild(title);
+    const delta=document.createElement("div");
+    delta.className="delta";
+    const values=effects[id]||{};
+    const keys=["regime","popolo","ribelli","stamps","sanity"];
+    keys.forEach(k=>{
+      if(typeof values[k]!=="number" || values[k]===0)return;
+      const span=document.createElement("span");
+      span.className=values[k]>0?"pos":"neg";
+      span.textContent=labels[k]+" "+(values[k]>0?"+":"")+values[k];
+      delta.appendChild(span);
+    });
+    if(!delta.childElementCount){
+      const span=document.createElement("span");
+      span.textContent="NESSUN CAMBIO";
+      delta.appendChild(span);
+    }
+    box.appendChild(delta);
+    UI.masterEffects.appendChild(box);
+  });
 }
 
 function addBadge(container, text, className){
