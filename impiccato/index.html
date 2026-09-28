@@ -1921,28 +1921,49 @@ function showScoreFx(delta){
     "font-size:clamp(140px,22vw,360px)","font-weight:900",
     "line-height:.8","letter-spacing:.02em",
     "color:" + (delta > 0 ? "#19d34a" : "#e32626"),
-    "-webkit-text-stroke:8px #111","text-shadow:12px 12px 0 #111",
-    "opacity:0","transform:translateY(120px) scale(.45) rotate(-8deg)",
-    "transition:opacity .28s ease-out,transform .5s cubic-bezier(.16,1.4,.3,1)"
+    "-webkit-text-stroke:8px #111","text-shadow:12px 12px 0 #111"
   ].join(";");
 
   document.body.appendChild(fx);
 
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      fx.style.opacity = "1";
-      fx.style.transform = "translateY(0) scale(1) rotate(0deg)";
-    });
+  const animation = fx.animate([
+    {
+      opacity: 0,
+      transform: "translateY(180px) scale(.35) rotate(-10deg)",
+      offset: 0
+    },
+    {
+      opacity: 1,
+      transform: "translateY(-18px) scale(1.15) rotate(3deg)",
+      offset: .16
+    },
+    {
+      opacity: 1,
+      transform: "translateY(0) scale(1) rotate(0deg)",
+      offset: .28
+    },
+    {
+      opacity: 1,
+      transform: "translateY(0) scale(1) rotate(0deg)",
+      offset: .80
+    },
+    {
+      opacity: .85,
+      transform: "translateY(-35px) scale(.9) rotate(4deg)",
+      offset: .91
+    },
+    {
+      opacity: 0,
+      transform: "translateY(-180px) scale(.55) rotate(10deg)",
+      offset: 1
+    }
+  ], {
+    duration: 2800,
+    easing: "cubic-bezier(.2,.8,.3,1)",
+    fill: "forwards"
   });
 
-  // Rimane pienamente visibile per oltre 2 secondi.
-  setTimeout(() => {
-    fx.style.transition = "opacity .45s ease-in, transform .55s cubic-bezier(.55,.05,.8,.4)";
-    fx.style.opacity = "0";
-    fx.style.transform = "translateY(-110px) scale(.8) rotate(6deg)";
-  }, 2100);
-
-  setTimeout(() => fx.remove(), 2650);
+  animation.onfinish = () => fx.remove();
 }
 
 subScoreBtn.addEventListener("click", async ()=>{
