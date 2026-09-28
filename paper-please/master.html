@@ -494,7 +494,12 @@ body.master-view .decision-btn{cursor:default}
 
 const urlParams = new URLSearchParams(location.search);
 const masterMode = true;
-const soloMode  = !masterMode && (urlParams.get("solo")==="1" || urlParams.get("mode")==="solo");
+const interactionMode = urlParams.get("interaction") || "guest";
+const soloMode  = interactionMode === "chat";
+const allowedGameModes = ["standard","hardcore","chaos"];
+const gameMode = allowedGameModes.includes(urlParams.get("gameMode")) ? urlParams.get("gameMode") : "standard";
+const narrativeStyle = urlParams.get("narrative") || "balanced";
+const caseCount = Math.max(1, Math.min(12, Number(urlParams.get("caseCount") || 12)));
 const roomCode = (urlParams.get("room") || "").trim().toUpperCase();
 const forcedRole = "master";
 const isMaster = true;
@@ -640,8 +645,10 @@ function defaultState(){
     version: 2,
     runId: "run_"+Date.now(),
     season: cfg?.seasons?.startSeason || 1,
-    mode: cfg?.modes?.default || "standard",
+    mode: gameMode,
     seed: (cfg?.settings?.seed || String(Date.now())),
+    caseCount,
+    narrativeStyle,
     currentPos: 0,          // position in order array
     phase: "intro",         // intro | discuss | vote1 | vote2 | decision | event | end
     phaseLocked: false,     // lock chat vote intake
@@ -700,7 +707,7 @@ async function loadConfig(){
   betweenEvents = Array.isArray(cfg.betweenEvents) ? cfg.betweenEvents : [];
 
   // pool selection by season/mode (simple: include all unless filtered)
-  const mode = (cfg.modes?.default || "standard");
+  const mode = gameMode;
 
   // create initial pool indices
   pool = cases.map((_,i)=>i);
@@ -727,11 +734,30 @@ function buildOrderFromState(){
   const seedStr = (stato?.seed || cfg?.settings?.seed || String(Date.now()));
   const rng = makeRng(seedStr);
 
-  // pool cases; take cfg.settings.caseCount (default 12)
-  const desired = Math.min(pool.length, Number(cfg?.settings?.caseCount ?? 12));
-  const picked = shuffle(pool, rng).slice(0, desired);
+  const desired = Math.min(pool.length, caseCount);
+  const style = narrativeStyle;
+  const targetArc = style === "people" ? "people" : style === "regime" ? "regime" : style === "rebellion" ? "rebellion" : null;
+  const candidates = pool.slice();
+  const picked = [];
 
-  // optional recurring arcs weighting: if arcId repeated, ensure spacing (simple attempt)
+  while (candidates.length && picked.length < desired){
+    if (!targetArc || style === "chaos"){
+      const idx = Math.floor(rng() * candidates.length);
+      picked.push(candidates.splice(idx,1)[0]);
+      continue;
+    }
+
+    const weights = candidates.map(i => (cases[i]?.arc === targetArc ? 3 : 1));
+    const totalWeight = weights.reduce((sum,w)=>sum+w,0);
+    let roll = rng() * totalWeight;
+    let chosen = 0;
+    for (let j=0;j<weights.length;j++){
+      roll -= weights[j];
+      if (roll <= 0){ chosen=j; break; }
+    }
+    picked.push(candidates.splice(chosen,1)[0]);
+  }
+
   order = picked;
 
 }
@@ -1678,7 +1704,13 @@ async function connectRoom(){
   roomClient=new TortelloSupabaseRoom({
     room:roomCode,role:"host",
     nickname:streamerName,game:"paper-please",
-    gameConfig:{seed:urlParams.get("seed")||"",mode:soloMode?"solo":(urlParams.get("mode")||"coop")}
+    gameConfig:{
+      seed:urlParams.get("seed")||"",
+      gameMode,
+      narrativeStyle,
+      caseCount,
+      interactionMode
+    }
   });
   roomClient.on("game-state",applyRemoteState);
   roomClient.on("game-event",handleGameEvent);
@@ -1721,7 +1753,9 @@ async function connectRoom(){
       }
       const seed=urlParams.get("seed")?.trim();
       if(seed)stato.seed=seed;
-      stato.mode=soloMode?"solo":(urlParams.get("mode")||stato.mode);
+      stato.mode=gameMode;
+      stato.narrativeStyle=narrativeStyle;
+      stato.caseCount=caseCount;
       updateUI();
       roomClient.broadcast("state_request",{requester:"master",_sentAt:Date.now()}).catch(()=>{});
       roomClient.broadcast("guest_identity_request",{requester:"master"}).catch(()=>{});
@@ -1916,7 +1950,9 @@ UI.btnNextPhase.addEventListener("click", ()=>{
   stato=defaultState();
   const seed=urlParams.get("seed")?.trim();
   if(seed)stato.seed=seed;
-  if(urlParams.get("mode"))stato.mode=soloMode?"solo":urlParams.get("mode");
+  stato.mode=gameMode;
+  stato.narrativeStyle=narrativeStyle;
+  stato.caseCount=caseCount;
   buildOrderFromState();ensureState();
   updateUI();
   await connectRoom();
