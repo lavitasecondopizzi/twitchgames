@@ -890,7 +890,6 @@ button,input,select{font:inherit}
     <div class="center">
 <img id="roundImage" alt="">
 <div class="turn-row" id="roundResult" style="font-weight:900;display:none;"></div>
-            <div class="label" id="currentThemeLabel">TEMA: VITA REALE</div>
       <div class="scoreboard">
         <button class="score-btn" id="subScore">-1</button>
         <span class="value" id="scoreA">0</span>
@@ -1450,11 +1449,9 @@ async function caricaStato(){
         const guest = roomClient.getGuest();
         stato.playerNameB = guest?.nickname || null;
         aggiornaUI();
-        aggiornaStatoConnessioneUI();
         broadcastGameState().catch(console.error);
       } else {
         aggiornaUI();
-        aggiornaStatoConnessioneUI();
       }
     });
   }
@@ -1463,7 +1460,6 @@ async function caricaStato(){
     try{
       await roomClient.connect();
       roomReady = true;
-      aggiornaStatoConnessioneUI();
       decidiRuoloDaStato();
       if (forcedRole === "A"){
         if (!stato.playerNameA) stato.playerNameA = playerNameFromUrl || "Pizzi";
@@ -1478,7 +1474,6 @@ async function caricaStato(){
     }catch(e){
       console.error("Errore Supabase Realtime:", e);
       roomReady = false;
-      aggiornaStatoConnessioneUI();
       aggiornaUI();
     }
   }
@@ -1694,30 +1689,6 @@ function aggiornaUI(){
 const themeAEl   = document.getElementById("theme-A");
 const themeBEl   = document.getElementById("theme-B");
 const roundResultEl = document.getElementById("roundResult");
-const currentThemeLabel = document.getElementById("currentThemeLabel");
-
-const connectionStatusEl = document.createElement("span");
-connectionStatusEl.id = "realtimeStatus";
-connectionStatusEl.style.cssText = "display:inline-block;margin-left:8px;font-size:9px;font-weight:900;text-transform:uppercase;";
-const centerEl = document.querySelector(".center");
-if (centerEl) centerEl.appendChild(connectionStatusEl);
-
-function aggiornaStatoConnessioneUI(){
-  if (!connectionStatusEl) return;
-  if (!roomCode){
-    connectionStatusEl.textContent = "OFFLINE";
-    return;
-  }
-  if (!roomReady){
-    connectionStatusEl.textContent = "CONNESSIONE…";
-    return;
-  }
-  if (forcedRole === "A"){
-    connectionStatusEl.textContent = roomClient?.hasGuest() ? "OSPITE CONNESSO" : "IN ATTESA OSPITE";
-  } else {
-    connectionStatusEl.textContent = "CONNESSO";
-  }
-}
 
 function renderWord(el, displayWord){
   if (!el) return;
@@ -1811,7 +1782,7 @@ function aggiornaInterattivita(){
   if (addScoreBtn) addScoreBtn.disabled = !player;
   if (newRoundBtn){
     newRoundBtn.style.display = forcedRole === "A" ? "" : "none";
-    newRoundBtn.disabled = !roundConcluso();
+    newRoundBtn.disabled = false;
   }
 }
 
@@ -2002,7 +1973,7 @@ function initTabs(){
 /* ========= INIT ========= */
 
 newRoundBtn.addEventListener("click", () => {
-  if (forcedRole === "A" && roundConcluso()) nuovoRound();
+  if (forcedRole === "A") nuovoRound();
 });
 
 (async function init(){
