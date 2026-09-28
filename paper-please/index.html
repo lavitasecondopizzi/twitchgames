@@ -1654,8 +1654,8 @@ async function connectRoom(){
   roomClient.on("state-request",payload=>{
     if(isHost&&payload?.requester==="guest")broadcastState().catch(()=>{});
   });
-  roomClient.on("guest-identity-request",()=>{
-    if(isGuest) roomClient.broadcast("guest-identity",{nickname:guestName}).catch(()=>{});
+  roomClient.on("guest_identity_request",()=>{
+    if(isGuest) roomClient.broadcast("guest_identity",{nickname:guestName}).catch(()=>{});
   });
   roomClient.on("presence",presence=>{
     const entries=Object.values(presence||{}).flat();
@@ -1676,7 +1676,7 @@ async function connectRoom(){
       stato.mode=soloMode?"solo":(urlParams.get("mode")||stato.mode);
       updateUI();await broadcastState();
     }else {
-      roomClient.broadcast("guest-identity",{nickname:guestName}).catch(()=>{});
+      roomClient.broadcast("guest_identity",{nickname:guestName}).catch(()=>{});
       requestGameState();
     }
   }catch(e){console.error("Supabase Realtime non disponibile:",e);}
