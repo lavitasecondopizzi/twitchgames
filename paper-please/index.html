@@ -141,9 +141,32 @@ button,input,select{font:inherit}
 .side{min-width:0;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr);gap:7px}
 .side-info{display:grid;grid-template-rows:auto minmax(0,1fr);gap:6px;min-height:0}
 .side-info-head{display:flex;align-items:center;justify-content:space-between;gap:6px}
-.side-columns{display:grid;grid-template-columns:1fr 1fr;gap:6px;min-height:0}
-.side-box{min-width:0;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr);gap:5px;padding:7px;border:3px solid var(--line);background:var(--paper);box-shadow:3px 3px 0 var(--line)}
-.side-box-title{font-size:9px;font-weight:900;text-transform:uppercase}
+.side-columns{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(260px,.88fr);gap:7px;min-height:0}
+.side-box{min-width:0;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr);gap:7px;padding:8px;border:3px solid var(--line);background:var(--paper);box-shadow:4px 4px 0 var(--line);overflow:hidden}
+.side-box-head{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;border-bottom:3px solid var(--line);padding-bottom:6px}
+.side-box-title{font-size:10px;font-weight:900;text-transform:uppercase}
+.side-box-sub{margin-top:2px;font-size:6px;font-weight:900;text-transform:uppercase;letter-spacing:.05em}
+.chat-content{display:grid;grid-template-rows:minmax(0,1fr) auto;gap:7px;min-height:0}
+.suggestions{display:grid;grid-template-columns:1fr 1fr;gap:6px;min-height:0}
+.suggestion-col{display:grid;grid-template-rows:auto minmax(0,1fr);min-width:0;border:2px solid var(--line);background:var(--paper2);overflow:hidden}
+.mini-head{display:flex;align-items:baseline;justify-content:space-between;gap:4px;padding:5px;border-bottom:2px solid var(--line);font-weight:900}
+.mini-head span{font-size:8px}.mini-head small{font-size:5px;font-weight:900}
+.pro-col .mini-head{background:rgba(63,159,96,.18)}.con-col .mini-head{background:rgba(198,63,63,.14)}
+.suggestion-list{overflow:hidden;min-height:0;padding:3px}
+.suggestion-list .item{margin-bottom:3px}
+.vote-panel{border:3px solid var(--line);padding:6px;background:var(--paper2);box-shadow:3px 3px 0 var(--line)}
+.vote-head{display:flex;align-items:center;justify-content:space-between;gap:5px;margin-bottom:5px}
+.vbars{display:grid;gap:3px}
+.vrow{display:grid;grid-template-columns:54px minmax(0,1fr) 18px;align-items:center;gap:4px;font-size:7px;font-weight:900}
+.vrow b{text-align:right;font-size:7px}
+.vbg{height:7px;border:1px solid var(--line);background:var(--paper);overflow:hidden}.vfill{height:100%}
+.apply-chat{width:100%;margin-top:6px;min-height:25px}
+.history-wrap{position:relative;min-height:0;overflow:auto;padding:2px 2px 2px 14px}
+.history-line{position:absolute;left:5px;top:4px;bottom:4px;width:2px;background:var(--line)}
+.history-list{display:grid;gap:5px;min-height:0}
+.history-list .item{position:relative;margin:0;padding:6px 7px;border:2px solid var(--line);background:#fff;box-shadow:2px 2px 0 var(--line)}
+.history-list .item::before{content:"";position:absolute;left:-12px;top:9px;width:7px;height:7px;border:2px solid var(--line);background:var(--paper)}
+.history-empty{font-size:7px}
 .rules-overlay{position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(17,17,17,.94);opacity:0;pointer-events:none;transition:opacity .2s}
 .rules-overlay.show{opacity:1;pointer-events:auto}
 .rules-card{width:min(1100px,92vw);max-height:88vh;overflow:auto;padding:14px;border:5px solid var(--line);background:var(--paper);box-shadow:10px 10px 0 #000}
@@ -163,7 +186,7 @@ button,input,select{font:inherit}
 .end-overlay.gameover .end-title{color:var(--red)}.end-overlay.victory .end-title{color:var(--green)}
 @media(max-width:900px){
   #app{padding:9px;gap:8px}.top{grid-template-columns:minmax(0,1fr) minmax(250px,1.25fr) minmax(0,1fr);gap:7px}
-  .main{grid-template-columns:minmax(0,1.8fr) minmax(220px,.9fr);gap:7px}
+  .main{grid-template-columns:minmax(0,1.65fr) minmax(300px,1fr);gap:7px}
   .hud{gap:5px}.hud-card{padding:6px}.hud-card:nth-child(3){display:none}
   .grid-case{grid-template-columns:minmax(150px,.8fr) minmax(0,1.3fr);gap:7px}
 }
@@ -181,7 +204,7 @@ button,input,select{font:inherit}
   .portrait{min-height:105px;max-height:30%}.name{font-size:17px}.meta{font-size:7px}
   .notes{padding:5px}.notes .title{font-size:11px}.clamp-5,.clamp-3{font-size:7px}
   .decision-btn{min-height:26px;font-size:6px;padding:4px}
-  .side-info{gap:4px}.side-box{padding:5px;border-width:2px;box-shadow:2px 2px 0 var(--line)}.side-box-title{font-size:7px}
+  .side-info{gap:4px}.side-columns{grid-template-columns:minmax(0,1.08fr) minmax(180px,.92fr);gap:4px}.side-box{padding:5px;border-width:2px;box-shadow:2px 2px 0 var(--line)}.side-box-title{font-size:7px}.side-box-sub{font-size:4px}.mini-head{padding:3px}.mini-head span{font-size:6px}.mini-head small{font-size:4px}.vrow{grid-template-columns:43px minmax(0,1fr) 15px;font-size:6px}.history-wrap{padding-left:11px}.history-line{left:4px}
   .rules-card{padding:8px;border-width:3px;box-shadow:6px 6px 0 #000}.rules-grid{grid-template-columns:1fr;gap:5px}.rules-block{padding:6px;border-width:2px;box-shadow:2px 2px 0 var(--line)}.rules-block h3{font-size:8px}.rules-block p{font-size:6px}
 }
 </style>
@@ -292,39 +315,33 @@ button,input,select{font:inherit}
     <aside class="side">
       <div class="side-info">
         <div class="side-info-head"><div class="panel-title">INFORMAZIONI</div><button class="btn ghost" id="btnRules">REGOLE</button></div>
-        <div class="side-columns"><div class="side-box"><div class="side-box-title">CHAT / VOTO</div>
-            <div class="panel-title">CHAT / VOTO</div>
-            <div style="display:grid;grid-template-rows:minmax(0,1fr) auto;gap:7px;min-height:0">
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;min-height:0">
-                <div class="list">
-                  <div class="hud-title" style="color:var(--green)">PRO</div>
-                  <div id="prosList" class="item"><span class="t">Nessun suggerimento</span><span class="c"></span></div>
-                  <div id="prosList2"></div>
-                </div>
-                <div class="list">
-                  <div class="hud-title" style="color:var(--red)">CONTRO</div>
-                  <div id="consList" class="item"><span class="t">Nessun suggerimento</span><span class="c"></span></div>
-                  <div id="consList2"></div>
-                </div>
+        <div class="side-columns">
+          <section class="side-box chat-box">
+            <div class="side-box-head"><div><div class="side-box-title">CHAT / VOTO</div><div class="side-box-sub">SUGGERIMENTI E CONSENSO DELLA CHAT</div></div><span class="badge warn" id="voteLockBadge">Voto: Aperto</span></div>
+            <div class="chat-content">
+              <div class="suggestions">
+                <div class="suggestion-col pro-col"><div class="mini-head"><span>PRO</span><small>ARGOMENTI A FAVORE</small></div><div id="prosList" class="suggestion-list"><div class="item"><span class="t">Nessun suggerimento</span><span class="c"></span></div></div><div id="prosList2"></div></div>
+                <div class="suggestion-col con-col"><div class="mini-head"><span>CONTRO</span><small>ARGOMENTI CONTRARI</small></div><div id="consList" class="suggestion-list"><div class="item"><span class="t">Nessun suggerimento</span><span class="c"></span></div></div><div id="consList2"></div></div>
               </div>
-              <div class="list">
-                <div class="hud-row"><strong>VOTO</strong><span class="badge" id="chatLeader">Leader: —</span></div>
+              <div class="vote-panel">
+                <div class="vote-head"><div><div class="mini-head"><span>VOTO CHAT</span><small>DECISIONE COLLETTIVA</small></div></div><span class="badge" id="chatLeader">Leader: —</span></div>
                 <div class="vbars">
-                  <div class="vrow"><span>Passa</span><div class="vbg"><div id="vPass" class="vfill pass"></div></div><span id="cPass">0</span></div>
-                  <div class="vrow"><span>Nega</span><div class="vbg"><div id="vDeny" class="vfill deny"></div></div><span id="cDeny">0</span></div>
-                  <div class="vrow"><span>Arresta</span><div class="vbg"><div id="vArrest" class="vfill arrest"></div></div><span id="cArrest">0</span></div>
-                  <div class="vrow"><span>Cond.</span><div class="vbg"><div id="vCondemn" class="vfill condemn"></div></div><span id="cCondemn">0</span></div>
+                  <div class="vrow"><span>Passa</span><div class="vbg"><div id="vPass" class="vfill pass"></div></div><b id="cPass">0</b></div>
+                  <div class="vrow"><span>Nega</span><div class="vbg"><div id="vDeny" class="vfill deny"></div></div><b id="cDeny">0</b></div>
+                  <div class="vrow"><span>Arresta</span><div class="vbg"><div id="vArrest" class="vfill arrest"></div></div><b id="cArrest">0</b></div>
+                  <div class="vrow"><span>Condanna</span><div class="vbg"><div id="vCondemn" class="vfill condemn"></div></div><b id="cCondemn">0</b></div>
                 </div>
-                <button class="btn ghost" id="btnApplyChat">Imposta bozza da voto</button>
+                <button class="btn ghost apply-chat" id="btnApplyChat">IMPOSTA BOZZA DA VOTO</button>
               </div>
             </div>
-          </div><div class="side-box"><div class="side-box-title">STORICO</div>
-            <div class="panel-title">STORICO</div>
-            <div class="list" id="historyList"><div class="item"><span class="t">In attesa…</span><span class="c"></span></div></div>
-          </div></div>
+          </section>
+          <section class="side-box history-box">
+            <div class="side-box-head"><div><div class="side-box-title">STORICO</div><div class="side-box-sub">DECISIONI DEI CASI PRECEDENTI</div></div></div>
+            <div class="history-wrap"><div class="history-line"></div><div class="list history-list" id="historyList"><div class="item history-empty"><span class="t">Nessun caso concluso</span></div></div></div>
+          </section>
+        </div>
       </div>
-        </aside>
-  </main>
+    </aside>  </main>
 
 </div>
 
