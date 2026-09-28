@@ -8,610 +8,262 @@
 
 <style>
 :root{
-  --ink:#111;
-  --paper:#f7f7f4;
-  --paper-2:#ecece8;
-  --line:#111;
+  --ink:#111;--paper:#f7f7f4;--paper2:#e8e8e3;--line:#111;
+  --green:#19d34a;--red:#d11;--yellow:#f1c40f;--purple:#8b4bb3;
   --shadow:6px 6px 0 #111;
-  --green:#19d34a;
-  --red:#d11;
-  --yellow:#f1c40f;
-  --purple:#9b59b6;
-  --halftone:radial-gradient(circle,rgba(0,0,0,.15) 1px,transparent 1.5px);
+  --dots:radial-gradient(circle,rgba(0,0,0,.14) 1px,transparent 1.5px);
 }
 *{box-sizing:border-box}
 html,body{width:100%;height:100%;margin:0}
 body{
-  overflow:hidden;
-  color:var(--ink);
-  background:var(--halftone) 0 0/12px 12px,var(--paper);
-  font-family:Arial,Helvetica,sans-serif;
-  font-size:clamp(10px,.72vw,14px);
+  overflow:hidden;background:var(--dots) 0 0/12px 12px,var(--paper);
+  color:var(--ink);font-family:Arial,Helvetica,sans-serif;
 }
-button{font:inherit}
-
+button,input,select{font:inherit}
 #app{
-  position:relative;
-  width:100vw;height:100vh;
-  padding:14px;
-  display:grid;
-  grid-template-rows:auto minmax(0,1fr) auto;
-  gap:10px;
-  overflow:hidden;
-  background:var(--halftone) 0 0/13px 13px,var(--paper);
-  border:4px solid var(--line);
+  width:100vw;height:100vh;padding:12px;
+  display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:10px;
+  border:4px solid var(--line);overflow:hidden;
+  background:var(--dots) 0 0/12px 12px,var(--paper);
 }
-#app::before{
-  content:"PAPER PIZZI PLEASE";
-  position:absolute;right:18px;bottom:6px;
-  font-size:8px;font-weight:900;letter-spacing:.16em;opacity:.38;
-  pointer-events:none;
-}
-
-/* ===== FASCIA SUPERIORE ===== */
 .top{
-  display:grid;
-  grid-template-columns:minmax(0,1fr) minmax(0,1.25fr) minmax(0,1fr);
-  gap:10px;
-  align-items:stretch;
-  min-width:0;
-  min-height:0;
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,1.25fr) minmax(0,1fr);
+  gap:10px;min-height:0;align-items:start;
 }
 .cam{
-  position:relative;
-  width:100%;height:auto;
-  aspect-ratio:16/9;
-  min-width:0;min-height:0;
-  overflow:hidden;
-  display:flex;align-items:flex-end;
-  padding:10px;
-  background:#00ff00;
-  border:4px solid var(--line);
-  box-shadow:var(--shadow);
+  position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;
+  display:flex;align-items:flex-end;padding:8px;background:#00ff00;
+  border:4px solid var(--line);box-shadow:var(--shadow);
 }
+.cam-left{transform:rotate(-.4deg)}.cam-right{transform:rotate(.4deg)}
 .cam::after{
-  content:"WEBCAM";
-  position:absolute;top:8px;right:8px;
-  z-index:2;
-  padding:4px 6px;
-  border:2px solid var(--line);
-  background:var(--paper);
-  font-size:8px;font-weight:900;
-  letter-spacing:.08em;
+  content:"WEBCAM";position:absolute;top:7px;right:7px;padding:3px 5px;
+  border:2px solid var(--line);background:var(--paper);font-size:7px;font-weight:900;
 }
-.cam-left{transform:rotate(-.5deg)}
-.cam-right{transform:rotate(.5deg)}
 .cam .label{
-  position:relative;z-index:3;
-  max-width:78%;
-  padding:6px 9px;
-  border:3px solid var(--line);
-  background:var(--ink);
-  color:var(--paper);
-  font-size:clamp(9px,.75vw,13px);
-  font-weight:900;
-  line-height:1;
-  text-transform:uppercase;
-  white-space:nowrap;
-  overflow:hidden;text-overflow:ellipsis;
+  position:relative;z-index:2;max-width:80%;padding:5px 7px;
+  border:3px solid var(--line);background:var(--ink);color:var(--paper);
+  font-size:9px;font-weight:900;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-
-/* ===== HUD ===== */
 .hud{
-  min-width:0;min-height:0;
-  display:grid;
-  grid-template-columns:1fr 1fr 1.2fr;
-  gap:8px;
+  min-width:0;display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:7px;
 }
 .hud-card{
-  position:relative;
-  min-width:0;min-height:0;
-  overflow:hidden;
-  display:flex;flex-direction:column;
-  justify-content:space-between;
-  gap:6px;
-  padding:8px;
-  background:var(--paper);
-  border:4px solid var(--line);
-  box-shadow:var(--shadow);
+  min-width:0;padding:8px;background:var(--paper);
+  border:4px solid var(--line);box-shadow:var(--shadow);
 }
-.hud-card::before{
-  content:"";
-  position:absolute;inset:0;
-  background:var(--halftone) 0 0/9px 9px;
-  opacity:.12;pointer-events:none;
-}
-.hud-card>*{position:relative;z-index:1}
+.hud-card.secondary{display:none}
 .hud-title{
-  padding-bottom:5px;
-  border-bottom:3px solid var(--line);
-  font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;
-  font-size:clamp(13px,1.05vw,18px);
-  line-height:.9;
-  text-transform:uppercase;
+  margin-bottom:6px;padding-bottom:4px;border-bottom:3px solid var(--line);
+  font-family:Impact,"Arial Black",sans-serif;font-size:15px;line-height:.9;text-transform:uppercase;
 }
-.hud-row{
-  display:flex;justify-content:space-between;align-items:center;
-  gap:6px;min-width:0;
-  font-size:.76em;font-weight:800;
-}
+.hud-row{display:flex;justify-content:space-between;align-items:center;gap:5px;font-size:9px;font-weight:900}
 .badge{
-  display:inline-block;
-  min-width:0;
-  padding:3px 6px;
-  border:2px solid var(--line);
-  background:var(--paper);
-  font-size:.76em;font-weight:900;
-  line-height:1.05;
-  white-space:nowrap;
-  overflow:hidden;text-overflow:ellipsis;
+  display:inline-block;padding:3px 5px;border:2px solid var(--line);background:var(--paper);
+  font-size:8px;font-weight:900;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-.badge.brand{background:var(--ink);color:var(--paper)}
-.badge.ok{background:var(--green);color:#111}
-.badge.ko{background:var(--red);color:#fff}
-.badge.warn{background:var(--yellow);color:#111}
+.badge.brand{background:var(--ink);color:var(--paper)}.badge.ok{background:var(--green)}
+.badge.ko{background:var(--red);color:#fff}.badge.warn{background:var(--yellow)}
 .badge.vio{background:var(--purple);color:#fff}
-
-.bars{display:flex;flex-direction:column;gap:5px}
-.bar-row{
-  display:grid;
-  grid-template-columns:auto minmax(0,1fr) auto;
-  gap:6px;align-items:center;
-  font-size:.7em;font-weight:900;
-}
-.bar-bg{
-  height:10px;
-  overflow:hidden;
-  border:2px solid var(--line);
-  background:#fff;
-}
-.bar-fill{height:100%;width:50%;transition:width .2s steps(4,end)}
-.bar-fill.regime{background:#111}
-.bar-fill.popolo{background:var(--green)}
-.bar-fill.ribelli{background:var(--purple)}
-.bar-fill.sanity{background:var(--yellow)}
-
-/* ===== AREA PRINCIPALE ===== */
+.bars,.bar-row{display:none}
+.small{font-size:9px;font-weight:700;line-height:1.4}
 .main{
-  min-width:0;min-height:0;
-  display:grid;
-  grid-template-columns:minmax(0,2.2fr) minmax(250px,1fr);
-  gap:10px;
+  min-width:0;min-height:0;display:grid;
+  grid-template-columns:minmax(0,2.2fr) minmax(260px,.85fr);gap:10px;
 }
 .panel,.tabview,.footer{
-  background:var(--paper);
-  border:4px solid var(--line);
-  box-shadow:var(--shadow);
+  border:4px solid var(--line);background:var(--paper);box-shadow:var(--shadow);
 }
-.panel{
-  position:relative;
-  min-width:0;min-height:0;
-  overflow:hidden;
-  padding:9px;
-}
+.panel{min-width:0;min-height:0;padding:9px;overflow:hidden;position:relative}
 .panel::before{
-  content:"";
-  position:absolute;inset:0;
-  background:var(--halftone) 0 0/10px 10px;
-  opacity:.1;pointer-events:none;
+  content:"";position:absolute;inset:0;background:var(--dots) 0 0/10px 10px;opacity:.1;pointer-events:none;
 }
 .panel>*{position:relative;z-index:1}
 .panel-head{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:8px;margin-bottom:8px;
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  margin-bottom:8px;padding-bottom:7px;border-bottom:4px solid var(--line);
 }
 .panel-title{
-  padding:5px 8px;
-  border:3px solid var(--line);
-  background:var(--ink);color:var(--paper);
-  font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;
-  font-size:clamp(14px,1vw,19px);
-  line-height:.9;
-  text-transform:uppercase;
-  white-space:nowrap;
+  padding:5px 8px;background:var(--ink);color:var(--paper);border:3px solid var(--line);
+  font-family:Impact,"Arial Black",sans-serif;font-size:17px;line-height:.9;text-transform:uppercase;
 }
-.panel-actions{
-  display:flex;gap:5px;align-items:center;
-  flex-wrap:wrap;justify-content:flex-end;
-}
-
-/* ===== PULSANTI ===== */
+.panel-actions{display:flex;gap:5px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
 .btn{
-  min-height:28px;
-  padding:5px 8px;
-  border:3px solid var(--line);
-  border-radius:0;
-  background:var(--ink);
-  color:var(--paper);
-  box-shadow:3px 3px 0 var(--line);
-  cursor:pointer;
-  font-size:8px;font-weight:900;
-  text-transform:uppercase;
-  white-space:nowrap;
+  min-height:29px;padding:5px 8px;border:3px solid var(--line);border-radius:0;
+  background:var(--ink);color:var(--paper);box-shadow:3px 3px 0 var(--line);
+  cursor:pointer;font-size:8px;font-weight:900;text-transform:uppercase;
 }
-.btn:hover:not(:disabled),.btn:focus-visible{
-  background:var(--paper);color:var(--ink);outline:none;
-}
+.btn:hover:not(:disabled){background:var(--paper);color:var(--ink)}
 .btn:active:not(:disabled){transform:translate(2px,2px);box-shadow:none}
-.btn:disabled{opacity:.4;cursor:not-allowed}
-.btn.ghost{background:var(--paper);color:var(--ink)}
-.btn.ghost:hover:not(:disabled){background:var(--ink);color:var(--paper)}
-
-/* ===== DOSSIER ===== */
+.btn:disabled{opacity:.4;cursor:not-allowed}.btn.ghost{background:var(--paper);color:var(--ink)}
 .grid-case{
-  position:relative;
-  height:calc(100% - 42px);
-  min-width:0;min-height:0;
-  display:grid;
-  grid-template-columns:minmax(150px,1.05fr) minmax(0,1.6fr);
-  gap:9px;
+  height:calc(100% - 50px);min-width:0;min-height:0;
+  display:grid;grid-template-columns:minmax(190px,.9fr) minmax(0,1.35fr);gap:10px;
 }
 .portrait{
-  min-width:0;min-height:0;
-  overflow:hidden;
-  display:flex;align-items:center;justify-content:center;
-  background:#fff;
-  border:4px solid var(--line);
-  box-shadow:var(--shadow);
+  min-width:0;min-height:0;overflow:hidden;display:flex;align-items:center;justify-content:center;
+  background:#fff;border:4px solid var(--line);box-shadow:var(--shadow);
 }
-.portrait img{
-  width:100%;height:100%;
-  object-fit:contain;
-  background:#fff;
-}
-.details{
-  min-width:0;min-height:0;
-  display:grid;
-  grid-template-rows:auto auto minmax(0,1fr) auto;
-  gap:8px;
-}
+.portrait img{width:100%;height:100%;object-fit:contain;background:#fff}
+.details{min-width:0;min-height:0;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;gap:7px}
 .name{
-  min-width:0;
-  padding-bottom:5px;
-  border-bottom:3px solid var(--line);
-  font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;
-  font-size:clamp(18px,1.6vw,28px);
-  line-height:.9;
-  text-transform:uppercase;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  min-width:0;padding-bottom:5px;border-bottom:3px solid var(--line);
+  font-family:Impact,"Arial Black",sans-serif;font-size:clamp(20px,1.8vw,32px);
+  line-height:.9;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-.meta{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:5px 10px;
-  min-width:0;
-  font-size:.75em;font-weight:800;
-}
-.meta .row{
-  display:flex;gap:5px;min-width:0;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.meta .k{font-weight:900}
-.meta .v{overflow:hidden;text-overflow:ellipsis}
-.dossier{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:5px}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:5px 10px;font-size:9px;font-weight:800}
+.meta .row{display:flex;gap:5px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta .k{font-weight:900}.meta .v{overflow:hidden;text-overflow:ellipsis}
+.dossier{display:flex;gap:4px;align-items:center;flex-wrap:wrap;margin-top:5px}
 .dossier .badge{font-size:7px}
-
 .notes,.outcome{
-  min-width:0;min-height:0;
-  overflow:hidden;
-  padding:8px;
-  background:var(--paper-2);
-  border:3px solid var(--line);
+  min-width:0;min-height:0;overflow:hidden;padding:8px;
+  border:3px solid var(--line);background:var(--paper2);
 }
-.notes{
-  display:flex;flex-direction:column;gap:6px;
-}
-.notes .title{
-  font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;
-  font-size:16px;line-height:.9;text-transform:uppercase;
+.notes{display:flex;flex-direction:column;gap:6px}.notes .title{
+  font-family:Impact,"Arial Black",sans-serif;font-size:15px;text-transform:uppercase;
 }
 .clamp-5,.clamp-3{
-  overflow:hidden;
-  font-size:.76em;font-weight:700;line-height:1.35;
+  overflow:hidden;font-size:9px;font-weight:700;line-height:1.35;
+  display:-webkit-box;-webkit-box-orient:vertical;
 }
-.clamp-5{
-  display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;
-}
-.clamp-3{
-  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;
-}
-
-/* ===== DECISIONI ===== */
-.controls{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:5px;
-}
+.clamp-5{-webkit-line-clamp:6}.clamp-3{-webkit-line-clamp:3}
+.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
 .decision-btn{
-  min-height:31px;
-  padding:6px 7px;
-  border:3px solid var(--line);
-  border-radius:0;
-  background:var(--paper);
-  color:var(--ink);
-  box-shadow:3px 3px 0 var(--line);
-  cursor:pointer;
-  font-size:8px;font-weight:900;
-  text-transform:uppercase;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  min-height:34px;padding:6px;border:3px solid var(--line);border-radius:0;
+  background:var(--paper);color:var(--ink);box-shadow:3px 3px 0 var(--line);
+  cursor:pointer;font-size:9px;font-weight:900;text-transform:uppercase;
 }
-.decision-btn:hover:not(:disabled){
-  background:var(--ink);color:var(--paper);
-  transform:translate(-1px,-1px);
-}
-.decision-btn.selected{
-  background:var(--green);
-  color:#111;
-  box-shadow:3px 3px 0 var(--line);
-}
-.decision-btn:disabled{opacity:.4;cursor:not-allowed}
-.outcome{margin-top:6px}
-.outcome .hud-row{margin-bottom:6px}
-
-/* ===== COLONNA LATERALE ===== */
-.side{
-  min-width:0;min-height:0;
-  display:grid;
-  grid-template-rows:auto minmax(0,1fr);
-  gap:7px;
-}
-.tabs{
-  display:flex;gap:5px;
-  min-width:0;overflow:hidden;
-}
+.decision-btn:hover:not(:disabled){background:var(--ink);color:var(--paper)}
+.decision-btn.selected{background:var(--green);color:var(--ink)}
+.decision-btn:disabled{opacity:.4;cursor:not-allowed}.outcome{margin-top:6px}
+.outcome .hud-row{margin-bottom:5px}
+.side{min-width:0;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr);gap:7px}
+.tabs{display:flex;gap:5px;overflow:hidden}
 .tab-btn{
-  min-height:28px;
-  padding:5px 8px;
-  border:3px solid var(--line);
-  border-radius:0;
-  background:var(--paper);
-  color:var(--ink);
-  box-shadow:3px 3px 0 var(--line);
-  cursor:pointer;
-  font-size:8px;font-weight:900;
-  text-transform:uppercase;
+  flex:1;min-width:0;min-height:30px;padding:5px 4px;
+  border:3px solid var(--line);border-radius:0;background:var(--paper);color:var(--ink);
+  box-shadow:3px 3px 0 var(--line);cursor:pointer;font-size:8px;font-weight:900;text-transform:uppercase;
 }
-.tab-btn:hover,.tab-btn:focus-visible{background:var(--ink);color:var(--paper);outline:none}
-.tab-btn.active{background:var(--ink);color:var(--paper)}
-
-.tabview{
-  min-width:0;min-height:0;
-  overflow:hidden;
-}
-.tabinner{
-  height:100%;
-  display:flex;
-  transition:transform .2s steps(4,end);
-}
+.tab-btn.active,.tab-btn:hover{background:var(--ink);color:var(--paper)}
+.tabview{min-height:0;overflow:hidden}.tabinner{height:100%;display:flex}
 .tabpanel{
-  flex:0 0 100%;
-  min-width:0;min-height:0;
-  padding:9px;
-  overflow:hidden;
-  display:grid;
-  grid-template-rows:auto minmax(0,1fr);
-  gap:7px;
+  flex:0 0 100%;min-width:0;min-height:0;padding:8px;overflow:hidden;
+  display:grid;grid-template-rows:auto minmax(0,1fr);gap:7px;
 }
-.tabpanel>.panel-title{justify-self:start}
-
+.tabpanel>.panel-title{justify-self:start;font-size:14px}
 .list{
-  min-width:0;min-height:0;
-  overflow:hidden;
-  display:flex;flex-direction:column;gap:5px;
-  padding:7px;
-  background:#fff;
-  border:3px solid var(--line);
+  min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:5px;
+  padding:7px;border:3px solid var(--line);background:#fff;
 }
 .item{
-  min-width:0;
-  padding:6px 7px;
-  display:flex;justify-content:space-between;gap:7px;
-  background:var(--paper);
-  border:2px solid var(--line);
-  font-size:.72em;font-weight:800;
-  overflow:hidden;
+  min-width:0;padding:6px;background:var(--paper);border:2px solid var(--line);
+  display:flex;justify-content:space-between;gap:6px;font-size:8px;font-weight:800;overflow:hidden;
 }
-.item .t{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.item .c{flex:0 0 auto;font-weight:900}
-.small{font-size:.72em;font-weight:700;line-height:1.35}
-.small code{background:var(--paper-2);padding:2px 5px;border:2px solid var(--line)}
-
-.vbars{display:flex;flex-direction:column;gap:7px;min-height:0}
-.vrow{
-  display:grid;
-  grid-template-columns:auto minmax(0,1fr) auto;
-  gap:6px;align-items:center;
-  font-size:.7em;font-weight:900;
+.item .t{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.item .c{font-weight:900}
+.vbars{display:flex;flex-direction:column;gap:6px}.vrow{
+  display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:5px;align-items:center;font-size:8px;font-weight:900;
 }
-.vbg{
-  height:11px;overflow:hidden;
-  border:2px solid var(--line);
-  background:#fff;
-}
-.vfill{height:100%;width:0;transition:width .2s steps(4,end)}
-.vfill.pass{background:var(--green)}
-.vfill.deny{background:var(--red)}
-.vfill.arrest{background:var(--yellow)}
-.vfill.condemn{background:var(--purple)}
-
-/* ===== FOOTER ===== */
+.vbg{height:10px;border:2px solid var(--line);background:#fff;overflow:hidden}
+.vfill{height:100%;width:0}.vfill.pass{background:var(--green)}.vfill.deny{background:var(--red)}
+.vfill.arrest{background:var(--yellow)}.vfill.condemn{background:var(--purple)}
 .footer{
-  min-width:0;
-  padding:7px 9px;
-  display:flex;justify-content:space-between;
-  align-items:center;gap:8px;
+  min-width:0;padding:6px 8px;display:flex;justify-content:space-between;align-items:center;gap:8px;
 }
-.footer .left,.footer .right{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.footer .hint{
-  max-width:60vw;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  font-size:.7em;font-weight:800;
-}
-
-/* ===== FINE PARTITA ===== */
+.footer .left,.footer .right{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.footer .hint{max-width:55vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:8px;font-weight:800}
 .end-overlay{
-  position:fixed;inset:0;z-index:9999;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  padding:24px;
-  text-align:center;
-  background:rgba(17,17,17,.92);
-  opacity:0;pointer-events:none;
-  transition:opacity .2s steps(2,end);
+  position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px;text-align:center;background:rgba(17,17,17,.94);opacity:0;pointer-events:none;transition:opacity .2s;
 }
 .end-overlay.show{opacity:1;pointer-events:auto}
-.end-title{
-  margin-bottom:14px;
-  font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;
-  font-size:clamp(40px,6vw,90px);
-  line-height:.85;
-  text-transform:uppercase;
-  -webkit-text-stroke:3px var(--paper);
-}
-.end-text{
-  max-width:min(900px,90vw);
-  color:var(--paper);
-  font-size:clamp(11px,1vw,17px);
-  font-weight:800;
-  line-height:1.5;
-}
-.end-overlay.gameover .end-title{color:var(--red)}
-.end-overlay.victory .end-title{color:var(--green)}
-
-/* ===== RESPONSIVE ===== */
-@media(max-width:1100px){
-  #app{padding:10px;gap:8px}
-  .top{gap:7px}
-  .hud{gap:6px}
-  .main{grid-template-columns:minmax(0,2fr) minmax(220px,1fr);gap:7px}
-  .panel{padding:7px}
-  .grid-case{gap:7px}
-}
-@media(max-width:800px){
-  .top{grid-template-columns:minmax(0,1fr) minmax(0,1.25fr) minmax(0,1fr)}
-  .hud-card{padding:6px}
-  .hud-title{font-size:11px}
-  .badge{padding:3px 4px;font-size:7px}
-  .main{grid-template-columns:minmax(0,1.7fr) minmax(190px,1fr)}
-  .grid-case{grid-template-columns:minmax(110px,.9fr) minmax(0,1.6fr)}
+.end-title{margin-bottom:14px;font-family:Impact,"Arial Black",sans-serif;font-size:clamp(42px,7vw,96px);line-height:.85;text-transform:uppercase;color:var(--paper)}
+.end-text{max-width:800px;color:var(--paper);font-size:12px;font-weight:800;line-height:1.5}
+.end-overlay.gameover .end-title{color:var(--red)}.end-overlay.victory .end-title{color:var(--green)}
+@media(max-width:900px){
+  #app{padding:9px;gap:8px}.top{grid-template-columns:minmax(0,1fr) minmax(250px,1.25fr) minmax(0,1fr);gap:7px}
+  .main{grid-template-columns:minmax(0,1.8fr) minmax(220px,.9fr);gap:7px}
+  .hud{gap:5px}.hud-card{padding:6px}.hud-card:nth-child(3){display:none}
+  .grid-case{grid-template-columns:minmax(150px,.8fr) minmax(0,1.3fr);gap:7px}
 }
 @media(max-width:650px){
-  #app{padding:7px;gap:6px;border-width:3px}
-  .top{gap:5px}
-  .cam{padding:5px;border-width:3px;box-shadow:3px 3px 0 var(--line)}
-  .cam::after{display:none}
-  .cam .label{padding:4px 5px;border-width:2px;font-size:6px}
-  .hud{gap:4px}
-  .hud-card{padding:5px;border-width:3px;box-shadow:3px 3px 0 var(--line)}
-  .hud-card:nth-child(3){display:none}
-  .hud-title{font-size:9px}
-  .bar-row{grid-template-columns:auto minmax(0,1fr);font-size:6px}
-  .bar-row>span:last-child{display:none}
-  .main{grid-template-columns:minmax(0,1fr) 150px;gap:5px}
+  #app{padding:6px;border-width:3px;gap:5px}
+  .top{gap:4px}.cam{border-width:3px;box-shadow:3px 3px 0 var(--line);padding:4px}.cam::after{display:none}
+  .cam .label{padding:3px 4px;border-width:2px;font-size:6px}
+  .hud{gap:3px}.hud-card{padding:5px;border-width:3px;box-shadow:3px 3px 0 var(--line)}
+  .hud-title{font-size:10px}.hud-row{font-size:7px}.badge{font-size:6px;padding:2px 3px}
+  .main{grid-template-columns:minmax(0,1fr) 145px;gap:4px}
   .panel{padding:5px;border-width:3px;box-shadow:4px 4px 0 var(--line)}
-  .panel-head{gap:4px;margin-bottom:5px}
-  .panel-title{padding:4px 5px;border-width:2px;font-size:10px}
-  .panel-actions{gap:3px}
-  .btn{min-height:24px;padding:4px 5px;font-size:6px}
-  .grid-case{height:calc(100% - 34px);grid-template-columns:1fr;gap:5px}
-  .portrait{min-height:110px;max-height:32%}
-  .details{gap:5px}
-  .name{font-size:16px}
-  .meta{font-size:6px;gap:3px}
-  .notes{padding:5px;border-width:2px}
-  .notes .title{font-size:11px}
-  .decision-btn{min-height:25px;padding:4px;font-size:6px}
-  .tabs{gap:3px}
-  .tab-btn{min-height:23px;padding:4px;font-size:6px;border-width:2px;box-shadow:2px 2px 0 var(--line)}
-  .tabpanel{padding:5px}
-  .item{padding:5px;font-size:6px}
-  .footer{padding:5px;border-width:3px;box-shadow:3px 3px 0 var(--line)}
-  .footer .hint{font-size:6px}
+  .panel-head{gap:4px;margin-bottom:5px;padding-bottom:5px}.panel-title{font-size:10px;padding:4px}
+  .panel-actions{gap:2px}.btn{min-height:24px;padding:4px;font-size:6px}
+  .grid-case{height:calc(100% - 39px);grid-template-columns:1fr;gap:5px}
+  .portrait{min-height:105px;max-height:30%}.name{font-size:17px}.meta{font-size:7px}
+  .notes{padding:5px}.notes .title{font-size:11px}.clamp-5,.clamp-3{font-size:7px}
+  .decision-btn{min-height:26px;font-size:6px;padding:4px}
+  .tabs{gap:2px}.tab-btn{min-height:23px;font-size:6px;padding:3px;border-width:2px;box-shadow:2px 2px 0 var(--line)}
+  .tabpanel{padding:5px}.tabpanel>.panel-title{font-size:10px}.item,.small{font-size:6px}
+  .footer{padding:4px;border-width:3px;box-shadow:3px 3px 0 var(--line)}.footer .hint{font-size:6px}
 }
 </style>
 </head>
 
 <body>
 <div id="app">
-
-  <!-- TOP -->
-  <div class="top">
+  <header class="top">
     <div class="cam cam-left"><div class="label" id="camStreamerLabel">Streamer</div></div>
 
     <div class="hud">
       <div class="hud-card">
-        <div class="hud-title">Round & fase</div>
+        <div class="hud-title">Paper Pizzi Please</div>
         <div class="hud-row">
-          <span id="hudRound">Round 1/12</span>
+          <span id="hudRound">Caso 1/12</span>
           <span class="badge brand" id="hudSeason">Stagione 1</span>
         </div>
         <div class="hud-row">
-          <span class="badge" id="hudPhase">Discussione</span>
+          <span class="badge" id="hudPhase">Intro</span>
           <span class="badge warn" id="hudTimer">00:00</span>
         </div>
+      </div>
+      <div class="hud-card">
+        <div class="hud-title">Risorse</div>
         <div class="hud-row">
           <span class="badge ok" id="hudStamps">Timbri: 0</span>
           <span class="badge warn" id="hudSanity">Sanità: 10</span>
         </div>
-      </div>
-
-      <div class="hud-card">
-        <div class="hud-title">Fazioni</div>
-        <div class="bars">
-          <div class="bar-row">
-            <span>Regime</span>
-            <div class="bar-bg"><div id="barRegime" class="bar-fill regime" style="width:50%"></div></div>
-            <span id="valRegime">50</span>
-          </div>
-          <div class="bar-row">
-            <span>Popolo</span>
-            <div class="bar-bg"><div id="barPopolo" class="bar-fill popolo" style="width:50%"></div></div>
-            <span id="valPopolo">50</span>
-          </div>
-          <div class="bar-row">
-            <span>Ribelli</span>
-            <div class="bar-bg"><div id="barRibelli" class="bar-fill ribelli" style="width:50%"></div></div>
-            <span id="valRibelli">50</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="hud-card">
-        <div class="hud-title">Obiettivo chat (a tempo)</div>
         <div class="hud-row">
-          <span class="badge vio" id="hudObjectiveType">—</span>
-          <span class="badge" id="hudObjectiveProgress">0/0</span>
+          <span class="badge" id="hudDossier">Dossier L1</span>
+          <span class="badge" id="hudCaseIndex">Persona 1/12</span>
         </div>
+      </div>
+      <div class="hud-card secondary">
+        <div class="hud-title">Stato</div>
+        <div class="hud-row"><span class="badge" id="hudUnlocks">Sbloccabili: 0</span><span class="badge" id="hudDebts">Debiti: 0</span></div>
         <div class="small" id="hudObjectiveText">In attesa…</div>
-        <div class="hud-row">
-          <span class="badge" id="hudUnlocks">Sbloccabili: 0</span>
-          <span class="badge" id="hudDebts">Debiti: 0</span>
+        <span class="badge vio" id="hudObjectiveType">—</span>
+        <span class="badge" id="hudObjectiveProgress">0/0</span>
+        <div class="bars">
+          <div class="bar-row"><span>Regime</span><div class="bar-bg"><div id="barRegime" class="bar-fill regime"></div></div><span id="valRegime">50</span></div>
+          <div class="bar-row"><span>Popolo</span><div class="bar-bg"><div id="barPopolo" class="bar-fill popolo"></div></div><span id="valPopolo">50</span></div>
+          <div class="bar-row"><span>Ribelli</span><div class="bar-bg"><div id="barRibelli" class="bar-fill ribelli"></div></div><span id="valRibelli">50</span></div>
         </div>
       </div>
     </div>
 
     <div class="cam cam-right"><div class="label" id="camGuestLabel">Ospite</div></div>
-  </div>
+  </header>
 
-  <!-- MAIN -->
-  <div class="main">
-
-    <!-- LEFT: Case panel -->
+  <main class="main">
     <section class="panel" id="panelCase">
       <div class="panel-head">
-        <div class="panel-title">Postazione di frontiera</div>
+        <div class="panel-title">POSTAZIONE DI FRONTIERA</div>
         <div class="panel-actions">
-          <span class="badge" id="hudCaseIndex">Persona 1/12</span>
-          <span class="badge" id="hudDossier">Dossier L1</span>
           <button class="btn ghost" id="btnNextPhase">Avanza fase</button>
           <button class="btn" id="btnConfirm" disabled>Conferma</button>
         </div>
       </div>
 
       <div class="grid-case">
-        <div class="portrait">
-          <img id="casePortrait" alt="Candidato">
-        </div>
+        <div class="portrait"><img id="casePortrait" alt="Candidato"></div>
 
         <div class="details">
           <div>
@@ -622,7 +274,7 @@ button{font:inherit}
           <div class="meta" id="metaGrid">
             <div class="row"><span class="k">Origine:</span><span class="v" id="caseOrigin">—</span></div>
             <div class="row"><span class="k">Lavoro:</span><span class="v" id="caseJob">—</span></div>
-            <div class="row" style="grid-column:1/-1;"><span class="k">Motivo:</span><span class="v" id="caseReason">—</span></div>
+            <div class="row" style="grid-column:1/-1"><span class="k">Motivo:</span><span class="v" id="caseReason">—</span></div>
           </div>
 
           <div class="notes">
@@ -630,10 +282,8 @@ button{font:inherit}
               <span class="badge" id="caseArcBadge">Arco: —</span>
               <span class="badge" id="caseTagBadge">Tag: —</span>
             </div>
-
-            <div class="title">Note / Documenti</div>
+            <div class="title">DOCUMENTI / NOTE</div>
             <div class="clamp-5" id="caseNotes">—</div>
-
             <div class="hud-row">
               <span class="badge" id="casePromise">Promessa: —</span>
               <span class="badge" id="caseDebt">Debito: —</span>
@@ -647,132 +297,104 @@ button{font:inherit}
               <button class="decision-btn" data-decision="arrest">Arresta</button>
               <button class="decision-btn" data-decision="condemn">Condanna</button>
             </div>
-
             <div class="outcome">
               <div class="hud-row">
                 <span class="badge" id="draftLabel">Bozza: Nessuna</span>
                 <span class="badge warn" id="voteLockBadge">Voto: Aperto</span>
               </div>
-              <div class="clamp-3" id="outcomeText">
-                Scegli una decisione. La conferma è disponibile solo in “Fase Decisione”.
-              </div>
+              <div class="clamp-3" id="outcomeText">Scegli una decisione. La conferma è disponibile solo in “Fase Decisione”.</div>
             </div>
           </div>
-
         </div>
       </div>
     </section>
 
-    <!-- RIGHT: Tabs -->
     <aside class="side">
-      <div class="tabs">
+      <nav class="tabs" aria-label="Informazioni">
         <button class="tab-btn active" data-tab="0">Chat</button>
         <button class="tab-btn" data-tab="1">Storico</button>
         <button class="tab-btn" data-tab="2">Regole</button>
         <button class="tab-btn" data-tab="3">Extra</button>
-      </div>
-
+      </nav>
       <div class="tabview">
         <div class="tabinner" id="tabInner">
-
-          <!-- CHAT -->
           <section class="tabpanel" data-tab="0">
-            <div class="panel-title" style="justify-self:start;">Chat (Pro/Contro + Voto)</div>
-
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; min-height:0;">
-              <div class="list">
-                <div class="hud-title" style="color:var(--ok)">Pro</div>
-                <div id="prosList" class="item"><span class="t">Nessun suggerimento</span><span class="c"></span></div>
-                <div id="prosList2"></div>
+            <div class="panel-title">CHAT / VOTO</div>
+            <div style="display:grid;grid-template-rows:minmax(0,1fr) auto;gap:7px;min-height:0">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;min-height:0">
+                <div class="list">
+                  <div class="hud-title" style="color:var(--green)">PRO</div>
+                  <div id="prosList" class="item"><span class="t">Nessun suggerimento</span><span class="c"></span></div>
+                  <div id="prosList2"></div>
+                </div>
+                <div class="list">
+                  <div class="hud-title" style="color:var(--red)">CONTRO</div>
+                  <div id="consList" class="item"><span class="t">Nessun suggerimento</span><span class="c"></span></div>
+                  <div id="consList2"></div>
+                </div>
               </div>
               <div class="list">
-                <div class="hud-title" style="color:var(--ko)">Contro</div>
-                <div id="consList" class="item"><span class="t">Nessun suggerimento</span><span class="c"></span></div>
-                <div id="consList2"></div>
-              </div>
-            </div>
-
-            <div class="list" style="margin-top:8px;">
-              <div class="hud-title">Voto finale (2 fasi)</div>
-              <div class="small">
-                Fase 1: <code>!passa</code> <code>!nega</code> <code>!arresta</code> <code>!condanna</code><br>
-                Fase 2 (spareggio se pari): <code>!tiebreak A/B</code> (automatico se configurato)
-              </div>
-              <div class="vbars">
-                <div class="vrow"><span>Passa</span><div class="vbg"><div id="vPass" class="vfill pass"></div></div><span id="cPass">0</span></div>
-                <div class="vrow"><span>Nega</span><div class="vbg"><div id="vDeny" class="vfill deny"></div></div><span id="cDeny">0</span></div>
-                <div class="vrow"><span>Arresta</span><div class="vbg"><div id="vArrest" class="vfill arrest"></div></div><span id="cArrest">0</span></div>
-                <div class="vrow"><span>Cond.</span><div class="vbg"><div id="vCondemn" class="vfill condemn"></div></div><span id="cCondemn">0</span></div>
-              </div>
-              <div class="hud-row" style="margin-top:6px;">
+                <div class="hud-row"><strong>VOTO</strong><span class="badge" id="chatLeader">Leader: —</span></div>
+                <div class="vbars">
+                  <div class="vrow"><span>Passa</span><div class="vbg"><div id="vPass" class="vfill pass"></div></div><span id="cPass">0</span></div>
+                  <div class="vrow"><span>Nega</span><div class="vbg"><div id="vDeny" class="vfill deny"></div></div><span id="cDeny">0</span></div>
+                  <div class="vrow"><span>Arresta</span><div class="vbg"><div id="vArrest" class="vfill arrest"></div></div><span id="cArrest">0</span></div>
+                  <div class="vrow"><span>Cond.</span><div class="vbg"><div id="vCondemn" class="vfill condemn"></div></div><span id="cCondemn">0</span></div>
+                </div>
                 <button class="btn ghost" id="btnApplyChat">Imposta bozza da voto</button>
-                <span class="badge" id="chatLeader">Leader: —</span>
               </div>
             </div>
           </section>
 
-          <!-- STORICO -->
           <section class="tabpanel" data-tab="1">
-            <div class="panel-title" style="justify-self:start;">Storico (con archi)</div>
-            <div class="list" id="historyList">
-              <div class="item"><span class="t">In attesa…</span><span class="c"></span></div>
-            </div>
+            <div class="panel-title">STORICO</div>
+            <div class="list" id="historyList"><div class="item"><span class="t">In attesa…</span><span class="c"></span></div></div>
           </section>
 
-          <!-- REGOLE -->
           <section class="tabpanel" data-tab="2">
-            <div class="panel-title" style="justify-self:start;">Regole (compatte)</div>
+            <div class="panel-title">REGOLE</div>
             <div class="list">
               <div class="small">
-                <b>Fasi round:</b> Intro → Discussione → Voto (lock) → Decisione → Evento → Avanza.<br><br>
-                <b>Dossier:</b> L1 base, L2 dettagli extra, L3 tag/arc/contratti (sbloccabile con Timbri o obiettivi).<br><br>
-                <b>Timbri:</b> valuta per sblocchi leggeri (L2/L3, “riesame”, “amnistia”, “censura chat”).<br><br>
-                <b>Sanità mentale:</b> cala con scelte estreme / eventi. A 0: game over (burnout).<br><br>
-                <b>Stagioni:</b> ogni 12 casi = stagione. Modifica pool eventi + sbloccabili.
+                <b>1.</b> Ogni caso passa attraverso Intro → Discussione → Voto → Decisione → Evento.<br><br>
+                <b>2.</b> Il dossier può sbloccarsi con Timbri e obiettivi.<br><br>
+                <b>3.</b> Le decisioni influenzano risorse, fazioni, archi ed eventi.<br><br>
+                <b>4.</b> La Sanità a 0 causa il game over.<br><br>
+                <b>5.</b> Ogni 12 casi termina una stagione.
               </div>
             </div>
           </section>
 
-          <!-- EXTRA -->
           <section class="tabpanel" data-tab="3">
-            <div class="panel-title" style="justify-self:start;">Extra / Modalità</div>
+            <div class="panel-title">EXTRA</div>
             <div class="list">
               <div class="small" id="extraModesText">—</div>
               <div class="hud-row">
                 <button class="btn ghost" id="btnNewRun">Nuova partita</button>
                 <button class="btn ghost" id="btnHardReset">Reset totale</button>
               </div>
-              <div class="small">
-                <b>Webcam:</b> inserisci un <code>&lt;iframe&gt;</code> OBS/Browser Source sopra la .cam, oppure usa due Browser Source separati.
-              </div>
+              <div class="small"><b>Seed:</b> <span id="seedBadge">—</span></div>
+              <div class="small"><b>Modalità:</b> <span id="modeBadge">Standard</span></div>
+              <div class="small"><b>Sincronizzazione:</b> <span id="serverBadge">SYNC: local</span></div>
             </div>
           </section>
-
         </div>
       </div>
     </aside>
+  </main>
 
-  </div>
-
-  <!-- FOOTER -->
-  <div class="footer">
+  <footer class="footer">
     <div class="left">
-      <span class="badge" id="serverBadge">SYNC: local</span>
-      <span class="badge" id="modeBadge">Modalità: Standard</span>
-      <span class="badge" id="seedBadge">Seed: —</span>
+      <span class="badge">PAPER PIZZI PLEASE</span>
+      <span class="badge ok" id="serverBadgeFooter">REALTIME</span>
     </div>
-    <div class="right">
-      <div class="hint" id="footerHint">Nessun evento in corso.</div>
-    </div>
-  </div>
-
+    <div class="right"><div class="hint" id="footerHint">Nessun evento in corso.</div></div>
+  </footer>
 </div>
 
-<!-- END -->
 <div id="endOverlay" class="end-overlay">
   <div id="endTitle" class="end-title">FINE PARTITA</div>
   <div id="endText" class="end-text">—</div>
-  <button class="btn" id="endRestartBtn" style="margin-top:16px;">Nuova partita</button>
+  <button class="btn" id="endRestartBtn" style="margin-top:16px">Nuova partita</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -802,7 +424,7 @@ document.getElementById("camGuestLabel").textContent    = guestName;
 /* ===== CONFIG ===== */
 const CASES_CONFIG_URL = "cases.json";
 const IMG_BASE_PATH    = "img/";
-document.getElementById("serverBadge").textContent = "SYNC: SUPABASE REALTIME";
+document.getElementById("serverBadge").textContent = "SYNC: SUPABASE REALTIME"; document.getElementById("serverBadgeFooter").textContent = "REALTIME";
 
 /* ===== UI refs ===== */
 const UI = {
