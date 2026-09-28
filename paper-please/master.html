@@ -116,6 +116,7 @@ button,input,select{font:inherit}
 .meta .k{font-weight:900}.meta .v{overflow:hidden;text-overflow:ellipsis}
 .dossier{display:flex;gap:4px;align-items:center;flex-wrap:wrap;margin-top:5px}
 .dossier .badge{font-size:7px}
+.investigation{margin-top:6px;display:grid;gap:5px;max-height:42%;overflow:auto}.investigation-block{padding:6px;border:2px solid var(--line);background:#fff}.investigation-title{font-size:7px;font-weight:900;text-transform:uppercase;margin-bottom:3px}.investigation-list{margin:0;padding-left:13px;font-size:7px;font-weight:700;line-height:1.35}.investigation-reveal{font-size:7px;font-weight:800;line-height:1.35}.investigation-links{display:flex;flex-wrap:wrap;gap:3px}.investigation-links span{padding:2px 4px;border:2px solid var(--line);font-size:6px;font-weight:900;background:var(--paper2)}
 .notes,.outcome{
   min-width:0;min-height:0;overflow:hidden;padding:8px;
   border:3px solid var(--line);background:var(--paper2);
@@ -449,7 +450,7 @@ body.master-view .decision-btn{cursor:default}
               <span class="badge" id="caseTagBadge">Tag: —</span>
             </div>
             <div class="title">DOCUMENTI / NOTE</div>
-            <div class="clamp-5" id="caseNotes">—</div>
+            <div class="clamp-5" id="caseNotes">—</div><div class="investigation" id="caseInvestigation"></div>
             <div class="hud-row">
               <span class="badge" id="casePromise">Promessa: —</span>
               <span class="badge" id="caseDebt">Debito: —</span>
@@ -621,6 +622,7 @@ const UI = {
   caseJob: el("caseJob"),
   caseReason: el("caseReason"),
   caseNotes: el("caseNotes"),
+  caseInvestigation: el("caseInvestigation"),
   caseArcBadge: el("caseArcBadge"),
   caseTagBadge: el("caseTagBadge"),
   casePromise: el("casePromise"),
@@ -1623,6 +1625,7 @@ function updateUI(){
   // I metadati tecnici del caso non vengono più scritti nel Fascicolo del caso centrale:
   // il Master li vede nel Fascicolo Completo laterale.
   UI.caseNotes.textContent = (c.notes && String(c.notes).trim()) ? String(c.notes) : "Nessuna nota.";
+  renderInvestigation(c, getEffectiveDossierLevel());
 
   // Il Fascicolo Completo laterale usa i dati completi del caso e deve essere aggiornato ad ogni cambio di stato.
   renderMasterDossier(c);
@@ -1689,6 +1692,39 @@ function updateUI(){
   } else {
     hideEndOverlay();
   }
+}
+
+function renderInvestigation(caseObj, level){
+  const el=UI.caseInvestigation;
+  if(!el)return;
+  el.innerHTML="";
+  const inv=caseObj?.investigation||{}, l2=inv.l2||{}, l3=inv.l3||{};
+  const block=(title,content)=>{
+    if(!content)return;
+    const box=document.createElement("div"); box.className="investigation-block";
+    const h=document.createElement("div"); h.className="investigation-title"; h.textContent=title; box.appendChild(h);
+    if(Array.isArray(content)){
+      const ul=document.createElement("ul"); ul.className="investigation-list";
+      content.forEach(v=>{const li=document.createElement("li");li.textContent=String(v);ul.appendChild(li);});
+      box.appendChild(ul);
+    }else{
+      const p=document.createElement("div");p.className="investigation-reveal";p.textContent=String(content);box.appendChild(p);
+    }
+    el.appendChild(box);
+  };
+  // Il Master vede sempre l'intero fascicolo investigativo, indipendentemente dal Dossier del giocatore.
+  block("L2 · DOCUMENTI",l2.documents);
+  block("L2 · INDIZI",l2.clues);
+  block("L2 · RIVELAZIONE",l2.revelation);
+  block("L3 · NUOVI INDIZI",l3.clues);
+  if(Array.isArray(l3.connections)&&l3.connections.length){
+    const box=document.createElement("div");box.className="investigation-block";
+    const h=document.createElement("div");h.className="investigation-title";h.textContent="L3 · COLLEGAMENTI";box.appendChild(h);
+    const links=document.createElement("div");links.className="investigation-links";
+    l3.connections.forEach(v=>{const sp=document.createElement("span");sp.textContent=String(v);links.appendChild(sp);});
+    box.appendChild(links);el.appendChild(box);
+  }
+  block("L3 · RIVELAZIONE DECISIVA",l3.revelation);
 }
 
 function renderMasterDossier(caseObj){
