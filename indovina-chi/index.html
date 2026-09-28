@@ -525,7 +525,7 @@ button,select{font:inherit}
 
 /* ===== REGOLE POPUP ===== */
 
-.rules-modal[hidden]{display:none}
+.reset-modal[hidden]{display:none}.reset-modal{position:fixed;inset:0;z-index:100001}.reset-backdrop{position:absolute;inset:0;background:rgba(17,17,17,.92);backdrop-filter:blur(3px)}.reset-dialog{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(92vw,520px);padding:30px;border:5px solid var(--line);background:var(--paper);box-shadow:12px 12px 0 #000;text-align:center}.reset-kicker{display:block;font-size:9px;font-weight:900;letter-spacing:.12em;margin-bottom:10px}.reset-dialog h2{margin:0 0 12px;font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;font-size:clamp(28px,4vw,48px);line-height:.9}.reset-dialog p{margin:0 auto 22px;font-size:14px;line-height:1.4}.reset-actions{display:flex;justify-content:center;gap:10px}.reset-confirm{background:#d11}.reset-confirm:hover:not(:disabled){background:var(--paper);color:var(--ink)}
 .rules-modal{position:fixed;inset:0;z-index:100000}
 .rules-backdrop{
   position:absolute;inset:0;
@@ -1329,50 +1329,19 @@ document.addEventListener("click", e => {
   const btn = e.target.closest("[data-reset]");
   if(!btn || player !== btn.closest(".board")?.dataset.board) return;
 
-  if(!window.confirm("Sei sicuro di voler resettare tutta la scheda?\\n\\nTutte le indicazioni rosse e verdi verranno rimosse.")) return;
-
+  const modal = document.getElementById("resetConfirmModal");
+  if(!modal) return;
   const board = btn.closest(".board").dataset.board;
-  stato["celle" + board] = Array(IMG_COUNT).fill("");
-  salvaStato();
-});
-
-document.getElementById("subScore").onclick = () => {
-  if(player === "A" && stato.punteggioA > 0) stato.punteggioA--;
-  else if(player === "B" && stato.punteggioB > 0) stato.punteggioB--;
-  else return;
-
-  aggiornaUI();
-  salvaStato();
-  showScoreFx(-1);
-};
-
-document.getElementById("addScore").onclick = () => {
-  if(player === "A") stato.punteggioA++;
-  else if(player === "B") stato.punteggioB++;
-  else return;
-
-  aggiornaUI();
-  salvaStato();
-  showScoreFx(+1);
-};
-
-/* ========== TABS ========== */
-
-function initRulesModal(){
-  const modal = document.getElementById("rulesModal");
-  const open = document.getElementById("rulesBtn");
-  const close = document.getElementById("rulesClose");
-  if(!modal || !open || !close) return;
-
-  const setOpen = (value) => {
-    modal.hidden = !value;
-    document.body.style.overflow = value ? "hidden" : "";
+  const closeModal = () => { modal.hidden = true; document.body.style.overflow = ""; };
+  document.getElementById("resetConfirm").onclick = () => {
+    stato["celle" + board] = Array(IMG_COUNT).fill("");
+    closeModal();
+    salvaStato();
   };
-
-  open.addEventListener("click", () => setOpen(true));
-  close.addEventListener("click", () => setOpen(false));
-  modal.querySelectorAll("[data-close-rules]").forEach(el => {
-    el.addEventListener("click", () => setOpen(false));
+  document.getElementById("resetCancel").onclick = closeModal;
+  modal.querySelector("[data-close-reset]").onclick = closeModal;
+  modal.hidden = false;
+  document.body.style.overflow = "hidden";
   });
   document.addEventListener("keydown", event => {
     if(event.key === "Escape" && !modal.hidden) setOpen(false);
@@ -1451,6 +1420,15 @@ function initTopLayoutSync(){
 </script>
 </body>
 </html>
+</div>
+
+<div class="reset-modal" id="resetConfirmModal" hidden>
+  <div class="reset-backdrop" data-close-reset></div>
+  <section class="reset-dialog" role="dialog" aria-modal="true" aria-labelledby="resetTitle">
+    <span class="reset-kicker">TORTELLO GAMES / INDOVINA CHI</span><h2 id="resetTitle">RESET SCHEDA</h2>
+    <p>Sei sicuro di voler resettare tutta la scheda?<br><b>Tutte le indicazioni rosse e verdi verranno rimosse.</b></p>
+    <div class="reset-actions"><button class="btn" id="resetCancel" type="button">Annulla</button><button class="btn reset-confirm" id="resetConfirm" type="button">Resetta</button></div>
+  </section>
 </div>
 
 <div class="rules-modal" id="rulesModal" hidden>
