@@ -1598,37 +1598,6 @@ UI.btnNextPhase.addEventListener("click", ()=>{
 });
 
 /* Tabs */
-document.querySelectorAll(".tab-btn").forEach(b=>{
-  b.addEventListener("click", ()=>{
-    const idx = Number(b.dataset.tab||0);
-    document.querySelectorAll(".tab-btn").forEach(x=>x.classList.toggle("active", x===b));
-    UI.tabInner.style.transform = "translateX(" + (-idx*100) + "%)";
-  });
-});
-UI.tabInner.style.transform = "translateX(0%)";
-
-/* Reset buttons */
-function newRun(keepSeason=true){
-  if(!isHost) return;
-  const season = keepSeason ? (stato?.season || cfg.seasons?.startSeason || 1) : (cfg.seasons?.startSeason || 1);
-  const mode = stato?.mode || cfg.modes?.default || "standard";
-  const seed = String(Date.now());
-
-  stato = defaultState();
-  stato.season = season;
-  stato.mode = mode;
-  stato.seed = seed;
-
-  buildOrderFromState();
-  ensureState();
-  setPhase("intro");
-  draftDecision = null;
-  hideEndOverlay();
-  saveState();
-  updateUI();
-}
-UI.endRestartBtn.addEventListener("click", ()=>{if(isHost)newRun(true);});
-
 /* ===== Bootstrap ===== */
 (async function init(){
   await loadConfig();
