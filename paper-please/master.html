@@ -214,7 +214,6 @@ button,input,select{font:inherit}
   .notes{padding:5px}.notes .title{font-size:11px}.clamp-5,.clamp-3{font-size:7px}
   .decision-btn{min-height:26px;font-size:6px;padding:4px}
   .side-info{gap:4px}.side-columns{grid-template-columns:minmax(0,40fr) minmax(0,60fr);gap:4px}.side-box{padding:5px;border-width:2px;box-shadow:2px 2px 0 var(--line)}.side-box-title{font-size:7px}.side-box-sub{font-size:4px}.mini-head{padding:3px}.mini-head span{font-size:6px}.mini-head small{font-size:4px}.vrow{grid-template-columns:43px minmax(0,1fr) 15px;font-size:6px}.history-wrap{padding-left:11px}.history-line{left:4px}
-  .rules-card{padding:8px;border-width:3px;box-shadow:6px 6px 0 #000}.rules-grid{grid-template-columns:1fr;gap:5px}.rules-block{padding:6px;border-width:2px;box-shadow:2px 2px 0 var(--line)}.rules-block h3{font-size:8px}.rules-block p{font-size:6px}
 }
 .master-only{display:none!important}
 .player-only{display:block}
@@ -229,11 +228,11 @@ body.master-view .decision-btn{cursor:default}
 .master-top{display:grid;grid-template-columns:1.25fr 1.55fr 1fr 1fr;gap:8px;min-height:0}
 .master-top>div{min-width:0;border:4px solid var(--line);background:var(--paper);box-shadow:var(--shadow);padding:9px}
 .master-brand{background:var(--ink)!important;color:var(--paper);display:flex;flex-direction:column;justify-content:center}
-.master-kicker{font-size:7px;font-weight:900;letter-spacing:.08em}.master-title{font-family:Impact,"Arial Black",sans-serif;font-size:clamp(22px,2.2vw,34px);line-height:.85;text-transform:uppercase;margin:4px 0}.master-sub{font-size:6px;font-weight:900;letter-spacing:.05em}
+.master-kicker{font-size:7px;font-weight:900;letter-spacing:.08em}.master-title{font-family:Impact,"Arial Black",sans-serif;font-size:clamp(22px,2.2vw,34px);line-height:.85;text-transform:uppercase;margin:4px 0}
 .master-status-head{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:7px;font-weight:900;text-transform:uppercase;border-bottom:3px solid var(--line);padding-bottom:5px}
 .master-status-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:7px}.master-status-grid div{border:2px solid var(--line);padding:5px;background:var(--paper2)}
 .master-status-grid small,.master-resources small{display:block;font-size:5px;font-weight:900}.master-status-grid strong,.master-resources strong{display:block;margin-top:3px;font-size:10px;text-transform:uppercase}
-.master-guest .guest-name{font-family:Impact,"Arial Black",sans-serif;font-size:20px;text-transform:uppercase;margin-top:8px}.master-guest-meta{font-size:6px;font-weight:900;margin-top:5px}
+.master-guest .guest-name{font-family:Impact,"Arial Black",sans-serif;font-size:20px;text-transform:uppercase;margin-top:8px}
 .master-resources{display:grid!important;grid-template-columns:1fr 1fr;gap:5px}.master-resources div{border:2px solid var(--line);padding:5px;background:var(--paper2)}
 .master-main{min-width:0;min-height:0;display:grid;grid-template-columns:240px minmax(0,1fr) 360px;gap:8px}
 .master-control,.master-side{min-width:0;min-height:0;border:4px solid var(--line);background:var(--paper);box-shadow:var(--shadow);padding:8px;overflow:hidden}
@@ -398,7 +397,7 @@ body.master-view .decision-btn{cursor:default}
     <div class="shop-head">
       <div>
         <div class="shop-title">SHOP</div>
-        <div class="side-box-sub">TIMBRI · UTILIZZI SPECIALI</div>
+        <div class="side-box-sub">TIMBRI</div>
       </div>
       <div class="shop-balance" id="shopBalance">TIMBRI: 0</div>
     </div>
@@ -510,7 +509,6 @@ const UI = {
   shopOverlay: el("shopOverlay"),
   shopBalance: el("shopBalance"),
   shopList: el("shopList"),
-  shopStatus: el("shopStatus"),
 
 };
 
@@ -520,8 +518,6 @@ if(UI.btnShop) UI.btnShop.addEventListener("click", openShop);
 if(UI.btnShopClose) UI.btnShopClose.addEventListener("click", closeShop);
 if(UI.shopOverlay) UI.shopOverlay.addEventListener("click", e=>{ if(e.target===UI.shopOverlay) closeShop(); });
 
-UI.rulesOverlay.addEventListener("click", e=>{ if(e.target===UI.rulesOverlay) UI.rulesOverlay.classList.remove("show"); });
-document.addEventListener("keydown", e=>{ if(e.key==="Escape") UI.rulesOverlay.classList.remove("show"); });
 
 /* ===== GAME DATA ===== */
 let cfg = null;
@@ -1222,7 +1218,6 @@ function renderShop(){
     }
     UI.shopList.appendChild(row);
   });
-  if(UI.shopStatus)UI.shopStatus.textContent=isMaster?"Gli upgrade Dossier restano per tutta la run. Riesame e Amnistia restano nell'inventario.":"Gli acquisti vengono verificati dal Master e restano nella run.";
 }
 function openShop(){renderShop();UI.shopOverlay?.classList.add("show");}
 function closeShop(){UI.shopOverlay?.classList.remove("show");}
