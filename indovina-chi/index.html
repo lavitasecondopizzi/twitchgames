@@ -683,6 +683,98 @@ button,select{font:inherit}
   .scoreboard{gap:5px;padding:4px 6px;font-size:13px}
   .score-btn{width:24px;height:23px;font-size:10px}
 }
+
+/* ===== REGOLE POPUP / COLONNA CHAT ===== */
+.rules-trigger{
+  border:2px solid var(--line);
+  background:var(--paper);
+  color:var(--ink);
+  padding:3px 7px;
+  cursor:pointer;
+  font-size:8px;
+  font-weight:900;
+  line-height:1;
+  text-transform:uppercase;
+  box-shadow:2px 2px 0 var(--line);
+}
+.rules-trigger:hover,.rules-trigger:focus-visible{background:var(--ink);color:var(--paper);outline:none}
+
+.game-panel{padding:0}
+.game-panel .boards{
+  width:100%;
+  height:100%;
+  min-width:0;
+  min-height:0;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(180px,22%) minmax(0,1fr);
+  gap:12px;
+}
+.game-panel .board{min-width:0;min-height:0}
+.chat-column{
+  min-width:0;
+  min-height:0;
+  width:100%;
+  height:100%;
+  overflow:auto;
+  padding:12px;
+}
+.chat-column h2{font-size:clamp(18px,1.8vw,28px)}
+.chat-column .votes-list{max-height:calc(100% - 85px);overflow:auto}
+
+.rules-modal[hidden]{display:none}
+.rules-modal{position:fixed;inset:0;z-index:100000}
+.rules-backdrop{position:absolute;inset:0;background:rgba(17,17,17,.92);backdrop-filter:blur(3px)}
+.rules-dialog{
+  position:absolute;
+  inset:3vh 3vw;
+  overflow:auto;
+  padding:clamp(22px,3.5vw,52px);
+  border:5px solid var(--line);
+  background:var(--paper);
+  box-shadow:12px 12px 0 #000;
+}
+.rules-dialog-head{border-bottom:4px solid var(--line);padding-bottom:18px;margin-bottom:20px}
+.rules-kicker{font-size:clamp(9px,1vw,14px);font-weight:900;letter-spacing:.14em}
+.rules-dialog h2{
+  margin:7px 0 6px;
+  font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;
+  font-size:clamp(42px,6vw,88px);
+  line-height:.85;
+  text-transform:uppercase;
+}
+.rules-intro{max-width:1000px;margin:12px 0 0;font-size:clamp(14px,1.3vw,20px);font-weight:700;line-height:1.4}
+.rules-close{
+  position:absolute;top:16px;right:16px;z-index:2;width:52px;height:52px;
+  border:4px solid var(--line);background:var(--ink);color:var(--paper);
+  font-size:38px;font-weight:900;line-height:1;cursor:pointer;
+}
+.rules-close:hover,.rules-close:focus-visible{background:var(--paper);color:var(--ink);outline:none}
+.rules-section{border:4px solid var(--line);padding:18px;margin-bottom:16px;background:var(--paper-2)}
+.rules-section h3,.rules-card h3{
+  margin:0 0 9px;
+  font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;
+  font-size:clamp(19px,2vw,28px);line-height:.95;
+}
+.rules-section p,.rules-card p{
+  font-size:clamp(13px,1.15vw,18px);font-weight:700;line-height:1.45;
+}
+.rules-section p{margin:0}.rules-section p+p{margin-top:9px}
+.rules-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:16px}
+.rules-card{border:4px solid var(--line);background:var(--paper);padding:18px;box-shadow:5px 5px 0 var(--line)}
+.rules-card p{margin:0}
+.rules-chat{background:#f0f0ec}
+.rules-new-round{margin-bottom:0}
+@media(max-width:900px){
+  .game-panel .boards{grid-template-columns:minmax(0,1fr) minmax(150px,24%) minmax(0,1fr);gap:7px}
+  .chat-column{padding:8px}
+  .rules-dialog{inset:2vh 2vw;padding:24px 18px}
+  .rules-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:650px){
+  .game-panel .boards{grid-template-columns:minmax(0,1fr) minmax(120px,27%) minmax(0,1fr);gap:5px}
+  .chat-column{padding:6px}.chat-column h2{font-size:15px}
+  .rules-grid{grid-template-columns:1fr}
+}
 </style>
 
 </head>
@@ -725,109 +817,37 @@ button,select{font:inherit}
     <div class="cam"><div class="label" id="webcamLabelB">Webcam B</div></div>
   </div>
 
-  <!-- TABS: Gioco / Regole / Voti chat -->
   <div class="tabs">
     <div class="tab-header">
-      <button class="tab-btn active" data-tab="0">Gioco</button>
-      <button class="tab-btn" data-tab="1">Regole</button>
-      <button class="tab-btn" data-tab="2">Voti chat</button>
+      <button class="rules-trigger" id="rulesBtn" type="button" aria-label="Apri le regole">? REGOLE</button>
     </div>
 
     <div class="tabs-viewport">
-      <div class="tabs-inner">
-        <!-- TAB 0: GIOCO -->
-        <section class="tab-panel" data-tab="0">
-            <div class="boards">
-              <section class="board" data-board="A">
-                <div class="board-head">
-                  <div class="board-title" id="boardTitleA">Giocatore A</div>
-                  <div class="board-actions"><button class="btn" data-reset>Reset</button></div>
-                </div>
-                <div class="grid"></div>
-              </section>
-
-              <section class="board" data-board="B">
-                <div class="board-head">
-                  <div class="board-title" id="boardTitleB">Giocatore B</div>
-                  <div class="board-actions"><button class="btn" data-reset>Reset</button></div>
-                </div>
-                <div class="grid"></div>
-              </section>
+      <section class="tab-panel game-panel" data-tab="0">
+        <div class="boards">
+          <section class="board" data-board="A">
+            <div class="board-head">
+              <div class="board-title" id="boardTitleA">Giocatore A</div>
+              <div class="board-actions"><button class="btn" data-reset>Reset</button></div>
             </div>
-        </section>
+            <div class="grid"></div>
+          </section>
 
-        <!-- TAB 1: REGOLE -->
-        <section class="tab-panel" data-tab="1">
-<div class="rules-panel">
-    <!-- REGOLE DEL GIOCO -->
-    <h2>Regole del gioco</h2>
-    <ul>
-      <li>Ogni giocatore sceglie in segreto un personaggio dalla propria scheda.</li>
-      <li>Ogni giocatore ha a disposizione una sola azione per turno, o <b>domanda</b> o <b>dichiarazione</b>.</li>
-      <li>A turno si fanno domande a cui si può rispondere solo con <b>Sì</b> o <b>No</b>.</li>
-      <li>Dopo ogni risposta, ogni giocatore aggiorna la propria scheda eliminando
-        (in rosso) o tenendo in considerazione (in verde) i personaggi.</li>
-      <li>Quando un giocatore pensa di aver capito chi è il personaggio avversario,
-        può fare una <b>dichiarazione</b>.</li>
-      <li>Se la dichiarazione è corretta, quel giocatore vince il round
-        segnando <b>+1 punto</b> sul proprio punteggio.</li>
-      <li>Se sbaglia, il round finisce immediatamente e quel giocatore perde il round
-        segnando <b>-1 punto</b> sul proprio punteggio.</li>
-      <li>Dopo la fine del round si può iniziare un nuovo round
-        scegliendo un altro personaggio segreto.</li>
-	  <li>Una sola volta per round ogni giocatore può chiedere un suggerimento all'altro giocatore che deve 
-		rispondere anche depistando l'avversario, ciò consuma l'azione del turno di chi pone la domanda.</li>
-	  <li>Una sola volta per round ogni giocatore può rifiutarsi di rispondere ad una domanda, 
-	    ciò consuma l'azione del turno di chi pone la domanda.</li>
-	  <li>Non è concesso barare guardando la live dell'avversario.</li>
-    </ul>
-
-    <!-- REGOLE DELL'INTERFACCIA -->
-    <!--
-	<h2 style="margin-top:10px;">Regole dell’interfaccia</h2>
-    <ul>
-      <li>Ogni giocatore ha la propria scheda con le stesse immagini.</li>
-      <li>Con il <b>click sinistro</b> si segna una casella in rosso (eliminata).</li>
-      <li>Con il <b>click destro</b> si segna una casella in verde (confermata / sospetta).</li>
-      <li>Con <b>doppio click</b> si resetta la singola casella.</li>
-      <li>Il bottone <b>Reset</b> sopra ogni scheda pulisce TUTTE le caselle di quel giocatore
-        (ogni giocatore può gestire solo la sua scheda).</li>
-      <li>Il bottone <b>Nuovo Round</b> sceglie un nuovo personaggio randomico
-        (poi modificabile dal menu a tendina), resetta le schede e azzera i voti della chat.</li>
-      <li>Il punteggio viene gestito solo dal giocatore corrente con i tasti
-        <b>-1 / +1</b> sotto il personaggio e incide solo sul suo punteggio.</li>
-    </ul>
-	-->
-	
-	<!-- REGOLE PER LA CHAT -->
-    <h2 style="margin-top:10px;">Come può interagire la chat</h2>
-    <ul>
-      <li>La chat può usare i comandi dedicati per proporre quali caselle
-        <b>eliminare</b> (<b>!rosso NOME CASELLA</b>) o <b>tenere</b> (<b>!verde NOME CASELLA</b>).</li>
-      <li>Le proposte della chat vengono raccolte e mostrate nella tab
-        <b>“Voti chat”</b>. Solo lo streamer decide se e
-        quando applicare davvero una mossa sulla scheda.</li>
-      <li>Il voto viene considerato una sola volta, è però possibile cambiare 
-	    la propria scelta con un nuovo comando.</li>
-      <li>La chat può decidere anche di depistare il giocatore, ciò porterà a dubitare del voto 
-	    abilitando la chat potenzialmente a barare senza però rovinare il gioco a nessuno.</li>
-    </ul>
-  </div>
-</section>
-
-        <!-- TAB 2: VOTI CHAT -->
-        <section class="tab-panel" data-tab="2">
-          <div class="votes-panel">
+          <aside class="votes-panel chat-column">
             <h2>Voti della chat</h2>
-            <p class="votes-subtitle">
-              Qui verranno mostrati i voti della chat per il round corrente.
-            </p>
-            <div id="chatVotesList" class="votes-list">
-              Nessun voto per questo round.
+            <p class="votes-subtitle">Proposte della chat per il round corrente.</p>
+            <div id="chatVotesList" class="votes-list">Nessun voto per questo round.</div>
+          </aside>
+
+          <section class="board" data-board="B">
+            <div class="board-head">
+              <div class="board-title" id="boardTitleB">Giocatore B</div>
+              <div class="board-actions"><button class="btn" data-reset>Reset</button></div>
             </div>
-          </div>
-        </section>
-      </div>
+            <div class="grid"></div>
+          </section>
+        </div>
+      </section>
     </div>
   </div>
 </div>
@@ -1429,20 +1449,25 @@ document.getElementById("addScore").onclick = () => {
 
 /* ========== TABS ========== */
 
-function setTab(idx){
-  const inner = document.querySelector(".tabs-inner");
-  if(inner) inner.style.transform = "translateX(" + (-idx * 100) + "%)";
+function initRulesModal(){
+  const modal = document.getElementById("rulesModal");
+  const open = document.getElementById("rulesBtn");
+  const close = document.getElementById("rulesClose");
+  if(!modal || !open || !close) return;
 
-  document.querySelectorAll(".tab-btn").forEach(btn => {
-    btn.classList.toggle("active", parseInt(btn.dataset.tab, 10) === idx);
-  });
-}
+  const setOpen = (value) => {
+    modal.hidden = !value;
+    document.body.style.overflow = value ? "hidden" : "";
+  };
 
-function initTabs(){
-  document.querySelectorAll(".tab-btn").forEach(btn => {
-    btn.addEventListener("click", () => setTab(parseInt(btn.dataset.tab, 10)));
+  open.addEventListener("click", () => setOpen(true));
+  close.addEventListener("click", () => setOpen(false));
+  modal.querySelectorAll("[data-close-rules]").forEach(el => {
+    el.addEventListener("click", () => setOpen(false));
   });
-  setTab(0);
+  document.addEventListener("keydown", event => {
+    if(event.key === "Escape" && !modal.hidden) setOpen(false);
+  });
 }
 
 /* ========== SCORE FX ========== */
@@ -1505,7 +1530,7 @@ function initTopLayoutSync(){
   aggiornaUI();
   abilitaBoard("A");
   abilitaBoard("B");
-  initTabs();
+  initRulesModal();
   initTopLayoutSync();
   await connectRoom();
   aggiornaUI();
@@ -1514,3 +1539,41 @@ function initTopLayoutSync(){
 </script>
 </body>
 </html>
+</div>
+
+<div class="rules-modal" id="rulesModal" hidden>
+  <div class="rules-backdrop" data-close-rules></div>
+  <section class="rules-dialog" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
+    <button class="rules-close" id="rulesClose" type="button" aria-label="Chiudi regole">×</button>
+    <div class="rules-dialog-head">
+      <span class="rules-kicker">TORTELLO GAMES / INDOVINA CHI</span>
+      <h2 id="rulesTitle">Come si gioca</h2>
+      <p class="rules-intro"><b>Indovina il personaggio dell'avversario</b> facendo domande, eliminando i candidati e usando una dichiarazione quando sei pronto.</p>
+    </div>
+
+    <div class="rules-grid">
+      <article class="rules-card"><h3>① SCEGLI IL PERSONAGGIO</h3><p>Ogni giocatore sceglie in segreto un personaggio dalla propria scheda.</p></article>
+      <article class="rules-card"><h3>② UNA AZIONE</h3><p>Ogni turno permette una sola azione: una <b>domanda</b> oppure una <b>dichiarazione</b>.</p></article>
+      <article class="rules-card"><h3>③ DOMANDE</h3><p>Le domande ricevono risposta solo con <b>Sì</b> o <b>No</b>. Dopo la risposta aggiorna la tua scheda.</p></article>
+      <article class="rules-card"><h3>④ ELIMINA I CANDIDATI</h3><p>Usa il <b>rosso</b> per eliminare un personaggio e il <b>verde</b> per tenerlo in considerazione.</p></article>
+      <article class="rules-card"><h3>⑤ DICHIARAZIONE</h3><p>Quando pensi di aver capito il personaggio avversario puoi dichiararlo. Se è corretto vinci il round.</p></article>
+      <article class="rules-card"><h3>⑥ ERRORE</h3><p>Una dichiarazione sbagliata chiude immediatamente il round e assegna <b>-1 punto</b> al giocatore che ha sbagliato.</p></article>
+    </div>
+
+    <div class="rules-section">
+      <h3>SUGGERIMENTO E RIFIUTO</h3>
+      <p>Una volta per round puoi chiedere un <b>suggerimento</b>: l'avversario può anche depistarti e l'azione viene consumata.</p>
+      <p>Una volta per round puoi anche <b>rifiutarti di rispondere</b> a una domanda; anche questa opzione consuma l'azione.</p>
+    </div>
+
+    <div class="rules-section rules-chat">
+      <h3>COME PUÒ INTERAGIRE LA CHAT</h3>
+      <p>La chat può proporre quali caselle eliminare o tenere con i comandi dedicati. Le proposte vengono mostrate nella colonna centrale; lo streamer decide se applicarle.</p>
+    </div>
+
+    <div class="rules-section rules-new-round">
+      <h3>NUOVO ROUND</h3>
+      <p>Dopo la fine del round l'host può scegliere un nuovo personaggio, azzerare le schede e iniziare una nuova partita.</p>
+    </div>
+  </section>
+</div>
