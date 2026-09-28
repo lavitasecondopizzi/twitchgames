@@ -489,6 +489,22 @@ body.master-view .decision-btn{cursor:default}
               <div class="master-tags master-hints" id="masterTagHints">—</div>
             </div>
             <div class="master-section">
+               <div class="master-section-title">DOSSIER INVESTIGATIVO — L2</div>
+               <div class="master-identity-grid">
+                 <div class="wide"><small>DOCUMENTI</small><span id="masterInvestigationDocs">—</span></div>
+                 <div class="wide"><small>INDIZI</small><span id="masterInvestigationClues">—</span></div>
+                 <div class="wide"><small>RIVELAZIONE</small><span id="masterInvestigationReveal">—</span></div>
+               </div>
+             </div>
+             <div class="master-section">
+               <div class="master-section-title">DOSSIER INVESTIGATIVO — L3</div>
+               <div class="master-identity-grid">
+                 <div class="wide"><small>NUOVI INDIZI</small><span id="masterInvestigationCluesL3">—</span></div>
+                 <div class="wide"><small>COLLEGAMENTI</small><span id="masterInvestigationConnections">—</span></div>
+                 <div class="wide"><small>RIVELAZIONE DECISIVA</small><span id="masterInvestigationRevealL3">—</span></div>
+               </div>
+             </div>
+             <div class="master-section">
               <div class="master-section-title">MASTER ONLY — CONSEGUENZE PREVISTE</div>
               <div class="master-effects" id="masterEffects"></div>
             </div>
@@ -644,6 +660,7 @@ const UI = {
   masterIdentityReason: el("masterIdentityReason"),
   masterIdentityNotes: el("masterIdentityNotes"),
   masterIdentityArc: el("masterIdentityArc"),
+  masterInvestigationDocs: el("masterInvestigationDocs"), masterInvestigationClues: el("masterInvestigationClues"), masterInvestigationReveal: el("masterInvestigationReveal"), masterInvestigationCluesL3: el("masterInvestigationCluesL3"), masterInvestigationConnections: el("masterInvestigationConnections"), masterInvestigationRevealL3: el("masterInvestigationRevealL3"),
   masterTwists: el("masterTwists"),
   masterConditions: el("masterConditions"),
   masterContracts: el("masterContracts"),
@@ -1710,6 +1727,14 @@ function renderMasterDossier(caseObj){
       });
     }
   }
+
+  const inv=caseObj?.investigation||{}, l2=inv.l2||{}, l3=inv.l3||{}, fmtList=v=>Array.isArray(v)&&v.length?v.join(" • "):"—";
+  if(UI.masterInvestigationDocs)UI.masterInvestigationDocs.textContent=fmtList(l2.documents);
+  if(UI.masterInvestigationClues)UI.masterInvestigationClues.textContent=fmtList(l2.clues);
+  if(UI.masterInvestigationReveal)UI.masterInvestigationReveal.textContent=l2.revelation||"—";
+  if(UI.masterInvestigationCluesL3)UI.masterInvestigationCluesL3.textContent=fmtList(l3.clues);
+  if(UI.masterInvestigationConnections)UI.masterInvestigationConnections.textContent=fmtList(l3.connections);
+  if(UI.masterInvestigationRevealL3)UI.masterInvestigationRevealL3.textContent=l3.revelation||"—";
 
   renderMasterEffects(caseObj);
 
