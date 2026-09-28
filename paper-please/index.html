@@ -482,6 +482,7 @@ const soloMode  = roomRole === "guest" && (urlParams.get("solo")==="1" || urlPar
 const roomCode = (urlParams.get("room") || "").trim().toUpperCase();
 const forcedRole = roomRole;
 const isHost = roomRole === "host";
+const isMaster = false;
 const streamerName = urlParams.get("streamer") || "Pizzi";
 const isGuest = roomRole === "guest";
 const guestStorageKey = roomCode ? "tortello:paper:guest:" + roomCode : "";
@@ -1378,10 +1379,10 @@ function updateUI(){
     btn.disabled = !canChoose;
     btn.classList.toggle("selected", v === (decided ? stato.decisionsByPos[pos] : playerChoice));
   });
-  UI.btnConfirm.disabled = !masterMode || !playerChoice || stato.phase !== "decision" || decided;
-  UI.btnConfirm.style.display = masterMode ? "" : "none";
-  UI.btnNextPhase.disabled = !masterMode || stato.gameOver || stato.runCompleted || stato.phase === "decision";
-  UI.btnNextPhase.style.display = masterMode ? "" : "none";
+  UI.btnConfirm.disabled = true;
+  UI.btnConfirm.style.display = "none";
+  UI.btnNextPhase.disabled = true;
+  UI.btnNextPhase.style.display = "none";
   UI.btnApplyChat.style.display = "none";
   UI.draftLabel.textContent = "Decisione: " + (playerChoice ? decisionLabel(playerChoice) : "Nessuna");
 
@@ -1591,12 +1592,12 @@ function statePayload(){
   return {...stato,runOrder:order.slice(),_revision:revision,_sender:isHost?"host":"guest",_sentAt:Date.now()};
 }
 async function broadcastState(){
-  if(!roomClient||!isHost||isApplyingRemoteState)return;
+  if(!roomClient||isMaster||isApplyingRemoteState)return;
   revision++;
   await roomClient.broadcast("game_state",statePayload());
 }
 async function saveState(){
-  if(!isHost||isApplyingRemoteState)return;
+  if(isMaster||isApplyingRemoteState)return;
   try{ensureState();updateUI();await broadcastState();}
   catch(e){console.error("Errore broadcast stato:",e);}
 }
@@ -1604,7 +1605,7 @@ function requestGameState(){
   roomClient?.broadcast("state_request",{requester:"guest",_sentAt:Date.now()}).catch(()=>{});
 }
 function applyRemoteState(payload){
-  if(!payload||!isGuest)return;
+  if(!payload)return;
   const incoming=Number(payload._revision)||0;
   if(incoming&&incoming<revision)return;
   revision=Math.max(revision,incoming);
@@ -1616,7 +1617,7 @@ function applyRemoteState(payload){
   isApplyingRemoteState=false;
 }
 function handleGameEvent(payload){
-  if(!payload||!isHost||stato.phaseLocked)return;
+  if(!payload||!isMaster||stato.phaseLocked)return;
   if(payload.type==="chat_suggestion"){
     const text=String(payload.text||"").trim();
     if(!text)return;
@@ -1656,7 +1657,7 @@ async function connectRoom(){
   roomClient.on("game-state",applyRemoteState);
   roomClient.on("game-event",handleGameEvent);
   roomClient.on("state-request",payload=>{
-    if(isHost&&payload?.requester==="guest")broadcastState().catch(()=>{});
+    if(isMaster&&payload?.requester!=="master")broadcastState().catch(()=>{});
   });
   roomClient.on("guest_identity_request",()=>{
     if(isGuest) roomClient.broadcast("guest_identity",{nickname:guestName}).catch(()=>{});
@@ -1670,7 +1671,7 @@ async function connectRoom(){
       const name=String(guest.nickname||guestName||"Ospite").trim() || "Ospite";
       document.getElementById("camGuestLabel").textContent=name;
     }
-    if(isHost&&guest) broadcastState().catch(()=>{});
+    
   });
   try{
     await roomClient.connect();
@@ -1863,9 +1864,9 @@ UI.btnNextPhase.addEventListener("click", ()=>{
   updateUI();
   await connectRoom();
   setInterval(()=>{
-    if(isHost)tickPhase();
+    
     updateTimerUI();
-    if(isHost&&stato.objectives.active)renderObjective();
+    
   },250);
 })();</script>
 </body>
