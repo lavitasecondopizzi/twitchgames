@@ -498,9 +498,9 @@ const soloMode  = !masterMode && (urlParams.get("solo")==="1" || urlParams.get("
 const roomCode = (urlParams.get("room") || "").trim().toUpperCase();
 const forcedRole = masterMode ? "host" : "guest";
 const isHost = masterMode;
-const streamerName = urlParams.get("streamer") || urlParams.get("player") || "Pizzi";
+const streamerName = urlParams.get("streamer") || "Pizzi";
 const isGuest = !masterMode;
-const guestName = isGuest ? (urlParams.get("streamer") || urlParams.get("guest") || "Ospite") : "Ospite";
+const guestName = isGuest ? (urlParams.get("guest") || urlParams.get("player") || "Ospite") : "Ospite";
 let roomClient = null;
 let revision = 0;
 let isApplyingRemoteState = false;
