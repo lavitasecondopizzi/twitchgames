@@ -1082,7 +1082,7 @@ function phaseDurationSeconds(phase){
   return 0;
 }
 function setPhase(phase){
-  if(!isHost) return;
+  if(!isMaster) return;
   stato.phase = phase;
   stato.phaseLocked = (phase==="decision" || phase==="event" || phase==="end");
   const sec = phaseDurationSeconds(phase);
@@ -1115,7 +1115,7 @@ function setPhase(phase){
   saveState();
 }
 function tickPhase(){
-  if (!isHost || stato.gameOver || stato.runCompleted) return;
+  if (!isMaster || stato.gameOver || stato.runCompleted) return;
 
   if (stato.phaseEndsAt && Date.now() >= stato.phaseEndsAt){
     // auto-advance
@@ -1218,7 +1218,7 @@ function updateDebtsPromisesStatus(){
 let draftDecision = null;
 
 function confirmDecision(){
-  if (!isHost || stato.phase !== "decision") return;
+  if (!isMaster || stato.phase !== "decision") return;
   const pos = stato.currentPos;
   if (stato.decisionsByPos[pos]) return;
   const finalDecision = stato.playerDecision;
@@ -1602,7 +1602,7 @@ async function saveState(){
   catch(e){console.error("Errore broadcast stato:",e);}
 }
 function requestGameState(){
-  roomClient?.broadcast("state_request",{requester:"guest",_sentAt:Date.now()}).catch(()=>{});
+  roomClient?.broadcast("state_request",{requester:"master",_sentAt:Date.now()}).catch(()=>{});
 }
 function applyRemoteState(payload){
   if(!payload)return;
@@ -1657,7 +1657,9 @@ async function connectRoom(){
   roomClient.on("game-state",applyRemoteState);
   roomClient.on("game-event",handleGameEvent);
   roomClient.on("state-request",payload=>{
-    if(isMaster&&payload?.requester!=="master")broadcastState().catch(()=>{});
+    if(payload?.requester==="master" && isHost){
+      roomClient.broadcast("game_state",statePayload()).catch(()=>{});
+    }
   });
   roomClient.on("guest_identity_request",()=>{
     if(isGuest) roomClient.broadcast("guest_identity",{nickname:guestName}).catch(()=>{});
@@ -1728,7 +1730,7 @@ async function saveState(){
   catch(e){console.error("Errore broadcast stato:",e);}
 }
 function requestGameState(){
-  roomClient?.broadcast("state_request",{requester:"guest",_sentAt:Date.now()}).catch(()=>{});
+  roomClient?.broadcast("state_request",{requester:"master",_sentAt:Date.now()}).catch(()=>{});
 }
 function applyRemoteState(payload){
   if(!payload||!isGuest)return;
@@ -1827,7 +1829,7 @@ document.querySelectorAll(".decision-btn").forEach(btn=>{
 UI.btnConfirm.addEventListener("click", ()=>{ if(isHost) confirmDecision(); });
 
 UI.btnNextPhase.addEventListener("click", ()=>{
-  if (!isHost || stato.gameOver || stato.runCompleted) return;
+  if (!isMaster || stato.gameOver || stato.runCompleted) return;
   // manual phase advance (respects order)
   if (stato.phase==="intro") return setPhase("discuss");
   if (stato.phase==="discuss") return setPhase("vote1");
