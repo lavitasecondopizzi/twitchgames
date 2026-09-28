@@ -500,7 +500,7 @@ const forcedRole = masterMode ? "host" : "guest";
 const isHost = masterMode;
 const streamerName = urlParams.get("streamer") || "Pizzi";
 const isGuest = !masterMode;
-const guestName = isGuest ? (urlParams.get("guest") || urlParams.get("player") || "Ospite") : "Ospite";
+const guestName = urlParams.get("guest") || "Ospite";
 let roomClient = null;
 let revision = 0;
 let isApplyingRemoteState = false;
@@ -1698,7 +1698,7 @@ async function connectRoom(){
     if(isHost){
       const guest=roomClient.getGuest();
       if(guest){
-        const name=String(guest.nickname||"").trim() || "Ospite";
+        const name=String(guest.nickname||"").trim() || guestName || "Ospite";
         const guestEl=document.getElementById("masterGuestName");
         const statusEl=document.getElementById("masterGuestStatus");
         const camGuest=document.getElementById("camGuestLabel");
