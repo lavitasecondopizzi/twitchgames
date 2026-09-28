@@ -1574,17 +1574,11 @@ function renderHistory(){
   const pos = stato.currentPos;
   const allKnown = stato.runCompleted || stato.gameOver;
 
-  // show max 10 rows (no scroll)
-  const showN = Math.min(total, 10);
+  // show the complete run; the history panel handles scrolling
+  const showN = total;
   UI.historyList.innerHTML = "";
 
-  // center around current pos if many
-  let start = 0;
-  if (total > showN){
-    start = Math.max(0, Math.min(total - showN, pos - Math.floor(showN/2)));
-  }
-
-  for (let i=start;i<start+showN;i++){
+  for (let i=0;i<showN;i++){
     const caseIdx = order[i];
     const c = cases[caseIdx] || {};
     const dec = stato.decisionsByPos[i];
