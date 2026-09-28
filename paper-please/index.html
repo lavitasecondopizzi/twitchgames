@@ -1824,7 +1824,17 @@ document.querySelectorAll(".decision-btn").forEach(btn=>{
     const choice=btn.dataset.decision;
     stato.playerDecision=choice;
     updateUI();
-    roomClient?.broadcast("game_event",{type:"player_decision",choice,user:guestName,ts:Date.now()}).catch(()=>{});
+    const eventPayload={
+      type:"player_decision",
+      choice,
+      user:guestName,
+      requestId:guestName+"-"+Date.now()+"-"+Math.random().toString(36).slice(2),
+      ts:Date.now()
+    };
+    const sendDecision=()=>roomClient?.broadcast("game_event",eventPayload).catch(()=>{});
+    sendDecision();
+    setTimeout(sendDecision,150);
+    setTimeout(sendDecision,400);
   });
 });
 UI.btnConfirm.addEventListener("click", ()=>{ if(isMaster) confirmDecision(); });
