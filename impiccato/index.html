@@ -1427,16 +1427,23 @@ async function caricaStato(){
     });
 
     roomClient.on("game-event", (event) => {
-      if (forcedRole !== "A" || !event || event.sender === clientId) return;
+      if (!event || event.sender === clientId) return;
+
+      // Gli effetti UI devono essere riprodotti da tutti i client.
+      if (event.type === "score_fx" && Number(event.delta)){
+        showScoreFx(Number(event.delta));
+        return;
+      }
+
+      // Le azioni che modificano lo stato restano gestite esclusivamente dall'host.
+      if (forcedRole !== "A") return;
+
       processingHostAction = true;
       Promise.resolve().then(async () => {
         if (event.type === "letter" && ["A","B"].includes(event.playerId)) {
           await onLetterClick(event.playerId, event.letter, true);
         } else if (event.type === "score_adjust" && ["A","B"].includes(event.playerId)) {
           await adjustScore(event.playerId, Number(event.delta) || 0, true);
-        } else if (event.type === "score_fx" && Number(event.delta)) {
-          // L'host ha già aggiornato il punteggio: qui riproduciamo solo l'effetto.
-          showScoreFx(Number(event.delta));
         } else if (event.type === "new_round") {
           await nuovoRound(false);
         }
