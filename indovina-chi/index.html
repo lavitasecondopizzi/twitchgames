@@ -107,12 +107,9 @@ button,select{font:inherit}
   position:relative;
   min-width:0;
   min-height:0;
-  height:auto;
-  align-self:stretch;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  gap:7px;
   padding:10px;
   background:var(--paper);
   border:4px solid var(--line);
@@ -128,26 +125,76 @@ button,select{font:inherit}
   pointer-events:none;
 }
 .center>*{position:relative;z-index:1}
+.center-header{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:7px;
+}
 .center .label{
-  margin:0 0 5px;
+  margin:0;
   font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;
-  font-size:clamp(18px,2.2vw,31px);
+  font-size:clamp(18px,2vw,29px);
   line-height:.9;
   letter-spacing:.04em;
   text-transform:uppercase;
 }
-.center img{
-  width:auto;
-  max-width:55%;
-  max-height:32%;
-  object-fit:contain;
+.round-controls{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+.round-controls select{
+  min-width:0;
+  max-width:130px;
+  height:30px;
+  padding:4px 6px;
+  border:3px solid var(--line);
+  border-radius:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-size:9px;
+  font-weight:900;
+}
+.round-controls .btn{
+  min-height:30px;
+  padding:5px 7px;
+  white-space:nowrap;
+}
+.round-preview{
+  min-height:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
   border:3px solid var(--line);
   background:var(--paper-2);
   box-shadow:3px 3px 0 var(--line);
+  padding:4px;
+}
+.round-preview img{
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
 }
 .scoreboard{
-  margin:7px 0 0;display:flex;align-items:center;justify-content:center;gap:8px;padding:5px 8px;
-  border:3px solid var(--line);background:var(--paper);box-shadow:3px 3px 0 var(--line);font-size:clamp(14px,1.5vw,22px);font-weight:900;
+  width:100%;
+  margin:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:5px 8px;
+  border:3px solid var(--line);
+  background:var(--paper);
+  box-shadow:3px 3px 0 var(--line);
+  font-size:clamp(14px,1.5vw,22px);
+  font-weight:900;
 }
 .scoreboard .value{min-width:28px;text-align:center}.scoreboard .dash{font-weight:900}
 .score-btn{
@@ -249,22 +296,29 @@ button,select{font:inherit}
 
   <div class="top">
     <div class="cam"><div class="label" id="webcamLabelA">Webcam A</div></div>
-	<div class="center">
-		<div class="label">Round attuale</div>
-		<img id="roundImage">
 
-		<!-- NUOVO PUNTEGGIO COMPATTO: SOLO NUMERI + -1/+1 -->
-		<div class="scoreboard" id="scoreboard">
-			<button class="score-btn" id="subScore">-1</button>
-			<span class="value" id="scoreA">0</span>
-			<span class="dash">-</span>
-			<span class="value" id="scoreB">0</span>
-			<button class="score-btn" id="addScore">+1</button>
-		</div>
+    <div class="center">
+      <div class="center-header">
+        <div class="label">Round attuale</div>
+        <div class="round-controls">
+          <select id="roundSelect"></select>
+          <button class="btn" id="newRound">Nuovo Round</button>
+        </div>
+      </div>
 
-		<select id="roundSelect"></select>
-		<button class="btn" id="newRound" style="margin-top:6px;">Nuovo Round</button>
-	</div>
+      <div class="round-preview">
+        <img id="roundImage" alt="">
+      </div>
+
+      <div class="scoreboard" id="scoreboard">
+        <button class="score-btn" id="subScore">-1</button>
+        <span class="value" id="scoreA">0</span>
+        <span class="dash">-</span>
+        <span class="value" id="scoreB">0</span>
+        <button class="score-btn" id="addScore">+1</button>
+      </div>
+    </div>
+
     <div class="cam"><div class="label" id="webcamLabelB">Webcam B</div></div>
   </div>
 
