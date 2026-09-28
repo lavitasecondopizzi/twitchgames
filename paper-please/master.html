@@ -234,13 +234,13 @@ body.master-view .decision-btn{cursor:default}
 .master-status-grid small,.master-resources small{display:block;font-size:5px;font-weight:900}.master-status-grid strong,.master-resources strong{display:block;margin-top:3px;font-size:10px;text-transform:uppercase}
 .master-guest .guest-name{font-family:Impact,"Arial Black",sans-serif;font-size:20px;text-transform:uppercase;margin-top:8px}
 .master-resources{display:grid!important;grid-template-columns:1fr 1fr;gap:5px}.master-resources div{border:2px solid var(--line);padding:5px;background:var(--paper2)}
-.master-main{min-width:0;min-height:0;display:grid;grid-template-columns:240px minmax(0,1fr) 360px;gap:8px}
+.master-main{min-width:0;min-height:0;display:grid;grid-template-columns:240px minmax(0,1fr) 430px;gap:8px}
 .master-control,.master-side{min-width:0;min-height:0;border:4px solid var(--line);background:var(--paper);box-shadow:var(--shadow);padding:8px;overflow:hidden}
 .master-control{display:flex;flex-direction:column;gap:7px}.console-head{display:flex;justify-content:space-between;align-items:center;gap:5px;padding-bottom:7px;border-bottom:4px solid var(--line)}
 .control-block{border:3px solid var(--line);background:var(--paper2);padding:7px;box-shadow:3px 3px 0 var(--line)}.control-label{font-size:6px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}.control-value,.decision-readout{font-family:Impact,"Arial Black",sans-serif;font-size:19px;text-transform:uppercase;margin:5px 0 7px}.decision-readout{background:var(--yellow);border:3px solid var(--line);padding:6px;font-size:16px}.master-primary,.master-confirm{width:100%}.master-confirm{background:var(--green);color:var(--ink)}.master-confirm:disabled{background:var(--paper2);color:var(--ink)}
 .control-mini-row{display:flex;gap:5px;margin-top:6px}.objective-readout{font-size:7px;font-weight:800;line-height:1.35;margin-top:5px}.world-row{display:flex;justify-content:space-between;font-size:6px;font-weight:900;margin-top:6px}.world-bar{height:6px;border:2px solid var(--line);background:#fff}.world-bar i{display:block;height:100%;width:50%;background:var(--green)}
-.master-main>.panel{min-width:0;min-height:0}.master-side>.side{height:100%}.master-side .side-columns{grid-template-columns:1fr;grid-template-rows:minmax(0,1.15fr) minmax(0,.85fr)}.master-side .side-info{height:100%}.master-side .chat-box,.master-side .history-box{min-height:0}
-.master-main .panel-head{margin-bottom:7px}.master-main .grid-case{grid-template-columns:minmax(180px,.82fr) minmax(0,1.18fr)}
+.master-main>.panel{min-width:0;min-height:0}.master-side{display:grid;grid-template-rows:minmax(0,1.45fr) minmax(0,.95fr);gap:8px}.master-side>.side{height:100%;min-height:0}.master-side .side-columns{grid-template-columns:1fr 1fr;grid-template-rows:1fr;gap:6px}.master-side .side-info{height:100%;min-height:0}.master-side .chat-box,.master-side .history-box{min-height:0}
+.master-main .panel-head{margin-bottom:7px}.master-main .grid-case{grid-template-columns:1fr}.master-main .master-dossier-details{grid-template-rows:auto auto minmax(0,1fr) auto}
 .master-dossier-details{width:100%}
 .master-section{margin-top:7px;padding-top:6px;border-top:2px solid var(--line)}
 .master-section-title{font-size:6px;font-weight:900;text-transform:uppercase;margin-bottom:4px}
@@ -254,7 +254,8 @@ body.master-view .decision-btn{cursor:default}
 .master-contracts{font-size:6px;line-height:1.4}
 .master-contract{padding:4px 5px;border:2px solid var(--line);background:var(--paper2);margin-bottom:3px}
 .master-contract strong{display:block;font-size:6px;text-transform:uppercase}
-@media(max-width:650px){.master-twists{grid-template-columns:1fr}}
+@media(max-width:900px){.master-main{grid-template-columns:220px minmax(0,1fr) 340px}.master-side{grid-template-rows:minmax(0,1.3fr) minmax(0,.9fr)}}
+@media(max-width:650px){.master-main{grid-template-columns:180px minmax(0,1fr) 280px}.master-side{grid-template-rows:minmax(0,1.2fr) minmax(0,.8fr)}.master-side .side-columns{grid-template-columns:1fr}.master-side .history-box{display:none}.master-twists{grid-template-columns:1fr}}
 
 .master-shop-confirm{max-width:520px}
 .shop-request{padding:10px;border:3px solid var(--line);background:var(--paper2)}
@@ -388,7 +389,21 @@ body.master-view .decision-btn{cursor:default}
               <span class="badge" id="caseDebt">Debito: —</span>
             </div>
           </div>
-          <div class="master-intel">
+          <div>
+            <div class="controls compat"><button class="decision-btn" data-decision="pass">Fai passare</button><button class="decision-btn" data-decision="deny">Respingi</button><button class="decision-btn" data-decision="arrest">Arresta</button><button class="decision-btn" data-decision="condemn">Condanna</button></div>
+            <div class="outcome">
+              <div class="hud-row">
+                <span class="badge" id="draftLabel">Decisione ospite: Nessuna</span>
+                <span class="badge warn" id="voteLockBadge">Voto: Aperto</span>
+              </div>
+              <div class="clamp-3" id="outcomeText">Nessuna conseguenza ancora applicata.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  <aside class="master-side">
+    <div class="master-intel">
             <div class="master-intel-head">
               <span class="master-intel-title">FASCICOLO COMPLETO</span>
               <span class="badge vio">MASTER</span>
@@ -415,20 +430,7 @@ body.master-view .decision-btn{cursor:default}
             </div>
           </div>
 
-          <div>
-            <div class="controls compat"><button class="decision-btn" data-decision="pass">Fai passare</button><button class="decision-btn" data-decision="deny">Respingi</button><button class="decision-btn" data-decision="arrest">Arresta</button><button class="decision-btn" data-decision="condemn">Condanna</button></div>
-            <div class="outcome">
-              <div class="hud-row">
-                <span class="badge" id="draftLabel">Decisione ospite: Nessuna</span>
-                <span class="badge warn" id="voteLockBadge">Voto: Aperto</span>
-              </div>
-              <div class="clamp-3" id="outcomeText">Nessuna conseguenza ancora applicata.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  <aside class="master-side">
+
     <aside class="side">
       <div class="side-info">
         <div class="side-info-head"></div>
