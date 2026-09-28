@@ -619,7 +619,6 @@ button,select{font:inherit}
   .center{padding:5px;border-width:3px;box-shadow:3px 3px 0 #111}
   .center .label{font-size:clamp(12px,2.8vw,18px)}
   .round-controls{gap:2px}
-  .round-controls select{height:23px;max-width:80px;font-size:7px}
   .btn{min-height:25px;padding:4px 5px;font-size:7px}
   .scoreboard{gap:4px;padding:3px 5px;font-size:12px}
   .score-btn{width:23px;height:22px;font-size:9px}
@@ -911,10 +910,6 @@ function ensureStateShape(){
   }
   if(!Array.isArray(stato.chatVotes.entries)){
     stato.chatVotes.entries = [];
-  }
-  if(!stato.roundSrc && images[0]){
-    stato.roundSrc = images[0].src;
-    stato.roundName = images[0].name;
   }
 }
 
