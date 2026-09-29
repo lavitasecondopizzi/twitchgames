@@ -357,7 +357,7 @@ body.master-view .decision-btn{cursor:default}
 body.master-view .master-main .grid-case{height:calc(100% - 50px);min-height:0}
 body.master-view .master-main .details{grid-template-rows:auto auto minmax(0,1fr) auto;min-height:0}
 body.master-view .master-main .notes{min-height:0;overflow:hidden}
-body.master-view .master-main #caseNotes{white-space:normal;overflow-wrap:anywhere}
+body.master-view .master-main #caseNotes{white-space:normal;overflow-wrap:anywhere;overscroll-behavior:contain}
 body.master-view .master-main .investigation{min-height:0;max-height:none;overflow-y:auto;overscroll-behavior:contain}
 /* Master readability pass: keep the dashboard legible at normal desktop scale. */
 body.master-view .master-top,
@@ -396,7 +396,7 @@ body.master-view .master-main .notes{
   flex:1 1 auto;min-height:0;max-height:none;overflow:hidden;
 }
 body.master-view .master-main .notes #caseNotes{
-  display:block;flex:0 0 auto;max-height:none;overflow:visible;
+  display:block;flex:0 1 auto;min-height:36px;max-height:35%;overflow:auto;
   -webkit-line-clamp:unset;line-clamp:unset;
 }
 body.master-view .master-main .investigation{
