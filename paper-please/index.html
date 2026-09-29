@@ -184,7 +184,9 @@ button,input,select{font:inherit}
 .history-wrap{position:relative;min-height:0;overflow:auto;padding:2px 2px 2px 14px}
 .history-line{position:absolute;left:5px;top:4px;bottom:4px;width:2px;background:var(--line)}
 .history-list{display:grid;gap:5px;min-height:0}
-.history-list .item{position:relative;margin:0;padding:6px 7px;border:2px solid var(--line);background:#fff;box-shadow:2px 2px 0 var(--line)}
+.history-list .item{position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:4px;margin:0;padding:6px 7px;border:2px solid var(--line);background:#fff;box-shadow:2px 2px 0 var(--line)}
+.history-list .item .t{display:block;min-width:0;font-size:clamp(11px,1vw,14px);line-height:1.25;overflow-wrap:anywhere}
+.history-list .item .c{display:block;justify-self:start;max-width:100%;padding:2px 5px;border:1px solid var(--line);background:var(--paper);font-size:9px;font-weight:900;line-height:1.2;text-transform:uppercase;overflow-wrap:anywhere}
 .history-list .item::before{content:"";position:absolute;left:-12px;top:9px;width:7px;height:7px;border:2px solid var(--line);background:var(--paper)}
 .history-empty{font-size:7px}
 .rules-overlay{position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(17,17,17,.94);opacity:0;pointer-events:none;transition:opacity .2s}
@@ -1785,8 +1787,8 @@ function renderHistory(){
     right.className = "c";
 
     const known = allKnown || i <= pos;
-    left.textContent = "Pers. " + (i+1) + " — " + (known ? (c.name||"Sconosciuto") : "???");
-    right.textContent = known ? (dec ? decisionLabel(dec) : (i===pos ? "In corso" : "—")) : "—";
+    left.textContent = "Caso " + (i+1) + " · " + (known ? (c.name||"Sconosciuto") : "Da scoprire");
+    right.textContent = known ? (dec ? decisionLabel(dec) : (i===pos ? "In corso" : "Non deciso")) : "Non disponibile";
 
     row.appendChild(left); row.appendChild(right);
     UI.historyList.appendChild(row);
