@@ -359,6 +359,27 @@ body.master-view .master-main .details{grid-template-rows:auto auto minmax(0,1fr
 body.master-view .master-main .notes{min-height:0;overflow:hidden}
 body.master-view .master-main #caseNotes{white-space:normal;overflow-wrap:anywhere;overscroll-behavior:contain}
 body.master-view .master-main .investigation{min-height:0;max-height:none;overflow-y:auto;overscroll-behavior:contain}
+/* Ensure the central Master dossier has a bounded height so the investigation flex area can render. */
+body.master-view .master-case-panel{
+  display:flex;flex-direction:column;min-height:0;overflow:hidden;
+}
+body.master-view .master-case-panel>.panel-head{flex:0 0 auto;}
+body.master-view .master-case-panel>.master-dossier-details{
+  display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;
+  flex:1 1 0;height:auto;min-height:0;overflow:hidden;
+}
+body.master-view .master-case-panel .notes{
+  display:flex;flex-direction:column;flex:1 1 0;height:100%;
+  min-height:0;max-height:none;overflow:hidden;
+}
+body.master-view .master-case-panel .notes #caseNotes{
+  display:block;flex:0 0 auto;min-height:36px;max-height:35%;
+  overflow:auto;-webkit-line-clamp:unset;line-clamp:unset;
+}
+body.master-view .master-case-panel .notes #caseInvestigation{
+  display:grid;flex:1 1 0;min-height:90px;height:auto;max-height:none;
+  overflow-y:auto;align-content:start;overscroll-behavior:contain;
+}
 /* Master readability pass: keep the dashboard legible at normal desktop scale. */
 body.master-view .master-top,
 body.master-view .master-main{font-size:14px}
