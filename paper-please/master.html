@@ -352,6 +352,86 @@ body.master-view .decision-btn{cursor:default}
   .master-top{grid-template-columns:1fr}
   .master-status,.master-guest{display:none}
 }
+
+/* Master readability pass: keep the dashboard legible at normal desktop scale. */
+body.master-view .master-top,
+body.master-view .master-main{font-size:14px}
+body.master-view .master-kicker,
+body.master-view .master-status-head,
+body.master-view .master-status-grid small,
+body.master-view .master-resources small,
+body.master-view .control-label,
+body.master-view .master-section-title,
+body.master-view .master-section small,
+body.master-view .master-runmeta small,
+body.master-view .master-identity-grid small,
+body.master-view .master-intel-title,
+body.master-view .master-case-panel .meta .k{
+  font-size:11px!important;line-height:1.25
+}
+body.master-view .master-status-grid strong,
+body.master-view .master-resources strong{font-size:15px}
+body.master-view .master-title{font-size:clamp(28px,2.2vw,38px)}
+body.master-view .master-guest .guest-name{font-size:24px}
+body.master-view .master-main .panel-title{font-size:20px}
+body.master-view .master-main .name{font-size:clamp(22px,1.8vw,30px);line-height:1}
+body.master-view .master-main .meta,
+body.master-view .master-main .meta .v,
+body.master-view .master-main .notes,
+body.master-view .master-main .clamp-5,
+body.master-view .master-main .outcome,
+body.master-view .master-main #outcomeText{
+  font-size:13px!important;line-height:1.4
+}
+body.master-view .master-main .notes .title{font-size:17px}
+body.master-view .master-main .badge,
+body.master-view .master-main .dossier .badge{font-size:11px!important;line-height:1.25}
+body.master-view .master-main .investigation{flex:1 1 auto;min-height:0;max-height:none;overflow:auto}
+body.master-view .master-main .investigation-block{padding:8px}
+body.master-view .master-main .investigation-title{font-size:12px;line-height:1.25}
+body.master-view .master-main .investigation-list,
+body.master-view .master-main .investigation-reveal{font-size:12px;line-height:1.45}
+body.master-view .master-main .investigation-links span{font-size:11px}
+body.master-view .master-side{font-size:12px}
+body.master-view .master-side .master-section-title{font-size:12px!important}
+body.master-view .master-side .master-identity-grid strong,
+body.master-view .master-side .master-identity-grid span{font-size:12px;line-height:1.4}
+body.master-view .master-side .master-tags span,
+body.master-view .master-side .master-tags,
+body.master-view .master-side .master-effect,
+body.master-view .master-side .master-twist,
+body.master-view .master-side .master-condition,
+body.master-view .master-side .master-contract,
+body.master-view .master-side .master-contract span,
+body.master-view .master-side .master-contract small{font-size:11px!important;line-height:1.4}
+body.master-view .master-side .master-effect strong,
+body.master-view .master-side .master-twist strong,
+body.master-view .master-side .master-contract strong{font-size:12px!important}
+body.master-view .master-side .badge{font-size:10px!important}
+body.master-view .master-control .control-value,
+body.master-view .master-control .decision-readout{font-size:22px}
+body.master-view .master-control .btn,
+body.master-view .master-control button{font-size:12px!important;line-height:1.25}
+body.master-view .master-control .control-block{padding:9px}
+@media(max-width:650px){
+  body.master-view .master-main .meta,
+  body.master-view .master-main .meta .v,
+  body.master-view .master-main .notes,
+  body.master-view .master-main .clamp-5,
+  body.master-view .master-main .outcome,
+  body.master-view .master-main #outcomeText{font-size:11px!important}
+  body.master-view .master-main .investigation-list,
+  body.master-view .master-main .investigation-reveal{font-size:10px}
+  body.master-view .master-side .master-tags span,
+  body.master-view .master-side .master-tags,
+  body.master-view .master-side .master-effect,
+  body.master-view .master-side .master-twist,
+  body.master-view .master-side .master-condition,
+  body.master-view .master-side .master-contract,
+  body.master-view .master-side .master-contract span,
+  body.master-view .master-side .master-contract small{font-size:10px!important}
+}
+
 </style>
 </head>
 
