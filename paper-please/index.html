@@ -261,7 +261,7 @@ body.master-view .decision-btn{cursor:default}
 .master-console{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
 @media(max-width:650px){.master-console{grid-template-columns:1fr}}
 
-/* Frontier desk: CSS pixel-art fallback, always visible in the bottom 30%. */
+/* Frontier desk artwork loaded from the repository assets folder. */
 #panelCase .portrait{
   position:relative;
   isolation:isolate;
@@ -273,40 +273,7 @@ body.master-view .decision-btn{cursor:default}
   z-index:2;
   left:0;right:0;bottom:0;height:30%;
   pointer-events:none;
-  background-color:#d7a064;
-  background-image:
-    linear-gradient(#30251b,#30251b),
-    linear-gradient(#754525,#754525),
-    linear-gradient(#754525,#754525),
-    linear-gradient(#e7b675,#e7b675),
-    linear-gradient(#b87940,#b87940),
-    linear-gradient(#8b552e,#8b552e),
-    linear-gradient(#e7b675,#e7b675),
-    linear-gradient(#b87940,#b87940),
-    linear-gradient(#8b552e,#8b552e);
-  background-repeat:no-repeat;
-  background-size:
-    100% 8%,
-    13% 44%,
-    13% 44%,
-    100% 7%,
-    100% 34%,
-    100% 8%,
-    7% 10%,
-    9% 9%,
-    8% 8%;
-  background-position:
-    0 10%,
-    12% 56%,
-    75% 56%,
-    0 18%,
-    0 25%,
-    0 59%,
-    20% 37%,
-    54% 44%,
-    82% 32%;
-  border-top:2px solid #30251b;
-  box-shadow:inset 0 3px 0 #f0c98e;
+  background:#fff url("assets/table.png") center bottom / 100% 100% no-repeat;
 }
 #panelCase .portrait img{
   display:block;position:relative;z-index:1;
