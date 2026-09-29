@@ -596,10 +596,6 @@ body.master-view .master-control .control-block{padding:9px}
               <div class="master-section-title">MASTER ONLY — TWIST CONDIZIONALI</div>
               <div class="master-conditions" id="masterConditions">—</div>
             </div>
-            <div class="master-section">
-              <div class="master-section-title">DOSSIER L3 — DEBITI / PROMESSE</div>
-              <div class="master-contracts" id="masterContracts">—</div>
-            </div>
           </div>
 
 
@@ -1807,6 +1803,46 @@ function renderInvestigation(caseObj, level){
     box.appendChild(links);el.appendChild(box);
   }
   block("L3 · RIVELAZIONE DECISIVA",l3.revelation);
+
+  // Contratti specifici del caso: il Master li consulta nel fascicolo centrale completo.
+  const decisions=[["pass","PASSA"],["deny","NEGA"],["arrest","ARRESTA"],["condemn","CONDANNA"]];
+  const contracts=caseObj?.contracts?.onDecision||{};
+  const contractItems=[];
+  decisions.forEach(([id,label])=>{
+    const data=contracts[id];
+    if(!data)return;
+    ["debts","promises"].forEach(kind=>{
+      (Array.isArray(data[kind])?data[kind]:[]).forEach(item=>{
+        contractItems.push({label,kind,item});
+      });
+    });
+  });
+  const contractBox=document.createElement("div");
+  contractBox.className="investigation-block";
+  const contractTitle=document.createElement("div");
+  contractTitle.className="investigation-title";
+  contractTitle.textContent="L3 · DEBITI / PROMESSE COLLEGATI";
+  contractBox.appendChild(contractTitle);
+  if(!contractItems.length){
+    const empty=document.createElement("div");
+    empty.className="investigation-reveal";
+    empty.textContent="Nessun debito o promessa collegato a questo caso.";
+    contractBox.appendChild(empty);
+  }else{
+    const list=document.createElement("ul");
+    list.className="investigation-list";
+    contractItems.forEach(({label,kind,item})=>{
+      const li=document.createElement("li");
+      const type=kind==="debts"?"DEBITO":"PROMESSA";
+      const from=item.from?String(item.from):"—";
+      const to=item.to?String(item.to):"—";
+      const due=typeof item.dueOffset==="number"?" · scadenza tra "+item.dueOffset+" casi":"";
+      li.textContent=label+" · "+type+": "+String(item.text||"—")+" (Da: "+from+" · A: "+to+due+")";
+      list.appendChild(li);
+    });
+    contractBox.appendChild(list);
+  }
+  el.appendChild(contractBox);
 }
 
 function renderMasterDossier(caseObj){
@@ -1871,30 +1907,6 @@ function renderMasterDossier(caseObj){
   });
   if(!conditionCount)UI.masterConditions.textContent="Nessuna condizione.";
 
-  UI.masterContracts.innerHTML="";
-  const contract=caseObj?.contracts?.onDecision||{};
-  let contractCount=0;
-  decisions.forEach(([id,label])=>{
-    const data=contract[id];
-    if(!data)return;
-    ["debts","promises"].forEach(kind=>{
-      (Array.isArray(data[kind])?data[kind]:[]).forEach(item=>{
-        contractCount++;
-        const row=document.createElement("div");row.className="master-contract";
-        const type=kind==="debts"?"DEBITO":"PROMESSA";
-        row.innerHTML="<strong></strong><span></span><small></small>";
-        row.querySelector("strong").textContent=label+" · "+type;
-        const from=item.from?String(item.from):"";
-        const to=item.to?String(item.to):"";
-        const parties=from||to ? "Da: "+(from||"—")+" · A: "+(to||"—") : "";
-        const due=typeof item.dueOffset==="number"?" · scadenza +"+item.dueOffset+" casi":"";
-        row.querySelector("span").textContent=String(item.text||"—")+due;
-        row.querySelector("small").textContent=parties;
-        UI.masterContracts.appendChild(row);
-      });
-    });
-  });
-  if(!contractCount)UI.masterContracts.textContent="Nessun contratto.";
 }
 
 function renderMasterEffects(caseObj){
