@@ -1,7 +1,7 @@
 (() => {
   const params = new URLSearchParams(location.search);
   const room = (params.get('room') || '').toUpperCase();
-  const role = document.body.classList.contains('master-page') ? 'master' : (params.get('role') || 'guest');
+  const role = !!document.querySelector('.master-page') ? 'master' : (params.get('role') || 'guest');
   const isMaster = role === 'master';
   const $ = id => document.getElementById(id);
   const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -31,7 +31,7 @@
     if(s.solved) $('solvedNotice').textContent='MISTERO RISOLTO da '+(s.solvedBy||[]).join(', ')+'. Il Master può rivelare la soluzione e passare al prossimo mistero.';
     $('questionInput').disabled=!!s.solved;
     $('questionForm').querySelector('button').disabled=!!s.solved;
-    if(s.solutionRevealed && s.solution) $('storyText').textContent=s.story+'\\n\\nSOLUZIONE: '+s.solution;
+    if(s.solutionRevealed && s.solution) $('storyText').textContent=s.story+'\n\nSOLUZIONE: '+s.solution;
   }
   function scoreMarkup(scores){
     const rows=Object.entries(scores||{}).sort((a,b)=>b[1]-a[1]);
@@ -129,7 +129,7 @@
     $('twitchStatus').textContent='Connessione a #'+channel+'…';
     ws.onopen=()=>{ws.send('CAP REQ :twitch.tv/tags twitch.tv/commands');ws.send('PASS SCHMOOPIIE');ws.send('NICK justinfan'+Math.floor(Math.random()*90000+10000));ws.send('JOIN #'+channel);};
     ws.onmessage=event=>{
-      const lines=String(event.data).split('\\r\\n');
+      const lines=String(event.data).split('\r\n');
       for(const line of lines){
         if(line.startsWith('PING ')){ws.send('PONG '+line.slice(5));continue;}
         const match=line.match(/^(?:@([^ ]+) )?:([^! ]+)!.* PRIVMSG #[^ ]+ :(.*)$/);
