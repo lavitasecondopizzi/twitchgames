@@ -3476,6 +3476,1926 @@
           "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
         }
       }
+    },
+    {
+      "name": "Marta Ferrovia",
+      "origin": "Stazione Nord",
+      "job": "Capotreno",
+      "reason": "Chiede il transito per un convoglio di evacuazione civile",
+      "notes": "Il manifesto indica 42 passeggeri, ma i registri dei posti ne contano 47.",
+      "tags": "people",
+      "tagHints": [
+        "Il convoglio è in ritardo di quattro ore.",
+        "Cinque posti non risultano nel manifesto."
+      ],
+      "arc": "people",
+      "effects": {
+        "pass": {
+          "regime": -6,
+          "popolo": 9,
+          "ribelli": 4,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -6,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -7,
+          "ribelli": -4,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 11,
+          "popolo": -10,
+          "ribelli": -7,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Stazione Nord",
+        "deny": "Rifugio civile",
+        "arrest": "Ordine riservato"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il manifesto indica 42 passeggeri, ma i registri dei posti ne contano 47.",
+            "Chiede il transito per un convoglio di evacuazione civile"
+          ],
+          "clues": [
+            "Il convoglio è in ritardo di quattro ore.",
+            "Cinque posti non risultano nel manifesto."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "Il convoglio raggiunge il rifugio, ma il sovraccarico viene segnalato.",
+            "Il treno resta fermo mentre il rifugio esaurisce le scorte."
+          ],
+          "connections": [
+            "is_pop_icon"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Dottor Varo",
+      "origin": "Istituto di Sanità Pubblica",
+      "job": "Epidemiologo",
+      "reason": "Vuole portare oltre confine i risultati di un'analisi sanitaria",
+      "notes": "Il rapporto segnala un focolaio, ma la metodologia è incompleta e i dati sono anonimi.",
+      "tags": "people",
+      "tagHints": [
+        "Il rapporto segnala un aumento insolito di casi.",
+        "Manca la firma del secondo revisore."
+      ],
+      "arc": "media",
+      "effects": {
+        "pass": {
+          "regime": -3,
+          "popolo": 10,
+          "ribelli": 2,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 3,
+          "popolo": -7,
+          "ribelli": -1,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 6,
+          "popolo": -8,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 9,
+          "popolo": -12,
+          "ribelli": -4,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Istituto di Sanità Pubblica",
+        "deny": "Cliniche distrettuali",
+        "arrest": "Nota interna"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il rapporto segnala un focolaio, ma la metodologia è incompleta e i dati sono anonimi.",
+            "Vuole portare oltre confine i risultati di un'analisi sanitaria"
+          ],
+          "clues": [
+            "Il rapporto segnala un aumento insolito di casi.",
+            "Manca la firma del secondo revisore."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "Il rapporto viene condiviso e le cliniche avviano controlli preventivi.",
+            "La pubblicazione viene bloccata e i controlli partono in ritardo."
+          ],
+          "connections": [
+            "is_media"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Nora Circuito",
+      "origin": "Officina dei Varchi",
+      "job": "Elettricista",
+      "reason": "Trasporta un modulo sostitutivo per un cancello che si apre a intermittenza",
+      "notes": "Il modulo è compatibile, ma il sigillo di garanzia è stato aperto prima della consegna.",
+      "tags": "regime",
+      "tagHints": [
+        "Il cancello ha registrato quattro aperture anomale.",
+        "Il modulo corrisponde al modello richiesto."
+      ],
+      "arc": "regime",
+      "effects": {
+        "pass": {
+          "regime": -7,
+          "popolo": 5,
+          "ribelli": 8,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 5,
+          "popolo": -4,
+          "ribelli": -5,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 8,
+          "popolo": -5,
+          "ribelli": -8,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 12,
+          "popolo": -8,
+          "ribelli": -11,
+          "stamps": 2,
+          "sanity": -2
+        }
+      },
+      "twist": {
+        "pass": "Officina dei Varchi",
+        "deny": "Laboratorio autorizzato",
+        "arrest": "Firmware"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il modulo è compatibile, ma il sigillo di garanzia è stato aperto prima della consegna.",
+            "Trasporta un modulo sostitutivo per un cancello che si apre a intermittenza"
+          ],
+          "clues": [
+            "Il cancello ha registrato quattro aperture anomale.",
+            "Il modulo corrisponde al modello richiesto."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "Il cancello viene riparato e resta sotto monitoraggio.",
+            "La riparazione slitta e il varco rimane instabile."
+          ],
+          "connections": [
+            "is_corrupt_official"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Berto Lume",
+      "origin": "Archivio delle Corrispondenze",
+      "job": "Postino",
+      "reason": "Chiede di consegnare lettere trattenute durante una settimana di censura",
+      "notes": "Le buste sono integre, ma alcuni destinatari non risultano più nel registro civico.",
+      "tags": "rebellion",
+      "tagHints": [
+        "Le lettere sono state trattenute per sette giorni.",
+        "Tre destinatari risultano cancellati dal registro."
+      ],
+      "arc": "rebellion",
+      "effects": {
+        "pass": {
+          "regime": 2,
+          "popolo": 7,
+          "ribelli": 1,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 2,
+          "popolo": -5,
+          "ribelli": 0,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 5,
+          "popolo": -6,
+          "ribelli": -1,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 8,
+          "popolo": -9,
+          "ribelli": -3,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Archivio delle Corrispondenze",
+        "deny": "Registro civico",
+        "arrest": "Filtro automatico"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Le buste sono integre, ma alcuni destinatari non risultano più nel registro civico.",
+            "Chiede di consegnare lettere trattenute durante una settimana di censura"
+          ],
+          "clues": [
+            "Le lettere sono state trattenute per sette giorni.",
+            "Tre destinatari risultano cancellati dal registro."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "Le lettere raggiungono i destinatari e avviano ricorsi anagrafici.",
+            "Le lettere restano bloccate e i ricorsi scadono."
+          ],
+          "connections": [
+            "is_rebel_agent"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Sira Nembi",
+      "origin": "Osservatorio delle Polveri",
+      "job": "Tecnica ambientale",
+      "reason": "Trasporta dati sulle polveri di una zona industriale",
+      "notes": "Il sensore è certificato, ma i dati presentano un'interruzione di nove ore.",
+      "tags": "people",
+      "tagHints": [
+        "Il sensore ha superato la soglia di allarme.",
+        "La serie di dati si interrompe durante il turno notturno."
+      ],
+      "arc": "people",
+      "effects": {
+        "pass": {
+          "regime": -5,
+          "popolo": 6,
+          "ribelli": 5,
+          "stamps": 0,
+          "sanity": -1
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -4,
+          "ribelli": -3,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -6,
+          "ribelli": -5,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -9,
+          "ribelli": -8,
+          "stamps": 2,
+          "sanity": -2
+        }
+      },
+      "twist": {
+        "pass": "Osservatorio delle Polveri",
+        "deny": "Zona industriale",
+        "arrest": "Registro manutenzione"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il sensore è certificato, ma i dati presentano un'interruzione di nove ore.",
+            "Trasporta dati sulle polveri di una zona industriale"
+          ],
+          "clues": [
+            "Il sensore ha superato la soglia di allarme.",
+            "La serie di dati si interrompe durante il turno notturno."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "I dati vengono pubblicati e parte una verifica indipendente.",
+            "La consegna viene respinta e l'allarme non viene diffuso."
+          ],
+          "connections": [
+            "is_media"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Gabrio Morsa",
+      "origin": "Ufficio del Lavoro",
+      "job": "Ispettore sindacale",
+      "reason": "Chiede di far passare un elenco di turni non retribuiti",
+      "notes": "Le buste paga sono autentiche, ma il registro degli accessi riporta ore differenti.",
+      "tags": "rebellion",
+      "tagHints": [
+        "Le buste paga mostrano trattenute non spiegate.",
+        "Il registro degli accessi è stato corretto due volte."
+      ],
+      "arc": "rebellion",
+      "effects": {
+        "pass": {
+          "regime": 1,
+          "popolo": 8,
+          "ribelli": 0,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 3,
+          "popolo": -6,
+          "ribelli": -1,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 6,
+          "popolo": -7,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -11,
+          "ribelli": -4,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Ufficio del Lavoro",
+        "deny": "Registro accessi",
+        "arrest": "Supervisore"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Le buste paga sono autentiche, ma il registro degli accessi riporta ore differenti.",
+            "Chiede di far passare un elenco di turni non retribuiti"
+          ],
+          "clues": [
+            "Le buste paga mostrano trattenute non spiegate.",
+            "Il registro degli accessi è stato corretto due volte."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "L'elenco avvia un controllo e vengono riconosciute alcune ore.",
+            "La pratica viene respinta e le scadenze di ricorso si avvicinano."
+          ],
+          "connections": [
+            "is_rebel_agent",
+            "is_media"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Enea Griglia",
+      "origin": "Centrale di Quartiere",
+      "job": "Operatore energetico",
+      "reason": "Chiede il passaggio urgente per riattivare una linea elettrica",
+      "notes": "Il permesso è valido, ma il carico previsto supera la capacità dichiarata della linea.",
+      "tags": "regime",
+      "tagHints": [
+        "Il quartiere ha subito tre blackout.",
+        "Il permesso è firmato dal responsabile di turno."
+      ],
+      "arc": "regime",
+      "effects": {
+        "pass": {
+          "regime": -6,
+          "popolo": 9,
+          "ribelli": 4,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -6,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -7,
+          "ribelli": -4,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 11,
+          "popolo": -10,
+          "ribelli": -7,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Centrale di Quartiere",
+        "deny": "Linea parallela",
+        "arrest": "Registro manutenzione"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il permesso è valido, ma il carico previsto supera la capacità dichiarata della linea.",
+            "Chiede il passaggio urgente per riattivare una linea elettrica"
+          ],
+          "clues": [
+            "Il quartiere ha subito tre blackout.",
+            "Il permesso è firmato dal responsabile di turno."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "La linea viene riattivata con un limite temporaneo di carico.",
+            "Il quartiere resta al buio mentre si attende una verifica."
+          ],
+          "connections": [
+            "is_corrupt_official"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Luce Marea",
+      "origin": "Porto Interno",
+      "job": "Biologa marina",
+      "reason": "Trasporta campioni di acqua da una zona portuale chiusa",
+      "notes": "Il contenitore è sigillato, ma il numero del campione non coincide con il verbale.",
+      "tags": "people",
+      "tagHints": [
+        "Il sigillo del contenitore è integro.",
+        "Il numero del campione differisce dal verbale."
+      ],
+      "arc": "people",
+      "effects": {
+        "pass": {
+          "regime": -3,
+          "popolo": 10,
+          "ribelli": 2,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 3,
+          "popolo": -7,
+          "ribelli": -1,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 6,
+          "popolo": -8,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 9,
+          "popolo": -12,
+          "ribelli": -4,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Porto Interno",
+        "deny": "Laboratorio ambientale",
+        "arrest": "Registro carichi"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il contenitore è sigillato, ma il numero del campione non coincide con il verbale.",
+            "Trasporta campioni di acqua da una zona portuale chiusa"
+          ],
+          "clues": [
+            "Il sigillo del contenitore è integro.",
+            "Il numero del campione differisce dal verbale."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "I campioni vengono analizzati e il porto avvia un controllo.",
+            "La consegna viene bloccata e il campione resta non verificato."
+          ],
+          "connections": [
+            "is_media"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Piero Doppiofondo",
+      "origin": "Banca delle Razioni",
+      "job": "Contabile",
+      "reason": "Chiede di trasferire buoni alimentari a un distretto in quarantena",
+      "notes": "La somma totale è corretta, ma alcuni buoni sono stati emessi due volte.",
+      "tags": "regime",
+      "tagHints": [
+        "Il totale dei buoni corrisponde al registro centrale.",
+        "Sette numeri seriali compaiono due volte."
+      ],
+      "arc": "regime",
+      "effects": {
+        "pass": {
+          "regime": -7,
+          "popolo": 5,
+          "ribelli": 8,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 5,
+          "popolo": -4,
+          "ribelli": -5,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 8,
+          "popolo": -5,
+          "ribelli": -8,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 12,
+          "popolo": -8,
+          "ribelli": -11,
+          "stamps": 2,
+          "sanity": -2
+        }
+      },
+      "twist": {
+        "pass": "Banca delle Razioni",
+        "deny": "Distretto in quarantena",
+        "arrest": "Terminale contabile"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "La somma totale è corretta, ma alcuni buoni sono stati emessi due volte.",
+            "Chiede di trasferire buoni alimentari a un distretto in quarantena"
+          ],
+          "clues": [
+            "Il totale dei buoni corrisponde al registro centrale.",
+            "Sette numeri seriali compaiono due volte."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "Le razioni arrivano dopo una verifica manuale dei duplicati.",
+            "Il trasferimento viene sospeso e le scorte del distretto calano."
+          ],
+          "connections": [
+            "is_corrupt_official"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Yara Fenditura",
+      "origin": "Ufficio Geologico",
+      "job": "Geologa",
+      "reason": "Porta una mappa di una galleria che il registro dichiara crollata",
+      "notes": "La mappa è aggiornata, ma la galleria è stata chiusa senza un rapporto tecnico pubblico.",
+      "tags": "meta",
+      "tagHints": [
+        "La mappa riporta una ventilazione attiva.",
+        "Il registro dichiara la galleria inagibile da mesi."
+      ],
+      "arc": "meta",
+      "effects": {
+        "pass": {
+          "regime": 2,
+          "popolo": 7,
+          "ribelli": 1,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 2,
+          "popolo": -5,
+          "ribelli": 0,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 5,
+          "popolo": -6,
+          "ribelli": -1,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 8,
+          "popolo": -9,
+          "ribelli": -3,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Ufficio Geologico",
+        "deny": "Galleria dismessa",
+        "arrest": "Sensore sotterraneo"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "La mappa è aggiornata, ma la galleria è stata chiusa senza un rapporto tecnico pubblico.",
+            "Porta una mappa di una galleria che il registro dichiara crollata"
+          ],
+          "clues": [
+            "La mappa riporta una ventilazione attiva.",
+            "Il registro dichiara la galleria inagibile da mesi."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "La galleria viene ispezionata e si scopre un accesso secondario.",
+            "La mappa viene respinta e l'accesso resta inesplorato."
+          ],
+          "connections": [
+            "is_rebel_agent"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Remo Saldatura",
+      "origin": "Cantiere Civico",
+      "job": "Saldatore",
+      "reason": "Chiede il transito con strumenti per riparare una passerella pubblica",
+      "notes": "L'attrezzatura è regolare, ma una saldatrice è stata registrata anche in un cantiere militare.",
+      "tags": "people",
+      "tagHints": [
+        "La passerella è stata chiusa per una crepa.",
+        "Gli strumenti sono registrati a nome del cantiere."
+      ],
+      "arc": "people",
+      "effects": {
+        "pass": {
+          "regime": -5,
+          "popolo": 6,
+          "ribelli": 5,
+          "stamps": 0,
+          "sanity": -1
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -4,
+          "ribelli": -3,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -6,
+          "ribelli": -5,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -9,
+          "ribelli": -8,
+          "stamps": 2,
+          "sanity": -2
+        }
+      },
+      "twist": {
+        "pass": "Cantiere Civico",
+        "deny": "Cantiere militare",
+        "arrest": "Inventario strumenti"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "L'attrezzatura è regolare, ma una saldatrice è stata registrata anche in un cantiere militare.",
+            "Chiede il transito con strumenti per riparare una passerella pubblica"
+          ],
+          "clues": [
+            "La passerella è stata chiusa per una crepa.",
+            "Gli strumenti sono registrati a nome del cantiere."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "La passerella viene riparata e riaperta con una verifica strutturale.",
+            "La riparazione slitta e la passerella resta chiusa."
+          ],
+          "connections": [
+            "is_corrupt_official"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Dalia Tesser",
+      "origin": "Ufficio Visti",
+      "job": "Funzionaria consolare",
+      "reason": "Chiede di correggere un visto con una data sovrascritta",
+      "notes": "La correzione è timbrata, ma il registro digitale conserva la data precedente.",
+      "tags": "regime",
+      "tagHints": [
+        "Il timbro sulla correzione è autentico.",
+        "La copia digitale mostra una data diversa."
+      ],
+      "arc": "regime",
+      "effects": {
+        "pass": {
+          "regime": 1,
+          "popolo": 8,
+          "ribelli": 0,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 3,
+          "popolo": -6,
+          "ribelli": -1,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 6,
+          "popolo": -7,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -11,
+          "ribelli": -4,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Ufficio Visti",
+        "deny": "Registro digitale",
+        "arrest": "Turni consolari"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "La correzione è timbrata, ma il registro digitale conserva la data precedente.",
+            "Chiede di correggere un visto con una data sovrascritta"
+          ],
+          "clues": [
+            "Il timbro sulla correzione è autentico.",
+            "La copia digitale mostra una data diversa."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "La data viene verificata manualmente e il visto resta sospeso fino alla conferma.",
+            "Il visto viene respinto e il richiedente perde il collegamento."
+          ],
+          "connections": [
+            "is_corrupt_official"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Fosco Rimbalzo",
+      "origin": "Arena delle Trasmissioni",
+      "job": "Tecnico audio",
+      "reason": "Trasporta un mixer che contiene la registrazione di una riunione riservata",
+      "notes": "Il dispositivo è di proprietà dell'arena, ma un canale contiene una conversazione non catalogata.",
+      "tags": "media",
+      "tagHints": [
+        "Il mixer è registrato all'arena.",
+        "Un canale contiene audio non indicizzato."
+      ],
+      "arc": "media",
+      "effects": {
+        "pass": {
+          "regime": -6,
+          "popolo": 9,
+          "ribelli": 4,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -6,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -7,
+          "ribelli": -4,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 11,
+          "popolo": -10,
+          "ribelli": -7,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Arena delle Trasmissioni",
+        "deny": "Sala riunioni",
+        "arrest": "Archivio audio"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il dispositivo è di proprietà dell'arena, ma un canale contiene una conversazione non catalogata.",
+            "Trasporta un mixer che contiene la registrazione di una riunione riservata"
+          ],
+          "clues": [
+            "Il mixer è registrato all'arena.",
+            "Un canale contiene audio non indicizzato."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "La traccia viene archiviata e verificata da un revisore indipendente.",
+            "Il mixer viene restituito e la traccia non viene esaminata."
+          ],
+          "connections": [
+            "is_media"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Mina Sottosoglia",
+      "origin": "Clinica Popolare",
+      "job": "Infermiera",
+      "reason": "Chiede di trasportare farmaci refrigerati verso un ambulatorio remoto",
+      "notes": "La temperatura è rimasta entro i limiti, ma il registro del frigorifero ha un'interruzione.",
+      "tags": "people",
+      "tagHints": [
+        "Il contenitore è ancora freddo e sigillato.",
+        "Il registro termico presenta un'interruzione."
+      ],
+      "arc": "people",
+      "effects": {
+        "pass": {
+          "regime": -3,
+          "popolo": 10,
+          "ribelli": 2,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 3,
+          "popolo": -7,
+          "ribelli": -1,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 6,
+          "popolo": -8,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 9,
+          "popolo": -12,
+          "ribelli": -4,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Clinica Popolare",
+        "deny": "Ambulatorio remoto",
+        "arrest": "Registro termico"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "La temperatura è rimasta entro i limiti, ma il registro del frigorifero ha un'interruzione.",
+            "Chiede di trasportare farmaci refrigerati verso un ambulatorio remoto"
+          ],
+          "clues": [
+            "Il contenitore è ancora freddo e sigillato.",
+            "Il registro termico presenta un'interruzione."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "I farmaci vengono consegnati dopo un controllo rapido della temperatura.",
+            "La consegna viene bloccata e l'ambulatorio resta senza scorte."
+          ],
+          "connections": [
+            "is_pop_icon"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Kiro Spettro",
+      "origin": "Ufficio Reti",
+      "job": "Auditor informatico",
+      "reason": "Chiede di attraversare il varco con un disco di log di sistema",
+      "notes": "Il disco è firmato digitalmente, ma contiene accessi registrati con un account disattivato.",
+      "tags": "meta",
+      "tagHints": [
+        "La firma digitale è valida.",
+        "L'account indicato è stato disattivato una settimana prima."
+      ],
+      "arc": "meta",
+      "effects": {
+        "pass": {
+          "regime": -7,
+          "popolo": 5,
+          "ribelli": 8,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 5,
+          "popolo": -4,
+          "ribelli": -5,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 8,
+          "popolo": -5,
+          "ribelli": -8,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 12,
+          "popolo": -8,
+          "ribelli": -11,
+          "stamps": 2,
+          "sanity": -2
+        }
+      },
+      "twist": {
+        "pass": "Ufficio Reti",
+        "deny": "Account disattivato",
+        "arrest": "Backup di sistema"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il disco è firmato digitalmente, ma contiene accessi registrati con un account disattivato.",
+            "Chiede di attraversare il varco con un disco di log di sistema"
+          ],
+          "clues": [
+            "La firma digitale è valida.",
+            "L'account indicato è stato disattivato una settimana prima."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "I log vengono copiati in un archivio isolato per l'analisi.",
+            "Il disco viene respinto e i log restano nel sistema originale."
+          ],
+          "connections": [
+            "is_corrupt_official"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Olga Campana",
+      "origin": "Municipio del Distretto Est",
+      "job": "Mediatrice di quartiere",
+      "reason": "Porta una petizione contro la chiusura dell'unica scuola serale",
+      "notes": "Le firme sono valide, ma l'elenco include residenti trasferiti da poco e non ancora registrati.",
+      "tags": "people",
+      "tagHints": [
+        "La petizione contiene firme verificabili.",
+        "Undici firmatari non risultano nel registro aggiornato."
+      ],
+      "arc": "people",
+      "effects": {
+        "pass": {
+          "regime": 2,
+          "popolo": 7,
+          "ribelli": 1,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 2,
+          "popolo": -5,
+          "ribelli": 0,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 5,
+          "popolo": -6,
+          "ribelli": -1,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 8,
+          "popolo": -9,
+          "ribelli": -3,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Municipio Est",
+        "deny": "Scuola serale",
+        "arrest": "Registro residenti"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Le firme sono valide, ma l'elenco include residenti trasferiti da poco e non ancora registrati.",
+            "Porta una petizione contro la chiusura dell'unica scuola serale"
+          ],
+          "clues": [
+            "La petizione contiene firme verificabili.",
+            "Undici firmatari non risultano nel registro aggiornato."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "La petizione viene protocollata e la chiusura riesaminata.",
+            "La petizione viene respinta per le discrepanze anagrafiche."
+          ],
+          "connections": [
+            "is_pop_icon",
+            "is_media"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Vito Ruggine",
+      "origin": "Deposito Ferroviario",
+      "job": "Magazziniere",
+      "reason": "Chiede di far passare una cassa di bulloni speciali per un ponte",
+      "notes": "La cassa è sigillata, ma il peso registrato non corrisponde alla quantità dichiarata.",
+      "tags": "regime",
+      "tagHints": [
+        "Il ponte richiede bulloni di una lega specifica.",
+        "Il peso della cassa è inferiore al manifesto."
+      ],
+      "arc": "regime",
+      "effects": {
+        "pass": {
+          "regime": -5,
+          "popolo": 6,
+          "ribelli": 5,
+          "stamps": 0,
+          "sanity": -1
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -4,
+          "ribelli": -3,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -6,
+          "ribelli": -5,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -9,
+          "ribelli": -8,
+          "stamps": 2,
+          "sanity": -2
+        }
+      },
+      "twist": {
+        "pass": "Deposito Ferroviario",
+        "deny": "Ponte di transito",
+        "arrest": "Registro prelievi"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "La cassa è sigillata, ma il peso registrato non corrisponde alla quantità dichiarata.",
+            "Chiede di far passare una cassa di bulloni speciali per un ponte"
+          ],
+          "clues": [
+            "Il ponte richiede bulloni di una lega specifica.",
+            "Il peso della cassa è inferiore al manifesto."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "I bulloni vengono contati e la riparazione procede con una consegna parziale.",
+            "La cassa viene respinta e la riparazione slitta."
+          ],
+          "connections": [
+            "is_corrupt_official"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Seline Bruma",
+      "origin": "Centro di Meteorologia",
+      "job": "Pilota di droni",
+      "reason": "Trasporta una scheda di volo che documenta un sorvolo vietato",
+      "notes": "Il volo è stato autorizzato per una prova tecnica, ma il percorso attraversa una zona civile.",
+      "tags": "rebellion",
+      "tagHints": [
+        "La scheda è firmata dal centro meteo.",
+        "Il percorso attraversa una zona residenziale."
+      ],
+      "arc": "rebellion",
+      "effects": {
+        "pass": {
+          "regime": 1,
+          "popolo": 8,
+          "ribelli": 0,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 3,
+          "popolo": -6,
+          "ribelli": -1,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 6,
+          "popolo": -7,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -11,
+          "ribelli": -4,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Centro di Meteorologia",
+        "deny": "Radar di frontiera",
+        "arrest": "Zona residenziale"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il volo è stato autorizzato per una prova tecnica, ma il percorso attraversa una zona civile.",
+            "Trasporta una scheda di volo che documenta un sorvolo vietato"
+          ],
+          "clues": [
+            "La scheda è firmata dal centro meteo.",
+            "Il percorso attraversa una zona residenziale."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "La scheda viene acquisita e il percorso del drone viene verificato.",
+            "La consegna viene respinta e la scheda resta al centro meteo."
+          ],
+          "connections": [
+            "is_rebel_agent"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Pavel Inchiostro",
+      "origin": "Tipografia Centrale",
+      "job": "Tipografo",
+      "reason": "Chiede di consegnare una tiratura con un avviso di richiamo alimentare",
+      "notes": "L'avviso è autentico, ma il numero del lotto è stato corretto a mano.",
+      "tags": "media",
+      "tagHints": [
+        "Il richiamo è stato pubblicato dal produttore.",
+        "Il numero di lotto è scritto a mano."
+      ],
+      "arc": "media",
+      "effects": {
+        "pass": {
+          "regime": -6,
+          "popolo": 9,
+          "ribelli": 4,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -6,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -7,
+          "ribelli": -4,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 11,
+          "popolo": -10,
+          "ribelli": -7,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Tipografia Centrale",
+        "deny": "Produttore alimentare",
+        "arrest": "Registro di stampa"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "L'avviso è autentico, ma il numero del lotto è stato corretto a mano.",
+            "Chiede di consegnare una tiratura con un avviso di richiamo alimentare"
+          ],
+          "clues": [
+            "Il richiamo è stato pubblicato dal produttore.",
+            "Il numero di lotto è scritto a mano."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "L'avviso viene diffuso con una nota di verifica sul lotto.",
+            "La tiratura viene bloccata e il richiamo raggiunge i negozi in ritardo."
+          ],
+          "connections": [
+            "is_media"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Rachele Scoria",
+      "origin": "Laboratorio Minerario",
+      "job": "Geochimica",
+      "reason": "Trasporta una relazione su residui trovati vicino a un pozzo chiuso",
+      "notes": "I campioni sono coerenti, ma la relazione non identifica il responsabile del prelievo.",
+      "tags": "people",
+      "tagHints": [
+        "I campioni contengono residui oltre la soglia prevista.",
+        "La catena di custodia inizia solo dal laboratorio."
+      ],
+      "arc": "people",
+      "effects": {
+        "pass": {
+          "regime": -3,
+          "popolo": 10,
+          "ribelli": 2,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 3,
+          "popolo": -7,
+          "ribelli": -1,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 6,
+          "popolo": -8,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 9,
+          "popolo": -12,
+          "ribelli": -4,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Laboratorio Minerario",
+        "deny": "Pozzo chiuso",
+        "arrest": "Fornitura reagenti"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "I campioni sono coerenti, ma la relazione non identifica il responsabile del prelievo.",
+            "Trasporta una relazione su residui trovati vicino a un pozzo chiuso"
+          ],
+          "clues": [
+            "I campioni contengono residui oltre la soglia prevista.",
+            "La catena di custodia inizia solo dal laboratorio."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "La relazione viene inoltrata agli ispettori ambientali.",
+            "La relazione viene respinta per la catena di custodia incompleta."
+          ],
+          "connections": [
+            "is_media"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Terenzio Quota",
+      "origin": "Ufficio delle Pensioni",
+      "job": "Revisore contabile",
+      "reason": "Chiede di correggere una serie di pensioni sospese",
+      "notes": "Le pratiche sono complete, ma la sospensione è stata applicata in blocco a un intero quartiere.",
+      "tags": "people",
+      "tagHints": [
+        "Le pratiche individuali risultano complete.",
+        "Le sospensioni sono state inserite nello stesso minuto."
+      ],
+      "arc": "people",
+      "effects": {
+        "pass": {
+          "regime": -7,
+          "popolo": 5,
+          "ribelli": 8,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 5,
+          "popolo": -4,
+          "ribelli": -5,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 8,
+          "popolo": -5,
+          "ribelli": -8,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 12,
+          "popolo": -8,
+          "ribelli": -11,
+          "stamps": 2,
+          "sanity": -2
+        }
+      },
+      "twist": {
+        "pass": "Ufficio delle Pensioni",
+        "deny": "Sistema contabile",
+        "arrest": "Distretto confinante"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Le pratiche sono complete, ma la sospensione è stata applicata in blocco a un intero quartiere.",
+            "Chiede di correggere una serie di pensioni sospese"
+          ],
+          "clues": [
+            "Le pratiche individuali risultano complete.",
+            "Le sospensioni sono state inserite nello stesso minuto."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "Le pensioni vengono riattivate in via provvisoria e sottoposte a controllo.",
+            "Le pratiche restano sospese mentre si verifica ogni posizione."
+          ],
+          "connections": [
+            "is_corrupt_official"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Zoe Frattale",
+      "origin": "Laboratorio di Simulazione",
+      "job": "Analista di modelli",
+      "reason": "Chiede di consegnare un rapporto sulle previsioni errate del sistema",
+      "notes": "Il modello ha previsto tre incidenti che non si sono verificati, ma ha anche mancato un guasto reale.",
+      "tags": "meta",
+      "tagHints": [
+        "Il rapporto include previsioni e risultati verificati.",
+        "Il modello è stato aggiornato senza un verbale pubblico."
+      ],
+      "arc": "meta",
+      "effects": {
+        "pass": {
+          "regime": 2,
+          "popolo": 7,
+          "ribelli": 1,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 2,
+          "popolo": -5,
+          "ribelli": 0,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 5,
+          "popolo": -6,
+          "ribelli": -1,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 8,
+          "popolo": -9,
+          "ribelli": -3,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Laboratorio di Simulazione",
+        "deny": "Registro versioni",
+        "arrest": "Guasto reale"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il modello ha previsto tre incidenti che non si sono verificati, ma ha anche mancato un guasto reale.",
+            "Chiede di consegnare un rapporto sulle previsioni errate del sistema"
+          ],
+          "clues": [
+            "Il rapporto include previsioni e risultati verificati.",
+            "Il modello è stato aggiornato senza un verbale pubblico."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "Il rapporto viene esaminato e il modello resta in uso con limiti temporanei.",
+            "La consegna viene respinta e le previsioni continuano senza revisione."
+          ],
+          "connections": [
+            "is_corrupt_official"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Nilo Fumo",
+      "origin": "Distretto delle Caldaie",
+      "job": "Manutentore",
+      "reason": "Chiede il transito con una valvola sostitutiva per una caldaia pubblica",
+      "notes": "La valvola è certificata, ma il diametro non coincide con quello richiesto nel piano.",
+      "tags": "people",
+      "tagHints": [
+        "La caldaia serve tre edifici pubblici.",
+        "La valvola è certificata ma di misura diversa."
+      ],
+      "arc": "people",
+      "effects": {
+        "pass": {
+          "regime": -5,
+          "popolo": 6,
+          "ribelli": 5,
+          "stamps": 0,
+          "sanity": -1
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -4,
+          "ribelli": -3,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -6,
+          "ribelli": -5,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -9,
+          "ribelli": -8,
+          "stamps": 2,
+          "sanity": -2
+        }
+      },
+      "twist": {
+        "pass": "Distretto delle Caldaie",
+        "deny": "Edifici pubblici",
+        "arrest": "Piano di manutenzione"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "La valvola è certificata, ma il diametro non coincide con quello richiesto nel piano.",
+            "Chiede il transito con una valvola sostitutiva per una caldaia pubblica"
+          ],
+          "clues": [
+            "La caldaia serve tre edifici pubblici.",
+            "La valvola è certificata ma di misura diversa."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "La valvola viene adattata dopo una verifica e la caldaia resta monitorata.",
+            "La riparazione viene rinviata e gli edifici restano senza riscaldamento."
+          ],
+          "connections": [
+            "is_pop_icon"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Celia Sismica",
+      "origin": "Unità di Protezione Civile",
+      "job": "Coordinatrice evacuazioni",
+      "reason": "Porta una lista aggiornata di edifici da evacuare dopo una scossa",
+      "notes": "La lista è firmata, ma include due isolati già dichiarati sicuri da un'altra squadra.",
+      "tags": "people",
+      "tagHints": [
+        "La scossa è stata registrata da tre sensori.",
+        "Due isolati hanno valutazioni contrastanti."
+      ],
+      "arc": "people",
+      "effects": {
+        "pass": {
+          "regime": 1,
+          "popolo": 8,
+          "ribelli": 0,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 3,
+          "popolo": -6,
+          "ribelli": -1,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 6,
+          "popolo": -7,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -11,
+          "ribelli": -4,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Protezione Civile",
+        "deny": "Squadra di verifica",
+        "arrest": "Registro radio"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "La lista è firmata, ma include due isolati già dichiarati sicuri da un'altra squadra.",
+            "Porta una lista aggiornata di edifici da evacuare dopo una scossa"
+          ],
+          "clues": [
+            "La scossa è stata registrata da tre sensori.",
+            "Due isolati hanno valutazioni contrastanti."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "Gli isolati vengono ricontrollati e l'evacuazione procede per fasi.",
+            "La lista viene respinta e alcuni residenti restano in attesa."
+          ],
+          "connections": [
+            "is_pop_icon"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Dino Maschera",
+      "origin": "Ufficio Identità",
+      "job": "Restauratore di documenti",
+      "reason": "Chiede di autenticare un documento recuperato da un archivio bruciato",
+      "notes": "La carta è originale, ma il timbro è stato applicato con un inchiostro di un periodo successivo.",
+      "tags": "regime",
+      "tagHints": [
+        "La carta corrisponde al periodo dichiarato.",
+        "L'inchiostro del timbro è più recente."
+      ],
+      "arc": "regime",
+      "effects": {
+        "pass": {
+          "regime": -6,
+          "popolo": 9,
+          "ribelli": 4,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -6,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -7,
+          "ribelli": -4,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 11,
+          "popolo": -10,
+          "ribelli": -7,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Ufficio Identità",
+        "deny": "Archivio bruciato",
+        "arrest": "Laboratorio d'inchiostri"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "La carta è originale, ma il timbro è stato applicato con un inchiostro di un periodo successivo.",
+            "Chiede di autenticare un documento recuperato da un archivio bruciato"
+          ],
+          "clues": [
+            "La carta corrisponde al periodo dichiarato.",
+            "L'inchiostro del timbro è più recente."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "Il documento viene archiviato come autentico con annotazione sul timbro.",
+            "Il documento viene respinto e la pratica resta senza prova alternativa."
+          ],
+          "connections": [
+            "is_corrupt_official"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Mavi Risonanza",
+      "origin": "Radio Civica",
+      "job": "Conduttrice",
+      "reason": "Chiede di far passare una registrazione di una sirena d'allarme non annunciata",
+      "notes": "L'audio è autentico, ma il timestamp è stato ricostruito da una copia secondaria.",
+      "tags": "media",
+      "tagHints": [
+        "La sirena si sente chiaramente nella registrazione.",
+        "Il timestamp proviene da una copia secondaria."
+      ],
+      "arc": "media",
+      "effects": {
+        "pass": {
+          "regime": -3,
+          "popolo": 10,
+          "ribelli": 2,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 3,
+          "popolo": -7,
+          "ribelli": -1,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 6,
+          "popolo": -8,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 9,
+          "popolo": -12,
+          "ribelli": -4,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Radio Civica",
+        "deny": "Registro allarmi",
+        "arrest": "Sensore acustico"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "L'audio è autentico, ma il timestamp è stato ricostruito da una copia secondaria.",
+            "Chiede di far passare una registrazione di una sirena d'allarme non annunciata"
+          ],
+          "clues": [
+            "La sirena si sente chiaramente nella registrazione.",
+            "Il timestamp proviene da una copia secondaria."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "La registrazione viene trasmessa con la riserva sul timestamp.",
+            "La registrazione viene bloccata e il pubblico non riceve chiarimenti."
+          ],
+          "connections": [
+            "is_media",
+            "is_pop_icon"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
+    },
+    {
+      "name": "Arturo Gesso",
+      "origin": "Scuola Tecnica",
+      "job": "Insegnante di disegno",
+      "reason": "Trasporta elaborati che documentano un edificio pubblico non accessibile",
+      "notes": "I disegni sono dettagliati, ma mostrano una porta che non compare nelle planimetrie ufficiali.",
+      "tags": "meta",
+      "tagHints": [
+        "Gli elaborati sono firmati dall'insegnante.",
+        "La porta non compare nella planimetria approvata."
+      ],
+      "arc": "meta",
+      "effects": {
+        "pass": {
+          "regime": -7,
+          "popolo": 5,
+          "ribelli": 8,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 5,
+          "popolo": -4,
+          "ribelli": -5,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 8,
+          "popolo": -5,
+          "ribelli": -8,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 12,
+          "popolo": -8,
+          "ribelli": -11,
+          "stamps": 2,
+          "sanity": -2
+        }
+      },
+      "twist": {
+        "pass": "Scuola Tecnica",
+        "deny": "Edificio pubblico",
+        "arrest": "Ordine di ristrutturazione"
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "I disegni sono dettagliati, ma mostrano una porta che non compare nelle planimetrie ufficiali.",
+            "Trasporta elaborati che documentano un edificio pubblico non accessibile"
+          ],
+          "clues": [
+            "Gli elaborati sono firmati dall'insegnante.",
+            "La porta non compare nella planimetria approvata."
+          ],
+          "revelation": "Gli elementi disponibili sono compatibili con più spiegazioni: la procedura è verificabile, ma non dimostra da sola tutte le responsabilità."
+        },
+        "l3": {
+          "clues": [
+            "Gli elaborati vengono confrontati con l'edificio e la porta viene ispezionata.",
+            "Gli elaborati vengono respinti e la porta resta fuori dai controlli."
+          ],
+          "connections": [
+            "is_rebel_agent"
+          ],
+          "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
+        }
+      }
     }
   ]
 }
