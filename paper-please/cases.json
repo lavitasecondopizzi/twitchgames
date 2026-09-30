@@ -24,8 +24,7 @@
       {
         "id": "dossier2_once",
         "label": "Dossier L2",
-        "cost": 2,
-        "requiresItem": "dossier2"
+        "cost": 2
       },
       {
         "id": "dossier3_once",
