@@ -35,3 +35,53 @@ body{min-height:100vh;display:flex;align-items:flex-start;justify-content:center
 .webcam span{position:relative;z-index:1;max-width:85%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:6px 8px;border:3px solid #111;background:#111;color:#f7f7f4;font-size:clamp(9px,1vw,14px);font-weight:900;text-transform:uppercase}
 input[readonly]{background:#e8e8e3;color:#222;cursor:default}
 @media(max-width:800px){.page{padding:8px;gap:10px}.top{min-height:150px;padding:12px;padding-top:48px;grid-template-columns:1fr}.top h1,.top .lead{grid-column:1}.top h1{font-size:34px}.top .lead{grid-row:2;font-size:11px}.layout,.master-page .layout{grid-template-columns:1fr}.webcam{width:28vw;top:6px;left:6px;padding:4px;border-width:2px}.webcam-right{left:auto;right:6px}.webcam span{font-size:8px;padding:3px 4px}.panel{padding:12px}.tag{max-width:40%;font-size:8px}}
+
+/* === Layout compatto ispirato alla composizione di Impiccato === */
+html,body{width:100%;height:100%;min-height:0;margin:0}
+body{display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--dots) 0 0/12px 12px,var(--paper)}
+#app{position:relative;width:min(100vw,100vh * 16 / 9);height:min(100vh,100vw * 9 / 16);max-width:1920px;max-height:1080px;min-width:0;min-height:0;margin:0;padding:16px;display:flex;flex-direction:column;gap:12px;overflow:hidden;border:4px solid var(--ink);box-shadow:10px 10px 0 var(--ink);background:var(--dots) 0 0/13px 13px,var(--paper)}
+#app:after{content:"TORTELLO GAMES";position:absolute;right:14px;bottom:5px;font-size:8px;font-weight:900;letter-spacing:.18em;opacity:.4;pointer-events:none}
+.top{flex:0 0 34%;min-height:0;margin:0;padding:0;border:0;box-shadow:none;background:transparent;display:grid;grid-template-columns:minmax(0,24%) minmax(0,52%) minmax(0,24%);gap:12px;align-items:stretch}
+.webcam{position:relative;inset:auto;width:100%;height:100%;min-width:0;min-height:0;aspect-ratio:auto;z-index:2147483647;pointer-events:none;overflow:hidden;display:flex;align-items:flex-end;justify-content:flex-start;padding:10px;background:#00ff00;border:4px solid var(--ink);box-shadow:5px 5px 0 var(--ink);transform:none}
+.webcam-left{left:auto;transform:rotate(-.5deg)}.webcam-right{right:auto;transform:rotate(.5deg)}
+.webcam:before{content:"WEBCAM";position:absolute;top:8px;right:8px;padding:4px 7px;border:2px solid var(--ink);background:var(--paper);color:var(--ink);font-size:9px;font-weight:900;letter-spacing:.08em}
+.webcam:after{content:"";position:absolute;inset:0;background:radial-gradient(circle,rgba(0,0,0,.15) 1px,transparent 1.5px) 0 0/10px 10px;opacity:.32;pointer-events:none}
+.webcam span{position:relative;z-index:1;max-width:85%;padding:7px 10px;border:3px solid var(--ink);background:var(--ink);color:var(--paper);font-size:clamp(10px,1vw,15px);font-weight:900;line-height:1;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.center{position:relative;min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px;border:4px solid var(--ink);box-shadow:5px 5px 0 var(--ink);background:var(--paper);overflow:hidden;text-align:center}
+.center:before{content:"";position:absolute;inset:0;background:radial-gradient(circle,rgba(0,0,0,.15) 1px,transparent 1.5px) 0 0/9px 9px;opacity:.2;pointer-events:none}
+.center>*{position:relative;z-index:1}
+.center .back{position:absolute;top:8px;left:10px;font-size:9px}
+.center .tag{position:absolute;top:8px;right:8px;float:none;margin:0;font-size:8px}
+.center h1{margin:0;font-size:clamp(25px,3vw,48px);line-height:.9;letter-spacing:.02em}
+.center .lead{max-width:85%;margin:0;font-size:clamp(10px,.95vw,13px);line-height:1.35}
+#connection{flex:1;min-height:0;margin:0;display:flex;flex-direction:column;justify-content:center;overflow:auto}
+#connection h2{font-size:clamp(20px,2vw,28px)}
+#connection p{margin:0}
+#playerView.layout,#masterView.layout{flex:1;min-height:0;min-width:0;margin:0;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:12px;overflow:hidden}
+#playerView.layout.hidden,#masterView.layout.hidden{display:none!important}
+#playerView>.panel,#masterView>.panel{min-width:0;min-height:0;height:100%;padding:14px;overflow:auto;overscroll-behavior:contain;box-shadow:5px 5px 0 var(--ink)}
+#playerView .story{min-height:0}
+#playerView .story p{font-size:clamp(15px,1.35vw,21px);line-height:1.4}
+#playerView aside h2,#masterView aside h2{font-size:clamp(18px,1.8vw,25px);margin-bottom:8px}
+#playerView .divider,#masterView .divider{height:2px;margin:12px 0}
+#playerView textarea,#masterView textarea{min-height:54px;margin-bottom:5px;padding:8px;font-size:12px}
+#playerView input,#masterView input,#playerView select,#masterView select{padding:8px;margin-bottom:5px;font-size:12px}
+#playerView .btn,#masterView .btn{min-height:34px;padding:7px 9px;font-size:9px;box-shadow:2px 2px 0 var(--ink)}
+#playerView .muted,#masterView .muted{font-size:11px;line-height:1.35}
+#waitingView{flex:1;min-height:0;max-width:780px;width:100%;align-self:center;margin:0;padding:16px;overflow:auto;box-shadow:5px 5px 0 var(--ink)}
+#waitingView h2{font-size:clamp(20px,2vw,28px);margin-bottom:8px}
+#waitingView p{font-size:12px;line-height:1.4;margin:8px 0}
+#waitingView form{grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;align-items:center;gap:8px}
+#waitingView form input,#waitingView form select{margin:0;min-width:0}
+#waitingView form .btn{white-space:nowrap;min-height:38px;padding:8px}
+#waitingView .notice{margin-top:10px;padding:8px;font-size:11px}
+.master-page #masterView.layout{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)}
+#masterView .toolbar{gap:6px;margin-bottom:8px}
+#masterView .difficulty-admin{margin:8px 0;padding:9px}
+#masterView .secret{margin:10px 0;padding:10px}
+#masterView .queue{gap:7px;margin-top:8px}
+#masterView .question{padding:8px}
+#masterView .question p{font-size:12px;margin:6px 0}
+#masterView .chat-connect{margin:8px 0;padding:8px}
+@media(max-width:900px){body{height:auto;min-height:100%;overflow:auto;align-items:flex-start}#app{width:100%;height:auto;min-height:100vh;max-height:none;aspect-ratio:auto;overflow:visible;padding:10px}.top{flex:0 0 auto;min-height:160px;grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr) minmax(0,.8fr);gap:8px}.center{padding:38px 8px 8px}.center h1{font-size:clamp(18px,4vw,32px)}.center .back{font-size:7px;left:5px;top:5px}.center .tag{font-size:6px;right:5px;top:5px}.center .lead{font-size:10px}.webcam{min-height:150px;padding:5px;border-width:2px}.webcam span{font-size:8px;padding:4px 5px}#connection{min-height:90px}#playerView.layout,#masterView.layout{flex:none;grid-template-columns:1fr;overflow:visible}#playerView>.panel,#masterView>.panel{height:auto;max-height:none;overflow:visible}#waitingView{flex:none;max-width:none}#waitingView form{grid-template-columns:1fr}#waitingView form .btn{width:100%}}
+@media(max-width:480px){.top{grid-template-columns:minmax(0,.7fr) minmax(0,1.6fr) minmax(0,.7fr);min-height:125px;gap:5px}.webcam{min-height:125px}.center .lead{display:none}.center h1{font-size:18px}.webcam:before{font-size:6px;top:4px;right:4px;padding:2px}.webcam span{max-width:100%;font-size:7px;padding:3px}#waitingView{padding:10px}}
