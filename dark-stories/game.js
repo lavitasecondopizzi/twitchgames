@@ -48,14 +48,12 @@
   function scoreMarkup(scores){
     return Object.entries(scores||{}).sort((a,b)=>b[1]-a[1]).map(([name,points],i)=>'<div class="entry"><strong>'+(i+1)+'. '+esc(name)+'</strong>'+points+' punti</div>').join('')||'<p class="muted">Nessun punto assegnato.</p>';
   }
-  function renderDifficultyOptions(){
-    if(!$('storyChoice')||!$('masterDifficulty'))return;
-    const level=$('masterDifficulty').value||state.difficulty||'facile';
+  function renderStoryList(){
+    const list=$('storyList');if(!list)return;
+    const level=state.difficulty||'facile';
     const eligible=cases.filter(item=>item.difficulty===level);
-    const oldValue=$('storyChoice').value;
-    $('storyChoice').innerHTML=eligible.map(item=>'<option value="'+esc(item.id)+'">'+esc(item.title)+'</option>').join('');
-    if(eligible.some(item=>item.id===oldValue))$('storyChoice').value=oldValue;
-    else if(eligible.some(item=>item.id===state.selectedStoryId))$('storyChoice').value=state.selectedStoryId;
+    list.innerHTML=eligible.map(item=>'<button type="button" class="story-option '+(item.id===state.selectedStoryId?'selected':'')+'" data-story-id="'+esc(item.id)+'"><strong>'+esc(item.title)+'</strong><span>'+esc(item.story)+'</span></button>').join('')||'<p class="muted">Nessuna storia disponibile per questa difficoltà.</p>';
+    list.querySelectorAll('[data-story-id]').forEach(button=>button.addEventListener('click',()=>chooseStory(button.dataset.storyId)));
   }
   function renderPlayer(s){
     $('connection').classList.add('hidden');
@@ -95,7 +93,7 @@
     if(!$('masterDifficulty').dataset.touched)$('masterDifficulty').value=s.difficulty||winningDifficulty(s.difficultyVotes);
     renderDifficultyOptions();
     $('startRound').disabled=!!s.started||!s.selectedStoryId;
-    $('chooseStory').disabled=!!s.started;
+    
     $('nextRound').disabled=!s.started||(!(s.solvedBy||[]).length&&!s.solutionRevealed)||roundNumber>=cases.length;
     const hintRemaining = hintTimeRemaining(s);
     $('hintButton').disabled=!s.started||!!s.solutionRevealed||(s.revealedHints||[]).length>=(mystery?.hints.length||0)||hintRemaining>0;
@@ -118,11 +116,10 @@
     state={...state,...s,difficultyVotes:s.difficultyVotes||state.difficultyVotes||{},queue:s.queue||[],scores:s.scores||{},roundPoints:s.roundPoints||state.roundPoints||{},history:s.history||[],revealedHints:s.revealedHints||[],solvedBy:s.solvedBy||[]};
     if(isMaster)renderMaster({...gameState(),...s});else renderPlayer(s);
   }
-  async function submitDifficulty(author,difficulty,source='OSPITE'){
-    if(!['facile','medio','difficile'].includes(difficulty))return;
-    if(isMaster){recordDifficultyVote(author,difficulty,source);return;}
-    await client.broadcast('game_event',{type:'difficulty_vote',author:String(author||'Anonimo').slice(0,24),difficulty,source});
-    if($('difficultyStatus'))$('difficultyStatus').textContent='Hai votato: '+difficultyNames[difficulty]+'. Puoi cambiare voto prima dell’avvio.';
+  async function selectDifficulty(difficulty){
+    if(!['facile','medio','difficile'].includes(difficulty)||state.started)return;
+    await client.broadcast('game_event',{type:'difficulty_select',difficulty});
+    if($('difficultyStatus'))$('difficultyStatus').textContent='Difficoltà selezionata: '+difficultyNames[difficulty]+'. Il Master sta scegliendo una storia.';
   }
   async function recordDifficultyVote(author,difficulty,source){
     if(state.started)return;
@@ -182,11 +179,11 @@
     q.answer=answer;state.history.push({author:q.author,question:q.question,answer,source:q.source});
     await publish();
   }
-  async function chooseStory(){
+  async function chooseStory(storyId){
     if(state.started)return;
-    const selected=cases.find(item=>item.id===$('storyChoice').value);
+    const selected=cases.find(item=>item.id===storyId && item.difficulty===state.difficulty);
     if(!selected)return;
-    state.selectedStoryId=selected.id;state.difficulty=selected.difficulty;
+    state.selectedStoryId=selected.id;
     currentIndex=cases.indexOf(selected);
     await publish();
   }
@@ -277,6 +274,7 @@
       client.on('game-state',payload=>{if(payload)render(payload);});
       client.on('game-event',payload=>{
         if(!isMaster)return;
+        if(payload?.type==='difficulty_select'&&!state.started&&['facile','medio','difficile'].includes(payload.difficulty)){state.difficulty=payload.difficulty;state.selectedStoryId=null;currentIndex=0;publish();}
         if(payload?.type==='difficulty_vote')recordDifficultyVote(payload.author,payload.difficulty,payload.source||'OSPITE');
         if(payload?.type==='question')addQuestion(payload.author,payload.question,payload.source||'OSPITE');
         if(payload?.type==='solution'&&!state.solutionRevealed){$('solverName').value=payload.author||'Anonimo';$('solverAnswer').value=payload.answer||'';$('masterStatus').textContent='Tentativo ricevuto da '+(payload.author||'Anonimo')+'. Verificalo prima di assegnare punti.';}
@@ -296,8 +294,6 @@
       if(hintTimerInterval)clearInterval(hintTimerInterval);
       hintTimerInterval=setInterval(()=>updateHintTimer(state),1000);
       if(isMaster){
-        $('masterDifficulty').addEventListener('change',()=>{$('masterDifficulty').dataset.touched='1';renderDifficultyOptions();});
-        $('chooseStory').addEventListener('click',chooseStory);
         $('startRound').addEventListener('click',startRound);
         $('nextRound').addEventListener('click',nextRound);
         $('hintButton').addEventListener('click',revealHint);
@@ -310,10 +306,10 @@
         state.difficulty='facile';renderMaster({...gameState(),roundNumber:1});
       }else{
         const saved=playerNickname;
-        $('nickname').value=saved;$('difficultyNickname').value=saved;
-        $('nickname').readOnly=true;$('difficultyNickname').readOnly=true;
-        $('nickname').title='Nickname preso dalla lobby';$('difficultyNickname').title='Nickname preso dalla lobby';
-        $('difficultyForm').addEventListener('submit',e=>{e.preventDefault();const name=playerNickname;submitDifficulty(name,$('difficultyChoice').value).catch(()=>status('Impossibile inviare il voto.',true));});
+        $('nickname').value=saved;
+        $('nickname').readOnly=true;
+        $('nickname').title='Nickname preso dalla lobby';
+        document.querySelectorAll('[data-difficulty]').forEach(button=>button.addEventListener('click',()=>selectDifficulty(button.dataset.difficulty).catch(()=>status('Impossibile selezionare la difficoltà.',true))));
         $('questionForm').addEventListener('submit',e=>{e.preventDefault();const name=playerNickname;sendQuestion(name,$('questionInput').value,'OSPITE').then(()=>$('questionInput').value='').catch(()=>status('Impossibile inviare la domanda.',true));});
         $('solutionGuessForm').addEventListener('submit',e=>{e.preventDefault();const name=playerNickname;sendSolution(name,$('solutionGuess').value,'OSPITE').then(()=>$('solutionGuess').value='').catch(()=>status('Impossibile inviare il tentativo.',true));});
       }
