@@ -500,7 +500,7 @@
     <section class="section" aria-labelledby="games-title">
       <div class="section-heading">
         <h2 id="games-title">Scegli il gioco</h2>
-        <span>04 titoli disponibili</span>
+        <span>05 titoli disponibili</span>
       </div>
 
       <div class="games">
@@ -536,6 +536,14 @@
           <p>Quiz interattivo per mettere alla prova la chat e sfidare lo streamer.</p>
           <div class="game-actions">
             <button class="comic-btn primary" type="button" data-game="quiz-pizzi">Scegli gioco</button>
+          </div>
+        </article>
+        <article class="game-card">
+          <span class="game-number">05</span>
+          <h3>Dark Stories</h3>
+          <p>Un mistero, domande sì/no e una soluzione nascosta. Chi risolve conquista punti.</p>
+          <div class="game-actions">
+            <button class="comic-btn primary" type="button" data-game="dark-stories">Scegli gioco</button>
           </div>
         </article>
       </div>
@@ -708,9 +716,11 @@
         ? 'Paper Pizzi Please'
         : game === 'quiz-pizzi'
           ? 'Quiz Pizzi'
-          : game === 'indovina-chi'
-            ? 'Indovina Chi'
-            : 'Impiccato';
+          : game === 'dark-stories'
+            ? 'Dark Stories'
+            : game === 'indovina-chi'
+              ? 'Indovina Chi'
+              : 'Impiccato';
 
       $('seedField').hidden = game !== 'paper-please';
       $('ppModeField').hidden = game !== 'paper-please';
@@ -812,12 +822,20 @@
           '&role=' + role + '&player=' + player + '&interaction=' + interaction;
       }
 
+      if (game === 'dark-stories') {
+        const page = view === 'master' ? 'master.html' : 'index.html';
+        const gameRole = view === 'master' ? 'master' : role;
+        return './dark-stories/' + page + '?room=' + room +
+          '&role=' + gameRole + '&player=' + player;
+      }
+
       return null;
     }
 
     function gameLabel(game) {
       return game === 'paper-please' ? 'PAPER PIZZI PLEASE'
         : game === 'quiz-pizzi' ? 'QUIZ PIZZI'
+        : game === 'dark-stories' ? 'DARK STORIES'
         : game === 'indovina-chi' ? 'INDOVINA CHI'
         : 'IMPICCATO';
     }
@@ -926,7 +944,7 @@
           ? 'Modalità Solo Chat: puoi avviare subito. La chat sarà il secondo giocatore.'
           : 'Condividi il codice con il tuo ospite. Quando entra, il suo nick comparirà qui.';
         $('roomModal').hidden = false;
-        $('openMasterRoom').classList.toggle('hidden', state.selectedGame !== 'paper-please');
+        $('openMasterRoom').classList.toggle('hidden', !['paper-please', 'dark-stories'].includes(state.selectedGame));
         updateHostPresence(client.presenceState());
       } catch (error) {
         console.error(error);
@@ -964,8 +982,8 @@
     }
 
     function openMasterRoom() {
-      if (state.selectedGame !== 'paper-please' || !state.roomCode) return;
-      const masterUrl = buildGameUrl('paper-please', 'host', 'Pizzi', state.gameConfig, 'master', state.guestNickname || '');
+      if (!['paper-please', 'dark-stories'].includes(state.selectedGame) || !state.roomCode) return;
+      const masterUrl = buildGameUrl(state.selectedGame, 'host', 'Pizzi', state.gameConfig, 'master', state.guestNickname || '');
       if (masterUrl) window.open(masterUrl, '_blank', 'noopener,noreferrer');
     }
 
