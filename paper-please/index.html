@@ -318,6 +318,13 @@ body.master-view .decision-btn{cursor:default}
 .cam{z-index:1000}
 @media(prefers-reduced-motion:reduce){.initial-loader-spinner{animation:none}}
 
+
+/* Character presentation: spoken intro visible from Dossier L1. */
+.character-presentation{min-width:0;padding:8px 10px;border:3px solid var(--line);background:var(--paper);color:var(--ink);}
+.character-presentation .presentation-title{font-family:Impact,"Arial Black",sans-serif;font-size:12px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;}
+.character-presentation .presentation-dialogue{font-size:11px;line-height:1.5;font-style:italic;overflow-wrap:anywhere;}
+.master-acting-notes{font-size:11px;line-height:1.5;white-space:normal;overflow-wrap:anywhere;padding:7px;border:2px dashed var(--line);background:var(--paper2);}
+
 </style>
 </head>
 
@@ -387,6 +394,11 @@ body.master-view .decision-btn{cursor:default}
             <div class="row"><span class="k">Lavoro:</span><span class="v" id="caseJob">—</span></div>
             <div class="row" style="grid-column:1/-1"><span class="k">Motivo:</span><span class="v" id="caseReason">—</span></div>
           </div>
+
+          <section class="character-presentation" aria-live="polite">
+            <div class="presentation-title">PRESENTAZIONE DEL RICHIEDENTE</div>
+            <div class="presentation-dialogue" id="casePresentation">—</div>
+          </section>
 
           <div class="notes">
             <div class="title">DOCUMENTI / NOTE</div>
@@ -616,6 +628,7 @@ const UI = {
   caseOrigin: el("caseOrigin"),
   caseJob: el("caseJob"),
   caseReason: el("caseReason"),
+  casePresentation: el("casePresentation"),
   caseNotes: el("caseNotes"),
   caseInvestigation: el("caseInvestigation"),
   caseDossierBadges: el("caseDossierBadges"),
@@ -1614,6 +1627,7 @@ function updateUI(){
   UI.caseOrigin.textContent = d.origin;
   UI.caseJob.textContent    = d.job;
   UI.caseReason.textContent = d.reason;
+  if(UI.casePresentation) UI.casePresentation.textContent = c.presentation?.dialogue || "Il richiedente attende le domande dell’agente.";
 
   UI.caseNotes.textContent = (d.notes && d.notes.trim()) ? d.notes : "—";
   renderInvestigation(c, getEffectiveDossierLevel());
