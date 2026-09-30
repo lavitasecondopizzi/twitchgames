@@ -325,6 +325,46 @@ body.master-view .decision-btn{cursor:default}
 .character-presentation .presentation-dialogue{font-size:11px;line-height:1.5;font-style:italic;overflow-wrap:anywhere;}
 .master-acting-notes{font-size:11px;line-height:1.5;white-space:normal;overflow-wrap:anywhere;padding:7px;border:2px dashed var(--line);background:var(--paper2);}
 
+
+/* Readability fix: keep the presentation and dossier in separate, scrollable areas. */
+body:not(.master-view) .details{
+  grid-template-rows:auto auto minmax(64px,.55fr) minmax(0,1.45fr) auto!important;
+}
+.character-presentation{
+  min-height:0;overflow-y:auto;overscroll-behavior:contain;
+  scrollbar-gutter:stable;align-self:stretch;
+}
+.character-presentation .presentation-dialogue{
+  display:block;overflow-wrap:anywhere;white-space:normal;
+}
+.notes{
+  min-height:0;overflow-y:auto!important;overscroll-behavior:contain;
+  scrollbar-gutter:stable;align-self:stretch;
+}
+.notes .clamp-5,.notes .clamp-3{
+  display:block;overflow:visible;-webkit-line-clamp:unset;line-clamp:unset;
+  overflow-wrap:anywhere;white-space:normal;
+}
+.investigation{
+  max-height:none!important;overflow:visible!important;
+  flex:0 0 auto;align-content:start;
+}
+body.master-view .master-case-panel>.master-dossier-details{
+  grid-template-rows:auto auto minmax(64px,.55fr) minmax(0,1.45fr) auto!important;
+}
+body.master-view .master-case-panel .notes{
+  min-height:0;max-height:none;overflow-y:auto!important;
+  overscroll-behavior:contain;scrollbar-gutter:stable;
+}
+body.master-view .master-case-panel .notes #caseNotes{
+  display:block;flex:0 0 auto;min-height:0;max-height:none!important;
+  overflow:visible!important;-webkit-line-clamp:unset;line-clamp:unset;
+}
+body.master-view .master-case-panel .notes #caseInvestigation{
+  display:grid;flex:0 0 auto;min-height:0;height:auto;max-height:none!important;
+  overflow:visible!important;align-content:start;
+}
+
 </style>
 </head>
 
