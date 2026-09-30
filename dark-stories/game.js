@@ -235,7 +235,6 @@
     roundNumber++;state.started=false;state.solved=false;state.solutionRevealed=false;state.startedAt=null;state.lastHintAt=null;
     state.selectedStoryId=null;state.revealedHints=[];state.history=[];state.queue=[];state.solvedBy=[];state.roundPoints={};
     state.difficulty=winningDifficulty();
-    $('masterDifficulty').dataset.touched='';
     await publish();
   }
   function connectTwitch(){
