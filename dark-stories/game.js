@@ -204,7 +204,7 @@
   function prepareAnswerParts(){
     const raw=$('solverAnswer').value.trim();
     if(!raw){$('masterStatus').textContent='Inserisci prima la risposta da valutare.';return;}
-    const parts=raw.split(/\n+|(?<=[.!?;])\s+/u).map(part=>part.trim()).filter(Boolean);
+    const parts=raw.split(/\n+|(?<=[.!?;:,])\s+/u).map(part=>part.trim()).filter(Boolean);
     const unique=[...new Set(parts)];
     $('hypothesisParts').innerHTML=unique.map((part,index)=>'<label class="hypothesis-part"><input type="checkbox" data-part-index="'+index+'"><span><b>PARTE '+(index+1)+'</b> '+esc(part)+'</span></label>').join('');
     $('hypothesisParts').dataset.parts=JSON.stringify(unique);
