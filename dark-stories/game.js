@@ -86,7 +86,7 @@
     renderDifficultyOptions();
     $('startRound').disabled=!!s.started||!s.selectedStoryId;
     $('chooseStory').disabled=!!s.started;
-    $('nextRound').disabled=!!s.started||(!(s.solvedBy||[]).length&&!s.solutionRevealed)||currentIndex>=cases.length-1;
+    $('nextRound').disabled=!s.started||(!(s.solvedBy||[]).length&&!s.solutionRevealed)||roundNumber>=cases.length;
     $('hintButton').disabled=!s.started||!!s.solutionRevealed||(s.revealedHints||[]).length>=(mystery?.hints.length||0);
     $('revealSolution').disabled=!s.started||(!(s.solvedBy||[]).length&&!s.solutionRevealed);
     $('masterLeaderboard').innerHTML=scoreMarkup(s.scores);
@@ -175,8 +175,8 @@
     renderMaster(snapshot);
   }
   async function nextRound(){
-    if(currentIndex>=cases.length-1){$('masterStatus').textContent='Hai raggiunto il limite di storie nel catalogo.';return;}
-    currentIndex++;roundNumber++;state.started=false;state.solved=false;state.solutionRevealed=false;
+    if(roundNumber>=cases.length){$('masterStatus').textContent='Hai raggiunto il limite di storie nel catalogo.';return;}
+    roundNumber++;state.started=false;state.solved=false;state.solutionRevealed=false;
     state.selectedStoryId=null;state.revealedHints=[];state.history=[];state.queue=[];state.solvedBy=[];
     state.difficulty=winningDifficulty();
     $('masterDifficulty').dataset.touched='';
