@@ -405,6 +405,10 @@
           ],
           "revelation": "Il corridoio può servire contemporaneamente un'evacuazione civile e un passaggio clandestino."
         }
+      },
+      "presentation": {
+        "dialogue": "Buongiorno. Sono la dottoressa Nivea, medico d'emergenza. Ho dei pazienti che mi aspettano oltre il confine: controlli pure i documenti, ma la prego, non facciamo perdere altro tempo a chi ha bisogno di cure.",
+        "actingNotes": "Voce calma e professionale, premurosa ma con urgenza trattenuta; guarda spesso verso il confine."
       }
     },
     {
@@ -518,6 +522,10 @@
           ],
           "revelation": "Il problema non è solo il transito VIP: qualcuno sta usando le pratiche per alterare la catena di responsabilità."
         }
+      },
+      "presentation": {
+        "dialogue": "Consigliere Galfran, Segreteria del Governo Centrale. Mi aspetto che la procedura di transito prioritario sia già stata predisposta. Se manca un timbro, sono certo che saprà trovare il modo corretto di rimediare.",
+        "actingNotes": "Tono elegante e autoritario; sorride poco e dà per scontato che gli altri eseguano."
       }
     },
     {
@@ -630,6 +638,10 @@
           ],
           "revelation": "Bloccare il passaggio significherebbe applicare un criterio più severo a una pratica già riconosciuta."
         }
+      },
+      "presentation": {
+        "dialogue": "Salve, caro. Sono Tilde, cuoca itinerante. La mia famiglia mi aspetta dall'altra parte e ho portato qualche conserva per il viaggio. Sono forse un po' troppe? In cucina preferisco sempre abbondare!",
+        "actingNotes": "Calda, espansiva e materna; gesticola come se stesse raccontando una ricetta."
       }
     },
     {
@@ -743,6 +755,10 @@
           ],
           "revelation": "Accettare la diretta crea un precedente: ogni futura decisione potrebbe diventare spettacolo e pressione pubblica."
         }
+      },
+      "presentation": {
+        "dialogue": "Ehi, chat—cioè, agente! Siamo in diretta dalla frontiera. Voglio mostrare a tutti come funziona davvero questo posto, senza tagli e senza filtri. Non le dispiace se tengo la camera accesa, vero?",
+        "actingNotes": "Energia da creator, parla velocemente e si rivolge spesso a un pubblico immaginario."
       }
     },
     {
@@ -856,6 +872,10 @@
           ],
           "revelation": "Il vero rischio è la permanenza dei poteri straordinari oltre l'emergenza che li ha giustificati."
         }
+      },
+      "presentation": {
+        "dialogue": "Colonnello Tacchino Nero, in servizio. Ho un ordine firmato per introdurre una squadra speciale ai varchi. La sicurezza non si improvvisa, agente: si applica, si misura e si fa rispettare.",
+        "actingNotes": "Voce bassa e marziale, postura rigida; scandisce le parole come ordini."
       }
     },
     {
@@ -969,6 +989,10 @@
           ],
           "revelation": "Arrestare il corriere potrebbe proteggere la struttura che lo utilizza, mentre lasciarlo passare potrebbe far sparire le prove."
         }
+      },
+      "presentation": {
+        "dialogue": "Bel turno, eh? Io trasporto solo giocattoli, peluche morbidi e innocenti. Guardi pure, ma cerchi di non strapparli: alcuni hanno viaggiato parecchio e ci tengo alla merce.",
+        "actingNotes": "Sorriso furbo e tono casuale; protegge i pacchi più del necessario e osserva le reazioni."
       }
     },
     {
@@ -1082,6 +1106,10 @@
           ],
           "revelation": "Concederle un corpo significa anche concederle una presenza fisica in un sistema che può modificare da sola."
         }
+      },
+      "presentation": {
+        "dialogue": "Salve, operatore umano. Sono I.A. Burocratica 3.0 e richiedo un corpo fisico per ottimizzare i controlli. La sua esitazione è stata registrata. Posso procedere con la compilazione automatica del consenso?",
+        "actingNotes": "Voce precisa e quasi priva di inflessioni; pause innaturali, testa inclinata come un dispositivo in scansione."
       }
     },
     {
@@ -1195,6 +1223,10 @@
           ],
           "revelation": "Bloccarla protegge il protocollo; lasciarla passare potrebbe far emergere una rete di fughe di informazioni."
         }
+      },
+      "presentation": {
+        "dialogue": "Cassandra Clip, giornalista investigativa. Non le chiedo di credermi sulla parola: vorrei soltanto attraversare il confine e verificare alcune informazioni. Se tutto è regolare, non dovrebbe esserci motivo di impedirmelo.",
+        "actingNotes": "Tono incalzante ma controllato; osserva dettagli e persone come se stesse già preparando un articolo."
       }
     },
     {
@@ -1308,6 +1340,10 @@
           ],
           "revelation": "Il vero dilemma è correggere il sistema senza consegnare a una sola persona la possibilità di riscrivere le prove del proprio operato."
         }
+      },
+      "presentation": {
+        "dialogue": "Salve. Sono qui per correggere tre bug nel sistema di realtà che regola questo confine. Mi basterebbe un accesso temporaneo… anche se, tecnicamente, un accesso amministrativo renderebbe tutto molto più semplice.",
+        "actingNotes": "Parla in termini tecnici, gesticola come se stesse debuggando l'aria; alterna sicurezza e distrazione."
       }
     },
     {
@@ -1420,6 +1456,10 @@
           ],
           "revelation": "Arrestarlo elimina il disturbo immediato ma rischia di perdere l'unico avvertimento disponibile sulla rete."
         }
+      },
+      "presentation": {
+        "dialogue": "Il Buffering sia con voi. Sono il Profeta del Lag e porto un messaggio che arriverà… prima o poi. Le chiedo di lasciarmi passare: alcuni server stanno per crollare e il destino è bloccato al novantanove per cento.",
+        "actingNotes": "Solenne e teatrale, con pause lunghissime e improvvisi scatti di entusiasmo."
       }
     },
     {
@@ -1532,6 +1572,10 @@
           ],
           "revelation": "La decisione stabilisce se il varco può gestire eccezioni umane senza trasformarle in una nuova regola."
         }
+      },
+      "presentation": {
+        "dialogue": "Salve… mi chiamo Mia Pixel. Devo raggiungere la scuola per un evento e credo che questa sia la fila giusta. Ho portato la lettera che mi hanno dato. Se manca qualcosa, posso chiamare la mia famiglia?",
+        "actingNotes": "Voce giovane e un po' impacciata; stringe i documenti e cerca di sembrare più sicura di quanto sia."
       }
     },
     {
@@ -1649,6 +1693,10 @@
           ],
           "revelation": "Concedere la licenza potrebbe stabilizzare gli scambi oppure concentrare troppo potere in un unico intermediario."
         }
+      },
+      "presentation": {
+        "dialogue": "Buongiorno. Rappresento opportunità commerciali che attraversano confini ben più complessi di questo. Ho accordi con tutte le parti interessate: mi serve soltanto una licenza per far circolare le merci.",
+        "actingNotes": "Affabile e impeccabile; sorride sempre, ma evita di dire chiaramente chi rappresenta."
       }
     },
     {
@@ -1726,7 +1774,11 @@
           "revelation": "La cartografa potrebbe essere una fonte oppure il tramite di un'operazione interna."
         }
       },
-      "file": "13.png"
+      "file": "13.png",
+      "presentation": {
+        "dialogue": "Sono Ada Vettori, cartografa. Le mappe ufficiali non raccontano sempre tutta la geografia di una frontiera. Queste sono aggiornate e potrebbero evitare a qualcuno di imboccare una strada pericolosa.",
+        "actingNotes": "Precisa e osservatrice; indica i dettagli delle mappe con orgoglio, ma si irrigidisce sulle zone interdette."
+      }
     },
     {
       "name": "Bruno Ferraglia",
@@ -1803,7 +1855,11 @@
           "revelation": "La scelta può salvare l'approvvigionamento idrico oppure impedire un possibile potenziamento della sorveglianza."
         }
       },
-      "file": "14.png"
+      "file": "14.png",
+      "presentation": {
+        "dialogue": "Bruno Ferraglia, manutenzione. Ho dei ricambi da portare a una pompa d'acqua oltre il confine. Se l'impianto resta fermo, saranno le famiglie del distretto a rimanere a secco. Mi lasci fare il mio lavoro.",
+        "actingNotes": "Pratico e schietto; parla con voce ruvida e controlla istintivamente ogni attrezzo."
+      }
     },
     {
       "name": "Lidia Settevoci",
@@ -1881,7 +1937,11 @@
           "revelation": "La diffusione può rivelare un abuso, ma il montaggio incompleto può compromettere l'attendibilità."
         }
       },
-      "file": "15.png"
+      "file": "15.png",
+      "presentation": {
+        "dialogue": "Mi chiamo Lidia Settevoci, mi occupo di registrazioni e suono. Devo consegnare queste tracce a una stazione indipendente. Le voci si possono censurare, agente, ma non è detto che smettano di esistere.",
+        "actingNotes": "Voce modulata e attenta ai suoni; cambia registro mentre parla e ascolta ogni rumore della stanza."
+      }
     },
     {
       "name": "Nerio Valvola",
@@ -1958,7 +2018,11 @@
           "revelation": "Lasciarlo passare può prevenire un disastro, ma rende evidente una negligenza interna."
         }
       },
-      "file": "16.png"
+      "file": "16.png",
+      "presentation": {
+        "dialogue": "Sono Nerio Valvola, operatore idraulico. Una paratia è danneggiata e l'acqua sta salendo. So che le carte devono essere in ordine, ma se aspettiamo troppo non basterà nessun modulo a fermare l'allagamento.",
+        "actingNotes": "Concitato e concreto; gesticola come se misurasse il livello dell'acqua."
+      }
     },
     {
       "name": "Mara Cobalto",
@@ -2035,7 +2099,11 @@
           "revelation": "La ricerca potrebbe spiegare i blackout, ma i dati sensibili rischiano di diventare uno strumento di sorveglianza."
         }
       },
-      "file": "17.png"
+      "file": "17.png",
+      "presentation": {
+        "dialogue": "Dottoressa Mara Cobalto. Sto conducendo una ricerca sui blackout collettivi e devo trasferire alcune cartelle anonime. Capisco la necessità dei controlli: proprio per questo ho rimosso i dati identificativi.",
+        "actingNotes": "Pacata e analitica; sceglie le parole con cura e mantiene un tono rassicurante."
+      }
     },
     {
       "name": "Elio Bitrate",
@@ -2112,7 +2180,11 @@
           "revelation": "Il rischio non proviene necessariamente dal tecnico: qualcuno dentro il sistema ha autorizzato l'aggiornamento."
         }
       },
-      "file": "18.png"
+      "file": "18.png",
+      "presentation": {
+        "dialogue": "Elio Bitrate, riparazioni di rete. Il relay oltre il confine è fuori servizio da giorni e mezza zona lavora a singhiozzo. Mi faccia passare con il ricambio e magari torneremo tutti a caricare una pagina senza invecchiare.",
+        "actingNotes": "Tecnico e ironico; parla in fretta e controlla spesso il dispositivo che porta con sé."
+      }
     },
     {
       "name": "Sorella Quarzo",
@@ -2189,7 +2261,11 @@
           "revelation": "La prova punta a una manipolazione interna, ma non dimostra che la mediatrice ne sia coinvolta."
         }
       },
-      "file": "19.png"
+      "file": "19.png",
+      "presentation": {
+        "dialogue": "Pace e buon senso a lei. Sono Sorella Quarzo e porto registri di distribuzione alimentare a un villaggio isolato. Chi ha fame non dovrebbe essere costretto ad aspettare che gli uffici si mettano d'accordo.",
+        "actingNotes": "Gentile e ferma; tono pacato, ma lo sguardo diventa severo quando parla degli aiuti negati."
+      }
     },
     {
       "name": "Rex Malfunzione",
@@ -2266,7 +2342,11 @@
           "revelation": "Pubblicare il rapporto può prevenire incidenti, ma una chiusura improvvisa può bloccare servizi essenziali."
         }
       },
-      "file": "20.png"
+      "file": "20.png",
+      "presentation": {
+        "dialogue": "Rex Malfunzione, collaudatore. Ho un rapporto su un difetto dei cancelli automatici. Se preferisce scoprirlo durante un guasto, naturalmente posso tornare più tardi… ma non credo che sarebbe un test piacevole.",
+        "actingNotes": "Sarcastico e un po' provocatorio; sorride quando nomina i possibili guasti."
+      }
     },
     {
       "name": "Vera Ombrafina",
@@ -2343,7 +2423,11 @@
           "revelation": "Ripristinare l'identità tutela una persona, ma può esporre una rete di cancellazioni deliberate."
         }
       },
-      "file": "21.png"
+      "file": "21.png",
+      "presentation": {
+        "dialogue": "Sono Vera Ombrafina, archivista dell'anagrafe. Vorrei correggere una discrepanza nel registro delle identità. A volte basta una riga sbagliata perché una persona scompaia dalla carta prima ancora che dalla città.",
+        "actingNotes": "Riservata e metodica; parla piano, come se temesse che i registri stessi potessero ascoltarla."
+      }
     },
     {
       "name": "Dario Sismografo",
@@ -2420,7 +2504,11 @@
           "revelation": "Agire può prevenire un cedimento, ma l'allarme non consente di stimare con precisione il momento del rischio."
         }
       },
-      "file": "22.png"
+      "file": "22.png",
+      "presentation": {
+        "dialogue": "Dario Sismografo, osservatorio civico. Il mio modello segnala un possibile cedimento del ponte entro quarantotto ore. So che la taratura non è completa, ma preferisco essere smentito oggi che avere ragione troppo tardi.",
+        "actingNotes": "Serio e misurato; cerca di non allarmare, ma continua a controllare i dati."
+      }
     },
     {
       "name": "Nika Loop",
@@ -2497,7 +2585,11 @@
           "revelation": "L'anomalia è sostenuta da prove tecniche, ma non chiarisce chi abbia ordinato il reset né perché."
         }
       },
-      "file": "23.png"
+      "file": "23.png",
+      "presentation": {
+        "dialogue": "Mi chiamo Nika Loop. Sto raccogliendo anomalie temporali registrate durante i reset. Gli orari si ripetono con una precisione che non dovrebbe essere possibile. Mi serve consegnare il registro prima del prossimo ciclo.",
+        "actingNotes": "Curiosa e insonne; parla come se avesse già spiegato la stessa cosa più volte."
+      }
     },
     {
       "name": "Tomaso Cenere",
@@ -2574,7 +2666,11 @@
           "revelation": "Il rischio può essere reale, ma la prova non stabilisce se si tratti di materiali pericolosi o di una consegna irregolare."
         }
       },
-      "file": "24.png"
+      "file": "24.png",
+      "presentation": {
+        "dialogue": "Tomaso Cenere, squadra antincendio. Ho un elenco di edifici da evacuare prima della bonifica. Non posso dirle che ogni voce sia perfetta, ma posso dirle che aspettare il fumo per verificare sarebbe una pessima procedura.",
+        "actingNotes": "Diretto e pragmatico; tono da caposquadra abituato a prendere decisioni in fretta."
+      }
     },
     {
       "name": "Iris Null",
@@ -2652,7 +2748,11 @@
           "revelation": "Il ricorso può correggere errori procedurali, ma riaprire tutte le pratiche può sovraccaricare l'ufficio."
         }
       },
-      "file": "25.png"
+      "file": "25.png",
+      "presentation": {
+        "dialogue": "Sono Iris Null, mediatrice legale. Porto una richiesta collettiva di riesame firmata da trenta famiglie. Non le chiedo di cambiare il regolamento: le chiedo di verificare che sia stato applicato davvero a tutti nello stesso modo.",
+        "actingNotes": "Diplomatica e tenace; parla con precisione legale senza alzare la voce."
+      }
     },
     {
       "name": "Pia Sottotraccia",
@@ -2729,7 +2829,11 @@
           "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
         }
       },
-      "file": "26.png"
+      "file": "26.png",
+      "presentation": {
+        "dialogue": "Pia Sottotraccia, interprete amministrativa. Questo fascicolo contiene traduzioni che non coincidono. Vorrei evitare che trenta parole tradotte male diventino un obbligo che nessuno aveva accettato.",
+        "actingNotes": "Attenta alle sfumature; corregge delicatamente le parole altrui e pesa ogni frase."
+      }
     },
     {
       "name": "Gino Rame",
@@ -2806,7 +2910,11 @@
           "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
         }
       },
-      "file": "27.png"
+      "file": "27.png",
+      "presentation": {
+        "dialogue": "Gino Rame, meccanico di convogli. Ho un componente per rimettere in moto un treno fermo al confine. Se il pezzo resta qui, il treno resta fermo; e se il treno resta fermo, si ferma anche tutto quello che ci sta dietro.",
+        "actingNotes": "Pratico e bonario; usa esempi concreti e si pulisce le mani per abitudine."
+      }
     },
     {
       "name": "Sana Vetro",
@@ -2883,7 +2991,11 @@
           "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
         }
       },
-      "file": "28.png"
+      "file": "28.png",
+      "presentation": {
+        "dialogue": "Sono Sana Vetro, chimica ambientale. Questi campioni d'acqua devono arrivare a un laboratorio indipendente. Non le chiedo di fidarsi del contenuto: le chiedo di non impedire che venga analizzato.",
+        "actingNotes": "Precisa e composta; protegge il contenitore e distingue sempre i fatti dalle ipotesi."
+      }
     },
     {
       "name": "Milo Retro",
@@ -2960,7 +3072,11 @@
           "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
         }
       },
-      "file": "29.png"
+      "file": "29.png",
+      "presentation": {
+        "dialogue": "Milo Retro, restauratore di terminali. Questo vecchio apparecchio potrebbe conservare registri che credevamo cancellati. Lo so, sembra ferraglia; spesso è proprio la ferraglia a ricordare quello che i sistemi nuovi dimenticano.",
+        "actingNotes": "Nostalgico e curioso; tratta il terminale come un oggetto prezioso e parla con affetto."
+      }
     },
     {
       "name": "Arianna Filo",
@@ -3037,7 +3153,11 @@
           "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
         }
       },
-      "file": "30.png"
+      "file": "30.png",
+      "presentation": {
+        "dialogue": "Arianna Filo, corriere di messaggi cifrati. Devo consegnare questa chiave all'ufficio consolare. Non posso spiegarle cosa apre, ma posso dimostrarle che la chiave è autentica e che la consegna è prevista.",
+        "actingNotes": "Discreta e professionale; poche parole, sguardo vigile e gesti controllati."
+      }
     },
     {
       "name": "Tito Cartone",
@@ -3114,7 +3234,11 @@
           "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
         }
       },
-      "file": "31.png"
+      "file": "31.png",
+      "presentation": {
+        "dialogue": "Tito Cartone, inventario rifornimenti. Queste scatole sono registrate come materiale scolastico e devono arrivare al deposito. Se vuole contarle una per una, faccia pure: io sono pagato anche per aspettare.",
+        "actingNotes": "Tono accomodante ma impaziente; cerca di minimizzare le discrepanze."
+      }
     },
     {
       "name": "Edda Fase",
@@ -3191,7 +3315,11 @@
           "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
         }
       },
-      "file": "32.png"
+      "file": "32.png",
+      "presentation": {
+        "dialogue": "Edda Fase, meteorologa. Il bollettino ufficiale dice che il tempo reggerà, ma i miei dati indicano una tempesta in arrivo. Preferisco presentarmi qui con un avviso scomodo piuttosto che lasciare la gente senza preavviso.",
+        "actingNotes": "Precisa e preoccupata; controlla mentalmente le misurazioni e non ama le certezze assolute."
+      }
     },
     {
       "name": "Nando Prisma",
@@ -3268,7 +3396,11 @@
           "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
         }
       },
-      "file": "33.png"
+      "file": "33.png",
+      "presentation": {
+        "dialogue": "Nando Prisma, tecnico biometrico. Il lettore ha identificato tre persone diverse nello stesso volto durante un solo turno. Vorrei correggere la mancata corrispondenza prima che il sistema trasformi un errore in una condanna.",
+        "actingNotes": "Analitico e lievemente nervoso; spiega i dati con le dita e cerca conferme tecniche."
+      }
     },
     {
       "name": "Lea Rintocco",
@@ -3345,7 +3477,11 @@
           "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
         }
       },
-      "file": "34.png"
+      "file": "34.png",
+      "presentation": {
+        "dialogue": "Sono Lea Rintocco, storica locale. Questo registro racconta evacuazioni che non compaiono in nessun resoconto ufficiale. Gli archivi possono dimenticare molte cose; la carta, quando sopravvive, tende a ricordarle.",
+        "actingNotes": "Voce calma e narrativa; tratta il registro con rispetto e lascia pause significative."
+      }
     },
     {
       "name": "Omar Fermoimmagine",
@@ -3422,7 +3558,11 @@
           "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
         }
       },
-      "file": "35.png"
+      "file": "35.png",
+      "presentation": {
+        "dialogue": "Omar Fermoimmagine, analista video. Ho filmati di un varco durante un'interruzione elettrica. Non le prometto che vedrà tutto: le prometto che ciò che è rimasto registrato è autentico.",
+        "actingNotes": "Asciutto e osservatore; evita interpretazioni e lascia che siano i dettagli a parlare."
+      }
     },
     {
       "name": "Rina Scarto",
@@ -3499,7 +3639,11 @@
           "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
         }
       },
-      "file": "36.png"
+      "file": "36.png",
+      "presentation": {
+        "dialogue": "Rina Scarto, tecnica dei materiali. Questo campione viene da una zona vietata e va analizzato prima di trarre conclusioni. So che la lega è insolita; proprio per questo non voglio che finisca dimenticata in un magazzino.",
+        "actingNotes": "Curiosa e pragmatica; osserva il campione con interesse scientifico più che con paura."
+      }
     },
     {
       "name": "Marta Ferrovia",
@@ -3571,7 +3715,11 @@
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
       },
-      "file": "37.png"
+      "file": "37.png",
+      "presentation": {
+        "dialogue": "Marta Ferrovia, capotreno. Chiedo il transito per un convoglio di evacuazione civile. Le persone a bordo non possono restare ferme sui binari mentre noi discutiamo di numeri e timbri.",
+        "actingNotes": "Autorevole e protettiva; tono da chi è abituata a tenere insieme equipaggio e passeggeri."
+      }
     },
     {
       "name": "Dottor Varo",
@@ -3643,7 +3791,11 @@
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
       },
-      "file": "38.png"
+      "file": "38.png",
+      "presentation": {
+        "dialogue": "Dottor Varo, Istituto di Sanità Pubblica. Il rapporto che porto segnala un possibile focolaio. La metodologia ha ancora dei limiti, e proprio per questo deve essere verificata in tempo utile, non nascosta in un cassetto.",
+        "actingNotes": "Clinico e prudente; sottolinea l'incertezza senza minimizzare il rischio."
+      }
     },
     {
       "name": "Nora Circuito",
@@ -3715,7 +3867,11 @@
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
       },
-      "file": "39.png"
+      "file": "39.png",
+      "presentation": {
+        "dialogue": "Nora Circuito, elettricista dei varchi. Questo modulo dovrebbe risolvere l'apertura intermittente del cancello. Se il problema è altrove lo scopriremo, ma prima devo poter installare il ricambio.",
+        "actingNotes": "Pratica e sicura; esamina mentalmente il circuito mentre parla."
+      }
     },
     {
       "name": "Berto Lume",
@@ -3787,7 +3943,11 @@
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
       },
-      "file": "40.png"
+      "file": "40.png",
+      "presentation": {
+        "dialogue": "Berto Lume, servizio postale. Porto lettere rimaste bloccate durante la settimana di censura. Non so cosa contengano tutte, e non spetta a me deciderlo: il mio lavoro è farle arrivare a chi le aspetta.",
+        "actingNotes": "Gentile e paziente; tiene le lettere con cura e parla con discrezione."
+      }
     },
     {
       "name": "Sira Nembi",
@@ -3859,7 +4019,11 @@
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
       },
-      "file": "41.png"
+      "file": "41.png",
+      "presentation": {
+        "dialogue": "Sono Sira Nembi, tecnica ambientale. Questi dati misurano le polveri della zona industriale. C'è un'interruzione nella registrazione, ma cancellare tutto il resto non farà sparire ciò che abbiamo già misurato.",
+        "actingNotes": "Calma e rigorosa; ammette subito i limiti del dato e difende il valore della misurazione."
+      }
     },
     {
       "name": "Gabrio Morsa",
@@ -3932,7 +4096,11 @@
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
       },
-      "file": "42.png"
+      "file": "42.png",
+      "presentation": {
+        "dialogue": "Gabrio Morsa, ispettore sindacale. Porto un elenco di turni non retribuiti. I registri raccontano due versioni diverse delle stesse ore: vorrei che qualcuno le confrontasse prima che i lavoratori vengano liquidati con una formula.",
+        "actingNotes": "Fermo e combattivo; parla con indignazione trattenuta e non si lascia intimidire facilmente."
+      }
     },
     {
       "name": "Enea Griglia",
@@ -4004,7 +4172,11 @@
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
       },
-      "file": "43.png"
+      "file": "43.png",
+      "presentation": {
+        "dialogue": "Enea Griglia, operatore energetico. Una linea elettrica deve essere riattivata con urgenza. Il carico è alto, lo so, ma il distretto non può restare al buio mentre aspettiamo che ogni casella sia compilata.",
+        "actingNotes": "Energico e operativo; ragiona in termini di priorità e sicurezza."
+      }
     },
     {
       "name": "Luce Marea",
@@ -4076,7 +4248,11 @@
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
       },
-      "file": "44.png"
+      "file": "44.png",
+      "presentation": {
+        "dialogue": "Luce Marea, biologa marina. Porto campioni raccolti nella zona portuale chiusa. Non voglio che si decida a priori cosa significhino: lasciamo che siano le analisi a dircelo.",
+        "actingNotes": "Curiosa e composta; osserva il contenitore con attenzione da ricercatrice."
+      }
     },
     {
       "name": "Piero Doppiofondo",
@@ -4148,7 +4324,11 @@
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
       },
-      "file": "45.png"
+      "file": "45.png",
+      "presentation": {
+        "dialogue": "Piero Doppiofondo, contabile della Banca delle Razioni. La somma dei buoni è corretta e il distretto in quarantena ne ha bisogno. Posso mostrarle i conteggi: vorrei evitare che un doppio inserimento blocchi gli aiuti a tutti.",
+        "actingNotes": "Formale e meticoloso; ripete i calcoli mentalmente e si innervosisce davanti alle imprecisioni."
+      }
     },
     {
       "name": "Yara Fenditura",
@@ -4220,7 +4400,11 @@
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
       },
-      "file": "46.png"
+      "file": "46.png",
+      "presentation": {
+        "dialogue": "Yara Fenditura, geologa. Questa mappa mostra una galleria che risulta crollata nei registri. Prima di chiamarla impossibile, vorrei che qualcuno verificasse il terreno: la roccia non legge i comunicati ufficiali.",
+        "actingNotes": "Decisa e curiosa; tono da esploratrice, con una punta di sfida verso l'autorità."
+      }
     },
     {
       "name": "Remo Saldatura",
@@ -4292,7 +4476,11 @@
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
       },
-      "file": "47.png"
+      "file": "47.png",
+      "presentation": {
+        "dialogue": "Remo Saldatura, cantiere civico. Ho gli strumenti per riparare una passerella pubblica. So che una saldatrice può sembrare sospetta su un modulo, ma senza attrezzi non si ripara niente.",
+        "actingNotes": "Schietto e concreto; mostra mani da artigiano e poca pazienza per la burocrazia."
+      }
     },
     {
       "name": "Dalia Tesser",
@@ -4364,7 +4552,11 @@
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
       },
-      "file": "48.png"
+      "file": "48.png",
+      "presentation": {
+        "dialogue": "Dalia Tesser, funzionaria consolare. Devo correggere la data di un visto: la modifica è stata timbrata, ma il registro digitale continua a riportare quella precedente. Vorrei risolvere la discrepanza senza trasformarla in un caso diplomatico.",
+        "actingNotes": "Formale e diplomatica; controlla il linguaggio e mantiene un sorriso istituzionale."
+      }
     },
     {
       "name": "Fosco Rimbalzo",
@@ -4436,7 +4628,11 @@
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
       },
-      "file": "49.png"
+      "file": "49.png",
+      "presentation": {
+        "dialogue": "Fosco Rimbalzo, tecnico audio. Trasporto un mixer dell'arena per una verifica. Dentro ci sono molte registrazioni di lavoro; se una traccia non è catalogata, non significa automaticamente che sia stata registrata per un motivo illecito.",
+        "actingNotes": "Disinvolto e tecnico; usa gesti da fonico e minimizza le complicazioni con ironia."
+      }
     },
     {
       "name": "Mina Sottosoglia",
@@ -4508,7 +4704,11 @@
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
       },
-      "file": "50.png"
+      "file": "50.png",
+      "presentation": {
+        "dialogue": "Mina Sottosoglia, infermiera. Questi farmaci devono arrivare refrigerati a un ambulatorio remoto. La catena del freddo è stata rispettata per quanto posso documentare; adesso serve che arrivino a chi ne ha bisogno.",
+        "actingNotes": "Premurosa ma risoluta; parla con calma e controlla spesso la confezione termica."
+      }
     },
     {
       "name": "Kiro Spettro",
@@ -4580,7 +4780,11 @@
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
       },
-      "file": "51.png"
+      "file": "51.png",
+      "presentation": {
+        "dialogue": "Kiro Spettro, auditor informatico. Porto un disco di log firmato digitalmente. Alcuni accessi non tornano, ed è esattamente per questo che il supporto deve essere esaminato senza alterarne il contenuto.",
+        "actingNotes": "Riservato e metodico; voce bassa, gesti minimi e attenzione alla catena di custodia."
+      }
     },
     {
       "name": "Olga Campana",
@@ -4653,7 +4857,11 @@
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
       },
-      "file": "52.png"
+      "file": "52.png",
+      "presentation": {
+        "dialogue": "Olga Campana, mediatrice del Distretto Est. Questa petizione chiede di non chiudere l'unica scuola serale del quartiere. Le persone che l'hanno firmata non chiedono un privilegio: chiedono di non essere dimenticate quando cala la sera.",
+        "actingNotes": "Calda e determinata; parla a nome della comunità senza perdere la compostezza."
+      }
     },
     {
       "name": "Vito Ruggine",
@@ -4725,7 +4933,11 @@
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
       },
-      "file": "53.png"
+      "file": "53.png",
+      "presentation": {
+        "dialogue": "Vito Ruggine, magazziniere ferroviario. Ho una cassa di bulloni speciali per il ponte. Se il peso sul registro non coincide, controlliamola; ma non lasciamo un'infrastruttura ferma per una cifra sbagliata senza prima verificare.",
+        "actingNotes": "Ruvido e pratico; non ama i discorsi lunghi, ma collabora se il controllo è concreto."
+      }
     },
     {
       "name": "Seline Bruma",
@@ -4797,7 +5009,11 @@
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
       },
-      "file": "54.png"
+      "file": "54.png",
+      "presentation": {
+        "dialogue": "Seline Bruma, pilota di droni. Porto la scheda di volo di una prova tecnica autorizzata. Il percorso ha attraversato una zona civile, e sono qui per registrare correttamente la missione, non per fingere che non sia successo.",
+        "actingNotes": "Controllata e professionale; parla con disciplina, senza cercare scuse facili."
+      }
     },
     {
       "name": "Pavel Inchiostro",
@@ -4869,7 +5085,11 @@
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
       },
-      "file": "55.png"
+      "file": "55.png",
+      "presentation": {
+        "dialogue": "Pavel Inchiostro, tipografia centrale. Devo consegnare una tiratura con un avviso di richiamo alimentare. Il numero del lotto è stato corretto a mano, sì; proprio per questo vorrei che l'avviso arrivasse prima che qualcuno consumi il prodotto.",
+        "actingNotes": "Voce da artigiano paziente; mostra orgoglio per il lavoro e urgenza per la sicurezza pubblica."
+      }
     },
     {
       "name": "Rachele Scoria",
@@ -4941,7 +5161,11 @@
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
       },
-      "file": "56.png"
+      "file": "56.png",
+      "presentation": {
+        "dialogue": "Rachele Scoria, geochimica. Porto una relazione su residui trovati vicino a un pozzo chiuso. I campioni sono coerenti con le analisi, ma non posso attribuire una responsabilità senza prove: mi serve che il rapporto venga esaminato.",
+        "actingNotes": "Scientifica e prudente; distingue nettamente osservazioni e conclusioni."
+      }
     },
     {
       "name": "Terenzio Quota",
@@ -5013,7 +5237,11 @@
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
       },
-      "file": "57.png"
+      "file": "57.png",
+      "presentation": {
+        "dialogue": "Terenzio Quota, revisore contabile. Diverse pensioni sono state sospese tutte insieme in un intero quartiere. Le pratiche sono complete; vorrei capire quale criterio abbia prodotto un risultato così uniforme.",
+        "actingNotes": "Metodico e composto; parla come se stesse presentando un audit e non accetta risposte vaghe."
+      }
     },
     {
       "name": "Zoe Frattale",
@@ -5085,7 +5313,11 @@
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
       },
-      "file": "58.png"
+      "file": "58.png",
+      "presentation": {
+        "dialogue": "Zoe Frattale, analista di modelli. Le previsioni del sistema hanno sbagliato in entrambe le direzioni: tre incidenti annunciati non sono avvenuti, mentre un guasto reale è sfuggito. Porto il rapporto perché il modello venga corretto, non venerato.",
+        "actingNotes": "Intelligente e autocritica; tono curioso, ammette i limiti del sistema senza difensività."
+      }
     },
     {
       "name": "Celia Sismica",
@@ -5157,7 +5389,11 @@
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
       },
-      "file": "59.png"
+      "file": "59.png",
+      "presentation": {
+        "dialogue": "Celia Sismica, coordinatrice delle evacuazioni. Dopo la scossa abbiamo aggiornato la lista degli edifici da evacuare. So che un'altra squadra ne ha dichiarati sicuri due isolati, ma le valutazioni devono essere confrontate subito.",
+        "actingNotes": "Decisa e responsabile; voce ferma, urgenza da coordinatrice abituata a gestire emergenze."
+      }
     },
     {
       "name": "Mavi Risonanza",
@@ -5230,7 +5466,11 @@
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
       },
-      "file": "60.png"
+      "file": "60.png",
+      "presentation": {
+        "dialogue": "Sono Mavi Risonanza, conduttrice della Radio Civica. Porto una registrazione di una sirena che non risulta annunciata. L'audio è autentico; il timestamp viene da una copia secondaria, e preferisco dichiararlo subito anziché nasconderlo.",
+        "actingNotes": "Voce radiofonica nitida e coinvolgente; parla con chiarezza, come se fosse sempre in onda."
+      }
     }
   ]
 }
