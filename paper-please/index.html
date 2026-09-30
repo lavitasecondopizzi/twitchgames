@@ -692,7 +692,7 @@ function defaultState(){
     runId: "run_"+Date.now(),
     season: cfg?.seasons?.startSeason || 1,
     mode: gameMode,
-    seed: (cfg?.settings?.seed || String(Date.now())),
+    seed: (String(cfg?.settings?.seed || "PIZZI") + "-" + Date.now() + "-" + Math.random().toString(36).slice(2)),
     caseCount,
     narrativeStyle,
     currentPos: 0,          // position in order array
