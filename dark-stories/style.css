@@ -117,3 +117,5 @@ form{display:grid;gap:4px}
  .panel{padding:9px}
  #waitingView{padding:9px}
 }
+/* Countdown indizi: sempre leggibile nella fascia inferiore, sotto le webcam. */
+.hint-timer{position:absolute;z-index:20;left:12px;right:12px;bottom:8px;padding:5px 8px 7px;border:2px solid var(--ink);background:var(--paper);box-shadow:2px 2px 0 var(--ink);pointer-events:none}.hint-timer-label{display:block;font-size:9px;font-weight:900;letter-spacing:.05em}.hint-timer-track{height:6px;margin-top:4px;border:1px solid var(--ink);background:var(--paper2);overflow:hidden}.hint-timer-fill{height:100%;width:0;background:var(--red);transition:width .4s linear}.hint-timer.ready .hint-timer-fill{background:var(--green)}.queue-controls{display:flex;gap:4px;margin:4px 0}.queue-controls .btn{min-height:22px;padding:2px 8px}.queue-controls .btn:disabled{opacity:.25}
