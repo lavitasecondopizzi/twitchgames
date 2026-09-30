@@ -31,6 +31,8 @@
     if(s.solved) $('solvedNotice').textContent='MISTERO RISOLTO da '+(s.solvedBy||[]).join(', ')+'. Il Master può rivelare la soluzione e passare al prossimo mistero.';
     $('questionInput').disabled=!!s.solved;
     $('questionForm').querySelector('button').disabled=!!s.solved;
+    $('solutionGuess').disabled=!!s.solved;
+    $('solutionGuessForm').querySelector('button').disabled=!!s.solved;
     if(s.solutionRevealed && s.solution) $('storyText').textContent=s.story+'\n\nSOLUZIONE: '+s.solution;
   }
   function scoreMarkup(scores){
@@ -68,6 +70,12 @@
     // The solution remains master-only until the Master explicitly reveals it.
     if(client) await client.broadcast('game_state',s);
     renderMaster(s);
+  }
+  async function sendSolution(author,answer,source='OSPITE'){
+    const clean=String(answer||'').replace(/\s+/g,' ').trim();
+    if(!clean || clean.length>500)return;
+    if(isMaster){$('solverName').value=author;$('solverAnswer').value=clean;$('masterStatus').textContent='Tentativo di soluzione ricevuto da '+author+'. Verificalo prima di assegnare punti.';return;}
+    if(client) await client.broadcast('game_event',{type:'solution',author:String(author||'Anonimo').slice(0,24),answer:clean,source});
   }
   async function sendQuestion(author,question,source='OSPITE'){
     const clean=String(question||'').replace(/\s+/g,' ').trim();
@@ -139,7 +147,7 @@
         const message=match[3].trim();
         const q=message.match(/^!(?:ds|domanda)\s+(.{3,300})$/i);
         if(q)addQuestion(author,q[1],'TWITCH');
-        const solution=message.match(/^!soluzione\s+(.{3,300})$/i);
+        const solution=message.match(/^!soluzione\s+(.{3,500})$/i);
         if(solution && !state.solved){$('solverName').value=author;$('solverAnswer').value=solution[1];$('masterStatus').textContent='Soluzione proposta in chat da '+author+'. Verificala e approvala.';}
       }
     };
@@ -156,6 +164,11 @@
       client.on('game-state',payload=>{if(payload)render(payload);});
       client.on('game-event',payload=>{
         if(isMaster && payload?.type==='question')addQuestion(payload.author,payload.question,payload.source||'OSPITE');
+        if(isMaster && payload?.type==='solution'){
+          $('solverName').value=payload.author||'Anonimo';
+          $('solverAnswer').value=payload.answer||'';
+          $('masterStatus').textContent='Tentativo di soluzione ricevuto da '+(payload.author||'Anonimo')+'. Verificalo prima di assegnare punti.';
+        }
         if(!isMaster && payload?.type==='solution-revealed'){const s=gameState();s.solution=payload.solution;s.solutionRevealed=true;render(s);}
       });
       client.on('presence',presence=>{
@@ -184,6 +197,7 @@
       }else{
         $('nickname').value=sessionStorage.getItem('tortelloGuestNickname')||params.get('player')||'';
         $('questionForm').addEventListener('submit',e=>{e.preventDefault();const name=$('nickname').value.trim();const question=$('questionInput').value;sessionStorage.setItem('tortelloGuestNickname',name);sendQuestion(name,question,'OSPITE').then(()=>{$('questionInput').value='';}).catch(()=>status('Impossibile inviare la domanda.',true));});
+        $('solutionGuessForm').addEventListener('submit',e=>{e.preventDefault();const name=$('nickname').value.trim();const answer=$('solutionGuess').value;sendSolution(name,answer,'OSPITE').then(()=>{$('solutionGuess').value='';status('Tentativo inviato al Master.');}).catch(()=>status('Impossibile inviare il tentativo.',true));});
       }
     }catch(error){console.error(error);status(error.message||'Errore di connessione.',true);}
   }
