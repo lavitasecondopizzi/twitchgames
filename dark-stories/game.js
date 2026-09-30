@@ -9,7 +9,7 @@
   const $ = id => document.getElementById(id);
   const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   let client, cases = [], currentIndex = 0, roundNumber = 1, twitchSocket = null;
-  let state = {started:false,solved:false,solutionRevealed:false,selectedStoryId:null,difficultyVotes:{},difficulty:'facile',revealedHints:[],history:[],queue:[],scores:{},solvedBy:[],startedAt:null,lastHintAt:null};
+  let state = {started:false,solved:false,solutionRevealed:false,selectedStoryId:null,difficultyVotes:{},difficulty:'facile',revealedHints:[],history:[],queue:[],scores:{},roundPoints:{},solvedBy:[],startedAt:null,lastHintAt:null};
   const HINT_DELAY_MS = 10 * 60 * 1000;
   let hintTimerInterval = null;
   const status = (message,error=false) => { if($('connectionStatus')){$('connectionStatus').textContent=message;$('connectionStatus').style.color=error?'#b71919':'';} };
@@ -34,7 +34,7 @@
       title:mystery?.title||'',story:mystery?.story||'',
       revealedHints:[...(state.revealedHints||[])],startedAt:state.startedAt||null,lastHintAt:state.lastHintAt||null,history:[...(state.history||[])],
       queue:(state.queue||[]).map(q=>({id:q.id,author:q.author,question:q.question,source:q.source,answer:q.answer||null})),
-      scores:{...(state.scores||{})},solvedBy:[...(state.solvedBy||[])]
+      scores:{...(state.scores||{})},roundPoints:{...(state.roundPoints||{})},solvedBy:[...(state.solvedBy||[])]
     };
     if(state.solutionRevealed&&mystery)snapshot.solution=mystery.solution;
     return snapshot;
@@ -115,7 +115,7 @@
     if(!s)return;
     currentIndex=Number.isInteger(s.index)?s.index:currentIndex;
     roundNumber=Number.isInteger(s.roundNumber)?s.roundNumber:roundNumber;
-    state={...state,...s,difficultyVotes:s.difficultyVotes||state.difficultyVotes||{},queue:s.queue||[],scores:s.scores||{},history:s.history||[],revealedHints:s.revealedHints||[],solvedBy:s.solvedBy||[]};
+    state={...state,...s,difficultyVotes:s.difficultyVotes||state.difficultyVotes||{},queue:s.queue||[],scores:s.scores||{},roundPoints:s.roundPoints||state.roundPoints||{},history:s.history||[],revealedHints:s.revealedHints||[],solvedBy:s.solvedBy||[]};
     if(isMaster)renderMaster({...gameState(),...s});else renderPlayer(s);
   }
   async function submitDifficulty(author,difficulty,source='OSPITE'){
@@ -158,7 +158,9 @@
     if(!s.started||s.solutionRevealed)return 0;
     const hints=(s.revealedHints||[]).length;
     if(hints>=3)return 0;
-    const anchor=hints>0?(s.lastHintAt||Date.now()):(s.startedAt||Date.now());
+    const anchor=hints>0?s.lastHintAt:s.startedAt;
+    // Se una vecchia sessione non contiene timestamp, sblocca invece di bloccare il timer all'infinito.
+    if(!Number.isFinite(anchor)||anchor<=0)return 0;
     return Math.max(0,HINT_DELAY_MS-(Date.now()-anchor));
   }
   function updateHintTimer(s=state){
@@ -191,7 +193,7 @@
   async function startRound(){
     const mystery=currentCase();if(!mystery){$('masterStatus').textContent='Seleziona prima una storia.';return;}
     state.difficulty=mystery.difficulty;state.started=true;state.solved=false;state.solutionRevealed=false;
-    state.revealedHints=[];state.history=[];state.queue=[];state.solvedBy=[];state.startedAt=Date.now();state.lastHintAt=null;
+    state.revealedHints=[];state.history=[];state.queue=[];state.solvedBy=[];state.roundPoints={};state.startedAt=Date.now();state.lastHintAt=null;
     await publish();
   }
   async function revealHint(){
@@ -199,14 +201,34 @@
     if(state.revealedHints.length<list.length&&hintTimeRemaining(state)===0){state.revealedHints.push(list[state.revealedHints.length]);state.lastHintAt=Date.now();await publish();}
     else updateHintTimer(state);
   }
+  function prepareAnswerParts(){
+    const raw=$('solverAnswer').value.trim();
+    if(!raw){$('masterStatus').textContent='Inserisci prima la risposta da valutare.';return;}
+    const parts=raw.split(/\\n+|(?<=[.!?;])\\s+/u).map(part=>part.trim()).filter(Boolean);
+    const unique=[...new Set(parts)];
+    $('hypothesisParts').innerHTML=unique.map((part,index)=>'<label class="hypothesis-part"><input type="checkbox" data-part-index="'+index+'"><span><b>PARTE '+(index+1)+'</b> '+esc(part)+'</span></label>').join('');
+    $('hypothesisParts').dataset.parts=JSON.stringify(unique);
+    $('masterStatus').textContent='Seleziona ogni affermazione corretta. Puoi modificare il testo sopra e analizzarlo di nuovo.';
+  }
   async function approveSolution(name,answer){
     const clean=String(name||'').trim().slice(0,24);if(!clean)return;
+    const parts=JSON.parse($('hypothesisParts').dataset.parts||'[]');
+    if(!parts.length){$('masterStatus').textContent='Clicca prima su PREPARA PARTI DA VALUTARE.';return;}
+    const accepted=[...$('hypothesisParts').querySelectorAll('[data-part-index]:checked')].map(input=>parts[Number(input.dataset.partIndex)]).filter(Boolean);
+    if(!accepted.length){$('masterStatus').textContent='Seleziona almeno una parte corretta prima di confermare.';return;}
     const key=clean.toLowerCase();
-    if(state.solvedBy.some(n=>n.toLowerCase()===key)){$('masterStatus').textContent='Questo giocatore ha già ricevuto punti per il mistero.';return;}
-    state.solvedBy.push(clean);state.scores[clean]=(state.scores[clean]||0)+3;
-    state.history.push({author:clean,question:'SOLUZIONE: '+answer,answer:'APPROVATA +3 PUNTI',source:'MASTER'});
-    $('solverName').value='';$('solverAnswer').value='';
-    await publish();$('masterStatus').textContent=clean+' ha risolto il mistero: +3 punti.';
+    if(state.solvedBy.some(n=>n.toLowerCase()===key)){$('masterStatus').textContent='Questo giocatore ha già completato il mistero.';return;}
+    const allCorrect=accepted.length===parts.length;
+    const current=Number(state.roundPoints[key]||0);
+    const target=allCorrect?3:Math.min(2,Math.ceil(3*accepted.length/parts.length));
+    const earned=Math.max(0,Math.min(3-current,target-current));
+    state.roundPoints[key]=current+earned;
+    if(earned>0)state.scores[clean]=(state.scores[clean]||0)+earned;
+    if(allCorrect)state.solvedBy.push(clean);
+    state.history.push({author:clean,question:'RISPOSTA: '+answer,answer:(allCorrect?'SOLUZIONE COMPLETA':'PARTI CORRETTE: '+accepted.join(' / '))+' · +'+earned+' PUNTI',source:'MASTER'});
+    $('solverName').value='';$('solverAnswer').value='';$('hypothesisParts').innerHTML='';$('hypothesisParts').dataset.parts='[]';
+    await publish();
+    $('masterStatus').textContent=allCorrect?clean+' ha completato il mistero: +'+earned+' punti.':clean+': accettate '+accepted.length+'/'+parts.length+' parti, +'+earned+' punti. Può ancora proporre altre parti.';
   }
   async function revealSolution(){
     state.solutionRevealed=true;
@@ -217,7 +239,7 @@
   async function nextRound(){
     if(roundNumber>=cases.length){$('masterStatus').textContent='Hai raggiunto il limite di storie nel catalogo.';return;}
     roundNumber++;state.started=false;state.solved=false;state.solutionRevealed=false;state.startedAt=null;state.lastHintAt=null;
-    state.selectedStoryId=null;state.revealedHints=[];state.history=[];state.queue=[];state.solvedBy=[];
+    state.selectedStoryId=null;state.revealedHints=[];state.history=[];state.queue=[];state.solvedBy=[];state.roundPoints={};
     state.difficulty=winningDifficulty();
     $('masterDifficulty').dataset.touched='';
     await publish();
@@ -283,6 +305,7 @@
         $('connectTwitch').addEventListener('click',connectTwitch);
         $('manualQuestionForm').addEventListener('submit',e=>{e.preventDefault();addQuestion($('manualAuthor').value,$('manualQuestion').value,'TWITCH MANUALE');$('manualQuestion').value='';});
         $('solutionForm').addEventListener('submit',e=>{e.preventDefault();approveSolution($('solverName').value,$('solverAnswer').value);});
+        $('prepareAnswerParts').addEventListener('click',prepareAnswerParts);
         $('rejectSolution').addEventListener('click',()=>{$('masterStatus').textContent='Tentativo non approvato. Attendi altri tentativi o fornisci un indizio.';$('solverAnswer').value='';});
         state.difficulty='facile';renderMaster({...gameState(),roundNumber:1});
       }else{
