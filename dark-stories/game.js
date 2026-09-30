@@ -3,6 +3,9 @@
   const room = (params.get('room') || '').toUpperCase();
   const isMaster = !!document.querySelector('.master-page');
   const role = isMaster ? 'master' : (params.get('role') || 'guest');
+  const lobbyNickname = (params.get('player') || '').trim().replace(/\s+/g,' ').slice(0,24);
+  const guestNickname = (params.get('guest') || '').trim().replace(/\s+/g,' ').slice(0,24);
+  const playerNickname = isMaster ? 'Pizzi' : (lobbyNickname || 'Ospite');
   const $ = id => document.getElementById(id);
   const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   let client, cases = [], currentIndex = 0, roundNumber = 1, twitchSocket = null;
@@ -54,6 +57,8 @@
   }
   function renderPlayer(s){
     $('connection').classList.add('hidden');
+    if($('webcamLabelA'))$('webcamLabelA').textContent='PIZZI';
+    if($('webcamLabelB'))$('webcamLabelB').textContent=playerNickname.toUpperCase();
     $('waitingView').classList.toggle('hidden',!!s.started);
     $('playerView').classList.toggle('hidden',!s.started);
     const totals=voteTotals(s.difficultyVotes||{});
@@ -75,6 +80,8 @@
   }
   function renderMaster(s){
     $('connection').classList.add('hidden');$('masterView').classList.remove('hidden');
+    if($('webcamLabelA'))$('webcamLabelA').textContent='PIZZI';
+    if($('webcamLabelB'))$('webcamLabelB').textContent=(guestNickname||'CHAT / OSPITE').toUpperCase();
     const mystery=currentCase();
     $('masterRound').textContent='MISTERO '+(s.roundNumber||1)+' / '+cases.length;
     $('masterTitle').textContent=s.title||mystery?.title||'Scegli una storia';
@@ -210,7 +217,7 @@
     if(!/^[A-Z0-9]{6}$/.test(room)){status('Codice stanza mancante o non valido. Torna alla lobby e riapri il gioco.',true);return;}
     try{
       cases=await fetch('cases.json').then(r=>{if(!r.ok)throw new Error('Impossibile caricare i misteri.');return r.json();});
-      client=new TortelloSupabaseRoom({room,role:isMaster?'master':role,nickname:isMaster?'Master':(params.get('player')||'Ospite'),game:'dark-stories'});
+      client=new TortelloSupabaseRoom({room,role:isMaster?'master':role,nickname:isMaster?'Master':playerNickname,game:'dark-stories'});
       client.on('connected',()=>status('Connesso alla stanza '+room+'.'));
       client.on('game-state',payload=>{if(payload)render(payload);});
       client.on('game-event',payload=>{
@@ -244,11 +251,13 @@
         $('rejectSolution').addEventListener('click',()=>{$('masterStatus').textContent='Tentativo non approvato. Attendi altri tentativi o fornisci un indizio.';$('solverAnswer').value='';});
         state.difficulty='facile';renderMaster({...gameState(),roundNumber:1});
       }else{
-        const saved=sessionStorage.getItem('tortelloGuestNickname')||params.get('player')||'';
+        const saved=playerNickname;
         $('nickname').value=saved;$('difficultyNickname').value=saved;
-        $('difficultyForm').addEventListener('submit',e=>{e.preventDefault();const name=$('difficultyNickname').value.trim();sessionStorage.setItem('tortelloGuestNickname',name);submitDifficulty(name,$('difficultyChoice').value).catch(()=>status('Impossibile inviare il voto.',true));});
-        $('questionForm').addEventListener('submit',e=>{e.preventDefault();const name=$('nickname').value.trim();sendQuestion(name,$('questionInput').value,'OSPITE').then(()=>$('questionInput').value='').catch(()=>status('Impossibile inviare la domanda.',true));});
-        $('solutionGuessForm').addEventListener('submit',e=>{e.preventDefault();const name=$('nickname').value.trim();sendSolution(name,$('solutionGuess').value,'OSPITE').then(()=>$('solutionGuess').value='').catch(()=>status('Impossibile inviare il tentativo.',true));});
+        $('nickname').readOnly=true;$('difficultyNickname').readOnly=true;
+        $('nickname').title='Nickname preso dalla lobby';$('difficultyNickname').title='Nickname preso dalla lobby';
+        $('difficultyForm').addEventListener('submit',e=>{e.preventDefault();const name=playerNickname;submitDifficulty(name,$('difficultyChoice').value).catch(()=>status('Impossibile inviare il voto.',true));});
+        $('questionForm').addEventListener('submit',e=>{e.preventDefault();const name=playerNickname;sendQuestion(name,$('questionInput').value,'OSPITE').then(()=>$('questionInput').value='').catch(()=>status('Impossibile inviare la domanda.',true));});
+        $('solutionGuessForm').addEventListener('submit',e=>{e.preventDefault();const name=playerNickname;sendSolution(name,$('solutionGuess').value,'OSPITE').then(()=>$('solutionGuess').value='').catch(()=>status('Impossibile inviare il tentativo.',true));});
       }
     }catch(error){console.error(error);status(error.message||'Errore di connessione.',true);}
   }
