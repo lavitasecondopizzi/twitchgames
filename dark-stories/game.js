@@ -61,8 +61,8 @@
     if($('webcamLabelB'))$('webcamLabelB').textContent=playerNickname.toUpperCase();
     $('waitingView').classList.toggle('hidden',!!s.started);
     $('playerView').classList.toggle('hidden',!s.started);
-    const totals=voteTotals(s.difficultyVotes||{});
-    if($('difficultyStatus'))$('difficultyStatus').textContent='Voti ricevuti — Facile: '+totals.facile+' · Medio: '+totals.medio+' · Difficile: '+totals.difficile+'. La scelta finale della storia spetta al Master.';
+    document.querySelectorAll('[data-difficulty]').forEach(button=>button.classList.toggle('selected',button.dataset.difficulty===(s.difficulty||'facile')));
+    if($('difficultyStatus')&&!s.started)$('difficultyStatus').textContent='Difficoltà attuale: '+(difficultyNames[s.difficulty]||'FACILE')+'. Il Master sta scegliendo una storia.';
     if(!s.started)return;
     $('roundLabel').textContent='MISTERO '+(s.roundNumber||s.index+1)+' · '+(difficultyNames[s.difficulty]||'FACILE');
     $('storyTitle').textContent=s.title||'Mistero in preparazione';
@@ -86,12 +86,10 @@
     const mystery=currentCase();
     $('masterRound').textContent='MISTERO '+(s.roundNumber||1)+' / '+cases.length;
     $('masterTitle').textContent=s.title||mystery?.title||'Scegli una storia';
-    $('masterStory').textContent=s.story||mystery?.story||'Seleziona una difficoltà e una storia, poi avvia il mistero.';
+    $('masterStory').textContent=s.story||mystery?.story||'Scegli una storia dall’elenco della difficoltà selezionata.';
     $('masterSolution').textContent=mystery?.solution||'La soluzione comparirà quando selezioni una storia.';
-    const totals=voteTotals(s.difficultyVotes||{});
-    $('difficultySummary').textContent='Facile: '+totals.facile+' · Medio: '+totals.medio+' · Difficile: '+totals.difficile+' voti. Difficoltà suggerita: '+(difficultyNames[winningDifficulty(s.difficultyVotes)]||'FACILE')+'.';
-    if(!$('masterDifficulty').dataset.touched)$('masterDifficulty').value=s.difficulty||winningDifficulty(s.difficultyVotes);
-    renderDifficultyOptions();
+    $('difficultySummary').textContent='Difficoltà scelta: '+(difficultyNames[s.difficulty]||'FACILE')+'. Elenco filtrato automaticamente.';
+    renderStoryList();
     $('startRound').disabled=!!s.started||!s.selectedStoryId;
     
     $('nextRound').disabled=!s.started||(!(s.solvedBy||[]).length&&!s.solutionRevealed)||roundNumber>=cases.length;
@@ -126,7 +124,6 @@
     const name=String(author||'Anonimo').slice(0,24);
     state.difficultyVotes[name.toLowerCase()]={author:name,difficulty,source};
     state.difficulty=winningDifficulty(state.difficultyVotes);
-    if($('masterDifficulty')&&!$('masterDifficulty').dataset.touched)$('masterDifficulty').value=state.difficulty;
     await publish();
   }
   async function sendSolution(author,answer,source='OSPITE'){
