@@ -204,7 +204,7 @@
   function prepareAnswerParts(){
     const raw=$('solverAnswer').value.trim();
     if(!raw){$('masterStatus').textContent='Inserisci prima la risposta da valutare.';return;}
-    const parts=raw.split(/\\n+|(?<=[.!?;])\\s+/u).map(part=>part.trim()).filter(Boolean);
+    const parts=raw.split(/\n+|(?<=[.!?;])\s+/u).map(part=>part.trim()).filter(Boolean);
     const unique=[...new Set(parts)];
     $('hypothesisParts').innerHTML=unique.map((part,index)=>'<label class="hypothesis-part"><input type="checkbox" data-part-index="'+index+'"><span><b>PARTE '+(index+1)+'</b> '+esc(part)+'</span></label>').join('');
     $('hypothesisParts').dataset.parts=JSON.stringify(unique);
@@ -306,7 +306,7 @@
         $('manualQuestionForm').addEventListener('submit',e=>{e.preventDefault();addQuestion($('manualAuthor').value,$('manualQuestion').value,'TWITCH MANUALE');$('manualQuestion').value='';});
         $('solutionForm').addEventListener('submit',e=>{e.preventDefault();approveSolution($('solverName').value,$('solverAnswer').value);});
         $('prepareAnswerParts').addEventListener('click',prepareAnswerParts);
-        $('rejectSolution').addEventListener('click',()=>{$('masterStatus').textContent='Tentativo non approvato. Attendi altri tentativi o fornisci un indizio.';$('solverAnswer').value='';});
+        $('rejectSolution').addEventListener('click',()=>{$('masterStatus').textContent='Valutazione annullata. Nessun punto assegnato.';$('solverName').value='';$('solverAnswer').value='';$('hypothesisParts').innerHTML='';$('hypothesisParts').dataset.parts='[]';});
         state.difficulty='facile';renderMaster({...gameState(),roundNumber:1});
       }else{
         const saved=playerNickname;
