@@ -2640,6 +2640,842 @@
           "revelation": "Il ricorso può correggere errori procedurali, ma riaprire tutte le pratiche può sovraccaricare l'ufficio."
         }
       }
+    },
+    {
+      "name": "Pia Sottotraccia",
+      "origin": "Ufficio dei Permessi",
+      "job": "Interprete amministrativa",
+      "reason": "Chiede di far passare un fascicolo con traduzioni discordanti",
+      "notes": "Due traduzioni ufficiali attribuiscono obblighi diversi allo stesso richiedente.",
+      "tags": [
+        "is_corrupt_official"
+      ],
+      "tagHints": [
+        "Le copie riportano numeri di protocollo differenti.",
+        "Una clausola è stata tradotta dopo la firma."
+      ],
+      "arc": "regime",
+      "effects": {
+        "pass": {
+          "regime": -5,
+          "popolo": 8,
+          "ribelli": 4,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -6,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -7,
+          "ribelli": -4,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -11,
+          "ribelli": -6,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Il fascicolo viene riesaminato e la clausola ambigua sospesa.",
+        "deny": "Il richiedente perde la scadenza per un ricorso.",
+        "arrest": "L'interprete viene interrogata e consegna una terza versione.",
+        "condemn": "Il caso porta alla revisione delle procedure di traduzione."
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Due traduzioni ufficiali attribuiscono obblighi diversi allo stesso richiedente.",
+            "Chiede di far passare un fascicolo con traduzioni discordanti"
+          ],
+          "clues": [
+            "Le copie riportano numeri di protocollo differenti.",
+            "Una clausola è stata tradotta dopo la firma."
+          ],
+          "revelation": "La documentazione è credibile, ma lascia aperto un dubbio decisivo sulla responsabilità e sul rischio."
+        },
+        "l3": {
+          "clues": [
+            "Il registro assegna le due versioni allo stesso operatore.",
+            "La correzione è stata autorizzata da un account condiviso."
+          ],
+          "connections": [
+            "Ufficio dei Permessi",
+            "Archivio traduzioni",
+            "Account condiviso"
+          ],
+          "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
+        }
+      }
+    },
+    {
+      "name": "Gino Rame",
+      "origin": "Cooperativa dei Trasporti",
+      "job": "Meccanico di convogli",
+      "reason": "Trasporta un componente per riparare un treno fermo al confine",
+      "notes": "Il componente è compatibile, ma la consegna non è registrata nel manifesto del convoglio.",
+      "tags": [
+        "is_corrupt_official"
+      ],
+      "tagHints": [
+        "Il treno è fermo da un giorno.",
+        "Il componente non figura nel manifesto."
+      ],
+      "arc": "people",
+      "effects": {
+        "pass": {
+          "regime": -5,
+          "popolo": 8,
+          "ribelli": 4,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -6,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -7,
+          "ribelli": -4,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -11,
+          "ribelli": -6,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Il treno riparte con una limitazione di velocità.",
+        "deny": "Il convoglio resta fermo e si accumulano ritardi.",
+        "arrest": "Il componente viene sequestrato per l'ispezione.",
+        "condemn": "L'inchiesta scopre una catena di consegne non registrate."
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il componente è compatibile, ma la consegna non è registrata nel manifesto del convoglio.",
+            "Trasporta un componente per riparare un treno fermo al confine"
+          ],
+          "clues": [
+            "Il treno è fermo da un giorno.",
+            "Il componente non figura nel manifesto."
+          ],
+          "revelation": "La documentazione è credibile, ma lascia aperto un dubbio decisivo sulla responsabilità e sul rischio."
+        },
+        "l3": {
+          "clues": [
+            "Il deposito ha registrato una richiesta urgente anonima.",
+            "Il numero di serie è stato assegnato a un altro convoglio."
+          ],
+          "connections": [
+            "Cooperativa dei Trasporti",
+            "Deposito ricambi",
+            "Manifesto del convoglio"
+          ],
+          "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
+        }
+      }
+    },
+    {
+      "name": "Sana Vetro",
+      "origin": "Laboratorio di Analisi",
+      "job": "Chimica ambientale",
+      "reason": "Vuole consegnare campioni d'acqua contaminata a un laboratorio indipendente",
+      "notes": "I campioni sono sigillati, ma il verbale non specifica il punto esatto del prelievo.",
+      "tags": [
+        "is_corrupt_official"
+      ],
+      "tagHints": [
+        "Il sigillo è integro ma il verbale è incompleto.",
+        "Due campioni hanno colori diversi."
+      ],
+      "arc": "people",
+      "effects": {
+        "pass": {
+          "regime": -5,
+          "popolo": 8,
+          "ribelli": 4,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -6,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -7,
+          "ribelli": -4,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -11,
+          "ribelli": -6,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "I campioni vengono analizzati e confermano una contaminazione localizzata.",
+        "deny": "La consegna è respinta e la fonte resta non verificata.",
+        "arrest": "Il sequestro rallenta l'analisi e accende proteste locali.",
+        "condemn": "Il processo costringe a rendere pubblici i dati ambientali."
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "I campioni sono sigillati, ma il verbale non specifica il punto esatto del prelievo.",
+            "Vuole consegnare campioni d'acqua contaminata a un laboratorio indipendente"
+          ],
+          "clues": [
+            "Il sigillo è integro ma il verbale è incompleto.",
+            "Due campioni hanno colori diversi."
+          ],
+          "revelation": "La documentazione è credibile, ma lascia aperto un dubbio decisivo sulla responsabilità e sul rischio."
+        },
+        "l3": {
+          "clues": [
+            "La catena di custodia riporta un cambio di veicolo non spiegato.",
+            "Il laboratorio locale ha segnalato valori simili la settimana scorsa."
+          ],
+          "connections": [
+            "Laboratorio di Analisi",
+            "Catena di custodia",
+            "Acquedotto locale"
+          ],
+          "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
+        }
+      }
+    },
+    {
+      "name": "Milo Retro",
+      "origin": "Museo delle Macchine",
+      "job": "Restauratore di terminali",
+      "reason": "Trasporta un vecchio terminale che potrebbe contenere registri cancellati",
+      "notes": "Il dispositivo è datato, ma il suo archivio sembra essere stato consultato di recente.",
+      "tags": [
+        "is_corrupt_official"
+      ],
+      "tagHints": [
+        "Il terminale è stato acceso dopo anni di inattività.",
+        "Il sigillo del museo è integro."
+      ],
+      "arc": "meta",
+      "effects": {
+        "pass": {
+          "regime": -5,
+          "popolo": 8,
+          "ribelli": 4,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -6,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -7,
+          "ribelli": -4,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -11,
+          "ribelli": -6,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Il terminale recupera parte dei registri perduti.",
+        "deny": "Il dispositivo resta spento e i dati non vengono recuperati.",
+        "arrest": "Il terminale viene sequestrato e il museo perde l'accesso all'archivio.",
+        "condemn": "I registri recuperati rivelano un accesso non dichiarato."
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il dispositivo è datato, ma il suo archivio sembra essere stato consultato di recente.",
+            "Trasporta un vecchio terminale che potrebbe contenere registri cancellati"
+          ],
+          "clues": [
+            "Il terminale è stato acceso dopo anni di inattività.",
+            "Il sigillo del museo è integro."
+          ],
+          "revelation": "La documentazione è credibile, ma lascia aperto un dubbio decisivo sulla responsabilità e sul rischio."
+        },
+        "l3": {
+          "clues": [
+            "Il registro energetico mostra una connessione notturna.",
+            "Un account del Dipartimento ha interrogato il dispositivo."
+          ],
+          "connections": [
+            "Museo delle Macchine",
+            "Archivio storico",
+            "Account del Dipartimento"
+          ],
+          "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
+        }
+      }
+    },
+    {
+      "name": "Arianna Filo",
+      "origin": "Ufficio delle Comunicazioni",
+      "job": "Corriere di messaggi cifrati",
+      "reason": "Chiede di consegnare una chiave di decodifica a un ufficio consolare",
+      "notes": "La chiave è valida, ma è stata usata per cifrare anche comunicazioni non diplomatiche.",
+      "tags": [
+        "is_corrupt_official"
+      ],
+      "tagHints": [
+        "La chiave corrisponde al certificato consolare.",
+        "Il registro mostra pacchetti verso un destinatario non previsto."
+      ],
+      "arc": "rebellion",
+      "effects": {
+        "pass": {
+          "regime": -5,
+          "popolo": 8,
+          "ribelli": 4,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -6,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -7,
+          "ribelli": -4,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -11,
+          "ribelli": -6,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "La consegna ripristina il canale consolare e attiva un audit.",
+        "deny": "Il canale resta interrotto durante una trattativa.",
+        "arrest": "La chiave viene revocata e tutti i messaggi recenti diventano illeggibili.",
+        "condemn": "L'inchiesta rivela un uso parallelo del canale cifrato."
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "La chiave è valida, ma è stata usata per cifrare anche comunicazioni non diplomatiche.",
+            "Chiede di consegnare una chiave di decodifica a un ufficio consolare"
+          ],
+          "clues": [
+            "La chiave corrisponde al certificato consolare.",
+            "Il registro mostra pacchetti verso un destinatario non previsto."
+          ],
+          "revelation": "La documentazione è credibile, ma lascia aperto un dubbio decisivo sulla responsabilità e sul rischio."
+        },
+        "l3": {
+          "clues": [
+            "Il certificato è stato duplicato due giorni prima.",
+            "Il destinatario alternativo appartiene a una rete di emergenza."
+          ],
+          "connections": [
+            "Ufficio delle Comunicazioni",
+            "Consolato",
+            "Rete di emergenza"
+          ],
+          "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
+        }
+      }
+    },
+    {
+      "name": "Tito Cartone",
+      "origin": "Magazzino dei Rifornimenti",
+      "job": "Responsabile inventario",
+      "reason": "Chiede il passaggio di scatole registrate come materiale scolastico",
+      "notes": "Il peso dei colli non corrisponde alla distinta e due etichette sono state sostituite.",
+      "tags": [
+        "is_corrupt_official"
+      ],
+      "tagHints": [
+        "La distinta indica un peso inferiore a quello rilevato.",
+        "Le etichette hanno adesivi di lotti diversi."
+      ],
+      "arc": "people",
+      "effects": {
+        "pass": {
+          "regime": -5,
+          "popolo": 8,
+          "ribelli": 4,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -6,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -7,
+          "ribelli": -4,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -11,
+          "ribelli": -6,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Le scatole vengono controllate e una parte è redistribuita alle scuole.",
+        "deny": "La consegna viene bloccata e le scuole restano senza materiale.",
+        "arrest": "Il responsabile è trattenuto mentre il magazzino verifica i lotti.",
+        "condemn": "L'inchiesta porta alla luce una discrepanza nelle forniture."
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il peso dei colli non corrisponde alla distinta e due etichette sono state sostituite.",
+            "Chiede il passaggio di scatole registrate come materiale scolastico"
+          ],
+          "clues": [
+            "La distinta indica un peso inferiore a quello rilevato.",
+            "Le etichette hanno adesivi di lotti diversi."
+          ],
+          "revelation": "La documentazione è credibile, ma lascia aperto un dubbio decisivo sulla responsabilità e sul rischio."
+        },
+        "l3": {
+          "clues": [
+            "Il magazzino ha registrato un inventario straordinario.",
+            "Una consegna analoga è stata diretta a un deposito militare."
+          ],
+          "connections": [
+            "Magazzino dei Rifornimenti",
+            "Scuole distrettuali",
+            "Deposito militare"
+          ],
+          "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
+        }
+      }
+    },
+    {
+      "name": "Edda Fase",
+      "origin": "Centro di Controllo Meteo",
+      "job": "Meteorologa",
+      "reason": "Porta un avviso di tempesta che contraddice il bollettino ufficiale",
+      "notes": "Il modello locale prevede vento estremo, ma un sensore risulta fuori calibrazione.",
+      "tags": [
+        "is_corrupt_official"
+      ],
+      "tagHints": [
+        "Il modello locale segnala una tempesta entro sei ore.",
+        "Il bollettino ufficiale prevede condizioni normali."
+      ],
+      "arc": "people",
+      "effects": {
+        "pass": {
+          "regime": -5,
+          "popolo": 8,
+          "ribelli": 4,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -6,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -7,
+          "ribelli": -4,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -11,
+          "ribelli": -6,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Il confine viene chiuso preventivamente e la tempesta arriva davvero.",
+        "deny": "Il transito continua, ma il vento costringe a un'evacuazione rapida.",
+        "arrest": "Il bollettino viene sequestrato e si perde tempo per allertare i distretti.",
+        "condemn": "La discrepanza apre un'indagine sui dati meteorologici."
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il modello locale prevede vento estremo, ma un sensore risulta fuori calibrazione.",
+            "Porta un avviso di tempesta che contraddice il bollettino ufficiale"
+          ],
+          "clues": [
+            "Il modello locale segnala una tempesta entro sei ore.",
+            "Il bollettino ufficiale prevede condizioni normali."
+          ],
+          "revelation": "La documentazione è credibile, ma lascia aperto un dubbio decisivo sulla responsabilità e sul rischio."
+        },
+        "l3": {
+          "clues": [
+            "Il sensore è stato ricalibrato senza verbale.",
+            "Un secondo centro ha registrato la stessa anomalia."
+          ],
+          "connections": [
+            "Centro di Controllo Meteo",
+            "Sensore fuori calibrazione",
+            "Secondo centro meteo"
+          ],
+          "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
+        }
+      }
+    },
+    {
+      "name": "Nando Prisma",
+      "origin": "Ufficio Identità Digitali",
+      "job": "Tecnico biometrico",
+      "reason": "Chiede di correggere una mancata corrispondenza facciale",
+      "notes": "Il lettore ha prodotto tre risultati diversi sulla stessa persona durante il turno.",
+      "tags": [
+        "is_corrupt_official"
+      ],
+      "tagHints": [
+        "Il sistema ha dato esiti discordanti nello stesso turno.",
+        "La foto del documento è aggiornata."
+      ],
+      "arc": "regime",
+      "effects": {
+        "pass": {
+          "regime": -5,
+          "popolo": 8,
+          "ribelli": 4,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -6,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -7,
+          "ribelli": -4,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -11,
+          "ribelli": -6,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "La verifica manuale consente il passaggio e apre una segnalazione tecnica.",
+        "deny": "La persona resta in attesa di una nuova scansione.",
+        "arrest": "Il tecnico viene trattenuto e il lettore resta operativo.",
+        "condemn": "La verifica rivela un difetto diffuso nei lettori biometrici."
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il lettore ha prodotto tre risultati diversi sulla stessa persona durante il turno.",
+            "Chiede di correggere una mancata corrispondenza facciale"
+          ],
+          "clues": [
+            "Il sistema ha dato esiti discordanti nello stesso turno.",
+            "La foto del documento è aggiornata."
+          ],
+          "revelation": "La documentazione è credibile, ma lascia aperto un dubbio decisivo sulla responsabilità e sul rischio."
+        },
+        "l3": {
+          "clues": [
+            "Il firmware del lettore è stato modificato la notte precedente.",
+            "Altri due varchi hanno segnalato lo stesso errore."
+          ],
+          "connections": [
+            "Ufficio Identità Digitali",
+            "Lettore biometrico",
+            "Firmware del varco"
+          ],
+          "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
+        }
+      }
+    },
+    {
+      "name": "Lea Rintocco",
+      "origin": "Archivio delle Campane",
+      "job": "Storica locale",
+      "reason": "Vuole portare un registro che documenta evacuazioni mai dichiarate",
+      "notes": "Il registro è antico, ma le ultime pagine hanno carta e inchiostro recenti.",
+      "tags": [
+        "is_corrupt_official"
+      ],
+      "tagHints": [
+        "Le prime pagine sono coerenti con l'archivio.",
+        "Le ultime pagine sono state aggiunte in epoca recente."
+      ],
+      "arc": "media",
+      "effects": {
+        "pass": {
+          "regime": -5,
+          "popolo": 8,
+          "ribelli": 4,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -6,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -7,
+          "ribelli": -4,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -11,
+          "ribelli": -6,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Il registro viene digitalizzato e confrontato con gli archivi pubblici.",
+        "deny": "Il registro è respinto e resta fuori dal catalogo ufficiale.",
+        "arrest": "L'archivista viene interrogata sulla provenienza delle pagine.",
+        "condemn": "La pubblicazione riapre il caso delle evacuazioni non dichiarate."
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il registro è antico, ma le ultime pagine hanno carta e inchiostro recenti.",
+            "Vuole portare un registro che documenta evacuazioni mai dichiarate"
+          ],
+          "clues": [
+            "Le prime pagine sono coerenti con l'archivio.",
+            "Le ultime pagine sono state aggiunte in epoca recente."
+          ],
+          "revelation": "La documentazione è credibile, ma lascia aperto un dubbio decisivo sulla responsabilità e sul rischio."
+        },
+        "l3": {
+          "clues": [
+            "Gli orari coincidono con registri di trasporto riservati.",
+            "Una delle firme appartiene a un archivista ancora in servizio."
+          ],
+          "connections": [
+            "Archivio delle Campane",
+            "Registri di trasporto",
+            "Archivista in servizio"
+          ],
+          "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
+        }
+      }
+    },
+    {
+      "name": "Omar Fermoimmagine",
+      "origin": "Ufficio Sorveglianza",
+      "job": "Analista video",
+      "reason": "Chiede di consegnare filmati di un varco durante un'interruzione elettrica",
+      "notes": "Il video è autentico, ma mancano sette minuti proprio nel momento decisivo.",
+      "tags": [
+        "is_corrupt_official"
+      ],
+      "tagHints": [
+        "Il filmato mostra un'interruzione elettrica registrata anche altrove.",
+        "I metadati indicano un'esportazione recente."
+      ],
+      "arc": "regime",
+      "effects": {
+        "pass": {
+          "regime": -5,
+          "popolo": 8,
+          "ribelli": 4,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -6,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -7,
+          "ribelli": -4,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -11,
+          "ribelli": -6,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Il filmato viene ammesso e avvia un controllo indipendente.",
+        "deny": "Il filmato viene respinto per incompletezza probatoria.",
+        "arrest": "L'analista viene trattenuto per chiarire l'esportazione.",
+        "condemn": "La copia secondaria porta a un'indagine sugli accessi manuali."
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il video è autentico, ma mancano sette minuti proprio nel momento decisivo.",
+            "Chiede di consegnare filmati di un varco durante un'interruzione elettrica"
+          ],
+          "clues": [
+            "Il filmato mostra un'interruzione elettrica registrata anche altrove.",
+            "I metadati indicano un'esportazione recente."
+          ],
+          "revelation": "La documentazione è credibile, ma lascia aperto un dubbio decisivo sulla responsabilità e sul rischio."
+        },
+        "l3": {
+          "clues": [
+            "I sette minuti mancanti coincidono con un accesso manuale al sistema.",
+            "Una copia secondaria conserva un fotogramma aggiuntivo."
+          ],
+          "connections": [
+            "Ufficio Sorveglianza",
+            "Sistema video",
+            "Accesso manuale"
+          ],
+          "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
+        }
+      }
+    },
+    {
+      "name": "Rina Scarto",
+      "origin": "Centro di Riciclo",
+      "job": "Tecnica dei materiali",
+      "reason": "Trasporta un campione di metallo recuperato da una zona vietata",
+      "notes": "Il campione contiene una lega usata nei dispositivi di controllo, ma la provenienza è incerta.",
+      "tags": [
+        "is_corrupt_official"
+      ],
+      "tagHints": [
+        "La lega è compatibile con componenti dei varchi.",
+        "Il campione non ha un codice di provenienza."
+      ],
+      "arc": "meta",
+      "effects": {
+        "pass": {
+          "regime": -5,
+          "popolo": 8,
+          "ribelli": 4,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -6,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -7,
+          "ribelli": -4,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -11,
+          "ribelli": -6,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Il campione viene analizzato e il lotto resta temporaneamente bloccato.",
+        "deny": "Il campione viene respinto e il lotto entra nel circuito ordinario.",
+        "arrest": "La tecnica viene interrogata sulla provenienza del materiale.",
+        "condemn": "L'indagine scopre che componenti dismessi sono ancora in circolazione."
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il campione contiene una lega usata nei dispositivi di controllo, ma la provenienza è incerta.",
+            "Trasporta un campione di metallo recuperato da una zona vietata"
+          ],
+          "clues": [
+            "La lega è compatibile con componenti dei varchi.",
+            "Il campione non ha un codice di provenienza."
+          ],
+          "revelation": "La documentazione è credibile, ma lascia aperto un dubbio decisivo sulla responsabilità e sul rischio."
+        },
+        "l3": {
+          "clues": [
+            "Il centro di riciclo ha ricevuto un lotto fuori registro.",
+            "Una distinta indica che il lotto proviene da un impianto dismesso."
+          ],
+          "connections": [
+            "Centro di Riciclo",
+            "Componenti dei varchi",
+            "Impianto dismesso"
+          ],
+          "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
+        }
+      }
     }
   ]
 }
