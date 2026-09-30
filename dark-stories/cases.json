@@ -1,0 +1,134 @@
+[
+  {
+    "id": "ds01",
+    "title": "La luce spenta",
+    "story": "Un uomo entra in una stanza, spegne la luce e poco dopo muoiono molte persone. Non ha toccato nessuno. Perché?",
+    "solution": "L'uomo è il guardiano di un faro. Spegnendo la luce del faro, una nave si schianta sugli scogli e i passeggeri muoiono.",
+    "hints": [
+      "La stanza non è una casa.",
+      "La luce serviva a guidare qualcuno.",
+      "L'uomo lavorava in un faro."
+    ]
+  },
+  {
+    "id": "ds02",
+    "title": "Il bicchiere d'acqua",
+    "story": "Una donna entra in un bar e chiede un bicchiere d'acqua. Il barista tira fuori una pistola e gliela punta. La donna lo ringrazia e se ne va. Perché?",
+    "solution": "La donna aveva il singhiozzo. Lo spavento provocato dalla pistola glielo fa passare.",
+    "hints": [
+      "La donna non era in pericolo reale.",
+      "Aveva un disturbo fastidioso.",
+      "Il barista voleva spaventarla."
+    ]
+  },
+  {
+    "id": "ds03",
+    "title": "L'ascensore",
+    "story": "Un uomo abita al ventesimo piano. Ogni giorno scende in ascensore fino al piano terra, ma al ritorno sale fino al dodicesimo e poi fa le scale. Quando piove, invece, arriva direttamente al ventesimo. Perché?",
+    "solution": "L'uomo è molto basso e raggiunge solo il pulsante del dodicesimo piano. Quando piove usa l'ombrello per premere quello del ventesimo.",
+    "hints": [
+      "L'ascensore funziona perfettamente.",
+      "La statura dell'uomo è importante.",
+      "Usa un oggetto per raggiungere il pulsante."
+    ]
+  },
+  {
+    "id": "ds04",
+    "title": "Il pacco intatto",
+    "story": "Un uomo viene trovato morto in un campo. Accanto a lui c'è un pacco chiuso. Non ci sono impronte né segni di lotta. Che cosa è successo?",
+    "solution": "Il pacco è il paracadute che non si è aperto. L'uomo si è lanciato da un aereo.",
+    "hints": [
+      "Il pacco non era stato consegnato.",
+      "L'uomo è caduto da molto in alto.",
+      "Il pacco era un paracadute."
+    ]
+  },
+  {
+    "id": "ds05",
+    "title": "La telefonata",
+    "story": "Una persona telefona alla polizia, dice una sola frase e riattacca. Quando gli agenti arrivano, arrestano chi ha risposto alla porta. Perché?",
+    "solution": "La persona al telefono ha chiamato la polizia dalla casa in cui era tenuta prigioniera, fingendo una chiamata innocua. Chi ha aperto la porta era il sequestratore.",
+    "hints": [
+      "La telefonata era una richiesta d'aiuto in codice.",
+      "La persona che ha chiamato non poteva parlare liberamente.",
+      "Chi ha aperto la porta controllava la vittima."
+    ]
+  },
+  {
+    "id": "ds06",
+    "title": "La stanza chiusa",
+    "story": "Un uomo viene trovato impiccato in una stanza chiusa dall'interno. Non ci sono mobili sotto di lui, né finestre aperte. Sul pavimento c'è solo una pozza d'acqua. Come ha fatto?",
+    "solution": "È salito su un grande blocco di ghiaccio che poi si è sciolto.",
+    "hints": [
+      "Non serviva un mobile.",
+      "La stanza è rimasta chiusa.",
+      "Qualcosa sotto di lui è scomparso."
+    ]
+  },
+  {
+    "id": "ds07",
+    "title": "La cena silenziosa",
+    "story": "Durante una cena, una donna assaggia la zuppa, guarda il cuoco e chiama la polizia. Non ha trovato veleno né insetti. Perché?",
+    "solution": "La donna era sopravvissuta a un naufragio e le era stato detto che aveva mangiato carne di un compagno morto per sopravvivere. Assaggiando la zuppa capisce che il sapore è diverso e realizza che allora le avevano mentito: aveva mangiato carne umana.",
+    "hints": [
+      "La donna aveva un trauma passato.",
+      "Il sapore le ricorda qualcosa che aveva già assaggiato.",
+      "La verità riguarda l'origine di ciò che aveva mangiato."
+    ]
+  },
+  {
+    "id": "ds08",
+    "title": "Il registratore",
+    "story": "Un uomo è trovato morto con un registratore in mano. La polizia preme play, ascolta un messaggio e capisce subito che non è suicidio. Come?",
+    "solution": "Nel messaggio l'uomo dice che si ucciderà e poi si sente lo sparo. Per riavvolgere il nastro e premere play, qualcuno avrebbe dovuto preparare il registratore: la polizia capisce che la scena è stata manipolata. (Versione classica: il nastro era già riavvolto dopo lo sparo.)",
+    "hints": [
+      "Il registratore contiene una registrazione.",
+      "La sequenza degli eventi non torna.",
+      "Qualcuno ha potuto manipolare la scena."
+    ]
+  },
+  {
+    "id": "ds09",
+    "title": "La finestra aperta",
+    "story": "Un uomo viene trovato morto ai piedi di un edificio. La finestra del suo appartamento è aperta. La polizia guarda la stanza e capisce che non è caduto accidentalmente. Perché?",
+    "solution": "L'uomo era un investigatore che stava ricostruendo un omicidio: la finestra era aperta dall'esterno e le impronte sul davanzale erano state messe al contrario per simulare una caduta. La scena era stata inscenata.",
+    "hints": [
+      "La finestra è una messinscena.",
+      "Gli indizi sono stati manipolati.",
+      "La caduta non spiega la scena."
+    ]
+  },
+  {
+    "id": "ds10",
+    "title": "Tre interruttori",
+    "story": "Fuori da una stanza chiusa ci sono tre interruttori. Solo uno accende la lampadina dentro. Puoi entrare nella stanza una sola volta. Come scopri quale interruttore è quello giusto?",
+    "solution": "Accendi il primo interruttore per alcuni minuti, poi spegnilo. Accendi il secondo ed entra. Se la lampadina è accesa è il secondo; se è spenta ma calda è il primo; se è spenta e fredda è il terzo.",
+    "hints": [
+      "La lampadina produce anche calore.",
+      "Puoi usare gli interruttori in sequenza.",
+      "Non devi basarti solo sulla luce."
+    ]
+  },
+  {
+    "id": "ds11",
+    "title": "Il funerale",
+    "story": "Una donna incontra uno sconosciuto al funerale di sua madre e si innamora subito di lui. Non riesce a rintracciarlo. Qualche giorno dopo uccide sua sorella. Perché?",
+    "solution": "La donna spera che lo sconosciuto torni al funerale della sorella per poterlo rivedere. È un classico enigma psicologico; non è una giustificazione, ma il movente della storia.",
+    "hints": [
+      "La donna voleva rivedere lo sconosciuto.",
+      "Non conosceva la sua identità.",
+      "Credeva che un altro funerale potesse farlo tornare."
+    ]
+  },
+  {
+    "id": "ds12",
+    "title": "Il rumore nella notte",
+    "story": "Ogni notte un uomo sente un rumore, accende la luce e torna a dormire. Una notte non accende la luce. La mattina dopo scopre che molte persone sono morte. Perché?",
+    "solution": "L'uomo è il guardiano di una stazione ferroviaria. Il rumore è il segnale di un sistema che avverte di un problema ai binari; quella notte non accende la luce di segnalazione e un treno deraglia.",
+    "hints": [
+      "Il rumore era un segnale importante.",
+      "L'uomo aveva una responsabilità verso altre persone.",
+      "La luce era un segnale per qualcuno lontano."
+    ]
+  }
+]
