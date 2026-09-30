@@ -295,7 +295,7 @@
   },
   "cases": [
     {
-      "file": "1.jpg",
+      "file": "1.png",
       "name": "Dott.ssa Nivea",
       "origin": "Reparto Medico della Frontiera",
       "job": "Medica d'emergenza",
@@ -408,7 +408,7 @@
       }
     },
     {
-      "file": "2.jpg",
+      "file": "2.png",
       "name": "Consigliere Galfran",
       "origin": "Segreteria del Governo Centrale",
       "job": "Consigliere per la sicurezza",
@@ -521,7 +521,7 @@
       }
     },
     {
-      "file": "3.jpg",
+      "file": "3.png",
       "name": "Tilde Quattromondi",
       "origin": "Contea del Divano Infinito",
       "job": "Cuoca itinerante",
@@ -633,7 +633,7 @@
       }
     },
     {
-      "file": "4.jpg",
+      "file": "4.png",
       "name": "PixelPunk_404",
       "origin": "Metropoli degli Stream Eterni",
       "job": "Creator e cronista live",
@@ -746,7 +746,7 @@
       }
     },
     {
-      "file": "5.jpg",
+      "file": "5.png",
       "name": "Colonnello Tacchino Nero",
       "origin": "Accademia Militare dei Mille Becchettamenti",
       "job": "Ufficiale di sicurezza",
@@ -859,7 +859,7 @@
       }
     },
     {
-      "file": "6.jpg",
+      "file": "6.png",
       "name": "Contrabbandiere dei Peluche",
       "origin": "Mercati Ombra del Cuscino",
       "job": "Corriere indipendente",
@@ -972,7 +972,7 @@
       }
     },
     {
-      "file": "7.jpg",
+      "file": "7.png",
       "name": "I.A. Burocratica 3.0",
       "origin": "Server Centrale del Dipartimento",
       "job": "Sistema automatico di controllo",
@@ -1198,7 +1198,7 @@
       }
     },
     {
-      "file": "9.jpg",
+      "file": "9.png",
       "name": "Programmatore del Multiverso",
       "origin": "Ufficio Bug Interdimensionali",
       "job": "Sviluppatore di sistemi di realtà",
@@ -1311,7 +1311,7 @@
       }
     },
     {
-      "file": "10.jpg",
+      "file": "10.png",
       "name": "Profeta del Lag",
       "origin": "Server di Streaming Obsoleti",
       "job": "Predicatore della Latenza",
@@ -1423,7 +1423,7 @@
       }
     },
     {
-      "file": "11.jpg",
+      "file": "11.png",
       "name": "Mia Pixel",
       "origin": "Quartiere dei Peluche Senzienti",
       "job": "Studentessa e fan dello streaming",
@@ -1535,7 +1535,7 @@
       }
     },
     {
-      "file": "12.jpg",
+      "file": "12.png",
       "name": "Broker Dimensionale",
       "origin": "Borsa delle Realtà Alternative",
       "job": "Intermediario commerciale",
@@ -1725,7 +1725,8 @@
           ],
           "revelation": "La cartografa potrebbe essere una fonte oppure il tramite di un'operazione interna."
         }
-      }
+      },
+      "file": "13.png"
     },
     {
       "name": "Bruno Ferraglia",
@@ -1801,7 +1802,8 @@
           ],
           "revelation": "La scelta può salvare l'approvvigionamento idrico oppure impedire un possibile potenziamento della sorveglianza."
         }
-      }
+      },
+      "file": "14.png"
     },
     {
       "name": "Lidia Settevoci",
@@ -1878,7 +1880,8 @@
           ],
           "revelation": "La diffusione può rivelare un abuso, ma il montaggio incompleto può compromettere l'attendibilità."
         }
-      }
+      },
+      "file": "15.png"
     },
     {
       "name": "Nerio Valvola",
@@ -1954,7 +1957,8 @@
           ],
           "revelation": "Lasciarlo passare può prevenire un disastro, ma rende evidente una negligenza interna."
         }
-      }
+      },
+      "file": "16.png"
     },
     {
       "name": "Mara Cobalto",
@@ -2030,7 +2034,8 @@
           ],
           "revelation": "La ricerca potrebbe spiegare i blackout, ma i dati sensibili rischiano di diventare uno strumento di sorveglianza."
         }
-      }
+      },
+      "file": "17.png"
     },
     {
       "name": "Elio Bitrate",
@@ -2106,7 +2111,8 @@
           ],
           "revelation": "Il rischio non proviene necessariamente dal tecnico: qualcuno dentro il sistema ha autorizzato l'aggiornamento."
         }
-      }
+      },
+      "file": "18.png"
     },
     {
       "name": "Sorella Quarzo",
@@ -2182,7 +2188,8 @@
           ],
           "revelation": "La prova punta a una manipolazione interna, ma non dimostra che la mediatrice ne sia coinvolta."
         }
-      }
+      },
+      "file": "19.png"
     },
     {
       "name": "Rex Malfunzione",
@@ -2258,7 +2265,8 @@
           ],
           "revelation": "Pubblicare il rapporto può prevenire incidenti, ma una chiusura improvvisa può bloccare servizi essenziali."
         }
-      }
+      },
+      "file": "20.png"
     },
     {
       "name": "Vera Ombrafina",
@@ -2334,7 +2342,8 @@
           ],
           "revelation": "Ripristinare l'identità tutela una persona, ma può esporre una rete di cancellazioni deliberate."
         }
-      }
+      },
+      "file": "21.png"
     },
     {
       "name": "Dario Sismografo",
@@ -2410,7 +2419,8 @@
           ],
           "revelation": "Agire può prevenire un cedimento, ma l'allarme non consente di stimare con precisione il momento del rischio."
         }
-      }
+      },
+      "file": "22.png"
     },
     {
       "name": "Nika Loop",
@@ -2486,7 +2496,8 @@
           ],
           "revelation": "L'anomalia è sostenuta da prove tecniche, ma non chiarisce chi abbia ordinato il reset né perché."
         }
-      }
+      },
+      "file": "23.png"
     },
     {
       "name": "Tomaso Cenere",
@@ -2562,7 +2573,8 @@
           ],
           "revelation": "Il rischio può essere reale, ma la prova non stabilisce se si tratti di materiali pericolosi o di una consegna irregolare."
         }
-      }
+      },
+      "file": "24.png"
     },
     {
       "name": "Iris Null",
@@ -2639,7 +2651,8 @@
           ],
           "revelation": "Il ricorso può correggere errori procedurali, ma riaprire tutte le pratiche può sovraccaricare l'ufficio."
         }
-      }
+      },
+      "file": "25.png"
     },
     {
       "name": "Pia Sottotraccia",
@@ -2715,7 +2728,8 @@
           ],
           "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
         }
-      }
+      },
+      "file": "26.png"
     },
     {
       "name": "Gino Rame",
@@ -2791,7 +2805,8 @@
           ],
           "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
         }
-      }
+      },
+      "file": "27.png"
     },
     {
       "name": "Sana Vetro",
@@ -2867,7 +2882,8 @@
           ],
           "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
         }
-      }
+      },
+      "file": "28.png"
     },
     {
       "name": "Milo Retro",
@@ -2943,7 +2959,8 @@
           ],
           "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
         }
-      }
+      },
+      "file": "29.png"
     },
     {
       "name": "Arianna Filo",
@@ -3019,7 +3036,8 @@
           ],
           "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
         }
-      }
+      },
+      "file": "30.png"
     },
     {
       "name": "Tito Cartone",
@@ -3095,7 +3113,8 @@
           ],
           "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
         }
-      }
+      },
+      "file": "31.png"
     },
     {
       "name": "Edda Fase",
@@ -3171,7 +3190,8 @@
           ],
           "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
         }
-      }
+      },
+      "file": "32.png"
     },
     {
       "name": "Nando Prisma",
@@ -3247,7 +3267,8 @@
           ],
           "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
         }
-      }
+      },
+      "file": "33.png"
     },
     {
       "name": "Lea Rintocco",
@@ -3323,7 +3344,8 @@
           ],
           "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
         }
-      }
+      },
+      "file": "34.png"
     },
     {
       "name": "Omar Fermoimmagine",
@@ -3399,7 +3421,8 @@
           ],
           "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
         }
-      }
+      },
+      "file": "35.png"
     },
     {
       "name": "Rina Scarto",
@@ -3475,7 +3498,8 @@
           ],
           "revelation": "Gli indizi collegano più uffici e suggeriscono una spiegazione alternativa, senza dimostrare da soli tutte le responsabilità."
         }
-      }
+      },
+      "file": "36.png"
     },
     {
       "name": "Marta Ferrovia",
@@ -3546,7 +3570,8 @@
           ],
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
-      }
+      },
+      "file": "37.png"
     },
     {
       "name": "Dottor Varo",
@@ -3617,7 +3642,8 @@
           ],
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
-      }
+      },
+      "file": "38.png"
     },
     {
       "name": "Nora Circuito",
@@ -3688,7 +3714,8 @@
           ],
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
-      }
+      },
+      "file": "39.png"
     },
     {
       "name": "Berto Lume",
@@ -3759,7 +3786,8 @@
           ],
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
-      }
+      },
+      "file": "40.png"
     },
     {
       "name": "Sira Nembi",
@@ -3830,7 +3858,8 @@
           ],
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
-      }
+      },
+      "file": "41.png"
     },
     {
       "name": "Gabrio Morsa",
@@ -3902,7 +3931,8 @@
           ],
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
-      }
+      },
+      "file": "42.png"
     },
     {
       "name": "Enea Griglia",
@@ -3973,7 +4003,8 @@
           ],
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
-      }
+      },
+      "file": "43.png"
     },
     {
       "name": "Luce Marea",
@@ -4044,7 +4075,8 @@
           ],
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
-      }
+      },
+      "file": "44.png"
     },
     {
       "name": "Piero Doppiofondo",
@@ -4115,7 +4147,8 @@
           ],
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
-      }
+      },
+      "file": "45.png"
     },
     {
       "name": "Yara Fenditura",
@@ -4186,7 +4219,8 @@
           ],
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
-      }
+      },
+      "file": "46.png"
     },
     {
       "name": "Remo Saldatura",
@@ -4257,7 +4291,8 @@
           ],
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
-      }
+      },
+      "file": "47.png"
     },
     {
       "name": "Dalia Tesser",
@@ -4328,7 +4363,8 @@
           ],
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
-      }
+      },
+      "file": "48.png"
     },
     {
       "name": "Fosco Rimbalzo",
@@ -4399,7 +4435,8 @@
           ],
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
-      }
+      },
+      "file": "49.png"
     },
     {
       "name": "Mina Sottosoglia",
@@ -4470,7 +4507,8 @@
           ],
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
-      }
+      },
+      "file": "50.png"
     },
     {
       "name": "Kiro Spettro",
@@ -4541,7 +4579,8 @@
           ],
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
-      }
+      },
+      "file": "51.png"
     },
     {
       "name": "Olga Campana",
@@ -4613,7 +4652,8 @@
           ],
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
-      }
+      },
+      "file": "52.png"
     },
     {
       "name": "Vito Ruggine",
@@ -4684,7 +4724,8 @@
           ],
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
-      }
+      },
+      "file": "53.png"
     },
     {
       "name": "Seline Bruma",
@@ -4755,7 +4796,8 @@
           ],
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
-      }
+      },
+      "file": "54.png"
     },
     {
       "name": "Pavel Inchiostro",
@@ -4826,7 +4868,8 @@
           ],
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
-      }
+      },
+      "file": "55.png"
     },
     {
       "name": "Rachele Scoria",
@@ -4897,7 +4940,8 @@
           ],
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
-      }
+      },
+      "file": "56.png"
     },
     {
       "name": "Terenzio Quota",
@@ -4968,7 +5012,8 @@
           ],
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
-      }
+      },
+      "file": "57.png"
     },
     {
       "name": "Zoe Frattale",
@@ -5039,7 +5084,8 @@
           ],
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
-      }
+      },
+      "file": "58.png"
     },
     {
       "name": "Celia Sismica",
@@ -5110,7 +5156,8 @@
           ],
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
-      }
+      },
+      "file": "59.png"
     },
     {
       "name": "Mavi Risonanza",
@@ -5182,7 +5229,8 @@
           ],
           "revelation": "Gli indizi collegano registri e uffici diversi. La decisione può risolvere il problema immediato, ma lascia conseguenze amministrative e sociali."
         }
-      }
+      },
+      "file": "60.png"
     }
   ]
 }
