@@ -1650,6 +1650,996 @@
           "revelation": "Concedere la licenza potrebbe stabilizzare gli scambi oppure concentrare troppo potere in un unico intermediario."
         }
       }
+    },
+    {
+      "name": "Ada Vettori",
+      "origin": "Ufficio Cartografico",
+      "job": "Cartografa di frontiera",
+      "reason": "Chiede di attraversare il confine con mappe aggiornate delle zone interdette",
+      "notes": "Le mappe riportano passaggi che il Dipartimento nega ufficialmente. Alcuni simboli sembrano aggiunti di recente.",
+      "tags": [
+        "is_rebel_agent"
+      ],
+      "tagHints": [
+        "mappe non ufficiali",
+        "simboli aggiunti"
+      ],
+      "arc": "rebellion",
+      "effects": {
+        "pass": {
+          "regime": -7,
+          "popolo": 7,
+          "ribelli": 8,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 5,
+          "popolo": -5,
+          "ribelli": -6,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 8,
+          "popolo": -6,
+          "ribelli": -9,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 12,
+          "popolo": -10,
+          "ribelli": -12,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Le mappe circolano tra i villaggi e rivelano una via sicura, ma anche un varco vulnerabile.",
+        "deny": "Le mappe vengono confiscate; una pattuglia perde una rotta alternativa.",
+        "arrest": "Durante l'interrogatorio, gli ufficiali scoprono coordinate che non sapevano esistessero.",
+        "condemn": "La cartografa diventa il simbolo di una verità geografica proibita."
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il permesso è valido solo per una zona, ma le mappe ne mostrano tre.",
+            "La legenda usa codici non presenti nei documenti ufficiali."
+          ],
+          "clues": [
+            "Una delle rotte evita tutti i posti di blocco registrati.",
+            "L'inchiostro delle coordinate è più recente del resto della mappa."
+          ],
+          "revelation": "Le mappe sono autentiche in parte, ma qualcuno ha aggiunto una rotta clandestina."
+        },
+        "l3": {
+          "clues": [
+            "Le coordinate conducono a un deposito evacuato la notte precedente.",
+            "Un timbro sul retro appartiene a un ufficio militare."
+          ],
+          "connections": [
+            "Ufficio Cartografico",
+            "Pattuglie",
+            "Rotta clandestina"
+          ],
+          "revelation": "La cartografa potrebbe essere una fonte oppure il tramite di un'operazione interna."
+        }
+      }
+    },
+    {
+      "name": "Bruno Ferraglia",
+      "origin": "Distretto delle Macchine",
+      "job": "Tecnico di manutenzione",
+      "reason": "Trasporta ricambi per riattivare una pompa d'acqua oltre il confine",
+      "notes": "I ricambi sono compatibili con impianti civili, ma uno di essi può essere adattato a un sistema di sorveglianza.",
+      "tags": [
+        "is_corrupt_official"
+      ],
+      "tagHints": [
+        "pezzo non catalogato",
+        "destinazione civile"
+      ],
+      "arc": "people",
+      "effects": {
+        "pass": {
+          "regime": -4,
+          "popolo": 10,
+          "ribelli": 2,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 3,
+          "popolo": -8,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -6,
+          "ribelli": -3,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -11,
+          "ribelli": -5,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "La pompa riparte, ma il ricambio non catalogato sparisce durante il montaggio.",
+        "deny": "Il distretto resta senz'acqua per un altro ciclo di razionamento.",
+        "arrest": "Gli ingegneri confermano che il carico avrebbe potuto servire anche una torre di controllo.",
+        "condemn": "La condanna rallenta i lavori e alimenta proteste per il razionamento."
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "La richiesta d'intervento è firmata da un tecnico locale.",
+            "Un componente non compare nell'inventario di partenza."
+          ],
+          "clues": [
+            "Il componente è stato fabbricato nello stesso stabilimento delle torri di controllo.",
+            "Il numero di serie è stato limato."
+          ],
+          "revelation": "Il carico è utile ai civili, ma un pezzo potrebbe avere una seconda funzione."
+        },
+        "l3": {
+          "clues": [
+            "La pompa risulta davvero guasta nei registri locali.",
+            "Un ordine interno richiedeva la consegna dello stesso componente a una torre."
+          ],
+          "connections": [
+            "Distretto delle Macchine",
+            "Impianto idrico",
+            "Sorveglianza"
+          ],
+          "revelation": "La scelta può salvare l'approvvigionamento idrico oppure impedire un possibile potenziamento della sorveglianza."
+        }
+      }
+    },
+    {
+      "name": "Lidia Settevoci",
+      "origin": "Archivio Radiofonico",
+      "job": "Tecnica del suono",
+      "reason": "Vuole portare registrazioni di un annuncio censurato a una stazione indipendente",
+      "notes": "Le registrazioni sembrano autentiche, ma alcuni intervalli sono stati tagliati con precisione.",
+      "tags": [
+        "is_media",
+        "is_rebel_agent"
+      ],
+      "tagHints": [
+        "intervalli tagliati",
+        "annuncio censurato"
+      ],
+      "arc": "media",
+      "effects": {
+        "pass": {
+          "regime": -8,
+          "popolo": 9,
+          "ribelli": 5,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 5,
+          "popolo": -6,
+          "ribelli": -4,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 8,
+          "popolo": -7,
+          "ribelli": -6,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 12,
+          "popolo": -12,
+          "ribelli": -8,
+          "stamps": 2,
+          "sanity": -2
+        }
+      },
+      "twist": {
+        "pass": "La registrazione viene trasmessa, ma i tagli alimentano accuse di manipolazione.",
+        "deny": "La stazione rinuncia alla trasmissione e pubblica la notizia del sequestro.",
+        "arrest": "Il sequestro rivela l'esistenza di un archivio audio non registrato.",
+        "condemn": "Il processo rende pubblici i frammenti che il Dipartimento voleva cancellare."
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "I metadati confermano la data della registrazione.",
+            "Tre segmenti audio sono stati rimossi dopo la prima copia."
+          ],
+          "clues": [
+            "La voce di fondo cita un ordine mai pubblicato.",
+            "I tagli coincidono con cambi di turno del personale."
+          ],
+          "revelation": "La registrazione è reale, ma non è completa."
+        },
+        "l3": {
+          "clues": [
+            "Una copia integra è conservata in un archivio secondario.",
+            "La voce di fondo appartiene a un funzionario ancora in servizio."
+          ],
+          "connections": [
+            "Archivio Radiofonico",
+            "Censura",
+            "Turni del Dipartimento"
+          ],
+          "revelation": "La diffusione può rivelare un abuso, ma il montaggio incompleto può compromettere l'attendibilità."
+        }
+      }
+    },
+    {
+      "name": "Nerio Valvola",
+      "origin": "Canale di Bonifica",
+      "job": "Operatore idraulico",
+      "reason": "Chiede un passaggio urgente per chiudere una paratia danneggiata",
+      "notes": "Il livello dell'acqua sta salendo. Il suo tesserino è valido, ma l'ordine di servizio è privo di una firma.",
+      "tags": [
+        "is_bomb_risk"
+      ],
+      "tagHints": [
+        "paratia danneggiata",
+        "firma mancante"
+      ],
+      "arc": "people",
+      "effects": {
+        "pass": {
+          "regime": -2,
+          "popolo": 11,
+          "ribelli": 1,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 2,
+          "popolo": -10,
+          "ribelli": 0,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 5,
+          "popolo": -9,
+          "ribelli": -1,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 8,
+          "popolo": -13,
+          "ribelli": -3,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "La paratia viene chiusa in tempo, ma il registro dei lavori mostra una manutenzione saltata.",
+        "deny": "L'acqua invade il quartiere basso prima che arrivi una squadra sostitutiva.",
+        "arrest": "L'interrogatorio ritarda l'intervento e costringe a evacuare le case vicine.",
+        "condemn": "La condanna provoca uno sciopero dei tecnici idraulici."
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il livello del canale ha superato la soglia di sicurezza.",
+            "L'ordine non riporta la firma del supervisore."
+          ],
+          "clues": [
+            "Il supervisore risulta irreperibile da due turni.",
+            "Una segnalazione di guasto è stata archiviata senza verifica."
+          ],
+          "revelation": "L'urgenza è reale, ma la mancanza di firma nasconde una falla procedurale."
+        },
+        "l3": {
+          "clues": [
+            "La segnalazione archiviata era stata inviata dallo stesso Nerio.",
+            "Il supervisore aveva richiesto una chiusura preventiva."
+          ],
+          "connections": [
+            "Canale di Bonifica",
+            "Supervisore",
+            "Registro manutenzione"
+          ],
+          "revelation": "Lasciarlo passare può prevenire un disastro, ma rende evidente una negligenza interna."
+        }
+      }
+    },
+    {
+      "name": "Mara Cobalto",
+      "origin": "Clinica del Sonno",
+      "job": "Psicologa clinica",
+      "reason": "Trasporta cartelle anonime per una ricerca sui blackout collettivi",
+      "notes": "Le cartelle non riportano nomi, ma contengono codici che possono essere ricondotti ai quartieri.",
+      "tags": [
+        "is_media"
+      ],
+      "tagHints": [
+        "cartelle anonime",
+        "codici di quartiere"
+      ],
+      "arc": "people",
+      "effects": {
+        "pass": {
+          "regime": -3,
+          "popolo": 8,
+          "ribelli": 3,
+          "stamps": 0,
+          "sanity": 1
+        },
+        "deny": {
+          "regime": 3,
+          "popolo": -5,
+          "ribelli": -1,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 6,
+          "popolo": -7,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 9,
+          "popolo": -10,
+          "ribelli": -4,
+          "stamps": 2,
+          "sanity": -2
+        }
+      },
+      "twist": {
+        "pass": "La ricerca trova un collegamento tra i blackout, ma i codici permettono di identificare alcuni pazienti.",
+        "deny": "La ricerca si ferma e i pazienti restano senza spiegazioni.",
+        "arrest": "Le cartelle vengono sequestrate e trasferite a un ufficio non sanitario.",
+        "condemn": "Il caso rende pubblica la violazione della riservatezza clinica."
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Le cartelle sono prive di nomi e firme identificative.",
+            "I codici dei pazienti corrispondono a zone di blackout."
+          ],
+          "clues": [
+            "Alcuni codici seguono la stessa sequenza dei registri energetici.",
+            "La clinica non ha autorizzato il trasferimento dei dati."
+          ],
+          "revelation": "La ricerca ha valore pubblico, ma l'anonimizzazione potrebbe essere insufficiente."
+        },
+        "l3": {
+          "clues": [
+            "I registri energetici includono orari di visite mediche.",
+            "Una copia della ricerca è stata richiesta da un ufficio di sicurezza."
+          ],
+          "connections": [
+            "Clinica del Sonno",
+            "Blackout",
+            "Ufficio di sicurezza"
+          ],
+          "revelation": "La ricerca potrebbe spiegare i blackout, ma i dati sensibili rischiano di diventare uno strumento di sorveglianza."
+        }
+      }
+    },
+    {
+      "name": "Elio Bitrate",
+      "origin": "Nodo di Trasmissione 6",
+      "job": "Riparatore di reti",
+      "reason": "Vuole attraversare il confine per sostituire un relay fuori servizio",
+      "notes": "La rete è instabile da giorni. Il dispositivo di ricambio contiene un firmware non approvato.",
+      "tags": [
+        "is_corrupt_official"
+      ],
+      "tagHints": [
+        "firmware non approvato",
+        "relay fuori servizio"
+      ],
+      "arc": "meta",
+      "effects": {
+        "pass": {
+          "regime": -5,
+          "popolo": 6,
+          "ribelli": 4,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -5,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 8,
+          "popolo": -6,
+          "ribelli": -3,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 11,
+          "popolo": -9,
+          "ribelli": -5,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Il relay torna operativo e rivela pacchetti instradati verso un nodo sconosciuto.",
+        "deny": "Le comunicazioni restano intermittenti e si moltiplicano i falsi allarmi.",
+        "arrest": "Il firmware viene analizzato e contiene una funzione di diagnostica non documentata.",
+        "condemn": "Il distretto perde la connessione e attribuisce il blackout al Dipartimento."
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il relay risulta fuori servizio da 72 ore.",
+            "Il firmware non compare nell'elenco delle versioni autorizzate."
+          ],
+          "clues": [
+            "Il pacchetto di aggiornamento è firmato con una chiave valida ma revocata.",
+            "Il nodo sconosciuto compare anche nei log del Dipartimento."
+          ],
+          "revelation": "L'aggiornamento potrebbe riparare la rete e contemporaneamente aprire un canale non autorizzato."
+        },
+        "l3": {
+          "clues": [
+            "La chiave revocata è stata riattivata per undici minuti.",
+            "Un terminale interno ha scaricato lo stesso firmware."
+          ],
+          "connections": [
+            "Nodo 6",
+            "Dipartimento",
+            "Chiave revocata"
+          ],
+          "revelation": "Il rischio non proviene necessariamente dal tecnico: qualcuno dentro il sistema ha autorizzato l'aggiornamento."
+        }
+      }
+    },
+    {
+      "name": "Sorella Quarzo",
+      "origin": "Convento delle Frequenze",
+      "job": "Archivista e mediatrice",
+      "reason": "Chiede di portare registri di distribuzione alimentare a un villaggio isolato",
+      "notes": "I registri documentano consegne mancanti. Una pagina contiene firme attribuite a persone dichiarate irreperibili.",
+      "tags": [
+        "is_rebel_agent"
+      ],
+      "tagHints": [
+        "consegne mancanti",
+        "firme contestate"
+      ],
+      "arc": "people",
+      "effects": {
+        "pass": {
+          "regime": -6,
+          "popolo": 9,
+          "ribelli": 2,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -7,
+          "ribelli": -1,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -8,
+          "ribelli": -3,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -12,
+          "ribelli": -4,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "I registri raggiungono il villaggio e fanno partire una verifica indipendente.",
+        "deny": "Le consegne mancanti vengono registrate come errore contabile senza indagine.",
+        "arrest": "Il sequestro impedisce la verifica, ma una copia anonima viene diffusa.",
+        "condemn": "Il processo costringe il Dipartimento a riaprire i conti alimentari."
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Tre consegne risultano completate ma non sono state ricevute.",
+            "Due firme appartengono a persone irreperibili da mesi."
+          ],
+          "clues": [
+            "I quantitativi sono stati modificati dopo la chiusura dei registri.",
+            "Il magazzino segnala una discrepanza dello stesso valore."
+          ],
+          "revelation": "I registri indicano una frode possibile, ma non identificano ancora chi ne ha beneficiato."
+        },
+        "l3": {
+          "clues": [
+            "Le firme contestate sono state inserite dallo stesso terminale.",
+            "Il terminale era assegnato a un ufficio amministrativo."
+          ],
+          "connections": [
+            "Convento delle Frequenze",
+            "Magazzino",
+            "Ufficio amministrativo"
+          ],
+          "revelation": "La prova punta a una manipolazione interna, ma non dimostra che la mediatrice ne sia coinvolta."
+        }
+      }
+    },
+    {
+      "name": "Rex Malfunzione",
+      "origin": "Arena dei Collaudatori",
+      "job": "Tester di sistemi",
+      "reason": "Trasporta un rapporto che segnala un difetto nei cancelli automatici",
+      "notes": "Il rapporto è dettagliato, ma la pubblicazione potrebbe fermare il traffico per giorni.",
+      "tags": [
+        "is_bomb_risk"
+      ],
+      "tagHints": [
+        "difetto nei cancelli",
+        "rapporto dettagliato"
+      ],
+      "arc": "meta",
+      "effects": {
+        "pass": {
+          "regime": -5,
+          "popolo": 7,
+          "ribelli": 3,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 5,
+          "popolo": -6,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 8,
+          "popolo": -7,
+          "ribelli": -4,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 12,
+          "popolo": -11,
+          "ribelli": -6,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Il difetto viene corretto, ma la chiusura preventiva blocca gli spostamenti.",
+        "deny": "Un cancello si arresta durante il cambio turno e il rapporto torna al centro dell'indagine.",
+        "arrest": "I registri di test vengono acquisiti prima che il difetto possa essere riprodotto.",
+        "condemn": "La condanna rende il bug pubblico, senza garantire che la correzione sia pronta."
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il rapporto indica un difetto riproducibile nei sensori.",
+            "Il test è stato eseguito su una versione non aggiornata."
+          ],
+          "clues": [
+            "Il difetto compare anche nella versione corrente.",
+            "Una richiesta di manutenzione è stata chiusa senza test finale."
+          ],
+          "revelation": "Il rischio è credibile, ma la gravità del difetto non è stata verificata in condizioni reali."
+        },
+        "l3": {
+          "clues": [
+            "Il sensore ha già mancato due rilevamenti minori.",
+            "Il rapporto originale è stato riclassificato come documento interno."
+          ],
+          "connections": [
+            "Arena dei Collaudatori",
+            "Cancelli automatici",
+            "Manutenzione"
+          ],
+          "revelation": "Pubblicare il rapporto può prevenire incidenti, ma una chiusura improvvisa può bloccare servizi essenziali."
+        }
+      }
+    },
+    {
+      "name": "Vera Ombrafina",
+      "origin": "Ufficio Anagrafe",
+      "job": "Impiegata archivista",
+      "reason": "Chiede di correggere una discrepanza nel registro delle identità",
+      "notes": "Il suo documento è valido, ma la pratica riguarda una persona cancellata dagli archivi.",
+      "tags": [
+        "is_rebel_agent"
+      ],
+      "tagHints": [
+        "identità cancellata",
+        "pratica incompleta"
+      ],
+      "arc": "regime",
+      "effects": {
+        "pass": {
+          "regime": -4,
+          "popolo": 8,
+          "ribelli": 4,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -6,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -7,
+          "ribelli": -4,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 11,
+          "popolo": -10,
+          "ribelli": -6,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "L'identità viene ripristinata, ma la persona risulta registrata in due distretti.",
+        "deny": "La pratica resta sospesa e la persona non può accedere ai servizi.",
+        "arrest": "Il registro viene congelato e si scoprono altre cancellazioni simili.",
+        "condemn": "Il caso diventa un precedente per le revisioni anagrafiche."
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "La pratica è stata aperta e poi annullata senza motivazione.",
+            "La persona risulta cancellata da un registro ma attiva in un altro."
+          ],
+          "clues": [
+            "La cancellazione è stata eseguita fuori orario.",
+            "Il numero pratica è collegato ad altre tre correzioni."
+          ],
+          "revelation": "La discrepanza è reale, ma potrebbe far parte di una modifica sistematica degli archivi."
+        },
+        "l3": {
+          "clues": [
+            "Le tre pratiche collegate riguardano testimoni di uno stesso evento.",
+            "Le modifiche provengono da un account amministrativo."
+          ],
+          "connections": [
+            "Ufficio Anagrafe",
+            "Account amministrativo",
+            "Testimoni"
+          ],
+          "revelation": "Ripristinare l'identità tutela una persona, ma può esporre una rete di cancellazioni deliberate."
+        }
+      }
+    },
+    {
+      "name": "Dario Sismografo",
+      "origin": "Osservatorio Civico",
+      "job": "Tecnico sismico",
+      "reason": "Porta una previsione di cedimento per un ponte di transito",
+      "notes": "Il modello segnala un rischio entro 48 ore, ma l'ultima taratura è incompleta.",
+      "tags": [
+        "is_bomb_risk"
+      ],
+      "tagHints": [
+        "rischio entro 48 ore",
+        "taratura incompleta"
+      ],
+      "arc": "people",
+      "effects": {
+        "pass": {
+          "regime": -3,
+          "popolo": 10,
+          "ribelli": 1,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -7,
+          "ribelli": -1,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -8,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -12,
+          "ribelli": -3,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Il ponte viene chiuso per verifiche e la previsione si rivela parzialmente corretta.",
+        "deny": "Il transito continua, ma una nuova vibrazione obbliga a evacuare il ponte.",
+        "arrest": "Il modello viene sequestrato e la squadra tecnica perde tempo prezioso.",
+        "condemn": "Il caso scatena accuse di allarmismo e ritardi nei lavori."
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Il modello indica un rischio elevato entro 48 ore.",
+            "Manca la firma sul verbale di taratura."
+          ],
+          "clues": [
+            "Un sensore ha registrato vibrazioni fuori scala.",
+            "La manutenzione del ponte è stata rinviata due volte."
+          ],
+          "revelation": "La previsione è incompleta, ma diversi segnali indipendenti suggeriscono un rischio concreto."
+        },
+        "l3": {
+          "clues": [
+            "Il sensore fuori scala è stato sostituito ma non ricalibrato.",
+            "Il rinvio dei lavori è stato autorizzato per mantenere aperta la rotta commerciale."
+          ],
+          "connections": [
+            "Osservatorio Civico",
+            "Manutenzione ponte",
+            "Rotta commerciale"
+          ],
+          "revelation": "Agire può prevenire un cedimento, ma l'allarme non consente di stimare con precisione il momento del rischio."
+        }
+      }
+    },
+    {
+      "name": "Nika Loop",
+      "origin": "Laboratorio di Continuità",
+      "job": "Ricercatrice temporale",
+      "reason": "Chiede di consegnare un registro di anomalie verificatesi durante i reset",
+      "notes": "Gli orari nel registro si ripetono. Potrebbe essere un errore di sincronizzazione o la prova di un reset non dichiarato.",
+      "tags": [
+        "is_corrupt_official"
+      ],
+      "tagHints": [
+        "orari ripetuti",
+        "reset non dichiarato"
+      ],
+      "arc": "meta",
+      "effects": {
+        "pass": {
+          "regime": -6,
+          "popolo": 4,
+          "ribelli": 6,
+          "stamps": 0,
+          "sanity": -1
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -3,
+          "ribelli": -4,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -4,
+          "ribelli": -7,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 10,
+          "popolo": -7,
+          "ribelli": -10,
+          "stamps": 2,
+          "sanity": -2
+        }
+      },
+      "twist": {
+        "pass": "Il registro viene verificato e mostra un intervallo temporale che non compare nei log ufficiali.",
+        "deny": "L'anomalia viene archiviata come errore di sincronizzazione.",
+        "arrest": "I dispositivi vengono isolati, ma il laboratorio perde accesso ai dati grezzi.",
+        "condemn": "La condanna porta alla luce una procedura di reset non documentata."
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Tre eventi hanno lo stesso orario al secondo.",
+            "I log ufficiali mostrano una lacuna di undici minuti."
+          ],
+          "clues": [
+            "I dispositivi coinvolti usano un server di sincronizzazione comune.",
+            "La lacuna coincide con una manutenzione classificata."
+          ],
+          "revelation": "Il registro potrebbe documentare un reset non dichiarato, ma la sincronizzazione non è ancora verificata."
+        },
+        "l3": {
+          "clues": [
+            "Il server ha ricevuto un comando amministrativo durante la lacuna.",
+            "Un backup contiene dati che non compaiono nella copia ufficiale."
+          ],
+          "connections": [
+            "Laboratorio di Continuità",
+            "Server di sincronizzazione",
+            "Manutenzione classificata"
+          ],
+          "revelation": "L'anomalia è sostenuta da prove tecniche, ma non chiarisce chi abbia ordinato il reset né perché."
+        }
+      }
+    },
+    {
+      "name": "Tomaso Cenere",
+      "origin": "Quartiere delle Ciminiere",
+      "job": "Caposquadra antincendio",
+      "reason": "Trasporta un elenco di edifici da evacuare prima di una bonifica",
+      "notes": "L'elenco comprende un magazzino ufficialmente vuoto. La squadra non ha ricevuto conferma del permesso.",
+      "tags": [
+        "is_bomb_risk"
+      ],
+      "tagHints": [
+        "magazzino vuoto",
+        "bonifica urgente"
+      ],
+      "arc": "regime",
+      "effects": {
+        "pass": {
+          "regime": -3,
+          "popolo": 9,
+          "ribelli": 2,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 3,
+          "popolo": -8,
+          "ribelli": -1,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 6,
+          "popolo": -7,
+          "ribelli": -2,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 9,
+          "popolo": -11,
+          "ribelli": -4,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "L'evacuazione viene completata e nel magazzino si trova materiale non dichiarato.",
+        "deny": "La bonifica slitta e il quartiere resta esposto al rischio.",
+        "arrest": "La squadra perde il coordinamento e alcuni edifici vengono evacuati in ritardo.",
+        "condemn": "La condanna apre un'inchiesta sulle autorizzazioni della bonifica."
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "L'elenco è stato aggiornato dopo l'ultimo controllo.",
+            "Il magazzino risulta vuoto solo nel registro pubblico."
+          ],
+          "clues": [
+            "Il sensore termico rileva attività nel magazzino.",
+            "Il permesso di bonifica è stato firmato da un ufficio diverso dal solito."
+          ],
+          "revelation": "L'evacuazione appare prudente, ma la natura del materiale nel magazzino è sconosciuta."
+        },
+        "l3": {
+          "clues": [
+            "Il magazzino riceve energia durante la notte.",
+            "Il registro interno segnala un carico non identificato."
+          ],
+          "connections": [
+            "Quartiere delle Ciminiere",
+            "Magazzino",
+            "Ufficio autorizzazioni"
+          ],
+          "revelation": "Il rischio può essere reale, ma la prova non stabilisce se si tratti di materiali pericolosi o di una consegna irregolare."
+        }
+      }
+    },
+    {
+      "name": "Iris Null",
+      "origin": "Sportello delle Eccezioni",
+      "job": "Mediatrice legale",
+      "reason": "Vuole consegnare una richiesta collettiva di riesame per trenta famiglie",
+      "notes": "Le firme sono autentiche, ma una parte delle famiglie ha già ricevuto un esito negativo definitivo.",
+      "tags": [
+        "is_media",
+        "is_rebel_agent"
+      ],
+      "tagHints": [
+        "trenta firme",
+        "esiti definitivi"
+      ],
+      "arc": "people",
+      "effects": {
+        "pass": {
+          "regime": -5,
+          "popolo": 10,
+          "ribelli": 5,
+          "stamps": 0,
+          "sanity": 0
+        },
+        "deny": {
+          "regime": 4,
+          "popolo": -8,
+          "ribelli": -3,
+          "stamps": 1,
+          "sanity": 0
+        },
+        "arrest": {
+          "regime": 7,
+          "popolo": -8,
+          "ribelli": -6,
+          "stamps": 1,
+          "sanity": -1
+        },
+        "condemn": {
+          "regime": 11,
+          "popolo": -13,
+          "ribelli": -8,
+          "stamps": 2,
+          "sanity": -1
+        }
+      },
+      "twist": {
+        "pass": "Le richieste vengono riaperte, ma l'ufficio non ha risorse per esaminarle tutte.",
+        "deny": "Le famiglie organizzano una protesta davanti allo sportello.",
+        "arrest": "La richiesta viene sequestrata e una copia raggiunge comunque la stampa.",
+        "condemn": "La condanna trasforma il riesame in una disputa pubblica sul diritto di ricorso."
+      },
+      "investigation": {
+        "l2": {
+          "documents": [
+            "Le firme corrispondono ai documenti allegati.",
+            "Dodici pratiche hanno ricevuto un esito definitivo."
+          ],
+          "clues": [
+            "Alcune decisioni sono state emesse nello stesso minuto.",
+            "Le motivazioni dei dinieghi sono quasi identiche."
+          ],
+          "revelation": "La richiesta è autentica, ma potrebbe contenere casi non più riesaminabili secondo la procedura corrente."
+        },
+        "l3": {
+          "clues": [
+            "Le pratiche sono state valutate da un sistema automatico aggiornato di recente.",
+            "Il registro non mostra controlli umani per diversi casi."
+          ],
+          "connections": [
+            "Sportello delle Eccezioni",
+            "Sistema automatico",
+            "Famiglie ricorrenti"
+          ],
+          "revelation": "Il ricorso può correggere errori procedurali, ma riaprire tutte le pratiche può sovraccaricare l'ufficio."
+        }
+      }
     }
   ]
 }
