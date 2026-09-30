@@ -193,16 +193,16 @@
   }
   async function chooseStory(storyId){
     if(state.started)return;
-    showLoading('CARICAMENTO DELLA STORIA…');
     const selected=cases.find(item=>item.id===storyId && item.difficulty===state.difficulty);
     if(!selected)return;
+    showLoading('CARICAMENTO DELLA STORIA…');
     state.selectedStoryId=selected.id;
     currentIndex=cases.indexOf(selected);
     await publish();
   }
   async function startRound(){
-    showLoading('AVVIO DEL MISTERO…');
     const mystery=currentCase();if(!mystery){$('masterStatus').textContent='Seleziona prima una storia.';return;}
+    showLoading('AVVIO DEL MISTERO…');
     state.difficulty=mystery.difficulty;state.started=true;state.solved=false;state.solutionRevealed=false;
     state.revealedHints=[];state.history=[];state.queue=[];state.solvedBy=[];state.roundPoints={};state.startedAt=Date.now();state.lastHintAt=null;
     await publish();
