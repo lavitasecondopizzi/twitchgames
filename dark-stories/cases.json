@@ -1,134 +1,182 @@
 [
   {
     "id": "ds01",
-    "title": "La luce spenta",
-    "story": "Un uomo entra in una stanza, spegne la luce e poco dopo muoiono molte persone. Non ha toccato nessuno. Perché?",
-    "solution": "L'uomo è il guardiano di un faro. Spegnendo la luce del faro, una nave si schianta sugli scogli e i passeggeri muoiono.",
+    "difficulty": "facile",
+    "title": "Il tacchino e il faro",
+    "story": "All'alba, il tacchino umanoide Arturo spegne la luce del faro. Pochi minuti dopo una nave si schianta e lui viene arrestato, anche se non ha toccato la nave. Perché?",
+    "solution": "Arturo era il guardiano del faro: spegnendo la luce ha tolto il segnale che guidava la nave tra gli scogli.",
     "hints": [
-      "La stanza non è una casa.",
-      "La luce serviva a guidare qualcuno.",
-      "L'uomo lavorava in un faro."
+      "La luce serviva a chi era lontano.",
+      "Arturo aveva un lavoro di responsabilità.",
+      "Era la luce di un faro."
     ]
   },
   {
     "id": "ds02",
-    "title": "Il bicchiere d'acqua",
-    "story": "Una donna entra in un bar e chiede un bicchiere d'acqua. Il barista tira fuori una pistola e gliela punta. La donna lo ringrazia e se ne va. Perché?",
-    "solution": "La donna aveva il singhiozzo. Lo spavento provocato dalla pistola glielo fa passare.",
+    "difficulty": "facile",
+    "title": "Il singhiozzo di Becco",
+    "story": "La tacchina umanoide Beatrice entra in un bar e chiede acqua. Il barista le punta una pistola; lei lo ringrazia e se ne va sorridendo. Perché?",
+    "solution": "Beatrice aveva il singhiozzo. Lo spavento glielo ha fatto passare.",
     "hints": [
-      "La donna non era in pericolo reale.",
-      "Aveva un disturbo fastidioso.",
-      "Il barista voleva spaventarla."
+      "Il barista non voleva derubarla.",
+      "Beatrice aveva un fastidio fisico.",
+      "Lo spavento era proprio la cura."
     ]
   },
   {
     "id": "ds03",
-    "title": "L'ascensore",
-    "story": "Un uomo abita al ventesimo piano. Ogni giorno scende in ascensore fino al piano terra, ma al ritorno sale fino al dodicesimo e poi fa le scale. Quando piove, invece, arriva direttamente al ventesimo. Perché?",
-    "solution": "L'uomo è molto basso e raggiunge solo il pulsante del dodicesimo piano. Quando piove usa l'ombrello per premere quello del ventesimo.",
+    "difficulty": "facile",
+    "title": "L'ombrello di Arturo",
+    "story": "Il tacchino umanoide Arturo abita al ventesimo piano. Torna sempre a casa fermandosi al dodicesimo e facendo le scale, ma nei giorni di pioggia arriva direttamente al ventesimo. Perché?",
+    "solution": "Arturo è molto basso e non raggiunge il pulsante del ventesimo piano. Quando piove usa l'ombrello per premerlo.",
     "hints": [
-      "L'ascensore funziona perfettamente.",
-      "La statura dell'uomo è importante.",
-      "Usa un oggetto per raggiungere il pulsante."
+      "L'ascensore funziona bene.",
+      "Il problema è l'altezza di Arturo.",
+      "L'ombrello gli permette di arrivare al pulsante."
     ]
   },
   {
     "id": "ds04",
-    "title": "Il pacco intatto",
-    "story": "Un uomo viene trovato morto in un campo. Accanto a lui c'è un pacco chiuso. Non ci sono impronte né segni di lotta. Che cosa è successo?",
-    "solution": "Il pacco è il paracadute che non si è aperto. L'uomo si è lanciato da un aereo.",
+    "difficulty": "facile",
+    "title": "Il pacco di piume",
+    "story": "Il tacchino umanoide Gino viene trovato in un campo con uno zaino chiuso accanto. Non ci sono impronte intorno e nessun segno di lotta. Cosa è successo?",
+    "solution": "Gino si era lanciato da un aereo e lo zaino era il suo paracadute, che non si è aperto.",
     "hints": [
-      "Il pacco non era stato consegnato.",
-      "L'uomo è caduto da molto in alto.",
-      "Il pacco era un paracadute."
+      "Gino è arrivato dall'alto.",
+      "Lo zaino non conteneva vestiti.",
+      "Era un'attrezzatura di sicurezza."
     ]
   },
   {
     "id": "ds05",
-    "title": "La telefonata",
-    "story": "Una persona telefona alla polizia, dice una sola frase e riattacca. Quando gli agenti arrivano, arrestano chi ha risposto alla porta. Perché?",
-    "solution": "La persona al telefono ha chiamato la polizia dalla casa in cui era tenuta prigioniera, fingendo una chiamata innocua. Chi ha aperto la porta era il sequestratore.",
+    "difficulty": "facile",
+    "title": "La stanza ghiacciata",
+    "story": "Il tacchino umanoide Tito viene trovato appeso al soffitto in una stanza chiusa. Sotto di lui c'è solo una pozza d'acqua. Come ha fatto?",
+    "solution": "Tito era salito su un grosso blocco di ghiaccio che poi si è sciolto.",
     "hints": [
-      "La telefonata era una richiesta d'aiuto in codice.",
-      "La persona che ha chiamato non poteva parlare liberamente.",
-      "Chi ha aperto la porta controllava la vittima."
+      "Non c'erano mobili nascosti.",
+      "Qualcosa che lo sosteneva è scomparso.",
+      "Era fatto d'acqua congelata."
     ]
   },
   {
     "id": "ds06",
-    "title": "La stanza chiusa",
-    "story": "Un uomo viene trovato impiccato in una stanza chiusa dall'interno. Non ci sono mobili sotto di lui, né finestre aperte. Sul pavimento c'è solo una pozza d'acqua. Come ha fatto?",
-    "solution": "È salito su un grande blocco di ghiaccio che poi si è sciolto.",
+    "difficulty": "facile",
+    "title": "Tre luci nel pollaio",
+    "story": "La tacchina umanoide Lidia ha tre interruttori fuori da una stanza chiusa e una lampadina dentro. Può entrare una sola volta. Come scopre quale interruttore accende la lampadina?",
+    "solution": "Accende il primo per alcuni minuti, lo spegne e accende il secondo. Entrando, se la lampadina è accesa è il secondo; se è spenta ma calda è il primo; se è spenta e fredda è il terzo.",
     "hints": [
-      "Non serviva un mobile.",
-      "La stanza è rimasta chiusa.",
-      "Qualcosa sotto di lui è scomparso."
+      "La lampadina produce calore.",
+      "Gli interruttori possono essere usati in sequenza.",
+      "Bisogna controllare anche la temperatura."
     ]
   },
   {
     "id": "ds07",
-    "title": "La cena silenziosa",
-    "story": "Durante una cena, una donna assaggia la zuppa, guarda il cuoco e chiama la polizia. Non ha trovato veleno né insetti. Perché?",
-    "solution": "La donna era sopravvissuta a un naufragio e le era stato detto che aveva mangiato carne di un compagno morto per sopravvivere. Assaggiando la zuppa capisce che il sapore è diverso e realizza che allora le avevano mentito: aveva mangiato carne umana.",
+    "difficulty": "medio",
+    "title": "Il messaggio di mezzanotte",
+    "story": "Il tacchino umanoide Nando telefona alla polizia e pronuncia soltanto: «Le piume sono tutte al loro posto». Riattacca. Quando gli agenti arrivano, arrestano il tacchino che apre la porta. Perché?",
+    "solution": "Nando era tenuto prigioniero e aveva concordato una frase in codice con la polizia. La frase apparentemente innocua segnalava che il sequestratore era presente e che gli agenti dovevano intervenire.",
     "hints": [
-      "La donna aveva un trauma passato.",
-      "Il sapore le ricorda qualcosa che aveva già assaggiato.",
-      "La verità riguarda l'origine di ciò che aveva mangiato."
+      "La frase aveva un significato concordato.",
+      "Nando non poteva chiedere aiuto apertamente.",
+      "Chi apre la porta controllava la situazione."
     ]
   },
   {
     "id": "ds08",
-    "title": "Il registratore",
-    "story": "Un uomo è trovato morto con un registratore in mano. La polizia preme play, ascolta un messaggio e capisce subito che non è suicidio. Come?",
-    "solution": "Nel messaggio l'uomo dice che si ucciderà e poi si sente lo sparo. Per riavvolgere il nastro e premere play, qualcuno avrebbe dovuto preparare il registratore: la polizia capisce che la scena è stata manipolata. (Versione classica: il nastro era già riavvolto dopo lo sparo.)",
+    "difficulty": "medio",
+    "title": "La registrazione impossibile",
+    "story": "Il tacchino umanoide Ettore viene trovato morto con un registratore in mano. Nel messaggio si sente dire che sta per morire, poi uno sparo. L'investigatrice tacchina capisce subito che la scena è stata manipolata. Perché?",
+    "solution": "La registrazione era stata riavvolta e preparata per far sembrare che Ettore avesse avviato da solo il messaggio. Il riavvolgimento dopo lo sparo indica che qualcuno ha manipolato il registratore.",
     "hints": [
-      "Il registratore contiene una registrazione.",
-      "La sequenza degli eventi non torna.",
-      "Qualcuno ha potuto manipolare la scena."
+      "La sequenza degli eventi è sospetta.",
+      "Il nastro è stato riavvolto.",
+      "Qualcuno ha potuto toccare il registratore dopo lo sparo."
     ]
   },
   {
     "id": "ds09",
-    "title": "La finestra aperta",
-    "story": "Un uomo viene trovato morto ai piedi di un edificio. La finestra del suo appartamento è aperta. La polizia guarda la stanza e capisce che non è caduto accidentalmente. Perché?",
-    "solution": "L'uomo era un investigatore che stava ricostruendo un omicidio: la finestra era aperta dall'esterno e le impronte sul davanzale erano state messe al contrario per simulare una caduta. La scena era stata inscenata.",
+    "difficulty": "medio",
+    "title": "Il treno senza segnale",
+    "story": "Ogni notte il tacchino umanoide Arturo sente tre colpi provenire dalla stazione e accende una luce di segnalazione. Una notte ignora i colpi. Al mattino scopre che un treno è deragliato. Perché?",
+    "solution": "I tre colpi erano il segnale convenuto che indicava un problema ai binari. Arturo, addetto alla segnalazione, non ha acceso la luce che avrebbe avvertito il macchinista.",
     "hints": [
-      "La finestra è una messinscena.",
-      "Gli indizi sono stati manipolati.",
-      "La caduta non spiega la scena."
+      "I colpi non erano casuali.",
+      "Arturo lavorava per la ferrovia.",
+      "La luce doveva essere vista dal macchinista."
     ]
   },
   {
     "id": "ds10",
-    "title": "Tre interruttori",
-    "story": "Fuori da una stanza chiusa ci sono tre interruttori. Solo uno accende la lampadina dentro. Puoi entrare nella stanza una sola volta. Come scopri quale interruttore è quello giusto?",
-    "solution": "Accendi il primo interruttore per alcuni minuti, poi spegnilo. Accendi il secondo ed entra. Se la lampadina è accesa è il secondo; se è spenta ma calda è il primo; se è spenta e fredda è il terzo.",
+    "difficulty": "medio",
+    "title": "La zuppa del capitano",
+    "story": "La tacchina umanoide Marta assaggia una zuppa in una locanda e chiama la polizia. Non trova veleno né qualcosa di estraneo. Il cuoco giura che la ricetta è normale. Cosa ha capito?",
+    "solution": "Dopo essere sopravvissuta a un naufragio, Marta era stata convinta di aver mangiato zuppa di funghi per sopravvivere. Il sapore della zuppa della locanda è diverso da quello che ricordava: capisce che durante il naufragio le era stata servita carne di un compagno morto.",
     "hints": [
-      "La lampadina produce anche calore.",
-      "Puoi usare gli interruttori in sequenza.",
-      "Non devi basarti solo sulla luce."
+      "Il sapore le ricorda un episodio passato.",
+      "Marta era sopravvissuta a un naufragio.",
+      "La scoperta riguarda un ingrediente nascosto."
     ]
   },
   {
     "id": "ds11",
-    "title": "Il funerale",
-    "story": "Una donna incontra uno sconosciuto al funerale di sua madre e si innamora subito di lui. Non riesce a rintracciarlo. Qualche giorno dopo uccide sua sorella. Perché?",
-    "solution": "La donna spera che lo sconosciuto torni al funerale della sorella per poterlo rivedere. È un classico enigma psicologico; non è una giustificazione, ma il movente della storia.",
+    "difficulty": "medio",
+    "title": "La porta senza impronte",
+    "story": "Il tacchino umanoide Cesare viene trovato morto in una stanza chiusa dall'interno. La neve fuori è intatta e non ci sono impronte vicino alla finestra. Eppure la polizia sa che qualcuno è entrato. Come?",
+    "solution": "L'assassino era già nascosto nella stanza prima che Cesare entrasse e ha lasciato la stanza con lui, travestito da soccorritore tra i primi arrivati.",
     "hints": [
-      "La donna voleva rivedere lo sconosciuto.",
-      "Non conosceva la sua identità.",
-      "Credeva che un altro funerale potesse farlo tornare."
+      "La stanza era chiusa soltanto dopo l'ingresso di Cesare.",
+      "La neve esclude un ingresso dall'esterno.",
+      "L'assassino non è rimasto nella stanza."
     ]
   },
   {
     "id": "ds12",
-    "title": "Il rumore nella notte",
-    "story": "Ogni notte un uomo sente un rumore, accende la luce e torna a dormire. Una notte non accende la luce. La mattina dopo scopre che molte persone sono morte. Perché?",
-    "solution": "L'uomo è il guardiano di una stazione ferroviaria. Il rumore è il segnale di un sistema che avverte di un problema ai binari; quella notte non accende la luce di segnalazione e un treno deraglia.",
+    "difficulty": "medio",
+    "title": "Il brindisi del re",
+    "story": "Durante un banchetto, il re tacchino Umberto beve dal proprio calice e muore. Tutti gli altri bevono dalla stessa brocca e stanno bene. Il coppiere non ha avvelenato il vino. Come è morto il re?",
+    "solution": "Il veleno era sul bordo del calice del re, non nel vino. Gli altri calici erano puliti.",
     "hints": [
-      "Il rumore era un segnale importante.",
-      "L'uomo aveva una responsabilità verso altre persone.",
-      "La luce era un segnale per qualcuno lontano."
+      "La brocca non era contaminata.",
+      "Solo il re ha avuto contatto con un punto preciso del calice.",
+      "Il veleno non era mescolato alla bevanda."
+    ]
+  },
+  {
+    "id": "ds13",
+    "difficulty": "difficile",
+    "title": "La fotografia delle piume",
+    "story": "La detective tacchina Vera trova il collega Bruno morto nel suo studio. Sul tavolo c'è una fotografia di Bruno con tre tacchini, ma uno dei volti è stato graffiato via. Vera arresta il fotografo, che non conosceva Bruno. Perché?",
+    "solution": "Il volto cancellato era quello del fotografo stesso: la fotografia provava che era stato presente in un luogo dove aveva dichiarato di non essere mai stato. Vera capisce che il fotografo ha mentito sulla sua presenza e lo collega al delitto tramite altri indizi raccolti nella stanza.",
+    "hints": [
+      "La fotografia contraddice una dichiarazione.",
+      "Il volto cancellato apparteneva a qualcuno ancora vivo.",
+      "Il fotografo aveva mentito su dove si trovava."
+    ]
+  },
+  {
+    "id": "ds14",
+    "difficulty": "difficile",
+    "title": "Il villaggio in silenzio",
+    "story": "Un villaggio abitato da tacchini umanoidi resta senza elettricità. Il sindaco riceve una lettera senza firma e ordina a tutti di non uscire. All'alba, un solo tacchino esce di casa e viene arrestato, pur non avendo infranto nessuna legge scritta. Perché?",
+    "solution": "Il sindaco aveva diffuso un falso allarme per scoprire chi sapeva che la centrale era stata sabotata. Il tacchino uscito all'alba portava con sé gli strumenti del sabotaggio e il suo comportamento, insieme agli indizi raccolti, lo collegava al guasto.",
+    "hints": [
+      "La lettera non era una minaccia diretta.",
+      "Il sindaco stava cercando una persona specifica.",
+      "L'uscita di casa ha rivelato un indizio, non costituisce da sola un reato."
+    ]
+  },
+  {
+    "id": "ds15",
+    "difficulty": "difficile",
+    "title": "Il secondo rintocco",
+    "story": "La campana del municipio suona una volta a mezzanotte. Il tacchino umanoide Aldo guarda l'orologio e scappa, salvando involontariamente la vita a un altro tacchino. Se la campana avesse suonato due volte, sarebbe morto. Perché?",
+    "solution": "Aldo era nella torre del municipio per fermare un meccanismo trappola predisposto per il secondo rintocco. Il primo rintocco gli segnala che il meccanismo è partito e fugge, lasciando la porta aperta e permettendo all'altro tacchino di uscire. Il secondo rintocco avrebbe attivato la trappola.",
+    "hints": [
+      "La campana è collegata a un meccanismo.",
+      "Il primo rintocco è un avvertimento.",
+      "Il pericolo si attiva al secondo rintocco."
     ]
   }
 ]
