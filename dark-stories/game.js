@@ -12,6 +12,12 @@
   let state = {started:false,solved:false,solutionRevealed:false,selectedStoryId:null,difficultyVotes:{},difficulty:'facile',revealedHints:[],history:[],queue:[],scores:{},roundPoints:{},solvedBy:[],startedAt:null,lastHintAt:null};
   const HINT_DELAY_MS = 10 * 60 * 1000;
   let hintTimerInterval = null;
+  function showLoading(message='CARICAMENTO IN CORSO…'){
+    if(!$('loadingOverlay'))return;
+    if($('loadingText'))$('loadingText').textContent=message;
+    $('loadingOverlay').classList.remove('hidden');
+  }
+  function hideLoading(){if($('loadingOverlay'))$('loadingOverlay').classList.add('hidden');}
   const status = (message,error=false) => { if($('connectionStatus')){$('connectionStatus').textContent=message;$('connectionStatus').style.color=error?'#b71919':'';} };
   const currentCase = () => cases.find(item=>item.id===state.selectedStoryId) || null;
   const difficultyNames = {facile:'FACILE',medio:'MEDIO',difficile:'DIFFICILE'};
@@ -113,11 +119,20 @@
     roundNumber=Number.isInteger(s.roundNumber)?s.roundNumber:roundNumber;
     state={...state,...s,difficultyVotes:s.difficultyVotes||state.difficultyVotes||{},queue:s.queue||[],scores:s.scores||{},roundPoints:s.roundPoints||state.roundPoints||{},history:s.history||[],revealedHints:s.revealedHints||[],solvedBy:s.solvedBy||[]};
     if(isMaster)renderMaster({...gameState(),...s});else renderPlayer(s);
+    hideLoading();
   }
   async function selectDifficulty(difficulty){
     if(!['facile','medio','difficile'].includes(difficulty)||state.started)return;
-    await client.broadcast('game_event',{type:'difficulty_select',difficulty});
-    if($('difficultyStatus'))$('difficultyStatus').textContent='Difficoltà selezionata: '+difficultyNames[difficulty]+'. Il Master sta scegliendo una storia.';
+    showLoading('INVIO DELLA SCELTA…');
+    document.querySelectorAll('[data-difficulty]').forEach(button=>button.disabled=true);
+    try{
+      await client.broadcast('game_event',{type:'difficulty_select',difficulty});
+      if($('difficultyStatus'))$('difficultyStatus').textContent='Difficoltà selezionata: '+difficultyNames[difficulty]+'. Il Master sta scegliendo una storia.';
+    }catch(error){
+      hideLoading();
+      document.querySelectorAll('[data-difficulty]').forEach(button=>button.disabled=false);
+      throw error;
+    }
   }
   async function recordDifficultyVote(author,difficulty,source){
     if(state.started)return;
@@ -178,6 +193,7 @@
   }
   async function chooseStory(storyId){
     if(state.started)return;
+    showLoading('CARICAMENTO DELLA STORIA…');
     const selected=cases.find(item=>item.id===storyId && item.difficulty===state.difficulty);
     if(!selected)return;
     state.selectedStoryId=selected.id;
@@ -185,6 +201,7 @@
     await publish();
   }
   async function startRound(){
+    showLoading('AVVIO DEL MISTERO…');
     const mystery=currentCase();if(!mystery){$('masterStatus').textContent='Seleziona prima una storia.';return;}
     state.difficulty=mystery.difficulty;state.started=true;state.solved=false;state.solutionRevealed=false;
     state.revealedHints=[];state.history=[];state.queue=[];state.solvedBy=[];state.roundPoints={};state.startedAt=Date.now();state.lastHintAt=null;
@@ -299,7 +316,7 @@
         $('solutionForm').addEventListener('submit',e=>{e.preventDefault();approveSolution($('solverName').value,$('solverAnswer').value);});
         $('prepareAnswerParts').addEventListener('click',prepareAnswerParts);
         $('rejectSolution').addEventListener('click',()=>{$('masterStatus').textContent='Valutazione annullata. Nessun punto assegnato.';$('solverName').value='';$('solverAnswer').value='';$('hypothesisParts').innerHTML='';$('hypothesisParts').dataset.parts='[]';});
-        state.difficulty='facile';renderMaster({...gameState(),roundNumber:1});
+        state.difficulty='facile';renderMaster({...gameState(),roundNumber:1});hideLoading();
       }else{
         const saved=playerNickname;
         $('nickname').value=saved;
@@ -309,7 +326,7 @@
         $('questionForm').addEventListener('submit',e=>{e.preventDefault();const name=playerNickname;sendQuestion(name,$('questionInput').value,'OSPITE').then(()=>$('questionInput').value='').catch(()=>status('Impossibile inviare la domanda.',true));});
         $('solutionGuessForm').addEventListener('submit',e=>{e.preventDefault();const name=playerNickname;sendSolution(name,$('solutionGuess').value,'OSPITE').then(()=>$('solutionGuess').value='').catch(()=>status('Impossibile inviare il tentativo.',true));});
       }
-    }catch(error){console.error(error);status(error.message||'Errore di connessione.',true);}
+    }catch(error){console.error(error);hideLoading();status(error.message||'Errore di connessione.',true);}
   }
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&client&&isMaster)client.broadcast('game_state',gameState()).catch(()=>{});});
   window.addEventListener('beforeunload',()=>{try{twitchSocket?.close();client?.close();}catch(_){}});
