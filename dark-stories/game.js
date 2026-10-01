@@ -278,6 +278,16 @@
     ws.onerror=()=>{if($('twitchStatus'))$('twitchStatus').textContent='Errore di connessione alla chat Twitch.';};
     $('twitchStatus').textContent='Connessione a #'+channel+' richiesta. Comandi: !difficolta facile|medio|difficile, !ds domanda, !soluzione tentativo.';
   }
+  function setupRules(){
+    const overlay=$('rulesOverlay');
+    if(!overlay)return;
+    const open=()=>{overlay.classList.remove('hidden');$('closeRules')?.focus();};
+    const close=()=>{overlay.classList.add('hidden');$('openRules')?.focus();};
+    $('openRules')?.addEventListener('click',open);
+    $('closeRules')?.addEventListener('click',close);
+    overlay.addEventListener('click',event=>{if(event.target===overlay)close();});
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!overlay.classList.contains('hidden'))close();});
+  }
   async function init(){
     if(!/^[A-Z0-9]{6}$/.test(room)){status('Codice stanza mancante o non valido. Torna alla lobby e riapri il gioco.',true);return;}
     try{
@@ -330,5 +340,6 @@
   }
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&client&&isMaster)client.broadcast('game_state',gameState()).catch(()=>{});});
   window.addEventListener('beforeunload',()=>{try{twitchSocket?.close();client?.close();}catch(_){}});
+  setupRules();
   init();
 })();
