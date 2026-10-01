@@ -67,7 +67,7 @@
     if($('webcamLabelB'))$('webcamLabelB').textContent=playerNickname.toUpperCase();
     $('waitingView').classList.toggle('hidden',!!s.started);
     $('playerView').classList.toggle('hidden',!s.started);
-    document.querySelectorAll('[data-difficulty]').forEach(button=>button.classList.toggle('selected',button.dataset.difficulty===(s.difficulty||'facile')));
+    document.querySelectorAll('[data-difficulty]').forEach(button=>{button.classList.toggle('selected',button.dataset.difficulty===(s.difficulty||'facile'));if(!isMaster)button.disabled=!!s.started;});
     if($('difficultyStatus')&&!s.started)$('difficultyStatus').textContent='Difficoltà attuale: '+(difficultyNames[s.difficulty]||'FACILE')+'. Il Master sta scegliendo una storia.';
     if(!s.started)return;
     $('roundLabel').textContent='MISTERO '+(s.roundNumber||s.index+1)+' · '+(difficultyNames[s.difficulty]||'FACILE');
@@ -88,8 +88,8 @@
   function lockHostInteractions(){
     document.querySelectorAll('[data-difficulty],#questionInput,#solutionGuess,#questionForm button,#solutionGuessForm button').forEach(el=>{el.disabled=true;el.setAttribute('aria-disabled','true');});
     const nickname=$('nickname');if(nickname){nickname.value='Pizzi';nickname.readOnly=true;}
-    const waiting=$('waitingView');if(waiting)waiting.querySelector('h2').textContent='IN ATTESA DEL MISTERO';
-    const help=document.querySelector('#waitingView > p');if(help)help.textContent='La partita è visualizzata in sola lettura.';
+    const waiting=$('waitingView');if(waiting)waiting.querySelector('h2').textContent='DIFFICOLTÀ SCELTA DALLA CHAT';
+    const help=document.querySelector('#waitingView > p');if(help)help.textContent='La vista Host è in sola lettura: la difficoltà può essere scelta o modificata dagli ospiti finché il mistero non è iniziato.';
     const questionForm=$('questionForm');if(questionForm)questionForm.addEventListener('submit',e=>e.preventDefault());
     const solutionForm=$('solutionGuessForm');if(solutionForm)solutionForm.addEventListener('submit',e=>e.preventDefault());
   }
@@ -133,13 +133,12 @@
   async function selectDifficulty(difficulty){
     if(!['facile','medio','difficile'].includes(difficulty)||state.started)return;
     showLoading('INVIO DELLA SCELTA…');
-    document.querySelectorAll('[data-difficulty]').forEach(button=>button.disabled=true);
     try{
       await client.broadcast('game_event',{type:'difficulty_select',difficulty});
-      if($('difficultyStatus'))$('difficultyStatus').textContent='Difficoltà selezionata: '+difficultyNames[difficulty]+'. Il Master sta scegliendo una storia.';
+      hideLoading();
+      if($('difficultyStatus'))$('difficultyStatus').textContent='Difficoltà selezionata: '+difficultyNames[difficulty]+'. Puoi cambiarla finché il mistero non è iniziato.';
     }catch(error){
       hideLoading();
-      document.querySelectorAll('[data-difficulty]').forEach(button=>button.disabled=false);
       throw error;
     }
   }
@@ -327,6 +326,7 @@
       hintTimerInterval=setInterval(()=>updateHintTimer(state),1000);
       if(isMaster){
         state.difficulty='facile';
+        document.body.classList.add('readonly-host');
         renderPlayer(gameState());
         lockHostInteractions();
         hideLoading();
