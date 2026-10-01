@@ -255,3 +255,17 @@ form{display:grid;gap:5px}
   .difficulty-blocks{grid-template-columns:none;min-height:0}
   .difficulty-block{flex:0 0 140px;width:140px;min-width:140px;height:140px;min-height:140px;max-height:140px;flex-direction:column}
 }
+
+
+/* Oscuramento dello sfondo del regolamento, come negli altri minigiochi */
+.rules-backdrop{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  background:rgba(17,17,17,.92);
+  -webkit-backdrop-filter:blur(3px);
+  backdrop-filter:blur(3px);
+}
+.rules-sheet{
+  z-index:1;
+}
