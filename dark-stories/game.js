@@ -2,10 +2,11 @@
   const params = new URLSearchParams(location.search);
   const room = (params.get('room') || '').toUpperCase();
   const isMaster = !!document.querySelector('.master-page');
-  const role = isMaster ? 'master' : (params.get('role') || 'guest');
+  const isHost = !!document.querySelector('.host-page');
+  const role = isMaster ? 'master' : (isHost ? 'host' : (params.get('role') || 'guest'));
   const lobbyNickname = (params.get('player') || '').trim().replace(/\s+/g,' ').slice(0,24);
   const guestNickname = (params.get('guest') || '').trim().replace(/\s+/g,' ').slice(0,24);
-  const playerNickname = isMaster ? 'Pizzi' : (lobbyNickname || 'Ospite');
+  const playerNickname = (isMaster || isHost) ? 'Pizzi' : (lobbyNickname || 'Ospite');
   const $ = id => document.getElementById(id);
   const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   let client, cases = [], currentIndex = 0, roundNumber = 1, twitchSocket = null;
@@ -67,7 +68,7 @@
     if($('webcamLabelB'))$('webcamLabelB').textContent=playerNickname.toUpperCase();
     $('waitingView').classList.toggle('hidden',!!s.started);
     $('playerView').classList.toggle('hidden',!s.started);
-    document.querySelectorAll('[data-difficulty]').forEach(button=>{button.classList.toggle('selected',button.dataset.difficulty===(s.difficulty||'facile'));if(!isMaster)button.disabled=!!s.started;});
+    document.querySelectorAll('[data-difficulty]').forEach(button=>button.classList.toggle('selected',button.dataset.difficulty===(s.difficulty||'facile')));
     if($('difficultyStatus')&&!s.started)$('difficultyStatus').textContent='Difficoltà attuale: '+(difficultyNames[s.difficulty]||'FACILE')+'. Il Master sta scegliendo una storia.';
     if(!s.started)return;
     $('roundLabel').textContent='MISTERO '+(s.roundNumber||s.index+1)+' · '+(difficultyNames[s.difficulty]||'FACILE');
@@ -88,10 +89,10 @@
   function lockHostInteractions(){
     document.querySelectorAll('[data-difficulty],#questionInput,#solutionGuess,#questionForm button,#solutionGuessForm button').forEach(el=>{el.disabled=true;el.setAttribute('aria-disabled','true');});
     const nickname=$('nickname');if(nickname){nickname.value='Pizzi';nickname.readOnly=true;}
-    const waiting=$('waitingView');if(waiting)waiting.querySelector('h2').textContent='DIFFICOLTÀ SCELTA DALLA CHAT';
-    const help=document.querySelector('#waitingView > p');if(help)help.textContent='La vista Host è in sola lettura: la difficoltà può essere scelta o modificata dagli ospiti finché il mistero non è iniziato.';
-    const questionForm=$('questionForm');if(questionForm)questionForm.addEventListener('submit',e=>e.preventDefault());
-    const solutionForm=$('solutionGuessForm');if(solutionForm)solutionForm.addEventListener('submit',e=>e.preventDefault());
+    const waiting=$('waitingView');if(waiting){const heading=waiting.querySelector('h2');if(heading)heading.textContent='IN ATTESA DEL MISTERO';}
+    const help=document.querySelector('#waitingView > p');if(help)help.textContent='Vista della diretta in sola lettura. Le interazioni sono gestite dall’ospite e dal Master.';
+    $('questionForm')?.addEventListener('submit',e=>e.preventDefault());
+    $('solutionGuessForm')?.addEventListener('submit',e=>e.preventDefault());
   }
   function renderMaster(s){
     $('connection').classList.add('hidden');$('masterView').classList.remove('hidden');
@@ -126,19 +127,19 @@
     currentIndex=Number.isInteger(s.index)?s.index:currentIndex;
     roundNumber=Number.isInteger(s.roundNumber)?s.roundNumber:roundNumber;
     state={...state,...s,difficultyVotes:s.difficultyVotes||state.difficultyVotes||{},queue:s.queue||[],scores:s.scores||{},roundPoints:s.roundPoints||state.roundPoints||{},history:s.history||[],revealedHints:s.revealedHints||[],solvedBy:s.solvedBy||[]};
-    renderPlayer(s);
-    if(isMaster)lockHostInteractions();
+    if(isMaster)renderMaster({...gameState(),...s});else {renderPlayer(s);if(isHost)lockHostInteractions();}
     hideLoading();
   }
   async function selectDifficulty(difficulty){
     if(!['facile','medio','difficile'].includes(difficulty)||state.started)return;
     showLoading('INVIO DELLA SCELTA…');
+    document.querySelectorAll('[data-difficulty]').forEach(button=>button.disabled=true);
     try{
       await client.broadcast('game_event',{type:'difficulty_select',difficulty});
-      hideLoading();
-      if($('difficultyStatus'))$('difficultyStatus').textContent='Difficoltà selezionata: '+difficultyNames[difficulty]+'. Puoi cambiarla finché il mistero non è iniziato.';
+      if($('difficultyStatus'))$('difficultyStatus').textContent='Difficoltà selezionata: '+difficultyNames[difficulty]+'. Il Master sta scegliendo una storia.';
     }catch(error){
       hideLoading();
+      document.querySelectorAll('[data-difficulty]').forEach(button=>button.disabled=false);
       throw error;
     }
   }
@@ -300,7 +301,7 @@
     if(!/^[A-Z0-9]{6}$/.test(room)){status('Codice stanza mancante o non valido. Torna alla lobby e riapri il gioco.',true);return;}
     try{
       cases=await fetch('cases.json').then(r=>{if(!r.ok)throw new Error('Impossibile caricare i misteri.');return r.json();});
-      client=new TortelloSupabaseRoom({room,role:isMaster?'master':role,nickname:isMaster?'Master':playerNickname,game:'dark-stories'});
+      client=new TortelloSupabaseRoom({room,role:isMaster?'master':(isHost?'host':role),nickname:isMaster?'Master':playerNickname,game:'dark-stories'});
       client.on('connected',()=>status('Connesso alla stanza '+room+'.'));
       client.on('game-state',payload=>{if(payload)render(payload);});
       client.on('game-event',payload=>{
@@ -308,7 +309,7 @@
         if(payload?.type==='difficulty_select'&&!state.started&&['facile','medio','difficile'].includes(payload.difficulty)){state.difficulty=payload.difficulty;state.selectedStoryId=null;currentIndex=0;publish();}
         if(payload?.type==='difficulty_vote')recordDifficultyVote(payload.author,payload.difficulty,payload.source||'OSPITE');
         if(payload?.type==='question')addQuestion(payload.author,payload.question,payload.source||'OSPITE');
-        if(payload?.type==='solution'&&!state.solutionRevealed){state.pendingSolutions=state.pendingSolutions||[];state.pendingSolutions.push({author:payload.author||'Anonimo',answer:payload.answer||''});}
+        if(payload?.type==='solution'&&!state.solutionRevealed){$('solverName').value=payload.author||'Anonimo';$('solverAnswer').value=payload.answer||'';$('masterStatus').textContent='Tentativo ricevuto da '+(payload.author||'Anonimo')+'. Verificalo prima di assegnare punti.';}
       });
       client.on('presence',presence=>{
         if(!isMaster){
@@ -325,11 +326,20 @@
       if(hintTimerInterval)clearInterval(hintTimerInterval);
       hintTimerInterval=setInterval(()=>updateHintTimer(state),1000);
       if(isMaster){
-        state.difficulty='facile';
+        $('startRound').addEventListener('click',startRound);
+        $('nextRound').addEventListener('click',nextRound);
+        $('hintButton').addEventListener('click',revealHint);
+        $('revealSolution').addEventListener('click',revealSolution);
+        $('connectTwitch').addEventListener('click',connectTwitch);
+        $('manualQuestionForm').addEventListener('submit',e=>{e.preventDefault();addQuestion($('manualAuthor').value,$('manualQuestion').value,'TWITCH MANUALE');$('manualQuestion').value='';});
+        $('solutionForm').addEventListener('submit',e=>{e.preventDefault();approveSolution($('solverName').value,$('solverAnswer').value);});
+        $('prepareAnswerParts').addEventListener('click',prepareAnswerParts);
+        $('rejectSolution').addEventListener('click',()=>{$('masterStatus').textContent='Valutazione annullata. Nessun punto assegnato.';$('solverName').value='';$('solverAnswer').value='';$('hypothesisParts').innerHTML='';$('hypothesisParts').dataset.parts='[]';});
+        state.difficulty='facile';renderMaster({...gameState(),roundNumber:1});hideLoading();
+      }else if(isHost){
         document.body.classList.add('readonly-host');
-        renderPlayer(gameState());
-        lockHostInteractions();
-        hideLoading();
+        $('nickname').value='Pizzi';$('nickname').readOnly=true;
+        renderPlayer(gameState());lockHostInteractions();hideLoading();
       }else{
         const saved=playerNickname;
         $('nickname').value=saved;
