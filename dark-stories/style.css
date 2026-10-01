@@ -166,3 +166,31 @@ form{display:grid;gap:5px}
  .rules-sheet{max-height:calc(100dvh - 20px)}
 }
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation-duration:2s!important;transition:none!important}}
+
+
+/* Allineamento e distribuzione ispirati a Indovina Chi */
+.top{flex:0 0 auto;height:auto;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr) minmax(0,1fr);gap:10px;align-items:stretch}
+.webcam{align-self:stretch;aspect-ratio:16/9}
+.center{height:100%;max-height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto;justify-items:center;gap:6px;padding:8px}
+.center h1{font-size:clamp(16px,1.8vw,27px);line-height:.9}
+.center .lead{font-size:clamp(9px,.8vw,12px)}
+.rules-open{position:static;z-index:auto;min-height:0;padding:3px 7px;border:2px solid var(--ink);border-radius:0;background:var(--paper);color:var(--ink);box-shadow:2px 2px 0 var(--ink);font-size:8px;line-height:1;text-transform:uppercase}
+.rules-open:hover,.rules-open:focus-visible{background:var(--ink);color:var(--paper);outline:none}
+.rules-bar{flex:0 0 20px;display:flex;justify-content:flex-end;align-items:flex-start;padding-right:2px;position:relative;z-index:2}
+#connection{flex:1 1 0}
+#playerView.layout,#masterView.layout{flex:1 1 0;grid-template-columns:minmax(0,1fr) minmax(170px,22%) minmax(0,1fr);gap:10px}
+#playerView .story{grid-column:1}
+#playerView>aside{grid-column:2 / 4}
+#masterView>article{grid-column:1}
+#masterView>aside{grid-column:2 / 4}
+#playerView>.panel,#masterView>.panel{border-width:4px;box-shadow:var(--shadow)}
+@media(max-width:900px){
+ .top{grid-template-columns:minmax(0,1fr) minmax(0,1.25fr) minmax(0,1fr);gap:8px}
+ #playerView.layout,#masterView.layout{grid-template-columns:1fr}
+ #playerView .story,#playerView>aside,#masterView>article,#masterView>aside{grid-column:1}
+}
+@media(max-width:600px){
+ .top{grid-template-columns:minmax(0,1fr) minmax(0,1.25fr) minmax(0,1fr);gap:6px}
+ .center h1{font-size:clamp(14px,3.6vw,22px)}
+ .center .lead{display:none}
+}
