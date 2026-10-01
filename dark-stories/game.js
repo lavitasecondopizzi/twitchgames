@@ -85,6 +85,14 @@
     $('solutionGuessForm').querySelector('button').disabled=!!s.solutionRevealed;
     if(s.solutionRevealed&&s.solution)$('storyText').textContent=s.story+'\n\nSOLUZIONE: '+s.solution;
   }
+  function lockHostInteractions(){
+    document.querySelectorAll('[data-difficulty],#questionInput,#solutionGuess,#questionForm button,#solutionGuessForm button').forEach(el=>{el.disabled=true;el.setAttribute('aria-disabled','true');});
+    const nickname=$('nickname');if(nickname){nickname.value='Pizzi';nickname.readOnly=true;}
+    const waiting=$('waitingView');if(waiting)waiting.querySelector('h2').textContent='IN ATTESA DEL MISTERO';
+    const help=document.querySelector('#waitingView > p');if(help)help.textContent='La partita è visualizzata in sola lettura.';
+    const questionForm=$('questionForm');if(questionForm)questionForm.addEventListener('submit',e=>e.preventDefault());
+    const solutionForm=$('solutionGuessForm');if(solutionForm)solutionForm.addEventListener('submit',e=>e.preventDefault());
+  }
   function renderMaster(s){
     $('connection').classList.add('hidden');$('masterView').classList.remove('hidden');
     if($('webcamLabelA'))$('webcamLabelA').textContent='PIZZI';
@@ -118,7 +126,8 @@
     currentIndex=Number.isInteger(s.index)?s.index:currentIndex;
     roundNumber=Number.isInteger(s.roundNumber)?s.roundNumber:roundNumber;
     state={...state,...s,difficultyVotes:s.difficultyVotes||state.difficultyVotes||{},queue:s.queue||[],scores:s.scores||{},roundPoints:s.roundPoints||state.roundPoints||{},history:s.history||[],revealedHints:s.revealedHints||[],solvedBy:s.solvedBy||[]};
-    if(isMaster)renderMaster({...gameState(),...s});else renderPlayer(s);
+    renderPlayer(s);
+    if(isMaster)lockHostInteractions();
     hideLoading();
   }
   async function selectDifficulty(difficulty){
@@ -300,7 +309,7 @@
         if(payload?.type==='difficulty_select'&&!state.started&&['facile','medio','difficile'].includes(payload.difficulty)){state.difficulty=payload.difficulty;state.selectedStoryId=null;currentIndex=0;publish();}
         if(payload?.type==='difficulty_vote')recordDifficultyVote(payload.author,payload.difficulty,payload.source||'OSPITE');
         if(payload?.type==='question')addQuestion(payload.author,payload.question,payload.source||'OSPITE');
-        if(payload?.type==='solution'&&!state.solutionRevealed){$('solverName').value=payload.author||'Anonimo';$('solverAnswer').value=payload.answer||'';$('masterStatus').textContent='Tentativo ricevuto da '+(payload.author||'Anonimo')+'. Verificalo prima di assegnare punti.';}
+        if(payload?.type==='solution'&&!state.solutionRevealed){state.pendingSolutions=state.pendingSolutions||[];state.pendingSolutions.push({author:payload.author||'Anonimo',answer:payload.answer||''});}
       });
       client.on('presence',presence=>{
         if(!isMaster){
@@ -317,16 +326,10 @@
       if(hintTimerInterval)clearInterval(hintTimerInterval);
       hintTimerInterval=setInterval(()=>updateHintTimer(state),1000);
       if(isMaster){
-        $('startRound').addEventListener('click',startRound);
-        $('nextRound').addEventListener('click',nextRound);
-        $('hintButton').addEventListener('click',revealHint);
-        $('revealSolution').addEventListener('click',revealSolution);
-        $('connectTwitch').addEventListener('click',connectTwitch);
-        $('manualQuestionForm').addEventListener('submit',e=>{e.preventDefault();addQuestion($('manualAuthor').value,$('manualQuestion').value,'TWITCH MANUALE');$('manualQuestion').value='';});
-        $('solutionForm').addEventListener('submit',e=>{e.preventDefault();approveSolution($('solverName').value,$('solverAnswer').value);});
-        $('prepareAnswerParts').addEventListener('click',prepareAnswerParts);
-        $('rejectSolution').addEventListener('click',()=>{$('masterStatus').textContent='Valutazione annullata. Nessun punto assegnato.';$('solverName').value='';$('solverAnswer').value='';$('hypothesisParts').innerHTML='';$('hypothesisParts').dataset.parts='[]';});
-        state.difficulty='facile';renderMaster({...gameState(),roundNumber:1});hideLoading();
+        state.difficulty='facile';
+        renderPlayer(gameState());
+        lockHostInteractions();
+        hideLoading();
       }else{
         const saved=playerNickname;
         $('nickname').value=saved;
