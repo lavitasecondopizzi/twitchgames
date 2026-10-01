@@ -269,3 +269,9 @@ form{display:grid;gap:5px}
 .rules-sheet{
   z-index:1;
 }
+
+
+/* La vista Host mostra le opzioni di difficoltà senza renderle interattive. */
+.readonly-host .difficulty-block{cursor:not-allowed;filter:grayscale(1);opacity:.58;box-shadow:3px 3px 0 var(--ink);transform:none!important;}
+.readonly-host .difficulty-block:hover,.readonly-host .difficulty-block.selected{background:var(--paper-2);color:var(--ink);box-shadow:3px 3px 0 var(--ink);transform:none;}
+.readonly-host .difficulty-block.selected{border-style:dashed;opacity:.9;}
