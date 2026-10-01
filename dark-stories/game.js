@@ -309,7 +309,7 @@
       client.on('game-state',payload=>{if(payload)render(payload);});
       client.on('game-event',payload=>{
         if(!isMaster)return;
-        if(!isHost&&isMaster===false&&payload?.type==='difficulty_select'&&!state.started&&['facile','medio','difficile'].includes(payload.difficulty)){state.difficulty=payload.difficulty;state.selectedStoryId=null;currentIndex=0;publish();}
+        if(!isHost&&payload?.type==='difficulty_select'&&!state.started&&['facile','medio','difficile'].includes(payload.difficulty)){state.difficulty=payload.difficulty;state.selectedStoryId=null;currentIndex=0;publish();}
         if(payload?.type==='difficulty_vote')recordDifficultyVote(payload.author,payload.difficulty,payload.source||'OSPITE');
         if(payload?.type==='question')addQuestion(payload.author,payload.question,payload.source||'OSPITE');
         if(payload?.type==='solution'&&!state.solutionRevealed){$('solverName').value=payload.author||'Anonimo';$('solverAnswer').value=payload.answer||'';$('masterStatus').textContent='Tentativo ricevuto da '+(payload.author||'Anonimo')+'. Verificalo prima di assegnare punti.';}
