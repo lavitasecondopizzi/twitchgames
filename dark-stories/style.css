@@ -146,3 +146,25 @@ form{display:grid;gap:4px}
 .loading-spinner{width:38px;height:38px;border:5px solid var(--paper2);border-top-color:var(--red);border-right-color:var(--ink);border-radius:50%;animation:loading-spin .8s linear infinite}
 @keyframes loading-spin{to{transform:rotate(360deg)}}
 @media(prefers-reduced-motion:reduce){.loading-spinner{animation-duration:2s}}
+
+
+/* Regole a tutto schermo, con webcam mantenute in primo piano */
+.top{z-index:9999}
+.webcam{aspect-ratio:16/9;width:100%;height:auto;max-height:none;min-height:0}
+.webcam>video,.webcam>iframe,.webcam>canvas,.webcam>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border:0}
+.rules-open{position:absolute;top:6px;left:8px;z-index:2;min-height:24px;padding:4px 7px;font-size:9px}
+.rules-overlay{position:fixed;inset:0;z-index:5000;display:flex;align-items:center;justify-content:center;overflow:auto;padding:clamp(10px,2vw,28px);background:rgba(17,17,17,.94);}
+.rules-overlay.hidden{display:none!important}
+.rules-sheet{width:min(1200px,100%);max-height:100%;overflow:auto;padding:clamp(14px,2.5vw,30px);border:4px solid var(--ink);background:var(--paper);box-shadow:8px 8px 0 var(--red);background-image:var(--dots);}
+.rules-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px;padding-bottom:12px;border-bottom:4px solid var(--ink)}
+.rules-kicker{font-size:10px;font-weight:900;letter-spacing:.12em}
+.rules-heading h2{margin:7px 0 0;font-size:clamp(28px,5vw,48px)}
+.rules-close{flex:0 0 auto;min-height:38px;font-size:11px}
+.rules-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.rules-card{position:relative;min-width:0;padding:16px 13px 13px;border:3px solid var(--ink);background:var(--paper);box-shadow:3px 3px 0 var(--ink)}
+.rules-number{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;margin-bottom:8px;border:2px solid var(--ink);background:var(--red);color:white;font-family:Impact,"Arial Black",sans-serif;font-size:18px}
+.rules-card h3{margin:0 0 8px;font-family:Impact,"Arial Black",sans-serif;font-size:clamp(14px,1.5vw,19px);line-height:1.05}
+.rules-card p{margin:0;font-size:clamp(11px,1vw,14px);font-weight:700;line-height:1.45;overflow-wrap:anywhere}
+.rules-footer{margin:16px 0 0;padding:10px;border:2px dashed var(--ink);background:var(--paper2);font-size:12px;font-weight:900;text-align:center}
+@media(max-width:700px){.rules-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.rules-heading h2{font-size:27px}}
+@media(max-width:460px){.rules-grid{grid-template-columns:1fr}.rules-heading{align-items:flex-start}.rules-close{font-size:9px;padding:5px}.rules-sheet{max-height:92vh}}
