@@ -10,6 +10,7 @@
   const $ = id => document.getElementById(id);
   const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   let client, cases = [], currentIndex = 0, roundNumber = 1, twitchSocket = null;
+  let hasSelectedDifficulty = false;
   let state = {started:false,solved:false,solutionRevealed:false,selectedStoryId:null,difficultyVotes:{},difficulty:'facile',revealedHints:[],history:[],queue:[],scores:{},roundPoints:{},solvedBy:[],startedAt:null,lastHintAt:null};
   const HINT_DELAY_MS = 10 * 60 * 1000;
   let hintTimerInterval = null;
@@ -68,7 +69,7 @@
     if($('webcamLabelB'))$('webcamLabelB').textContent=playerNickname.toUpperCase();
     $('waitingView').classList.toggle('hidden',!!s.started);
     $('playerView').classList.toggle('hidden',!s.started);
-    document.querySelectorAll('[data-difficulty]').forEach(button=>button.classList.toggle('selected',button.dataset.difficulty===(s.difficulty||'facile')));
+    document.querySelectorAll('[data-difficulty]').forEach(button=>{button.classList.toggle('selected',button.dataset.difficulty===(s.difficulty||'facile'));button.disabled=isHost||hasSelectedDifficulty||!!s.started;});
     if($('difficultyStatus')&&!s.started)$('difficultyStatus').textContent='Difficoltà attuale: '+(difficultyNames[s.difficulty]||'FACILE')+'. Il Master sta scegliendo una storia.';
     if(!s.started)return;
     $('roundLabel').textContent='MISTERO '+(s.roundNumber||s.index+1)+' · '+(difficultyNames[s.difficulty]||'FACILE');
@@ -131,11 +132,13 @@
     hideLoading();
   }
   async function selectDifficulty(difficulty){
-    if(!['facile','medio','difficile'].includes(difficulty)||state.started)return;
+    if(isHost||isMaster||hasSelectedDifficulty||!['facile','medio','difficile'].includes(difficulty)||state.started)return;
     showLoading('INVIO DELLA SCELTA…');
     document.querySelectorAll('[data-difficulty]').forEach(button=>button.disabled=true);
     try{
       await client.broadcast('game_event',{type:'difficulty_select',difficulty});
+      hasSelectedDifficulty=true;
+      document.querySelectorAll('[data-difficulty]').forEach(button=>{button.disabled=true;button.setAttribute('aria-disabled','true');});
       if($('difficultyStatus'))$('difficultyStatus').textContent='Difficoltà selezionata: '+difficultyNames[difficulty]+'. Il Master sta scegliendo una storia.';
     }catch(error){
       hideLoading();
@@ -306,7 +309,7 @@
       client.on('game-state',payload=>{if(payload)render(payload);});
       client.on('game-event',payload=>{
         if(!isMaster)return;
-        if(payload?.type==='difficulty_select'&&!state.started&&['facile','medio','difficile'].includes(payload.difficulty)){state.difficulty=payload.difficulty;state.selectedStoryId=null;currentIndex=0;publish();}
+        if(!isHost&&isMaster===false&&payload?.type==='difficulty_select'&&!state.started&&['facile','medio','difficile'].includes(payload.difficulty)){state.difficulty=payload.difficulty;state.selectedStoryId=null;currentIndex=0;publish();}
         if(payload?.type==='difficulty_vote')recordDifficultyVote(payload.author,payload.difficulty,payload.source||'OSPITE');
         if(payload?.type==='question')addQuestion(payload.author,payload.question,payload.source||'OSPITE');
         if(payload?.type==='solution'&&!state.solutionRevealed){$('solverName').value=payload.author||'Anonimo';$('solverAnswer').value=payload.answer||'';$('masterStatus').textContent='Tentativo ricevuto da '+(payload.author||'Anonimo')+'. Verificalo prima di assegnare punti.';}
