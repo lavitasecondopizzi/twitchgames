@@ -2,6 +2,7 @@
   const params = new URLSearchParams(location.search);
   const room = (params.get('room') || '').toUpperCase();
   const $ = id => document.getElementById(id);
+  const guestNickname = (params.get('guest') || '').trim().replace(/\s+/g,' ').slice(0,24);
   const difficultyNames = { facile: 'FACILE', medio: 'MEDIO', difficile: 'DIFFICILE' };
   const HINT_DELAY_MS = 10 * 60 * 1000;
   let client = null;
@@ -90,7 +91,7 @@
     $('hints').innerHTML = (s.revealedHints || [])
       .map((hint,i) => '<div class="hint"><b>INDIZIO ' + (i+1) + ':</b> ' + esc(hint) + '</div>').join('');
 
-    if ($('nickname')) $('nickname').value = (s.guestNickname || s.playerNickname || 'Ospite');
+    if ($('nickname')) $('nickname').value = guestNickname || s.guestNickname || s.playerNickname || 'Ospite';
     $('answerHistory').innerHTML = (s.history || []).slice().reverse()
       .map(item => '<div class="entry"><strong>' + esc(item.author) + ' · ' + esc(item.answer) + '</strong>' + esc(item.question) + '</div>')
       .join('') || '<p class="muted">Ancora nessuna risposta.</p>';
