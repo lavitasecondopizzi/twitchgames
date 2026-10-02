@@ -111,4 +111,35 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../shared/supabase-config.js"></script><script src="../shared/supabase-room.js"></script><script src="game.js?v=20261002-5"></script>
+<script>
+(function(){
+  function activateMasterTab(name){
+    var tabs=document.querySelectorAll('#masterView .master-tab');
+    var panels=document.querySelectorAll('#masterView .master-tab-panel');
+    tabs.forEach(function(tab){
+      var active=tab.getAttribute('data-master-tab')===name;
+      tab.classList.toggle('active',active);
+      tab.setAttribute('aria-selected',active?'true':'false');
+    });
+    panels.forEach(function(panel){
+      var active=panel.getAttribute('data-master-panel')===name;
+      panel.classList.toggle('active',active);
+      panel.style.display=active?'flex':'none';
+    });
+  }
+  function bindMasterTabs(){
+    document.querySelectorAll('#masterView .master-tab').forEach(function(tab){
+      tab.onclick=function(event){
+        event.preventDefault();
+        event.stopPropagation();
+        activateMasterTab(tab.getAttribute('data-master-tab'));
+      };
+    });
+    activateMasterTab('stories');
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bindMasterTabs);
+  else bindMasterTabs();
+  window.activateMasterTab=activateMasterTab;
+})();
+</script>
 </body></html>
