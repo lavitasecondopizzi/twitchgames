@@ -88,7 +88,8 @@
     if(s.solutionRevealed&&s.solution)$('storyText').textContent=s.story+'\n\nSOLUZIONE: '+s.solution;
   }
   function lockHostInteractions(){
-    document.querySelectorAll('[data-difficulty],#questionInput,#solutionGuess,#questionForm button,#solutionGuessForm button').forEach(el=>{el.disabled=true;el.setAttribute('aria-disabled','true');el.style.pointerEvents='none';});
+    document.querySelectorAll('[data-difficulty]').forEach(el=>{el.disabled=true;el.setAttribute('aria-disabled','true');el.style.pointerEvents='none';el.onclick=e=>{e.preventDefault();e.stopImmediatePropagation();return false;};});
+    document.querySelectorAll('#questionInput,#solutionGuess,#questionForm button,#solutionGuessForm button').forEach(el=>{el.disabled=true;el.setAttribute('aria-disabled','true');el.style.pointerEvents='none';});
     const nickname=$('nickname');if(nickname){nickname.value='Pizzi';nickname.readOnly=true;}
     const waiting=$('waitingView');if(waiting){const heading=waiting.querySelector('h2');if(heading)heading.textContent='IN ATTESA DEL MISTERO';}
     const help=document.querySelector('#waitingView > p');if(help)help.textContent='Vista della diretta in sola lettura. Le interazioni sono gestite dall’ospite e dal Master.';
@@ -133,14 +134,12 @@
   }
   async function selectDifficulty(difficulty){
     if(isHost||isMaster||!['facile','medio','difficile'].includes(difficulty)||state.started)return;
-    showLoading('INVIO DELLA SCELTA…');
-    document.querySelectorAll('[data-difficulty]').forEach(button=>button.disabled=true);
+    document.querySelectorAll('[data-difficulty]').forEach(button=>button.disabled=false);
     try{
       await client.broadcast('game_event',{type:'difficulty_select',difficulty});
       hasSelectedDifficulty=true;
       if($('difficultyStatus'))$('difficultyStatus').textContent='Difficoltà selezionata: '+difficultyNames[difficulty]+'. Il Master sta scegliendo una storia.';
     }catch(error){
-      hideLoading();
       document.querySelectorAll('[data-difficulty]').forEach(button=>button.disabled=false);
       throw error;
     }
