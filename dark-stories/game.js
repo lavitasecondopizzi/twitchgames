@@ -69,7 +69,7 @@
     if($('webcamLabelB'))$('webcamLabelB').textContent=playerNickname.toUpperCase();
     $('waitingView').classList.toggle('hidden',!!s.started);
     $('playerView').classList.toggle('hidden',!s.started);
-    document.querySelectorAll('[data-difficulty]').forEach(button=>{button.classList.toggle('selected',button.dataset.difficulty===(s.difficulty||'facile'));button.disabled=isHost||hasSelectedDifficulty||!!s.started;});
+    document.querySelectorAll('[data-difficulty]').forEach(button=>{button.classList.toggle('selected',button.dataset.difficulty===(s.difficulty||'facile'));button.disabled=isHost||!!s.started;});
     if($('difficultyStatus')&&!s.started)$('difficultyStatus').textContent='Difficoltà attuale: '+(difficultyNames[s.difficulty]||'FACILE')+'. Il Master sta scegliendo una storia.';
     if(!s.started)return;
     $('roundLabel').textContent='MISTERO '+(s.roundNumber||s.index+1)+' · '+(difficultyNames[s.difficulty]||'FACILE');
@@ -132,13 +132,12 @@
     hideLoading();
   }
   async function selectDifficulty(difficulty){
-    if(isHost||isMaster||hasSelectedDifficulty||!['facile','medio','difficile'].includes(difficulty)||state.started)return;
+    if(isHost||isMaster||!['facile','medio','difficile'].includes(difficulty)||state.started)return;
     showLoading('INVIO DELLA SCELTA…');
     document.querySelectorAll('[data-difficulty]').forEach(button=>button.disabled=true);
     try{
       await client.broadcast('game_event',{type:'difficulty_select',difficulty});
       hasSelectedDifficulty=true;
-      document.querySelectorAll('[data-difficulty]').forEach(button=>{button.disabled=true;button.setAttribute('aria-disabled','true');});
       if($('difficultyStatus'))$('difficultyStatus').textContent='Difficoltà selezionata: '+difficultyNames[difficulty]+'. Il Master sta scegliendo una storia.';
     }catch(error){
       hideLoading();
