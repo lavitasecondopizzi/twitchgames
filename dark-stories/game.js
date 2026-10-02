@@ -88,7 +88,15 @@
     if(s.solutionRevealed&&s.solution)$('storyText').textContent=s.story+'\n\nSOLUZIONE: '+s.solution;
   }
   function lockHostInteractions(){
-    document.querySelectorAll('[data-difficulty]').forEach(el=>{el.disabled=true;el.setAttribute('aria-disabled','true');el.style.pointerEvents='none';el.onclick=e=>{e.preventDefault();e.stopImmediatePropagation();return false;};});
+    document.querySelectorAll('[data-difficulty]').forEach(el=>{
+      const replacement=document.createElement('div');
+      replacement.className=el.className;
+      replacement.dataset.difficulty=el.dataset.difficulty;
+      replacement.setAttribute('aria-disabled','true');
+      replacement.innerHTML=el.innerHTML;
+      replacement.style.pointerEvents='none';
+      el.replaceWith(replacement);
+    });
     document.querySelectorAll('#questionInput,#solutionGuess,#questionForm button,#solutionGuessForm button').forEach(el=>{el.disabled=true;el.setAttribute('aria-disabled','true');el.style.pointerEvents='none';});
     const nickname=$('nickname');if(nickname){nickname.value='Pizzi';nickname.readOnly=true;}
     const waiting=$('waitingView');if(waiting){const heading=waiting.querySelector('h2');if(heading)heading.textContent='IN ATTESA DEL MISTERO';}
