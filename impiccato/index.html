@@ -1638,7 +1638,7 @@ function hostSnapshotKey(){
 }
 
 function loadHostSnapshot(){
-  if (forcedRole !== "A" || !roomCode) return false;
+  if (!isHostRole || !roomCode) return false;
   try{
     const raw = sessionStorage.getItem(hostSnapshotKey());
     if (!raw) return false;
@@ -1663,7 +1663,7 @@ function loadHostSnapshot(){
 }
 
 function saveHostSnapshot(){
-  if (forcedRole !== "A" || !roomCode) return;
+  if (!isHostRole || !roomCode) return;
   try{
     sessionStorage.setItem(hostSnapshotKey(), JSON.stringify({
       ...stato,
@@ -1692,7 +1692,7 @@ function mergeGameState(data){
 }
 
 async function broadcastGameState(){
-  if (!roomClient || !roomReady || forcedRole !== "A") return;
+  if (!roomClient || !roomReady || !isHostRole) return;
   stateRevision++;
   const publicState = {
     ...stato,
@@ -1775,7 +1775,7 @@ async function caricaStato(){
       }
 
       // Le azioni che modificano lo stato restano gestite esclusivamente dall'host.
-      if (forcedRole !== "A") return;
+      if (!isHostRole) return;
 
       processingHostAction = true;
       Promise.resolve().then(async () => {
@@ -1985,7 +1985,7 @@ function renderChatVotes(){
 }
 
 async function startChatVote(){
-  if (forcedRole !== "A" || !chatIsPlayerB || stato.game.turn !== "B" || stato.game.B.status !== "playing") return;
+  if (!isHostRole || !chatIsPlayerB || stato.game.turn !== "B" || stato.game.B.status !== "playing") return;
   stopChatVoteTimer();
   stato.chatVote = { active:true, startedAt:Date.now(), endsAt:Date.now() + CHAT_VOTE_DURATION, votes:{}, winner:null };
   aggiornaUI();
@@ -1997,7 +1997,7 @@ async function startChatVote(){
 }
 
 async function finishChatVote(){
-  if (forcedRole !== "A" || !chatIsPlayerB || !stato.chatVote?.active) return;
+  if (!isHostRole || !chatIsPlayerB || !stato.chatVote?.active) return;
   stopChatVoteTimer();
 
   const votes = stato.chatVote.votes || {};
@@ -2036,7 +2036,7 @@ async function finishChatVote(){
 }
 
 async function registerChatVote(letter){
-  if (forcedRole !== "A" || !chatIsPlayerB || !stato.chatVote?.active) return;
+  if (!isHostRole || !chatIsPlayerB || !stato.chatVote?.active) return;
   letter = String(letter || "").trim().toUpperCase();
   if (!/^[A-Z]$/.test(letter)) return;
   if (stato.game.B.correctLetters.includes(letter) || stato.game.B.wrongLetters.includes(letter)) return;
@@ -2310,7 +2310,7 @@ async function onLetterClick(playerId, letter, fromHostEvent = false){
 /* ========= NUOVO ROUND ========= */
 
 async function nuovoRound(initial = false){
-  if (roomCode && forcedRole !== "A") return;
+  if (roomCode && !isHostRole) return;
   const selectedTheme = stato.game.theme || sessionTheme || TEMI[0];
   const fA = nuovaFraseCasuale(selectedTheme);
   const fB = nuovaFraseCasuale(selectedTheme, fA.phrase);
@@ -2462,7 +2462,7 @@ newRoundBtn.addEventListener("click", () => {
   aggiornaUI();
   if (chatIsPlayerB) setInterval(renderChatVotes, 100);
 
-  if (forcedRole !== "A" && newRoundBtn){
+  if (!isHostRole && newRoundBtn){
     newRoundBtn.remove();
   }
 })();
