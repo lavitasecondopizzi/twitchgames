@@ -412,9 +412,12 @@
           status(master?'Master collegato.':'In attesa del Master…');
           if(master)client.broadcast('state_request',{requester:role}).catch(()=>{});
         }else{
-          const guest=Object.values(presence||{}).flat().find(entry=>entry.role==='guest');
-          if(guest?.nickname) guestNickname=String(guest.nickname).trim().replace(/\s+/g,' ').slice(0,24);
-          if($('webcamLabelB'))$('webcamLabelB').textContent=(guestNickname||'CHAT / OSPITE').toUpperCase();
+          const players=Object.values(presence||{}).flat();
+          const guest=players.find(entry=>entry.role==='guest');
+          const chat=players.find(entry=>entry.role==='chat');
+          const activePlayer=guest||chat;
+          if(activePlayer?.nickname) guestNickname=String(activePlayer.nickname).trim().replace(/\s+/g,' ').slice(0,24);
+          if($('webcamLabelB'))$('webcamLabelB').textContent=(guestNickname||(chat?'CHAT':'OSPITE')).toUpperCase();
           status('Master collegato alla stanza '+room+'.');
           client.broadcast('state_request',{requester:'master'}).catch(()=>{});
         }
