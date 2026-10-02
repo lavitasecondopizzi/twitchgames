@@ -960,3 +960,36 @@ body.master-page{min-height:100vh}
 .chat-page .chat-leaderboard .entry{min-width:0}
 .chat-page .chat-status{font-size:10px}
 @media(max-width:800px){.chat-page .chat-main{grid-template-columns:1fr}.chat-page{overflow:auto}.chat-page .chat-leaderboard .list{grid-template-columns:1fr 1fr}}
+
+/* Solo Chat — riga webcam + classifica sincronizzata all'altezza */
+.chat-page{
+  grid-template-rows:auto minmax(180px,1fr) minmax(0,1fr);
+}
+.chat-webcam-row{
+  display:grid;
+  grid-template-columns:minmax(180px,1fr) minmax(0,2fr) minmax(180px,1fr);
+  gap:10px;
+  min-height:0;
+  height:100%;
+}
+.chat-webcam-row .camera-stack,
+.chat-webcam-row .webcam{
+  min-height:0;
+  height:100%;
+}
+.chat-webcam-row .chat-leaderboard{
+  min-height:0;
+  height:100%;
+  overflow:hidden;
+}
+.chat-webcam-row .chat-leaderboard .list{
+  max-height:none;
+  overflow:auto;
+}
+@media(max-width:800px){
+  .chat-page{grid-template-rows:auto auto auto}
+  .chat-webcam-row{
+    grid-template-columns:1fr;
+    grid-template-rows:160px minmax(140px,1fr) 160px;
+  }
+}
