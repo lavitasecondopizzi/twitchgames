@@ -11,7 +11,7 @@
   const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   let client, cases = [], currentIndex = 0, roundNumber = 1, twitchSocket = null;
   let hasSelectedDifficulty = false;
-  let state = {started:false,solved:false,solutionRevealed:false,selectedStoryId:null,difficultyVotes:{},difficulty:'facile',revealedHints:[],history:[],queue:[],scores:{},roundPoints:{},solvedBy:[],startedAt:null,lastHintAt:null,completedStoryIds:[],sessionEnded:false,winnerNames:[]};
+  let state = {started:false,solved:false,solutionRevealed:false,selectedStoryId:null,difficultyVotes:{},difficultyVoteStartedAt:null,difficulty:'facile',revealedHints:[],history:[],queue:[],scores:{},roundPoints:{},solvedBy:[],startedAt:null,lastHintAt:null,completedStoryIds:[],sessionEnded:false,winnerNames:[]};
   const HINT_DELAY_MS = 10 * 60 * 1000;
   let hintTimerInterval = null;
   function showLoading(message='CARICAMENTO IN CORSO…'){
@@ -38,7 +38,7 @@
     const snapshot={
       started:state.started,solved:state.solved,solutionRevealed:!!state.solutionRevealed,
       index:currentIndex,roundNumber,selectedStoryId:state.selectedStoryId,
-      difficulty:state.difficulty||'facile',difficultyVotes:{...(state.difficultyVotes||{})},
+      difficulty:state.difficulty||'facile',difficultyVotes:{...(state.difficultyVotes||{})},difficultyVoteStartedAt:state.difficultyVoteStartedAt||null,
       title:mystery?.title||'',story:mystery?.story||'',
       revealedHints:[...(state.revealedHints||[])],startedAt:state.startedAt||null,lastHintAt:state.lastHintAt||null,history:[...(state.history||[])],
       queue:(state.queue||[]).map(q=>({id:q.id,author:q.author,question:q.question,source:q.source,answer:q.answer||null})),
@@ -63,7 +63,7 @@
       if(!saved||typeof saved!=='object')return false;
       currentIndex=Number.isInteger(saved.index)?saved.index:0;
       roundNumber=Number.isInteger(saved.roundNumber)?saved.roundNumber:1;
-      state={...state,...saved,difficultyVotes:saved.difficultyVotes||{},queue:saved.queue||[],scores:saved.scores||{},roundPoints:saved.roundPoints||{},history:saved.history||[],revealedHints:saved.revealedHints||[],solvedBy:saved.solvedBy||[],completedStoryIds:saved.completedStoryIds||[],sessionEnded:!!saved.sessionEnded,winnerNames:saved.winnerNames||[]};
+      state={...state,...saved,difficultyVotes:saved.difficultyVotes||{},difficultyVoteStartedAt:saved.difficultyVoteStartedAt||null,queue:saved.queue||[],scores:saved.scores||{},roundPoints:saved.roundPoints||{},history:saved.history||[],revealedHints:saved.revealedHints||[],solvedBy:saved.solvedBy||[],completedStoryIds:saved.completedStoryIds||[],sessionEnded:!!saved.sessionEnded,winnerNames:saved.winnerNames||[]};
       return true;
     }catch(error){
       console.warn('Impossibile ripristinare lo stato del Master:',error);
@@ -219,6 +219,7 @@
   }
   async function recordDifficultyVote(author,difficulty,source){
     if(state.started)return;
+    if(!state.difficultyVoteStartedAt)state.difficultyVoteStartedAt=Date.now();
     const name=String(author||'Anonimo').slice(0,24);
     state.difficultyVotes[name.toLowerCase()]={author:name,difficulty,source};
     state.difficulty=winningDifficulty(state.difficultyVotes);
@@ -438,6 +439,7 @@
         $('rejectSolution').addEventListener('click',()=>{$('masterStatus').textContent='Valutazione annullata. Nessun punto assegnato.';$('solverName').value='';$('solverAnswer').value='';$('hypothesisParts').innerHTML='';$('hypothesisParts').dataset.parts='[]';});
         if(!restored){
           state.difficulty='facile';
+          state.difficultyVoteStartedAt=Date.now();
           roundNumber=1;
           currentIndex=0;
         }
