@@ -17,8 +17,24 @@
 
 <section id="playerView" class="layout hidden">
 <article class="panel story"><div class="eyebrow" id="roundLabel">MISTERO 1</div><h2 id="storyTitle">In attesa del Master</h2><p id="storyText">Il Master sta preparando la storia.</p><div id="hints" class="hints"></div></article>
-<aside class="panel readonly-content"><h2>FAI UNA DOMANDA</h2><p class="muted">Visuale ospite · sola lettura</p><form><input id="nickname" maxlength="24" placeholder="Nickname ospite" readonly disabled><textarea id="questionInput" maxlength="300" placeholder="La tua domanda sì/no…" disabled></textarea><button class="btn" type="button" disabled>INVIA DOMANDA</button></form><div class="divider"></div><h2>PROVA A RISOLVERE</h2><form><textarea id="solutionGuess" maxlength="500" placeholder="Qual è la spiegazione del mistero?" disabled></textarea><button class="btn" type="button" disabled>INVIA SOLUZIONE</button></form><p class="muted">Questa area replica la visuale dell’ospite senza permettere interazioni.</p><div class="divider"></div><h2>DOMANDE RISPOSTE</h2><div id="answerHistory" class="list"><p class="muted">Ancora nessuna risposta.</p></div><p id="solvedNotice" class="notice hidden"></p></aside></section>
-
+<aside class="panel readonly-content player-actions">
+<div class="game-tabs" role="tablist" aria-label="Pannelli di gioco">
+<button type="button" class="game-tab active" data-tab="actions">AZIONI</button>
+<button type="button" class="game-tab" data-tab="history">DOMANDE RISPOSTE</button>
+</div>
+<div class="tab-panel active" data-panel="actions">
+<h2>FAI UNA DOMANDA</h2>
+<form><textarea id="questionInput" maxlength="300" placeholder="La tua domanda sì/no…" disabled></textarea><button class="btn" type="button" disabled>INVIA DOMANDA</button></form>
+<div class="divider"></div>
+<h2>PROVA A RISOLVERE</h2>
+<form><textarea id="solutionGuess" maxlength="500" placeholder="Qual è la spiegazione del mistero?" disabled></textarea><button class="btn" type="button" disabled>INVIA SOLUZIONE</button></form>
+<p id="solvedNotice" class="notice hidden"></p>
+</div>
+<div class="tab-panel" data-panel="history">
+<h2>DOMANDE RISPOSTE</h2>
+<div id="answerHistory" class="list"><p class="muted">Ancora nessuna risposta.</p></div>
+</div>
+</aside></section>
 <section id="waitingView" class="panel difficulty-picker host-difficulty-readonly">
 <h2 id="waitingTitle">SCEGLI LA DIFFICOLTÀ</h2>
 
