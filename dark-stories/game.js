@@ -54,7 +54,7 @@
     render(snapshot);
   }
   function scoreMarkup(scores){
-    return Object.entries(scores||{}).sort((a,b)=>b[1]-a[1]).map(([name,points],i)=>'<div class="entry"><strong>'+(i+1)+'. '+esc(name)+'</strong>'+points+' punti</div>').join('')||'<p class="muted">Nessun punto assegnato.</p>';
+    return Object.entries(scores||{}).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([name,points],i)=>'<div class="entry"><strong>'+(i+1)+'. '+esc(name)+'</strong>'+points+' punti</div>').join('')||'<p class="muted">Nessun punto assegnato.</p>';
   }
   function renderStoryList(){
     const list=$('storyList');if(!list)return;
