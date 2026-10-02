@@ -5,7 +5,7 @@
   const isHost = !!document.querySelector('.host-page');
   const role = isMaster ? 'master' : (isHost ? 'host' : (params.get('role') || 'guest'));
   const lobbyNickname = (params.get('player') || '').trim().replace(/\s+/g,' ').slice(0,24);
-  const guestNickname = (params.get('guest') || '').trim().replace(/\s+/g,' ').slice(0,24);
+  let guestNickname = (params.get('guest') || '').trim().replace(/\s+/g,' ').slice(0,24);
   const playerNickname = (isMaster || isHost) ? 'Pizzi' : (lobbyNickname || 'Ospite');
   const $ = id => document.getElementById(id);
   const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -326,6 +326,9 @@
           status(master?'Master collegato.':'In attesa del Master…');
           if(master)client.broadcast('state_request',{requester:role}).catch(()=>{});
         }else{
+          const guest=Object.values(presence||{}).flat().find(entry=>entry.role==='guest');
+          if(guest?.nickname) guestNickname=String(guest.nickname).trim().replace(/\s+/g,' ').slice(0,24);
+          if($('webcamLabelB'))$('webcamLabelB').textContent=(guestNickname||'CHAT / OSPITE').toUpperCase();
           status('Master collegato alla stanza '+room+'.');
           client.broadcast('state_request',{requester:'master'}).catch(()=>{});
         }
