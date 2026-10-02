@@ -180,7 +180,9 @@
     renderStoryList();
     $('startRound').disabled=!!s.started||!s.selectedStoryId;
     
-    $('nextRound').disabled=!s.started||(!(s.solvedBy||[]).length&&!s.solutionRevealed)||roundNumber>=cases.length;
+    const remainingStories=cases.filter(item=>!(s.completedStoryIds||[]).includes(item.id));
+    $('nextRound').disabled=!s.started||(!(s.solvedBy||[]).length&&!s.solutionRevealed)||remainingStories.length===0||!!s.sessionEnded;
+    if($('endSession'))$('endSession').disabled=!!s.sessionEnded;
     const hintRemaining = hintTimeRemaining(s);
     $('hintButton').disabled=!s.started||!!s.solutionRevealed||(s.revealedHints||[]).length>=(mystery?.hints.length||0)||hintRemaining>0;
     updateHintTimer(s);
