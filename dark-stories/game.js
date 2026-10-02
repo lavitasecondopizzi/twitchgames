@@ -47,9 +47,34 @@
     if(state.solutionRevealed&&mystery)snapshot.solution=mystery.solution;
     return snapshot;
   };
+  const masterStorageKey = () => 'twitchgames:dark-stories:master:' + room;
+
+  function saveMasterState(snapshot=gameState()){
+    if(!isMaster)return;
+    try{localStorage.setItem(masterStorageKey(),JSON.stringify(snapshot));}catch(error){console.warn('Impossibile salvare lo stato del Master:',error);}
+  }
+
+  function loadMasterState(){
+    if(!isMaster)return false;
+    try{
+      const raw=localStorage.getItem(masterStorageKey());
+      if(!raw)return false;
+      const saved=JSON.parse(raw);
+      if(!saved||typeof saved!=='object')return false;
+      currentIndex=Number.isInteger(saved.index)?saved.index:0;
+      roundNumber=Number.isInteger(saved.roundNumber)?saved.roundNumber:1;
+      state={...state,...saved,difficultyVotes:saved.difficultyVotes||{},queue:saved.queue||[],scores:saved.scores||{},roundPoints:saved.roundPoints||{},history:saved.history||[],revealedHints:saved.revealedHints||[],solvedBy:saved.solvedBy||[]};
+      return true;
+    }catch(error){
+      console.warn('Impossibile ripristinare lo stato del Master:',error);
+      return false;
+    }
+  }
+
   async function publish(){
     if(!client)return;
     const snapshot=gameState();
+    saveMasterState(snapshot);
     await client.broadcast('game_state',snapshot);
     render(snapshot);
   }
@@ -118,11 +143,13 @@
 
   function setupMasterTabs(){
     const root=$('#masterView'); if(!root)return;
-    root.querySelectorAll('.master-tab').forEach(tab=>tab.addEventListener('click',()=>{
+    root.addEventListener('click',event=>{
+      const tab=event.target.closest('.master-tab');
+      if(!tab||!root.contains(tab))return;
       const target=tab.dataset.masterTab;
       root.querySelectorAll('.master-tab').forEach(t=>t.classList.toggle('active',t===tab));
-      root.querySelectorAll('.master-tab-panel').forEach(p=>p.classList.toggle('active',p.dataset.masterPanel===target));
-    }));
+      root.querySelectorAll('.master-tab-panel').forEach(panel=>panel.classList.toggle('active',panel.dataset.masterPanel===target));
+    });
   }
 
   function renderMaster(s){
@@ -367,6 +394,7 @@
       if(hintTimerInterval)clearInterval(hintTimerInterval);
       hintTimerInterval=setInterval(()=>updateHintTimer(state),1000);
       if(isMaster){
+        const restored=loadMasterState();
         $('startRound').addEventListener('click',startRound);
         $('nextRound').addEventListener('click',nextRound);
         $('hintButton').addEventListener('click',revealHint);
@@ -376,7 +404,15 @@
         $('solutionForm').addEventListener('submit',e=>{e.preventDefault();approveSolution($('solverName').value,$('solverAnswer').value);});
         $('prepareAnswerParts').addEventListener('click',prepareAnswerParts);
         $('rejectSolution').addEventListener('click',()=>{$('masterStatus').textContent='Valutazione annullata. Nessun punto assegnato.';$('solverName').value='';$('solverAnswer').value='';$('hypothesisParts').innerHTML='';$('hypothesisParts').dataset.parts='[]';});
-        state.difficulty='facile';renderMaster({...gameState(),roundNumber:1});hideLoading();
+        if(!restored){
+          state.difficulty='facile';
+          roundNumber=1;
+          currentIndex=0;
+        }
+        const restoredSnapshot=gameState();
+        saveMasterState(restoredSnapshot);
+        renderMaster(restoredSnapshot);
+        hideLoading();
       }else if(isHost){
         document.body.classList.add('readonly-host');
         document.querySelectorAll('[data-difficulty]').forEach(button=>{button.disabled=true;button.style.pointerEvents='none';button.onclick=e=>{e.preventDefault();e.stopImmediatePropagation();return false;};});
