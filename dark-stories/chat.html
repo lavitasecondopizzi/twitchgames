@@ -1,6 +1,8 @@
 <!doctype html>
-<html lang="it"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Glu Glu Stories · Solo Chat</title>
 <link rel="stylesheet" href="style.css">
 </head>
@@ -10,32 +12,64 @@
     <div><span class="eyebrow">TORTELLO GAMES / GLU GLU STORIES</span><h1>SOLO CHAT</h1></div>
     <div id="chatStatus" class="chat-status">Connessione alla stanza…</div>
   </header>
-  <section class="chat-webcam-row">
-    <div class="camera-stack"><div class="webcam webcam-left"><span>CHAT</span></div></div>
-    <div class="panel chat-leaderboard">
-      <div class="master-panel-title"><h2>CLASSIFICA</h2><span>TOP 5</span></div>
+
+  <section class="chat-top">
+    <div class="camera-stack">
+      <div class="webcam webcam-left"><span>CHAT</span></div>
+    </div>
+
+    <div class="chat-scoreboard">
+      <div class="scoreboard-title">
+        <span class="scoreboard-kicker">GLU GLU STORIES</span>
+        <strong>CLASSIFICA</strong>
+      </div>
       <div id="leaderboard" class="list"></div>
     </div>
-    <div class="camera-stack"><div class="webcam webcam-right"><span>PIZZI</span></div></div>
+
+    <aside class="chat-howto">
+      <h2>COME GIOCA LA CHAT</h2>
+      <div class="chat-howto-grid">
+        <div class="chat-command"><b>01</b><strong>VOTA</strong><span>!difficolta [facile / medio / difficile]</span></div>
+        <div class="chat-command"><b>02</b><strong>DOMANDA</strong><span>!ds [domanda]</span></div>
+        <div class="chat-command"><b>03</b><strong>SOLUZIONE</strong><span>!soluzione [risposta]</span></div>
+        <div class="chat-command"><b>04</b><strong>GIOCA</strong><span>Il Master risponde, assegna punti e rivela gli indizi.</span></div>
+      </div>
+    </aside>
   </section>
+
   <section class="chat-main">
     <article class="panel chat-story">
       <div class="eyebrow" id="roundLabel">IN ATTESA DEL MISTERO</div>
       <h2 id="storyTitle">In attesa del Master</h2>
       <div id="storyText" class="chat-story-text">La chat è il giocatore. Le interazioni avvengono direttamente tramite Twitch.</div>
       <div id="hints" class="hints"></div>
+
+      <div id="hintTimer" class="hint-timer hidden" aria-live="polite">
+        <span class="hint-timer-label">IN ATTESA DEL MISTERO</span>
+        <div class="hint-timer-track"><div class="hint-timer-fill"></div></div>
+      </div>
     </article>
-    <aside class="panel chat-commands">
-      <h2>COME GIOCA LA CHAT</h2>
-      <div class="chat-command"><b>!difficolta facile</b><span>Imposta la difficoltà.</span></div>
-      <div class="chat-command"><b>!difficolta medio</b><span>Imposta la difficoltà.</span></div>
-      <div class="chat-command"><b>!difficolta difficile</b><span>Imposta la difficoltà.</span></div>
-      <div class="chat-command"><b>!ds [domanda]</b><span>Invia una domanda al Master.</span></div>
-      <div class="chat-command"><b>!soluzione [risposta]</b><span>Invia un tentativo di soluzione.</span></div>
-      <p class="notice">Il Master gestisce risposte, indizi, punteggi e chiusura della sessione.</p>
+
+    <aside class="panel chat-vote-panel">
+      <div class="master-panel-title">
+        <h2>TIMER VOTI</h2>
+        <span>DIFFICOLTÀ</span>
+      </div>
+      <div class="chat-vote-clock" id="difficultyTimer">--:--</div>
+      <div class="chat-vote-track"><div id="difficultyTimerFill"></div></div>
+      <div id="difficultyTimerLabel" class="chat-vote-label">In attesa dell'avvio della votazione.</div>
+
+      <div class="chat-vote-totals">
+        <div><b id="voteFacile">0</b><span>FACILE</span></div>
+        <div><b id="voteMedio">0</b><span>MEDIO</span></div>
+        <div><b id="voteDifficile">0</b><span>DIFFICILE</span></div>
+      </div>
+
+      <div class="notice">La chat vota con <b>!difficolta [livello]</b>. Alla fine del tempo il Master può usare il risultato per scegliere la difficoltà.</div>
     </aside>
   </section>
 </main>
+
 <section id="sessionEndOverlay" class="session-end-overlay hidden" aria-live="assertive">
   <div class="session-end-confetti" aria-hidden="true">★ ★ ★ ★ ★ ★ ★</div>
   <div class="session-end-card">
@@ -45,32 +79,84 @@
     <div class="session-end-subtitle">SESSIONE TERMINATA</div>
   </div>
 </section>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../shared/supabase-config.js"></script><script src="../shared/supabase-room.js"></script>
+<script src="../shared/supabase-config.js"></script>
+<script src="../shared/supabase-room.js"></script>
 <script>
 (function(){
- const p=new URLSearchParams(location.search),room=(p.get('room')||'').toUpperCase(),$=id=>document.getElementById(id);
- let client,state={};
- const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- function render(s){
-   state={...state,...s};
-   $('roundLabel').textContent=state.started?'MISTERO '+(state.roundNumber||state.index+1)+' · '+String(state.difficulty||'facile').toUpperCase():'IN ATTESA DEL MISTERO';
-   $('storyTitle').textContent=state.title||'In attesa del Master';
-   $('storyText').textContent=state.story||'La chat è il giocatore. Le interazioni avvengono direttamente tramite Twitch.';
-   $('hints').innerHTML=(state.revealedHints||[]).map((h,i)=>'<div class="hint"><b>INDIZIO '+(i+1)+':</b> '+esc(h)+'</div>').join('');
-   $('leaderboard').innerHTML=Object.entries(state.scores||{}).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([n,p],i)=>'<div class="entry"><strong>'+(i+1)+'. '+esc(n)+'</strong>'+p+' punti</div>').join('')||'<p class="muted">Nessun punto assegnato.</p>';
-   const end=$('sessionEndOverlay'); end.classList.toggle('hidden',!state.sessionEnded);
-   if(state.sessionEnded){const names=state.winnerNames||[];$('winnerName').textContent=names.length===1?names[0]:(names.length?names.join(' · '):'NESSUN VINCITORE');$('winnerTitle').textContent=names.length>1?'VINCITORI':'VINCITORE';}
- }
- async function init(){
-   if(!/^[A-Z0-9]{6}$/.test(room)){$('chatStatus').textContent='Codice stanza non valido.';return;}
-   client=new TortelloSupabaseRoom({room,role:'chat',nickname:'CHAT',game:'dark-stories'});
-   client.on('connected',()=>{$('chatStatus').textContent='CHAT COLLEGATA · IN ATTESA DEL MASTER';client.broadcast('state_request',{requester:'chat'}).catch(()=>{});});
-   client.on('game-state',render);
-   client.on('presence',p=>{const master=Object.values(p||{}).flat().some(e=>e.role==='master');$('chatStatus').textContent=master?'CHAT COLLEGATA · MASTER ONLINE':'IN ATTESA DEL MASTER';if(master)client.broadcast('state_request',{requester:'chat'}).catch(()=>{});});
-   await client.connect();
- }
- init().catch(e=>$('chatStatus').textContent=e.message||'Errore di connessione.');
+  const p=new URLSearchParams(location.search),room=(p.get('room')||'').toUpperCase(),$=id=>document.getElementById(id);
+  const DIFFICULTY_VOTE_MS=30000,HINT_DELAY_MS=10*60*1000;
+  let client,state={},timer=null;
+
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const formatTime=ms=>{
+    const s=Math.max(0,Math.ceil(ms/1000));
+    return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+  };
+
+  function renderVoteTimer(){
+    const start=Number(state.difficultyVoteStartedAt||0);
+    const clock=$('difficultyTimer'),fill=$('difficultyTimerFill'),label=$('difficultyTimerLabel');
+    const totals={facile:0,medio:0,difficile:0};
+    Object.values(state.difficultyVotes||{}).forEach(v=>{if(totals[v.difficulty]!==undefined)totals[v.difficulty]++;});
+    $('voteFacile').textContent=totals.facile;
+    $('voteMedio').textContent=totals.medio;
+    $('voteDifficile').textContent=totals.difficile;
+
+    if(state.started||state.sessionEnded||!start){
+      clock.textContent=state.started?'VOTAZIONE CHIUSA':'--:--';
+      fill.style.width=state.started||state.sessionEnded?'0%':'100%';
+      label.textContent=state.started?'Difficoltà: '+String(state.difficulty||'facile').toUpperCase():'In attesa dell’avvio della votazione.';
+      return;
+    }
+    const remaining=Math.max(0,DIFFICULTY_VOTE_MS-(Date.now()-start));
+    clock.textContent=formatTime(remaining);
+    fill.style.width=(remaining/DIFFICULTY_VOTE_MS*100)+'%';
+    label.textContent=remaining>0?'Vota la difficoltà prima che scada il tempo.':'VOTAZIONE TERMINATA · IN ATTESA DEL MASTER';
+  }
+
+  function renderHintTimer(){
+    const el=$('hintTimer');
+    if(!state.started||state.solutionRevealed){el.classList.add('hidden');return;}
+    el.classList.remove('hidden');
+    const hints=(state.revealedHints||[]).length;
+    const anchor=hints?Number(state.lastHintAt||0):Number(state.startedAt||0);
+    const remaining=Math.max(0,HINT_DELAY_MS-(Date.now()-anchor));
+    const label=hints>=3?'TUTTI GLI INDIZI RIVELATI':remaining>0?'PROSSIMO INDIZIO TRA '+formatTime(remaining):'INDIZIO DISPONIBILE AL MASTER';
+    el.querySelector('.hint-timer-label').textContent=label;
+    el.querySelector('.hint-timer-fill').style.width=(hints>=3?0:Math.min(100,remaining/HINT_DELAY_MS*100))+'%';
+    el.classList.toggle('ready',remaining===0&&hints<3);
+  }
+
+  function render(s){
+    state={...state,...s};
+    $('roundLabel').textContent=state.started?'MISTERO '+(state.roundNumber||state.index+1)+' · '+String(state.difficulty||'facile').toUpperCase():'IN ATTESA DEL MISTERO';
+    $('storyTitle').textContent=state.title||'In attesa del Master';
+    $('storyText').textContent=state.story||'La chat è il giocatore. Le interazioni avvengono direttamente tramite Twitch.';
+    $('hints').innerHTML=(state.revealedHints||[]).map((h,i)=>'<div class="hint"><b>INDIZIO '+(i+1)+':</b> '+esc(h)+'</div>').join('');
+    $('leaderboard').innerHTML=Object.entries(state.scores||{}).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([n,p],i)=>'<div class="entry"><strong>'+(i+1)+'. '+esc(n)+'</strong>'+p+' punti</div>').join('')||'<p class="muted">Nessun punto assegnato.</p>';
+    renderVoteTimer();renderHintTimer();
+    const end=$('sessionEndOverlay');end.classList.toggle('hidden',!state.sessionEnded);
+    if(state.sessionEnded){const names=state.winnerNames||[];$('winnerName').textContent=names.length===1?names[0]:(names.length?names.join(' · '):'NESSUN VINCITORE');$('winnerTitle').textContent=names.length>1?'VINCITORI':'VINCITORE';}
+  }
+
+  async function init(){
+    if(!/^[A-Z0-9]{6}$/.test(room)){$('chatStatus').textContent='Codice stanza non valido.';return;}
+    client=new TortelloSupabaseRoom({room,role:'chat',nickname:'CHAT',game:'dark-stories'});
+    client.on('connected',()=>{$('chatStatus').textContent='CHAT COLLEGATA · IN ATTESA DEL MASTER';client.broadcast('state_request',{requester:'chat'}).catch(()=>{});});
+    client.on('game-state',render);
+    client.on('presence',p=>{
+      const master=Object.values(p||{}).flat().some(e=>e.role==='master');
+      $('chatStatus').textContent=master?'CHAT COLLEGATA · MASTER ONLINE':'IN ATTESA DEL MASTER';
+      if(master)client.broadcast('state_request',{requester:'chat'}).catch(()=>{});
+    });
+    await client.connect();
+    timer=setInterval(()=>{renderVoteTimer();renderHintTimer();},1000);
+  }
+  init().catch(e=>$('chatStatus').textContent=e.message||'Errore di connessione.');
+  window.addEventListener('beforeunload',()=>{if(timer)clearInterval(timer);try{client?.close();}catch(_){}});
 })();
 </script>
-</body></html>
+</body>
+</html>
