@@ -417,3 +417,30 @@ form{display:grid;gap:5px}
   .camera-stack{gap:4px}
   .camera-stack .rules-open{font-size:7px}
 }
+
+
+/* Host: identica resa grafica alla difficoltà dell'Ospite, ma completamente non interattiva */
+.host-difficulty-readonly .difficulty-block{
+  pointer-events:none;
+  cursor:default;
+}
+.host-difficulty-readonly .difficulty-block:hover,
+.host-difficulty-readonly .difficulty-block.selected{
+  background:var(--paper);
+  color:var(--ink);
+  transform:none;
+}
+.host-difficulty-readonly .difficulty-block.selected{
+  background:var(--paper-2);
+}
+
+/* Pulsante regole: torna alla posizione fissa originale a destra */
+.rules-open{
+  position:fixed !important;
+  top:12px !important;
+  right:12px !important;
+  width:auto !important;
+  min-height:0 !important;
+  align-self:auto !important;
+  z-index:2000;
+}
