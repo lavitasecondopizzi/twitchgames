@@ -2,7 +2,7 @@
   const params = new URLSearchParams(location.search);
   const room = (params.get('room') || '').toUpperCase();
   const $ = id => document.getElementById(id);
-  const guestNickname = (params.get('guest') || '').trim().replace(/\s+/g,' ').slice(0,24);
+  
   const difficultyNames = { facile: 'FACILE', medio: 'MEDIO', difficile: 'DIFFICILE' };
   const HINT_DELAY_MS = 10 * 60 * 1000;
   let client = null;
@@ -132,7 +132,11 @@
       client.on('game-state', payload => { if (payload) render(payload); });
 
       client.on('presence', presence => {
-        const master = Object.values(presence || {}).flat().some(entry => entry.role === 'master');
+        const entries = Object.values(presence || {}).flat();
+        const guest = entries.find(entry => entry.role === 'guest');
+        const guestLabel = $('guestWebcamLabel');
+        if (guestLabel) guestLabel.textContent = (guest?.nickname || 'OSPITE').toUpperCase();
+        const master = entries.some(entry => entry.role === 'master');
         status(master ? 'Master collegato. Diretta sincronizzata.' : 'In attesa del Master…');
         if (master) client.broadcast('state_request', {requester:'host'}).catch(() => {});
       });
