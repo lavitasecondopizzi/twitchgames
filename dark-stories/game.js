@@ -11,7 +11,7 @@
   const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   let client, cases = [], currentIndex = 0, roundNumber = 1, twitchSocket = null;
   let hasSelectedDifficulty = false;
-  let state = {started:false,solved:false,solutionRevealed:false,selectedStoryId:null,difficultyVotes:{},difficulty:'facile',revealedHints:[],history:[],queue:[],scores:{},roundPoints:{},solvedBy:[],startedAt:null,lastHintAt:null};
+  let state = {started:false,solved:false,solutionRevealed:false,selectedStoryId:null,difficultyVotes:{},difficulty:'facile',revealedHints:[],history:[],queue:[],scores:{},roundPoints:{},solvedBy:[],startedAt:null,lastHintAt:null,completedStoryIds:[],sessionEnded:false,winnerNames:[]};
   const HINT_DELAY_MS = 10 * 60 * 1000;
   let hintTimerInterval = null;
   function showLoading(message='CARICAMENTO IN CORSO…'){
@@ -42,7 +42,7 @@
       title:mystery?.title||'',story:mystery?.story||'',
       revealedHints:[...(state.revealedHints||[])],startedAt:state.startedAt||null,lastHintAt:state.lastHintAt||null,history:[...(state.history||[])],
       queue:(state.queue||[]).map(q=>({id:q.id,author:q.author,question:q.question,source:q.source,answer:q.answer||null})),
-      scores:{...(state.scores||{})},roundPoints:{...(state.roundPoints||{})},solvedBy:[...(state.solvedBy||[])]
+      scores:{...(state.scores||{})},roundPoints:{...(state.roundPoints||{})},solvedBy:[...(state.solvedBy||[])],completedStoryIds:[...(state.completedStoryIds||[])],sessionEnded:!!state.sessionEnded,winnerNames:[...(state.winnerNames||[])]
     };
     if(state.solutionRevealed&&mystery)snapshot.solution=mystery.solution;
     return snapshot;
@@ -63,7 +63,7 @@
       if(!saved||typeof saved!=='object')return false;
       currentIndex=Number.isInteger(saved.index)?saved.index:0;
       roundNumber=Number.isInteger(saved.roundNumber)?saved.roundNumber:1;
-      state={...state,...saved,difficultyVotes:saved.difficultyVotes||{},queue:saved.queue||[],scores:saved.scores||{},roundPoints:saved.roundPoints||{},history:saved.history||[],revealedHints:saved.revealedHints||[],solvedBy:saved.solvedBy||[]};
+      state={...state,...saved,difficultyVotes:saved.difficultyVotes||{},queue:saved.queue||[],scores:saved.scores||{},roundPoints:saved.roundPoints||{},history:saved.history||[],revealedHints:saved.revealedHints||[],solvedBy:saved.solvedBy||[],completedStoryIds:saved.completedStoryIds||[],sessionEnded:!!saved.sessionEnded,winnerNames:saved.winnerNames||[]};
       return true;
     }catch(error){
       console.warn('Impossibile ripristinare lo stato del Master:',error);
@@ -84,11 +84,23 @@
   function renderStoryList(){
     const list=$('storyList');if(!list)return;
     const level=state.difficulty||'facile';
-    const eligible=cases.filter(item=>item.difficulty===level);
+    const completed=new Set(state.completedStoryIds||[]);
+    const eligible=cases.filter(item=>item.difficulty===level&&!completed.has(item.id));
     list.innerHTML=eligible.map(item=>'<button type="button" class="story-option '+(item.id===state.selectedStoryId?'selected':'')+'" data-story-id="'+esc(item.id)+'"><strong>'+esc(item.title)+'</strong><span>'+esc(item.story)+'</span></button>').join('')||'<p class="muted">Nessuna storia disponibile per questa difficoltà.</p>';
     list.querySelectorAll('[data-story-id]').forEach(button=>button.addEventListener('click',()=>chooseStory(button.dataset.storyId)));
   }
   
+  function renderSessionEnd(s){
+    const overlay=$('sessionEndOverlay');
+    if(!overlay)return;
+    const ended=!!s.sessionEnded;
+    overlay.classList.toggle('hidden',!ended);
+    if(!ended)return;
+    const names=(s.winnerNames||[]).filter(Boolean);
+    $('winnerName').textContent=names.length===1?names[0]:(names.length?names.join(' · '):'NESSUN VINCITORE');
+    $('winnerTitle').textContent=names.length>1?'VINCITORI':'VINCITORE';
+  }
+
   function setupGameTabs(){
     const root=document.querySelector('#playerView');
     if(!root)return;
@@ -101,6 +113,7 @@
 
   function renderPlayer(s){
     $('connection').classList.add('hidden');
+    renderSessionEnd(s);
     if($('webcamLabelA'))$('webcamLabelA').textContent=playerNickname.toUpperCase();
     if($('webcamLabelB'))$('webcamLabelB').textContent='PIZZI';
     $('waitingView').classList.toggle('hidden',!!s.started);
@@ -153,7 +166,8 @@
   }
 
   function renderMaster(s){
-    $('connection').classList.add('hidden');$('masterView').classList.remove('hidden');
+    $('connection').classList.add('hidden');
+    renderSessionEnd(s);$('masterView').classList.remove('hidden');
     if($('webcamLabelA'))$('webcamLabelA').textContent='PIZZI';
     if($('webcamLabelB'))$('webcamLabelB').textContent=(guestNickname||'CHAT / OSPITE').toUpperCase();
     const mystery=currentCase();
@@ -266,7 +280,7 @@
     await publish();
   }
   async function chooseStory(storyId){
-    if(state.started)return;
+    if(state.started||state.sessionEnded)return;
     const selected=cases.find(item=>item.id===storyId && item.difficulty===state.difficulty);
     if(!selected)return;
     showLoading('CARICAMENTO DELLA STORIA…');
@@ -275,6 +289,7 @@
     await publish();
   }
   async function startRound(){
+    if(state.sessionEnded)return;
     const mystery=currentCase();if(!mystery){$('masterStatus').textContent='Seleziona prima una storia.';return;}
     showLoading('AVVIO DEL MISTERO…');
     state.difficulty=mystery.difficulty;state.started=true;state.solved=false;state.solutionRevealed=false;
@@ -317,15 +332,28 @@
   }
   async function revealSolution(){
     state.solutionRevealed=true;
+    if(state.selectedStoryId&&!state.completedStoryIds.includes(state.selectedStoryId))state.completedStoryIds.push(state.selectedStoryId);
     const snapshot=gameState();
     await client.broadcast('game_state',snapshot);
     renderMaster(snapshot);
   }
   async function nextRound(){
-    if(roundNumber>=cases.length){$('masterStatus').textContent='Hai raggiunto il limite di storie nel catalogo.';return;}
+    if(state.sessionEnded)return;
+    const remaining=cases.filter(item=>!state.completedStoryIds.includes(item.id));
+    if(!remaining.length){$('masterStatus').textContent='Non ci sono più storie disponibili.';return;}
     roundNumber++;state.started=false;state.solved=false;state.solutionRevealed=false;state.startedAt=null;state.lastHintAt=null;
     state.selectedStoryId=null;state.revealedHints=[];state.history=[];state.queue=[];state.solvedBy=[];state.roundPoints={};
     state.difficulty=winningDifficulty();
+    await publish();
+  }
+  async function endSession(){
+    if(state.sessionEnded)return;
+    const entries=Object.entries(state.scores||{}).sort((a,b)=>b[1]-a[1]);
+    const top=entries.length?entries[0][1]:0;
+    const winners=entries.filter(entry=>entry[1]===top).map(entry=>entry[0]);
+    state.sessionEnded=true;
+    state.winnerNames=winners;
+    state.started=false;
     await publish();
   }
   function connectTwitch(){
@@ -397,6 +425,7 @@
         const restored=loadMasterState();
         $('startRound').addEventListener('click',startRound);
         $('nextRound').addEventListener('click',nextRound);
+        $('endSession').addEventListener('click',endSession);
         $('hintButton').addEventListener('click',revealHint);
         $('revealSolution').addEventListener('click',revealSolution);
         $('solutionForm').addEventListener('submit',e=>{e.preventDefault();approveSolution($('solverName').value,$('solverAnswer').value);});
