@@ -10,7 +10,7 @@
 <main id="app" class="page chat-page">
   <section class="chat-top">
     <div class="camera-stack">
-      <div class="webcam webcam-left"><span id="chatWebcamLabel">CHAT</span></div>
+      <div class="webcam webcam-left"><span id="chatWebcamLabel">LaVitaSecondoPizzi</span></div>
     </div>
 
     <div class="chat-scoreboard">
@@ -126,7 +126,7 @@
 
   function render(s){
     state={...state,...s};
-    $('chatWebcamLabel').textContent=nickname||'CHAT';
+    $('chatWebcamLabel').textContent='LaVitaSecondoPizzi';
     $('roundLabel').textContent=state.started?'MISTERO '+(state.roundNumber||state.index+1)+' · '+String(state.difficulty||'facile').toUpperCase():'IN ATTESA DEL MISTERO';
     $('storyTitle').textContent=state.title||'In attesa del Master';
     $('storyText').textContent=state.story||'La chat è il giocatore. Le interazioni avvengono direttamente tramite Twitch.';
