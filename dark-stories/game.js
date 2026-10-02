@@ -88,7 +88,7 @@
     if(s.solutionRevealed&&s.solution)$('storyText').textContent=s.story+'\n\nSOLUZIONE: '+s.solution;
   }
   function lockHostInteractions(){
-    document.querySelectorAll('[data-difficulty],#questionInput,#solutionGuess,#questionForm button,#solutionGuessForm button').forEach(el=>{el.disabled=true;el.setAttribute('aria-disabled','true');});
+    document.querySelectorAll('[data-difficulty],#questionInput,#solutionGuess,#questionForm button,#solutionGuessForm button').forEach(el=>{el.disabled=true;el.setAttribute('aria-disabled','true');el.style.pointerEvents='none';});
     const nickname=$('nickname');if(nickname){nickname.value='Pizzi';nickname.readOnly=true;}
     const waiting=$('waitingView');if(waiting){const heading=waiting.querySelector('h2');if(heading)heading.textContent='IN ATTESA DEL MISTERO';}
     const help=document.querySelector('#waitingView > p');if(help)help.textContent='Vista della diretta in sola lettura. Le interazioni sono gestite dall’ospite e dal Master.';
@@ -341,6 +341,7 @@
         state.difficulty='facile';renderMaster({...gameState(),roundNumber:1});hideLoading();
       }else if(isHost){
         document.body.classList.add('readonly-host');
+        document.querySelectorAll('[data-difficulty]').forEach(button=>{button.disabled=true;button.style.pointerEvents='none';button.onclick=e=>{e.preventDefault();e.stopImmediatePropagation();return false;};});
         $('nickname').value='Pizzi';$('nickname').readOnly=true;
         renderPlayer(gameState());lockHostInteractions();hideLoading();
       }else{
