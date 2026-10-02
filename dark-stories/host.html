@@ -15,44 +15,21 @@
 <body>
 <main id="app" class="page host-page">
 <header class="top">
-<div class="webcam webcam-left"><span id="webcamLabelA">PIZZI</span></div>
-<div class="center"><h1>GLU GLU STORIES</h1><p class="lead">Vista diretta · sola lettura</p></div>
-<div class="webcam webcam-right"><span>OSPITE</span></div>
+<div class="camera-stack"><div class="webcam webcam-left"><span>OSPITE</span></div><button type="button" class="rules-trigger rules-open" id="openRules">? REGOLE</button></div>
+<div class="center"><h1>GLU GLU STORIES</h1><p class="lead">Vista diretta · sola lettura</p><div class="center-leaderboard"><span>CLASSIFICA</span><div id="leaderboard" class="list"></div></div></div>
+<div class="camera-stack"><div class="webcam webcam-right"><span>PIZZI</span></div></div>
 </header>
-<div class="rules-bar"><button type="button" class="rules-trigger rules-open" id="openRules">? REGOLE</button></div>
-
 <section id="connection" class="panel"><h2>CONNESSIONE</h2><p id="connectionStatus">Connessione alla diretta in corso…</p></section>
 
 <section id="playerView" class="layout hidden">
-<article class="panel story">
-<div class="eyebrow" id="roundLabel">MISTERO 1</div>
-<h2 id="storyTitle">In attesa del Master</h2>
-<p id="storyText">Il Master sta preparando la storia.</p>
-<div id="hints" class="hints"></div>
-</article>
-<aside class="panel">
-<h2>STATO PARTITA</h2>
-<div class="host-readonly"><strong id="difficultyValue">FACILE</strong><span id="difficultyStatus">DIFFICOLTÀ ATTUALE</span></div>
-<div class="divider"></div>
-<h2>DOMANDE RISPOSTE</h2>
-<div id="answerHistory" class="list"><p class="muted">Ancora nessuna risposta.</p></div>
-<div class="divider"></div>
-<h2>CLASSIFICA</h2>
-<div id="leaderboard" class="list"></div>
-<p id="solvedNotice" class="notice hidden"></p>
-</aside>
-</section>
+<article class="panel story"><div class="eyebrow" id="roundLabel">MISTERO 1</div><h2 id="storyTitle">In attesa del Master</h2><p id="storyText">Il Master sta preparando la storia.</p><div id="hints" class="hints"></div></article>
+<aside class="panel readonly-content"><h2>FAI UNA DOMANDA</h2><p class="muted">Visuale ospite · sola lettura</p><form><input id="nickname" maxlength="24" placeholder="Nickname ospite" readonly disabled><textarea id="questionInput" maxlength="300" placeholder="La tua domanda sì/no…" disabled></textarea><button class="btn" type="button" disabled>INVIA DOMANDA</button></form><div class="divider"></div><h2>PROVA A RISOLVERE</h2><form><textarea id="solutionGuess" maxlength="500" placeholder="Qual è la spiegazione del mistero?" disabled></textarea><button class="btn" type="button" disabled>INVIA SOLUZIONE</button></form><p class="muted">Questa area replica la visuale dell’ospite senza permettere interazioni.</p><div class="divider"></div><h2>DOMANDE RISPOSTE</h2><div id="answerHistory" class="list"><p class="muted">Ancora nessuna risposta.</p></div><p id="solvedNotice" class="notice hidden"></p></aside></section>
 
-<section id="waitingView" class="panel difficulty-picker">
-<h2>IN ATTESA DEL MISTERO</h2>
-<p>Questa è una vista di sola lettura per la diretta. La difficoltà viene scelta dall’ospite e il mistero viene gestito dal Master.</p>
-<div class="difficulty-blocks">
-<div class="difficulty-block"><strong>FACILE</strong><span>Enigmi intuitivi</span></div>
-<div class="difficulty-block"><strong>MEDIO</strong><span>Collegamenti nascosti</span></div>
-<div class="difficulty-block"><strong>DIFFICILE</strong><span>Deduzione articolata</span></div>
-</div>
-<p id="difficultyStatus" class="notice">In attesa della scelta dell’ospite.</p>
-</section>
+<section id="waitingView" class="panel difficulty-picker readonly-host">
+<h2 id="waitingTitle">SCEGLI LA DIFFICOLTÀ</h2>
+<p id="waitingDescription">Visuale ospite · sola lettura</p>
+<div class="difficulty-blocks"><div class="difficulty-block" data-difficulty="facile"><strong>FACILE</strong><span>Enigmi intuitivi</span></div><div class="difficulty-block" data-difficulty="medio"><strong>MEDIO</strong><span>Collegamenti nascosti</span></div><div class="difficulty-block" data-difficulty="difficile"><strong>DIFFICILE</strong><span>Deduzione articolata</span></div></div>
+<p id="difficultyStatus" class="notice">In attesa della scelta dell’ospite.</p></section>
 
 <div id="hintTimer" class="hint-timer hidden" aria-live="polite"><span class="hint-timer-label">IN ATTESA DEL MISTERO</span><div class="hint-timer-track"><div class="hint-timer-fill"></div></div></div>
 </main>
