@@ -993,3 +993,187 @@ body.master-page{min-height:100vh}
     grid-template-rows:160px minmax(140px,1fr) 160px;
   }
 }
+
+
+/* Solo Chat — layout originale: webcam + classifica + istruzioni */
+.chat-page{
+  display:grid;
+  grid-template-rows:auto minmax(0,30%) minmax(0,1fr);
+  gap:10px;
+}
+.chat-top{
+  display:grid;
+  grid-template-columns:minmax(180px,1fr) minmax(0,1.35fr) minmax(260px,1fr);
+  gap:10px;
+  min-height:0;
+  align-items:stretch;
+}
+.chat-top .camera-stack,
+.chat-top .webcam,
+.chat-scoreboard,
+.chat-howto{
+  min-height:0;
+  height:100%;
+}
+.chat-top .webcam{
+  aspect-ratio:16/9;
+}
+.chat-scoreboard{
+  border:3px solid var(--ink);
+  background:var(--paper);
+  box-shadow:var(--shadow);
+  padding:8px;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.chat-scoreboard .scoreboard-title{
+  flex:0 0 auto;
+}
+.chat-scoreboard .list{
+  flex:1 1 auto;
+  min-height:0;
+  overflow:auto;
+  display:grid;
+  grid-template-columns:1fr;
+  gap:5px;
+  padding-top:6px;
+}
+.chat-scoreboard .entry{
+  min-height:0;
+  padding:6px 7px;
+}
+.chat-howto{
+  border:3px solid var(--ink);
+  background:var(--paper);
+  box-shadow:var(--shadow);
+  padding:9px;
+  overflow:hidden;
+}
+.chat-howto h2{
+  font-size:clamp(18px,1.5vw,25px);
+  margin:0 0 8px;
+}
+.chat-howto-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+  height:calc(100% - 34px);
+}
+.chat-howto .chat-command{
+  margin:0;
+  border:2px solid var(--ink);
+  padding:7px;
+  background:var(--paper-2);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:3px;
+}
+.chat-howto .chat-command b{
+  font-size:9px;
+  font-family:Impact,"Arial Black",sans-serif;
+}
+.chat-howto .chat-command strong{
+  font-size:11px;
+  text-transform:uppercase;
+}
+.chat-howto .chat-command span{
+  font-size:9px;
+  line-height:1.25;
+  font-weight:700;
+}
+.chat-main{
+  display:grid;
+  grid-template-columns:minmax(0,1.4fr) minmax(280px,.6fr);
+  gap:10px;
+  min-height:0;
+}
+.chat-story{
+  position:relative;
+}
+.chat-vote-panel{
+  min-height:0;
+  overflow:hidden;
+}
+.chat-vote-clock{
+  margin:8px 0;
+  font:900 clamp(34px,4vw,58px)/.9 Impact,"Arial Black",sans-serif;
+  text-align:center;
+}
+.chat-vote-track{
+  height:12px;
+  border:2px solid var(--ink);
+  background:var(--paper-2);
+  overflow:hidden;
+}
+#difficultyTimerFill{
+  width:100%;
+  height:100%;
+  background:var(--red);
+  transition:width .4s linear;
+}
+.chat-vote-label{
+  margin:7px 0 12px;
+  font-size:10px;
+  font-weight:900;
+  text-align:center;
+}
+.chat-vote-totals{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:5px;
+  margin-bottom:10px;
+}
+.chat-vote-totals>div{
+  border:2px solid var(--ink);
+  background:var(--paper-2);
+  padding:8px 4px;
+  text-align:center;
+}
+.chat-vote-totals b{
+  display:block;
+  font:900 24px/1 Impact,"Arial Black",sans-serif;
+}
+.chat-vote-totals span{
+  display:block;
+  margin-top:3px;
+  font-size:8px;
+  font-weight:900;
+}
+.chat-story .hint-timer{
+  position:relative !important;
+  left:auto !important;
+  right:auto !important;
+  bottom:auto !important;
+  margin-top:10px;
+  flex:0 0 auto;
+}
+.chat-story .chat-story-text{
+  flex:1 1 auto;
+  min-height:0;
+}
+@media(max-width:900px){
+  .chat-top{
+    grid-template-columns:minmax(150px,1fr) minmax(0,1.4fr);
+    grid-template-rows:160px 160px;
+  }
+  .chat-top .camera-stack{grid-row:1 / span 2}
+  .chat-howto{grid-column:2}
+  .chat-main{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+  .chat-page{
+    min-height:100vh;
+    display:flex;
+    overflow:auto;
+  }
+  .chat-top{
+    display:grid;
+    grid-template-columns:1fr;
+    grid-template-rows:180px auto auto;
+  }
+  .chat-top .camera-stack{grid-row:auto}
+  .chat-howto-grid{height:auto}
+  .chat-main{grid-template-columns:1fr}
+}
