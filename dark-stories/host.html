@@ -5,12 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Glu Glu Stories · Host</title>
 <link rel="stylesheet" href="style.css">
-<style>
-.host-page .difficulty-blocks{pointer-events:none;user-select:none}
-.host-page .difficulty-block{cursor:default}
-.host-page .host-readonly{padding:10px 12px;border:3px solid var(--ink);background:var(--paper-2);box-shadow:2px 2px 0 var(--ink);font-size:11px;font-weight:900;text-align:center}
-.host-page .host-readonly strong{display:block;font-size:18px;font-family:Impact,Haettenschweiler,"Arial Black",sans-serif}
-</style>
 </head>
 <body>
 <main id="app" class="page host-page">
@@ -25,9 +19,9 @@
 <article class="panel story"><div class="eyebrow" id="roundLabel">MISTERO 1</div><h2 id="storyTitle">In attesa del Master</h2><p id="storyText">Il Master sta preparando la storia.</p><div id="hints" class="hints"></div></article>
 <aside class="panel readonly-content"><h2>FAI UNA DOMANDA</h2><p class="muted">Visuale ospite · sola lettura</p><form><input id="nickname" maxlength="24" placeholder="Nickname ospite" readonly disabled><textarea id="questionInput" maxlength="300" placeholder="La tua domanda sì/no…" disabled></textarea><button class="btn" type="button" disabled>INVIA DOMANDA</button></form><div class="divider"></div><h2>PROVA A RISOLVERE</h2><form><textarea id="solutionGuess" maxlength="500" placeholder="Qual è la spiegazione del mistero?" disabled></textarea><button class="btn" type="button" disabled>INVIA SOLUZIONE</button></form><p class="muted">Questa area replica la visuale dell’ospite senza permettere interazioni.</p><div class="divider"></div><h2>DOMANDE RISPOSTE</h2><div id="answerHistory" class="list"><p class="muted">Ancora nessuna risposta.</p></div><p id="solvedNotice" class="notice hidden"></p></aside></section>
 
-<section id="waitingView" class="panel difficulty-picker readonly-host">
+<section id="waitingView" class="panel difficulty-picker host-difficulty-readonly">
 <h2 id="waitingTitle">SCEGLI LA DIFFICOLTÀ</h2>
-<p id="waitingDescription">Visuale ospite · sola lettura</p>
+<p id="waitingDescription">Seleziona un livello per mostrare al Master le storie disponibili.</p>
 <div class="difficulty-blocks"><div class="difficulty-block" data-difficulty="facile"><strong>FACILE</strong><span>Enigmi intuitivi</span></div><div class="difficulty-block" data-difficulty="medio"><strong>MEDIO</strong><span>Collegamenti nascosti</span></div><div class="difficulty-block" data-difficulty="difficile"><strong>DIFFICILE</strong><span>Deduzione articolata</span></div></div>
 <p id="difficultyStatus" class="notice">In attesa della scelta dell’ospite.</p></section>
 
