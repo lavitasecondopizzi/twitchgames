@@ -503,3 +503,15 @@ form{display:grid;gap:5px}
 }
 .scoreboard .list::-webkit-scrollbar{width:6px}
 .scoreboard .list::-webkit-scrollbar-thumb{background:var(--ink)}
+
+
+/* Il contenitore centrale non è un pannello: la classifica è l'unico blocco visibile */
+.center{
+  border:0 !important;
+  box-shadow:none !important;
+  background:transparent !important;
+  padding:0 8px 8px !important;
+}
+.scoreboard{
+  margin:0 !important;
+}
