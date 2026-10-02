@@ -91,7 +91,6 @@
     $('hints').innerHTML = (s.revealedHints || [])
       .map((hint,i) => '<div class="hint"><b>INDIZIO ' + (i+1) + ':</b> ' + esc(hint) + '</div>').join('');
 
-    if ($('nickname')) $('nickname').value = guestNickname || s.guestNickname || s.playerNickname || 'Ospite';
     $('answerHistory').innerHTML = (s.history || []).slice().reverse()
       .map(item => '<div class="entry"><strong>' + esc(item.author) + ' · ' + esc(item.answer) + '</strong>' + esc(item.question) + '</div>')
       .join('') || '<p class="muted">Ancora nessuna risposta.</p>';
@@ -150,6 +149,7 @@
   }
 
   setupRules();
+  setupGameTabs();
   showLoading();
   init();
 })();
