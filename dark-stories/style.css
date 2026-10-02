@@ -542,3 +542,35 @@ form{display:grid;gap:5px}
   min-height:0;
   height:auto !important;
 }
+
+
+/* Scelta difficoltà: selezione identica su Ospite e Host */
+.difficulty-block.selected{
+  background:var(--ink) !important;
+  color:var(--paper) !important;
+  border-color:var(--ink) !important;
+  box-shadow:7px 7px 0 var(--red) !important;
+  transform:translate(-2px,-2px) !important;
+}
+.host-difficulty-readonly .difficulty-block.selected{
+  background:var(--ink) !important;
+  color:var(--paper) !important;
+  border-color:var(--ink) !important;
+  box-shadow:7px 7px 0 var(--red) !important;
+  transform:translate(-2px,-2px) !important;
+}
+.host-difficulty-readonly .difficulty-block:hover{
+  background:var(--paper) !important;
+  color:var(--ink) !important;
+  transform:none !important;
+  box-shadow:5px 5px 0 var(--ink) !important;
+}
+#waitingView.difficulty-picker{
+  justify-content:flex-start;
+}
+#waitingView.difficulty-picker > h2{
+  margin-bottom:0;
+}
+#waitingView.difficulty-picker .difficulty-blocks{
+  margin-top:8px;
+}
