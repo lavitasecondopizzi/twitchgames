@@ -8,11 +8,6 @@
 </head>
 <body>
 <main id="app" class="page chat-page">
-  <header class="panel chat-header">
-    <div><span class="eyebrow">TORTELLO GAMES / GLU GLU STORIES</span><h1>SOLO CHAT</h1></div>
-    <div id="chatStatus" class="chat-status">Connessione alla stanza…</div>
-  </header>
-
   <section class="chat-top">
     <div class="camera-stack">
       <div class="webcam webcam-left"><span>CHAT</span></div>
@@ -144,17 +139,17 @@
   async function init(){
     if(!/^[A-Z0-9]{6}$/.test(room)){$('chatStatus').textContent='Codice stanza non valido.';return;}
     client=new TortelloSupabaseRoom({room,role:'chat',nickname:'CHAT',game:'dark-stories'});
-    client.on('connected',()=>{$('chatStatus').textContent='CHAT COLLEGATA · IN ATTESA DEL MASTER';client.broadcast('state_request',{requester:'chat'}).catch(()=>{});});
+    client.on('connected',()=>{client.broadcast('state_request',{requester:'chat'}).catch(()=>{});});
     client.on('game-state',render);
     client.on('presence',p=>{
       const master=Object.values(p||{}).flat().some(e=>e.role==='master');
-      $('chatStatus').textContent=master?'CHAT COLLEGATA · MASTER ONLINE':'IN ATTESA DEL MASTER';
+      
       if(master)client.broadcast('state_request',{requester:'chat'}).catch(()=>{});
     });
     await client.connect();
     timer=setInterval(()=>{renderVoteTimer();renderHintTimer();},1000);
   }
-  init().catch(e=>$('chatStatus').textContent=e.message||'Errore di connessione.');
+  init().catch(()=>{});
   window.addEventListener('beforeunload',()=>{if(timer)clearInterval(timer);try{client?.close();}catch(_){}});
 })();
 </script>
