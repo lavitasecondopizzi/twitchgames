@@ -748,3 +748,110 @@ form{display:grid;gap:5px}
   .master-header-actions .btn{flex:1}
   .master-bottom{grid-template-columns:1fr}
 }
+
+/* Master — console full screen, ispirata alla densità della Master di Paper Pizzi Please */
+html,body{width:100%;height:100%;overflow:hidden}
+body.master-page{min-height:100vh}
+.master-page{
+  width:100vw;
+  height:100vh;
+  min-height:100vh;
+  padding:10px;
+  gap:8px;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.master-page #connection{flex:0 0 auto}
+.master-dashboard{
+  width:100%;
+  height:100%;
+  min-height:0;
+  flex:1 1 auto;
+  display:grid;
+  grid-template-rows:auto minmax(0,1fr) auto;
+  gap:8px;
+  overflow:hidden;
+}
+.master-header{
+  min-height:0;
+  padding:7px 10px;
+  border-width:3px;
+  box-shadow:4px 4px 0 var(--ink);
+}
+.master-header h1{
+  margin:2px 0 0;
+  font-size:clamp(17px,1.6vw,25px);
+  line-height:.9;
+}
+.master-header .eyebrow{font-size:7px}
+.master-header-actions{gap:5px}
+.master-header-actions .btn{
+  min-height:26px;
+  padding:4px 7px;
+  font-size:7px;
+}
+.master-main{
+  min-height:0;
+  height:100%;
+  overflow:hidden;
+  grid-template-columns:minmax(0,55fr) minmax(0,45fr);
+  gap:8px;
+}
+.master-case,.master-operations{
+  height:100%;
+  min-height:0;
+  overflow:hidden;
+}
+.master-case{padding:10px}
+.master-section-head{padding-bottom:6px}
+.master-section-head h2{font-size:clamp(21px,2vw,31px)}
+.master-story{
+  font-size:clamp(13px,1vw,16px);
+  line-height:1.3;
+  padding:9px 0;
+  overflow:auto;
+  min-height:0;
+}
+.master-solution-card{
+  margin-top:2px;
+  padding:7px !important;
+}
+.master-solution-card h3,.master-hints h3{font-size:9px;margin-bottom:4px}
+.master-solution-card p{font-size:9px;line-height:1.25}
+.master-controls{margin-top:7px;gap:5px}
+.master-controls .btn{min-height:28px}
+.master-hints{margin-top:7px;padding-top:7px}
+.master-hints-list{max-height:90px;font-size:9px}
+.master-operations{border-width:3px}
+.master-tabs{border-bottom-width:3px}
+.master-tab{min-height:31px;font-size:8px}
+.master-tab-panel{padding:9px}
+.master-tab-panel h2{font-size:18px;margin:0 0 7px}
+.master-panel-title{margin-bottom:6px;padding-bottom:5px}
+.master-panel-title h2{font-size:18px}
+.master-tab-panel .queue{max-height:none;height:100%;overflow:auto}
+.master-bottom{
+  min-height:0;
+  grid-template-columns:minmax(0,65fr) minmax(220px,35fr);
+  gap:8px;
+}
+.master-scoreboard,.master-status-panel{
+  padding:7px;
+  border-width:3px;
+  box-shadow:4px 4px 0 var(--ink);
+}
+.master-scoreboard .master-panel-title,.master-status-panel h2{margin-bottom:5px}
+.master-scoreboard .list{max-height:92px}
+.master-status-panel .notice{font-size:9px}
+@media(max-width:900px){
+  .master-page{padding:7px}
+  .master-main{grid-template-columns:minmax(0,55fr) minmax(0,45fr)}
+}
+@media(max-width:700px){
+  .master-header{flex-direction:row;align-items:center}
+  .master-header-actions{width:auto}
+  .master-main{grid-template-columns:1fr}
+  .master-operations{min-height:0}
+  .master-bottom{grid-template-columns:1fr}
+}
