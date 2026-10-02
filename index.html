@@ -823,7 +823,7 @@
       }
 
       if (game === 'dark-stories') {
-        const page = view === 'master' ? 'master.html' : 'index.html';
+        const page = view === 'master' ? 'master.html' : (role === 'host' ? 'host.html' : 'index.html');
         const gameRole = view === 'master' ? 'master' : role;
         const guest = guestNickname ? '&guest=' + encodeURIComponent(guestNickname) : '';
         return './dark-stories/' + page + '?room=' + room +
