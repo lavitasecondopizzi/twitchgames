@@ -6,7 +6,7 @@
   const role = isMaster ? 'master' : (isHost ? 'host' : (params.get('role') || 'guest'));
   const lobbyNickname = (params.get('player') || '').trim().replace(/\s+/g,' ').slice(0,24);
   let guestNickname = (params.get('guest') || '').trim().replace(/\s+/g,' ').slice(0,24);
-  const playerNickname = (isMaster || isHost) ? 'Pizzi' : (lobbyNickname || 'Ospite');
+  const playerNickname = (isMaster || isHost) ? 'LaVitaSecondoPizzi' : (lobbyNickname || 'Ospite');
   const $ = id => document.getElementById(id);
   const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   let client, cases = [], currentIndex = 0, roundNumber = 1, twitchSocket = null;
@@ -116,7 +116,7 @@
     $('connection').classList.add('hidden');
     renderSessionEnd(s);
     if($('webcamLabelA'))$('webcamLabelA').textContent=playerNickname.toUpperCase();
-    if($('webcamLabelB'))$('webcamLabelB').textContent='PIZZI';
+    if($('webcamLabelB'))$('webcamLabelB').textContent='LAVITASECONDOPIZZI';
     $('waitingView').classList.toggle('hidden',!!s.started);
     $('playerView').classList.toggle('hidden',!s.started);
     document.querySelectorAll('[data-difficulty]').forEach(button=>{button.classList.toggle('selected',button.dataset.difficulty===(s.difficulty||'facile'));button.disabled=isHost||!!s.started;});
@@ -148,7 +148,7 @@
       el.replaceWith(replacement);
     });
     document.querySelectorAll('#questionInput,#solutionGuess,#questionForm button,#solutionGuessForm button').forEach(el=>{el.disabled=true;el.setAttribute('aria-disabled','true');el.style.pointerEvents='none';});
-    const nickname=$('nickname');if(nickname){nickname.value='Pizzi';nickname.readOnly=true;}
+    const nickname=$('nickname');if(nickname){nickname.value='LaVitaSecondoPizzi';nickname.readOnly=true;}
     const waiting=$('waitingView');if(waiting){const heading=waiting.querySelector('h2');if(heading)heading.textContent='IN ATTESA DEL MISTERO';}
     const help=document.querySelector('#waitingView > p');if(help)help.textContent='Vista della diretta in sola lettura. Le interazioni sono gestite dall’ospite e dal Master.';
     $('questionForm')?.addEventListener('submit',e=>e.preventDefault());
@@ -169,7 +169,7 @@
   function renderMaster(s){
     $('connection').classList.add('hidden');
     renderSessionEnd(s);$('masterView').classList.remove('hidden');
-    if($('webcamLabelA'))$('webcamLabelA').textContent='PIZZI';
+    if($('webcamLabelA'))$('webcamLabelA').textContent='LAVITASECONDOPIZZI';
     if($('webcamLabelB'))$('webcamLabelB').textContent=(guestNickname||'CHAT / OSPITE').toUpperCase();
     const mystery=currentCase();
     $('masterRound').textContent='MISTERO '+(s.roundNumber||1)+' / '+cases.length;
