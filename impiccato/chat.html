@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Impiccato · Solo Chat</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+<style>
+:root{--ink:#111;--paper:#f7f7f4;--paper2:#e8e8e3;--line:#111;--shadow:7px 7px 0 #111}
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0}
+body{display:flex;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(circle,rgba(0,0,0,.15) 1px,transparent 1.5px) 0 0/12px 12px var(--paper);font-family:Arial,Helvetica,sans-serif;color:var(--ink)}
+#app{width:min(100vw,100vh * 16 / 9);height:min(100vh,100vw * 9 / 16);max-width:1920px;max-height:1080px;padding:18px;display:grid;grid-template-rows:27% 1fr;gap:14px;background:var(--paper);border:4px solid var(--line);box-shadow:10px 10px 0 var(--line)}
+.top{display:grid;grid-template-columns:1fr 1.5fr 1fr;gap:12px}
+.panel{min-width:0;min-height:0;border:4px solid var(--line);box-shadow:var(--shadow);background:var(--paper);padding:16px}
+.cam{position:relative;background:#00ff00;display:flex;align-items:flex-end;padding:12px;border:4px solid var(--line);box-shadow:var(--shadow)}
+.cam span{padding:7px 10px;border:3px solid var(--line);background:var(--ink);color:var(--paper);font-weight:900;text-transform:uppercase}
+.center{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.kicker{font-size:10px;font-weight:900;letter-spacing:.15em}
+h1,h2{margin:5px 0;font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;text-transform:uppercase}
+h1{font-size:clamp(30px,4vw,62px);line-height:.85}
+h2{font-size:clamp(22px,2.4vw,34px)}
+.content{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;min-height:0}
+.story{display:flex;flex-direction:column;justify-content:center}
+.status{display:inline-block;border:3px solid var(--line);padding:7px 10px;background:var(--ink);color:var(--paper);font-size:11px;font-weight:900;text-transform:uppercase;align-self:flex-start}
+.instruction{font-size:clamp(15px,1.4vw,22px);font-weight:700;line-height:1.4;max-width:900px}
+.command{margin-top:12px;padding:14px;border:4px solid var(--line);background:var(--paper2);box-shadow:5px 5px 0 var(--line)}
+.command code{font-family:"Courier New",monospace;font-size:clamp(18px,1.7vw,28px);font-weight:900}
+.timer{margin-top:18px}
+.clock{font-family:"Courier New",monospace;font-size:clamp(42px,5vw,80px);font-weight:900;text-align:center}
+.track{height:18px;border:3px solid var(--line);background:var(--paper2)}
+.fill{height:100%;width:100%;background:var(--ink);transition:width .15s linear}
+.label{text-align:center;margin-top:8px;font-size:11px;font-weight:900;text-transform:uppercase}
+.votes{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px}
+.vote{border:3px solid var(--line);padding:12px;background:var(--paper2);display:flex;justify-content:space-between;font-weight:900}
+.vote strong{font-size:20px}
+.notice{margin-top:14px;font-size:11px;font-weight:700;line-height:1.4}
+@media(max-width:800px){#app{padding:10px;gap:8px}.top{gap:6px}.content{grid-template-columns:1fr}.panel{padding:10px}.votes{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main id="app">
+  <section class="top">
+    <div class="cam"><span>LaVitaSecondoPizzi</span></div>
+    <div class="panel center">
+      <div class="kicker">TORTELLO GAMES</div>
+      <h1>Impiccato</h1>
+      <div id="turn" class="status">IN ATTESA</div>
+    </div>
+    <div class="cam"><span>CHAT</span></div>
+  </section>
+
+  <section class="content">
+    <article class="panel story">
+      <div id="round" class="kicker">SOLO CHAT</div>
+      <h2>La chat è il giocatore B</h2>
+      <p class="instruction">Quando è il turno della chat, tutti possono proporre una lettera. Ogni utente può votare una sola volta per votazione.</p>
+      <div class="command"><code>!vota A</code> &nbsp; <code>!vota B</code> &nbsp; … &nbsp; <code>!vota Z</code></div>
+      <p id="connection" class="notice">Collegamento alla stanza in corso…</p>
+    </article>
+
+    <aside class="panel">
+      <h2>Votazione</h2>
+      <div id="clock" class="clock">--</div>
+      <div class="track"><div id="fill" class="fill"></div></div>
+      <div id="label" class="label">In attesa del turno della chat.</div>
+      <div id="votes" class="votes"></div>
+      <div id="winner" class="notice"></div>
+    </aside>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../shared/supabase-config.js"></script>
+<script src="../shared/supabase-room.js"></script>
+<script>
+const params=new URLSearchParams(location.search);
+const room=(params.get("room")||"").trim().toUpperCase();
+const interaction=params.get("interaction")==="chat"?"chat":"guest";
+let client=null,state={},timer=null;
+
+function render(s){
+  state={...state,...s};
+  const vote=state.chatVote||{};
+  const active=!!vote.active && state.game?.turn==="B" && state.game?.B?.status==="playing";
+  document.getElementById("turn").textContent=state.game?.turn==="B"?"TOCCA ALLA CHAT":state.game?.turn==="A"?"TOCCA A "+(state.playerNameA||"HOST"):"ROUND TERMINATO";
+  document.getElementById("round").textContent="ROUND "+(state.game?.round||0)+" · "+String(state.game?.theme||"").toUpperCase();
+
+  const clock=document.getElementById("clock"),fill=document.getElementById("fill"),label=document.getElementById("label");
+  if(active){
+    const remaining=Math.max(0,Number(vote.endsAt||0)-Date.now());
+    clock.textContent=Math.ceil(remaining/1000)+"s";
+    fill.style.width=Math.max(0,Math.min(100,remaining/30000*100))+"%";
+    label.textContent="VOTA LA LETTERA PRIMA DELLO SCADERE";
+  }else{
+    clock.textContent="--";
+    fill.style.width="0%";
+    label.textContent=state.game?.turn==="B"?"In attesa dell'avvio della votazione.":"La votazione parte quando è il turno della chat.";
+  }
+
+  const entries=Object.entries(vote.votes||{}).sort((a,b)=>Number(b[1])-Number(a[1])||a[0].localeCompare(b[0]));
+  document.getElementById("votes").innerHTML=entries.length
+    ? entries.slice(0,12).map(([l,n])=>'<div class="vote"><strong>'+l+'</strong><span>'+n+' vot'+(Number(n)===1?'o':'i')+'</span></div>').join("")
+    : '<div class="notice">Nessun voto ancora.</div>';
+  document.getElementById("winner").textContent=vote.winner?"LETTERA SCELTA: "+vote.winner:"";
+}
+
+async function init(){
+  if(!/^[A-Z0-9]{6}$/.test(room)){
+    document.getElementById("connection").textContent="Codice stanza non valido.";
+    return;
+  }
+  client=new TortelloSupabaseRoom({room,role:"chat",nickname:"CHAT",game:"impiccato"});
+  client.on("connected",()=>{
+    document.getElementById("connection").textContent="CHAT COLLEGATA · in attesa dei voti";
+    client.broadcast("state_request",{requester:"chat"}).catch(()=>{});
+  });
+  client.on("game-state",render);
+  client.on("presence",()=>client.broadcast("state_request",{requester:"chat"}).catch(()=>{}));
+  await client.connect();
+  timer=setInterval(()=>render(state),100);
+}
+init().catch(()=>{
+  document.getElementById("connection").textContent="Impossibile collegarsi alla stanza.";
+});
+window.addEventListener("beforeunload",()=>{if(timer)clearInterval(timer);try{client?.close()}catch(_){}});
+</script>
+</body>
+</html>
