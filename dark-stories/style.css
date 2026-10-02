@@ -855,3 +855,26 @@ body.master-page{min-height:100vh}
   .master-operations{min-height:0}
   .master-bottom{grid-template-columns:1fr}
 }
+
+
+/* Master tabs e lista storie: pannello operativo a tutta altezza */
+.master-operations{min-height:0}
+.master-tab-panel.active{
+  display:flex;
+  flex-direction:column;
+  flex:1 1 auto;
+  min-height:0;
+}
+.master-tab-panel[data-master-panel="stories"] .story-list{
+  flex:1 1 auto;
+  min-height:0;
+  max-height:none !important;
+  overflow:auto;
+  align-content:start;
+}
+.master-tab-panel[data-master-panel="questions"] .queue,
+.master-tab-panel[data-master-panel="solution"] #solutionForm{
+  flex:1 1 auto;
+  min-height:0;
+  overflow:auto;
+}
