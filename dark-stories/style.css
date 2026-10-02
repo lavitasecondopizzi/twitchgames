@@ -901,3 +901,45 @@ body.master-page{min-height:100vh}
   position:relative;
   z-index:1;
 }
+
+/* Fine sessione: overlay vittoria a tutto schermo per Ospite e Host */
+.session-end-overlay{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  background:rgba(12,12,12,.96);
+}
+.session-end-overlay.hidden{display:none}
+.session-end-card{
+  position:relative;
+  z-index:2;
+  width:min(90vw,900px);
+  padding:clamp(30px,6vw,70px);
+  text-align:center;
+  border:6px solid var(--paper);
+  background:var(--ink);
+  color:var(--paper);
+  box-shadow:12px 12px 0 var(--red);
+  animation:sessionWinnerPop .7s cubic-bezier(.2,.9,.2,1) both;
+}
+.session-end-kicker{font-size:clamp(11px,1.2vw,18px);letter-spacing:.18em;font-weight:900}
+.session-end-title{margin-top:10px;font:900 clamp(34px,7vw,86px)/.9 Impact,"Arial Black",sans-serif}
+.session-end-name{margin-top:18px;font:900 clamp(40px,8vw,110px)/.9 Impact,"Arial Black",sans-serif;color:var(--red);text-shadow:5px 5px 0 var(--paper)}
+.session-end-subtitle{margin-top:22px;font-size:clamp(12px,1.5vw,20px);font-weight:900;letter-spacing:.2em}
+.session-end-confetti{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:space-around;
+  font-size:clamp(24px,5vw,70px);
+  color:var(--paper);
+  opacity:.35;
+  animation:sessionConfetti 1.8s linear infinite;
+}
+@keyframes sessionWinnerPop{from{transform:scale(.7) rotate(-2deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+@keyframes sessionConfetti{0%{transform:translateY(-30px) rotate(0)}50%{transform:translateY(30px) rotate(8deg)}100%{transform:translateY(-30px) rotate(0)}}
