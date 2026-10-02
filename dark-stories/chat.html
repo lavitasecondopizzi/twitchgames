@@ -10,6 +10,14 @@
     <div><span class="eyebrow">TORTELLO GAMES / GLU GLU STORIES</span><h1>SOLO CHAT</h1></div>
     <div id="chatStatus" class="chat-status">Connessione alla stanza…</div>
   </header>
+  <section class="chat-webcam-row">
+    <div class="camera-stack"><div class="webcam webcam-left"><span>CHAT</span></div></div>
+    <div class="panel chat-leaderboard">
+      <div class="master-panel-title"><h2>CLASSIFICA</h2><span>TOP 5</span></div>
+      <div id="leaderboard" class="list"></div>
+    </div>
+    <div class="camera-stack"><div class="webcam webcam-right"><span>PIZZI</span></div></div>
+  </section>
   <section class="chat-main">
     <article class="panel chat-story">
       <div class="eyebrow" id="roundLabel">IN ATTESA DEL MISTERO</div>
@@ -26,10 +34,6 @@
       <div class="chat-command"><b>!soluzione [risposta]</b><span>Invia un tentativo di soluzione.</span></div>
       <p class="notice">Il Master gestisce risposte, indizi, punteggi e chiusura della sessione.</p>
     </aside>
-  </section>
-  <section class="panel chat-leaderboard">
-    <div class="master-panel-title"><h2>CLASSIFICA</h2><span>TOP 5</span></div>
-    <div id="leaderboard" class="list"></div>
   </section>
 </main>
 <section id="sessionEndOverlay" class="session-end-overlay hidden" aria-live="assertive">
