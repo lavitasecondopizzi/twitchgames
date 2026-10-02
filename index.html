@@ -680,7 +680,7 @@
       </div>
       <div class="room-status">
         <span id="roomGameLabel">Gioco</span>
-        <span id="roomPlayerLabel">HOST · PIZZI</span>
+        <span id="roomPlayerLabel">HOST · LAVITASECONDOPIZZI</span>
       </div>
       <div class="notice" id="roomNotice">
         Condividi il codice con il tuo ospite. Sarà l'ospite, entrando nella stanza, a scegliere il proprio nick.
@@ -791,7 +791,7 @@
     }
 
     function buildGameUrl(game, role, nickname, gameConfig = {}, view = 'player', guestNickname = '') {
-      const player = encodeURIComponent(nickname || (role === 'host' ? 'Pizzi' : 'Ospite'));
+      const player = encodeURIComponent(nickname || (role === 'host' ? 'LaVitaSecondoPizzi' : 'Ospite'));
       const room = encodeURIComponent(state.roomCode);
       const interaction = encodeURIComponent(gameConfig.interactionMode || 'guest');
 
@@ -813,7 +813,7 @@
         const narrativeStyle = encodeURIComponent(gameConfig.narrativeStyle || 'balanced');
         const caseCount = Math.max(1, Number(gameConfig.caseCount || 12));
         const paperPage = view === 'master' ? 'master.html' : 'index.html';
-        const streamer = encodeURIComponent('Pizzi');
+        const streamer = encodeURIComponent('LaVitaSecondoPizzi');
         const guestName = guestNickname || (role === 'guest' ? nickname : '');
         const guest = guestName ? '&guest=' + encodeURIComponent(guestName) : '';
         return './paper-please/' + paperPage + '?seed=' + seed +
@@ -857,7 +857,7 @@
       const chatMode = state.interactionMode === 'chat';
 
       if (chatMode) {
-        $('roomPlayerLabel').textContent = 'HOST · PIZZI · SOLO CHAT';
+        $('roomPlayerLabel').textContent = 'HOST · LAVITASECONDOPIZZI · SOLO CHAT';
         $('roomNotice').textContent = 'Modalità Solo Chat: non serve un ospite. La chat sarà il secondo giocatore.';
         launchButton.disabled = false;
         return;
@@ -868,16 +868,16 @@
         if (state.guestNickname) {
           localStorage.setItem('tortello:paper:guest:' + state.roomCode, state.guestNickname);
         }
-        $('roomPlayerLabel').textContent = 'HOST · PIZZI · OSPITE: ' + (state.guestNickname || 'Ospite');
+        $('roomPlayerLabel').textContent = 'HOST · LAVITASECONDOPIZZI · OSPITE: ' + (state.guestNickname || 'Ospite');
         $('roomNotice').textContent = 'Ospite collegato. Puoi avviare la partita.';
         launchButton.disabled = false;
         state.roomClient?.sendRoomInfo().catch(() => {});
       } else if (guests.length > 1) {
-        $('roomPlayerLabel').textContent = 'HOST · PIZZI · ' + guests.length + ' OSPITI';
+        $('roomPlayerLabel').textContent = 'HOST · LAVITASECONDOPIZZI · ' + guests.length + ' OSPITI';
         $('roomNotice').textContent = 'La stanza supporta un solo ospite. Attendi che ne rimanga uno solo.';
         launchButton.disabled = true;
       } else {
-        $('roomPlayerLabel').textContent = 'HOST · PIZZI · IN ATTESA DELL’OSPITE';
+        $('roomPlayerLabel').textContent = 'HOST · LAVITASECONDOPIZZI · IN ATTESA DELL’OSPITE';
         $('roomNotice').textContent = 'Condividi il codice con il tuo ospite. Quando entra, il suo nick comparirà qui.';
         launchButton.disabled = true;
       }
@@ -936,7 +936,7 @@
         const client = new TortelloSupabaseRoom({
           room: state.roomCode,
           role: 'host',
-          nickname: 'Pizzi',
+          nickname: 'LaVitaSecondoPizzi',
           game: state.selectedGame,
           gameConfig: state.gameConfig
         });
@@ -948,7 +948,7 @@
 
         $('roomCodeDisplay').textContent = state.roomCode;
         $('roomGameLabel').textContent = gameLabel(state.selectedGame) + ' · ' + (state.interactionMode === 'chat' ? 'SOLO CHAT' : 'OSPITE + CHAT');
-        $('roomPlayerLabel').textContent = 'HOST · PIZZI · IN ATTESA DELL’OSPITE';
+        $('roomPlayerLabel').textContent = 'HOST · LAVITASECONDOPIZZI · IN ATTESA DELL’OSPITE';
         $('roomNotice').textContent = state.interactionMode === 'chat'
           ? 'Modalità Solo Chat: puoi avviare subito. La chat sarà il secondo giocatore.'
           : 'Condividi il codice con il tuo ospite. Quando entra, il suo nick comparirà qui.';
@@ -992,7 +992,7 @@
 
     function openMasterRoom() {
       if (!['paper-please', 'dark-stories'].includes(state.selectedGame) || !state.roomCode) return;
-      const masterUrl = buildGameUrl(state.selectedGame, 'host', 'Pizzi', state.gameConfig, 'master', state.guestNickname || '');
+      const masterUrl = buildGameUrl(state.selectedGame, 'master', 'LaVitaSecondoPizzi', state.gameConfig, 'master', state.guestNickname || '');
       if (masterUrl) window.open(masterUrl, '_blank', 'noopener,noreferrer');
     }
 
@@ -1006,9 +1006,9 @@
 
       try {
         await state.roomClient.startGame();
-        const gameUrl = buildGameUrl(state.selectedGame, 'host', 'Pizzi', state.gameConfig, 'player', state.guestNickname || '');
-        if (state.interactionMode === 'chat' && state.selectedGame === 'dark-stories') {
-          const chatUrl = buildGameUrl(state.selectedGame, 'chat', 'CHAT', state.gameConfig, 'chat');
+        const gameUrl = buildGameUrl(state.selectedGame, 'host', 'LaVitaSecondoPizzi', state.gameConfig, 'player', state.guestNickname || '');
+        if (state.interactionMode === 'chat') {
+          const chatUrl = buildGameUrl(state.selectedGame, 'chat', 'LaVitaSecondoPizzi', state.gameConfig, 'chat', state.guestNickname || '');
           if (chatUrl) window.open(chatUrl, '_blank', 'noopener');
         }
         if (gameUrl) window.location.href = gameUrl;
