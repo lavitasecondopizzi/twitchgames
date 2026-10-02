@@ -64,8 +64,6 @@
     $('playerView').classList.toggle('hidden', !s.started);
 
     const difficulty = difficultyNames[s.difficulty] || 'FACILE';
-    const difficultyValue = $('difficultyValue');
-    if (difficultyValue) difficultyValue.textContent = difficulty;
     const difficultyStatus = $('difficultyStatus');
     if (difficultyStatus) difficultyStatus.textContent = s.started
       ? 'DIFFICOLTÀ: ' + difficulty + ' · GESTITA DAL MASTER'
