@@ -574,3 +574,11 @@ form{display:grid;gap:5px}
 #waitingView.difficulty-picker .difficulty-blocks{
   margin-top:8px;
 }
+
+
+/* Le webcam restano sempre sopra il layer di caricamento */
+.top .camera-stack,
+.top .camera-stack .webcam{
+  position:relative;
+  z-index:100000 !important;
+}
