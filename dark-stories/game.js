@@ -63,6 +63,17 @@
     list.innerHTML=eligible.map(item=>'<button type="button" class="story-option '+(item.id===state.selectedStoryId?'selected':'')+'" data-story-id="'+esc(item.id)+'"><strong>'+esc(item.title)+'</strong><span>'+esc(item.story)+'</span></button>').join('')||'<p class="muted">Nessuna storia disponibile per questa difficoltà.</p>';
     list.querySelectorAll('[data-story-id]').forEach(button=>button.addEventListener('click',()=>chooseStory(button.dataset.storyId)));
   }
+  
+  function setupGameTabs(){
+    const root=document.querySelector('#playerView');
+    if(!root)return;
+    root.querySelectorAll('.game-tab').forEach(tab=>tab.addEventListener('click',()=>{
+      const target=tab.dataset.tab;
+      root.querySelectorAll('.game-tab').forEach(t=>t.classList.toggle('active',t===tab));
+      root.querySelectorAll('.tab-panel').forEach(panel=>panel.classList.toggle('active',panel.dataset.panel===target));
+    }));
+  }
+
   function renderPlayer(s){
     $('connection').classList.add('hidden');
     if($('webcamLabelA'))$('webcamLabelA').textContent=playerNickname.toUpperCase();
@@ -367,5 +378,6 @@
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&client&&isMaster)client.broadcast('game_state',gameState()).catch(()=>{});});
   window.addEventListener('beforeunload',()=>{try{twitchSocket?.close();client?.close();}catch(_){}});
   setupRules();
+  setupGameTabs();
   init();
 })();
