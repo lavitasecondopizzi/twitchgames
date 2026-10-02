@@ -115,6 +115,16 @@
     $('questionForm')?.addEventListener('submit',e=>e.preventDefault());
     $('solutionGuessForm')?.addEventListener('submit',e=>e.preventDefault());
   }
+
+  function setupMasterTabs(){
+    const root=$('#masterView'); if(!root)return;
+    root.querySelectorAll('.master-tab').forEach(tab=>tab.addEventListener('click',()=>{
+      const target=tab.dataset.masterTab;
+      root.querySelectorAll('.master-tab').forEach(t=>t.classList.toggle('active',t===tab));
+      root.querySelectorAll('.master-tab-panel').forEach(p=>p.classList.toggle('active',p.dataset.masterPanel===target));
+    }));
+  }
+
   function renderMaster(s){
     $('connection').classList.add('hidden');$('masterView').classList.remove('hidden');
     if($('webcamLabelA'))$('webcamLabelA').textContent='PIZZI';
@@ -124,7 +134,8 @@
     $('masterTitle').textContent=s.title||mystery?.title||'Scegli una storia';
     $('masterStory').textContent=s.story||mystery?.story||'Scegli una storia dall’elenco della difficoltà selezionata.';
     $('masterSolution').textContent=mystery?.solution||'La soluzione comparirà quando selezioni una storia.';
-    $('difficultySummary').textContent='Difficoltà scelta: '+(difficultyNames[s.difficulty]||'FACILE')+'. Elenco filtrato automaticamente.';
+    $('difficultySummary').textContent=(difficultyNames[s.difficulty]||'FACILE');
+    if($('difficultySummarySmall'))$('difficultySummarySmall').textContent=(difficultyNames[s.difficulty]||'FACILE');
     renderStoryList();
     $('startRound').disabled=!!s.started||!s.selectedStoryId;
     
@@ -381,5 +392,6 @@
   window.addEventListener('beforeunload',()=>{try{twitchSocket?.close();client?.close();}catch(_){}});
   setupRules();
   setupGameTabs();
+  setupMasterTabs();
   init();
 })();
