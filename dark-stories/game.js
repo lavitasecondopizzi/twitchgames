@@ -210,8 +210,15 @@
     const hints=(s.revealedHints||[]).length;
     const label=hints>=3?'TUTTI GLI INDIZI RIVELATI':remaining>0?'PROSSIMO INDIZIO TRA '+String(minutes).padStart(2,'0')+':'+String(seconds).padStart(2,'0'):'INDIZIO DISPONIBILE AL MASTER';
     el.querySelector('.hint-timer-label').textContent=label;
-    const progress=hints>=3?100:Math.max(0,Math.min(100,100*(1-remaining/HINT_DELAY_MS)));
-    el.querySelector('.hint-timer-fill').style.width=progress+'%';
+    const progress=hints>=3?0:Math.max(0,Math.min(100,100*remaining/HINT_DELAY_MS));
+    const fill=el.querySelector('.hint-timer-fill');
+    fill.style.width=progress+'%';
+    const ratio=progress/100;
+    const red={r:220,g:30,b:30},green={r:30,g:150,b:70};
+    const r=Math.round(green.r+(red.r-green.r)*ratio);
+    const g=Math.round(green.g+(red.g-green.g)*ratio);
+    const b=Math.round(green.b+(red.b-green.b)*ratio);
+    fill.style.background='rgb('+r+','+g+','+b+')';
     el.classList.toggle('ready',remaining===0&&hints<3);
     if(isMaster&&$('hintButton'))$('hintButton').disabled=!s.started||!!s.solutionRevealed||hints>=(currentCase()?.hints.length||0)||remaining>0;
   }
