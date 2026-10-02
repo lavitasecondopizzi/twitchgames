@@ -144,7 +144,7 @@
     }
 
     try {
-      client = new TortelloSupabaseRoom({room, role:'host', nickname:'Pizzi', game:'dark-stories'});
+      client = new TortelloSupabaseRoom({room, role:'host', nickname:'LaVitaSecondoPizzi', game:'dark-stories'});
 
       client.on('connected', () => {
         status('Connesso alla diretta della stanza ' + room + '.');
