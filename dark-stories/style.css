@@ -943,3 +943,20 @@ body.master-page{min-height:100vh}
 }
 @keyframes sessionWinnerPop{from{transform:scale(.7) rotate(-2deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
 @keyframes sessionConfetti{0%{transform:translateY(-30px) rotate(0)}50%{transform:translateY(30px) rotate(8deg)}100%{transform:translateY(-30px) rotate(0)}}
+
+/* Solo Chat */
+.chat-page{min-height:100vh;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:10px;padding:12px;overflow:hidden}
+.chat-page .chat-header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.chat-page .chat-header h1{margin:0;font-size:clamp(24px,3vw,42px);line-height:.9}
+.chat-page .chat-main{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(280px,.6fr);gap:10px;min-height:0}
+.chat-page .chat-story,.chat-page .chat-commands{min-height:0;overflow:hidden}
+.chat-page .chat-story{display:flex;flex-direction:column;padding:14px}
+.chat-page .chat-story-text{font-size:clamp(18px,1.6vw,27px);line-height:1.3;white-space:pre-line;overflow:auto;flex:1}
+.chat-page .chat-commands{padding:14px;overflow:auto}
+.chat-page .chat-command{border:3px solid var(--ink);padding:9px;margin-bottom:8px;background:var(--paper-2)}
+.chat-page .chat-command b{display:block;font-size:12px;margin-bottom:3px}
+.chat-page .chat-leaderboard{min-height:0;padding:8px 10px}
+.chat-page .chat-leaderboard .list{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+.chat-page .chat-leaderboard .entry{min-width:0}
+.chat-page .chat-status{font-size:10px}
+@media(max-width:800px){.chat-page .chat-main{grid-template-columns:1fr}.chat-page{overflow:auto}.chat-page .chat-leaderboard .list{grid-template-columns:1fr 1fr}}
