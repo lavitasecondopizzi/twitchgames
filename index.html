@@ -798,7 +798,8 @@
       if (game === 'impiccato') {
         const theme = encodeURIComponent(gameConfig.theme || 'Vita Reale');
         const gameRole = role === 'host' ? 'host' : (role === 'chat' ? 'chat' : 'guest');
-        return './impiccato/index.html?role=' + gameRole +
+        const page = gameRole === 'chat' ? 'chat.html' : 'index.html';
+        return './impiccato/' + page + '?role=' + gameRole +
           '&player=' + player + '&room=' + room + '&theme=' + theme + '&interaction=' + interaction;
       }
 
