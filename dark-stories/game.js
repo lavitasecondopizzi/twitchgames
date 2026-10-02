@@ -65,8 +65,8 @@
   }
   function renderPlayer(s){
     $('connection').classList.add('hidden');
-    if($('webcamLabelA'))$('webcamLabelA').textContent='PIZZI';
-    if($('webcamLabelB'))$('webcamLabelB').textContent=playerNickname.toUpperCase();
+    if($('webcamLabelA'))$('webcamLabelA').textContent=playerNickname.toUpperCase();
+    if($('webcamLabelB'))$('webcamLabelB').textContent='PIZZI';
     $('waitingView').classList.toggle('hidden',!!s.started);
     $('playerView').classList.toggle('hidden',!s.started);
     document.querySelectorAll('[data-difficulty]').forEach(button=>{button.classList.toggle('selected',button.dataset.difficulty===(s.difficulty||'facile'));button.disabled=isHost||!!s.started;});
