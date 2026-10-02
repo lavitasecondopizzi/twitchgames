@@ -13,6 +13,7 @@
   let hasSelectedDifficulty = false;
   let state = {started:false,solved:false,solutionRevealed:false,selectedStoryId:null,difficultyVotes:{},difficultyVoteStartedAt:null,difficulty:'facile',revealedHints:[],history:[],queue:[],scores:{},roundPoints:{},solvedBy:[],startedAt:null,lastHintAt:null,completedStoryIds:[],sessionEnded:false,winnerNames:[]};
   const HINT_DELAY_MS = 10 * 60 * 1000;
+  const DIFFICULTY_VOTE_MS = 30 * 1000;
   let hintTimerInterval = null;
   function showLoading(message='CARICAMENTO IN CORSO…'){
     if(!$('loadingOverlay'))return;
@@ -176,6 +177,12 @@
     $('masterStory').textContent=s.story||mystery?.story||'Scegli una storia dall’elenco della difficoltà selezionata.';
     $('masterSolution').textContent=mystery?.solution||'La soluzione comparirà quando selezioni una storia.';
     $('difficultySummary').textContent=(difficultyNames[s.difficulty]||'FACILE');
+    if($('startDifficultyVote')){
+      const voteStarted=Number(s.difficultyVoteStartedAt||0);
+      const voteActive=voteStarted>0 && (Date.now()-voteStarted)<DIFFICULTY_VOTE_MS;
+      $('startDifficultyVote').disabled=!!s.started||!!s.sessionEnded||voteActive;
+      $('startDifficultyVote').textContent=voteActive?'VOTAZIONE IN CORSO…':'AVVIA VOTAZIONE';
+    }
     if($('difficultySummarySmall'))$('difficultySummarySmall').textContent=(difficultyNames[s.difficulty]||'FACILE');
     renderStoryList();
     $('startRound').disabled=!!s.started||!s.selectedStoryId;
@@ -207,6 +214,8 @@
   }
   async function selectDifficulty(difficulty){
     if(isHost||isMaster||!['facile','medio','difficile'].includes(difficulty)||state.started)return;
+    const voteStarted=Number(state.difficultyVoteStartedAt||0);
+    if(!voteStarted || Date.now()-voteStarted>=DIFFICULTY_VOTE_MS)return;
     document.querySelectorAll('[data-difficulty]').forEach(button=>button.disabled=false);
     try{
       await client.broadcast('game_event',{type:'difficulty_select',difficulty});
@@ -219,7 +228,8 @@
   }
   async function recordDifficultyVote(author,difficulty,source){
     if(state.started)return;
-    if(!state.difficultyVoteStartedAt)state.difficultyVoteStartedAt=Date.now();
+    const voteStarted=Number(state.difficultyVoteStartedAt||0);
+    if(!voteStarted || Date.now()-voteStarted>=DIFFICULTY_VOTE_MS)return;
     const name=String(author||'Anonimo').slice(0,24);
     state.difficultyVotes[name.toLowerCase()]={author:name,difficulty,source};
     state.difficulty=winningDifficulty(state.difficultyVotes);
@@ -282,6 +292,16 @@
     q.answer=answer;state.history.push({author:q.author,question:q.question,answer,source:q.source});
     await publish();
   }
+  async function startDifficultyVote(){
+    if(!isMaster||state.started||state.sessionEnded)return;
+    state.difficultyVoteStartedAt=Date.now();
+    state.difficultyVotes={};
+    state.selectedStoryId=null;
+    currentIndex=0;
+    $('masterStatus').textContent='Votazione difficoltà avviata. La chat ha 30 secondi per votare.';
+    await publish();
+  }
+
   async function chooseStory(storyId){
     if(state.started||state.sessionEnded)return;
     const selected=cases.find(item=>item.id===storyId && item.difficulty===state.difficulty);
@@ -344,7 +364,7 @@
     if(state.sessionEnded)return;
     const remaining=cases.filter(item=>!state.completedStoryIds.includes(item.id));
     if(!remaining.length){$('masterStatus').textContent='Non ci sono più storie disponibili.';return;}
-    roundNumber++;state.started=false;state.solved=false;state.solutionRevealed=false;state.startedAt=null;state.lastHintAt=null;
+    roundNumber++;state.started=false;state.solved=false;state.solutionRevealed=false;state.startedAt=null;state.lastHintAt=null;state.difficultyVoteStartedAt=null;state.difficultyVotes={};
     state.selectedStoryId=null;state.revealedHints=[];state.history=[];state.queue=[];state.solvedBy=[];state.roundPoints={};
     state.difficulty=winningDifficulty();
     await publish();
@@ -430,6 +450,7 @@
       if(isMaster){
         const restored=loadMasterState();
         $('startRound').addEventListener('click',startRound);
+        $('startDifficultyVote').addEventListener('click',startDifficultyVote);
         $('nextRound').addEventListener('click',nextRound);
         $('endSession').addEventListener('click',endSession);
         $('hintButton').addEventListener('click',revealHint);
@@ -439,7 +460,7 @@
         $('rejectSolution').addEventListener('click',()=>{$('masterStatus').textContent='Valutazione annullata. Nessun punto assegnato.';$('solverName').value='';$('solverAnswer').value='';$('hypothesisParts').innerHTML='';$('hypothesisParts').dataset.parts='[]';});
         if(!restored){
           state.difficulty='facile';
-          state.difficultyVoteStartedAt=Date.now();
+          state.difficultyVoteStartedAt=null;
           roundNumber=1;
           currentIndex=0;
         }
