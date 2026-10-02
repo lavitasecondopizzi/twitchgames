@@ -2205,11 +2205,11 @@ function aggiornaEsitoRound(){
 }
 
 function aggiornaInterattivita(){
-  if (subScoreBtn) subScoreBtn.disabled = true;
-  if (addScoreBtn) addScoreBtn.disabled = true;
+  if (subScoreBtn) subScoreBtn.disabled = !isHostRole;
+  if (addScoreBtn) addScoreBtn.disabled = !isHostRole;
   if (newRoundBtn){
-    newRoundBtn.style.display = isHostRole ? "none" : "none";
-    newRoundBtn.disabled = false;
+    newRoundBtn.style.display = isHostRole ? "" : "none";
+    newRoundBtn.disabled = !isHostRole;
   }
 }
 
@@ -2452,7 +2452,7 @@ function initTabs(){
 /* ========= INIT ========= */
 
 newRoundBtn.addEventListener("click", () => {
-  // Il controllo del nuovo round resta riservato al futuro Master.
+  if (isHostRole) nuovoRound();
 });
 
 (async function init(){
