@@ -441,3 +441,15 @@ form{display:grid;gap:5px}
   align-self:auto !important;
   z-index:2000;
 }
+
+
+/* Regole: sotto la prima riga delle webcam, allineate a destra */
+.rules-open{
+  position:static !important;
+  display:block !important;
+  width:auto !important;
+  min-height:0 !important;
+  margin:6px 0 0 auto !important;
+  padding:3px 7px !important;
+  z-index:10;
+}
