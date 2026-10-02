@@ -369,13 +369,8 @@
       }else if(isHost){
         document.body.classList.add('readonly-host');
         document.querySelectorAll('[data-difficulty]').forEach(button=>{button.disabled=true;button.style.pointerEvents='none';button.onclick=e=>{e.preventDefault();e.stopImmediatePropagation();return false;};});
-        $('nickname').value='Pizzi';$('nickname').readOnly=true;
         renderPlayer(gameState());lockHostInteractions();hideLoading();
       }else{
-        const saved=playerNickname;
-        $('nickname').value=saved;
-        $('nickname').readOnly=true;
-        $('nickname').title='Nickname preso dalla lobby';
         document.querySelectorAll('[data-difficulty]').forEach(button=>button.addEventListener('click',()=>selectDifficulty(button.dataset.difficulty).catch(()=>status('Impossibile selezionare la difficoltà.',true))));
         $('questionForm').addEventListener('submit',e=>{e.preventDefault();const name=playerNickname;sendQuestion(name,$('questionInput').value,'OSPITE').then(()=>$('questionInput').value='').catch(()=>status('Impossibile inviare la domanda.',true));});
         $('solutionGuessForm').addEventListener('submit',e=>{e.preventDefault();const name=playerNickname;sendSolution(name,$('solutionGuess').value,'OSPITE').then(()=>$('solutionGuess').value='').catch(()=>status('Impossibile inviare il tentativo.',true));});
