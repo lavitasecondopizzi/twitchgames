@@ -7,7 +7,7 @@
   const HINT_DELAY_MS = 10 * 60 * 1000;
   let client = null;
   let timer = null;
-  let currentState = { started:false, solved:false, solutionRevealed:false, difficulty:'facile', revealedHints:[], history:[], scores:{}, solvedBy:[] };
+  let currentState = { started:false, solved:false, solutionRevealed:false, difficulty:'facile', revealedHints:[], history:[], scores:{}, solvedBy:[], sessionEnded:false, winnerNames:[] };
 
   function status(message, error=false) {
     const el = $('connectionStatus');
@@ -67,6 +67,11 @@
 
   function render(s) {
     currentState = {...currentState, ...s};
+    const end=$('sessionEndOverlay');
+    if(end){
+      end.classList.toggle('hidden',!currentState.sessionEnded);
+      if(currentState.sessionEnded){const names=currentState.winnerNames||[];$('winnerName').textContent=names.length===1?names[0]:(names.length?names.join(' · '):'NESSUN VINCITORE');$('winnerTitle').textContent=names.length>1?'VINCITORI':'VINCITORE';}
+    }
     $('connection').classList.add('hidden');
     $('waitingView').classList.toggle('hidden', !!s.started);
     $('playerView').classList.toggle('hidden', !s.started);
