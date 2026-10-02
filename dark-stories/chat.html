@@ -60,7 +60,7 @@
  }
  async function init(){
    if(!/^[A-Z0-9]{6}$/.test(room)){$('chatStatus').textContent='Codice stanza non valido.';return;}
-   client=new TortelloSupabaseRoom({room,role:'guest',nickname:'CHAT',game:'dark-stories'});
+   client=new TortelloSupabaseRoom({room,role:'chat',nickname:'CHAT',game:'dark-stories'});
    client.on('connected',()=>{$('chatStatus').textContent='CHAT COLLEGATA · IN ATTESA DEL MASTER';client.broadcast('state_request',{requester:'chat'}).catch(()=>{});});
    client.on('game-state',render);
    client.on('presence',p=>{const master=Object.values(p||{}).flat().some(e=>e.role==='master');$('chatStatus').textContent=master?'CHAT COLLEGATA · MASTER ONLINE':'IN ATTESA DEL MASTER';if(master)client.broadcast('state_request',{requester:'chat'}).catch(()=>{});});
