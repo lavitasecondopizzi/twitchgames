@@ -824,10 +824,10 @@
 
       if (game === 'dark-stories') {
         const page = view === 'master' ? 'master.html' : (role === 'host' ? 'host.html' : 'index.html');
-        const gameRole = view === 'master' ? 'master' : role;
-        const guest = guestNickname ? '&guest=' + encodeURIComponent(guestNickname) : '';
-        return './dark-stories/' + page + '?room=' + room +
-          '&role=' + gameRole + '&player=' + player + guest;
+        if (view === 'master' || role === 'host') {
+          return './dark-stories/' + page + '?room=' + room;
+        }
+        return './dark-stories/index.html?room=' + room + '&player=' + player;
       }
 
       return null;
