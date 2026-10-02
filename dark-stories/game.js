@@ -399,8 +399,6 @@
         $('nextRound').addEventListener('click',nextRound);
         $('hintButton').addEventListener('click',revealHint);
         $('revealSolution').addEventListener('click',revealSolution);
-        $('connectTwitch').addEventListener('click',connectTwitch);
-        $('manualQuestionForm').addEventListener('submit',e=>{e.preventDefault();addQuestion($('manualAuthor').value,$('manualQuestion').value,'TWITCH MANUALE');$('manualQuestion').value='';});
         $('solutionForm').addEventListener('submit',e=>{e.preventDefault();approveSolution($('solverName').value,$('solverAnswer').value);});
         $('prepareAnswerParts').addEventListener('click',prepareAnswerParts);
         $('rejectSolution').addEventListener('click',()=>{$('masterStatus').textContent='Valutazione annullata. Nessun punto assegnato.';$('solverName').value='';$('solverAnswer').value='';$('hypothesisParts').innerHTML='';$('hypothesisParts').dataset.parts='[]';});
