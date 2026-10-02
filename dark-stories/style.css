@@ -515,3 +515,30 @@ form{display:grid;gap:5px}
 .scoreboard{
   margin:0 !important;
 }
+
+
+/* Header condiviso: classifica alta quanto la riga webcam */
+.top{
+  align-items:stretch !important;
+}
+.top > .camera-stack,
+.top > .center{
+  align-self:stretch;
+}
+.center{
+  height:auto !important;
+  min-height:0 !important;
+}
+.scoreboard{
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  flex:1 1 auto;
+  display:flex;
+  flex-direction:column;
+}
+.scoreboard .list{
+  flex:1 1 auto;
+  min-height:0;
+  height:auto !important;
+}
