@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="it"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Glu Glu Stories · Solo Chat</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="app" class="page chat-page">
+  <header class="panel chat-header">
+    <div><span class="eyebrow">TORTELLO GAMES / GLU GLU STORIES</span><h1>SOLO CHAT</h1></div>
+    <div id="chatStatus" class="chat-status">Connessione alla stanza…</div>
+  </header>
+  <section class="chat-main">
+    <article class="panel chat-story">
+      <div class="eyebrow" id="roundLabel">IN ATTESA DEL MISTERO</div>
+      <h2 id="storyTitle">In attesa del Master</h2>
+      <div id="storyText" class="chat-story-text">La chat è il giocatore. Le interazioni avvengono direttamente tramite Twitch.</div>
+      <div id="hints" class="hints"></div>
+    </article>
+    <aside class="panel chat-commands">
+      <h2>COME GIOCA LA CHAT</h2>
+      <div class="chat-command"><b>!difficolta facile</b><span>Imposta la difficoltà.</span></div>
+      <div class="chat-command"><b>!difficolta medio</b><span>Imposta la difficoltà.</span></div>
+      <div class="chat-command"><b>!difficolta difficile</b><span>Imposta la difficoltà.</span></div>
+      <div class="chat-command"><b>!ds [domanda]</b><span>Invia una domanda al Master.</span></div>
+      <div class="chat-command"><b>!soluzione [risposta]</b><span>Invia un tentativo di soluzione.</span></div>
+      <p class="notice">Il Master gestisce risposte, indizi, punteggi e chiusura della sessione.</p>
+    </aside>
+  </section>
+  <section class="panel chat-leaderboard">
+    <div class="master-panel-title"><h2>CLASSIFICA</h2><span>TOP 5</span></div>
+    <div id="leaderboard" class="list"></div>
+  </section>
+</main>
+<section id="sessionEndOverlay" class="session-end-overlay hidden" aria-live="assertive">
+  <div class="session-end-confetti" aria-hidden="true">★ ★ ★ ★ ★ ★ ★</div>
+  <div class="session-end-card">
+    <div class="session-end-kicker">GLU GLU STORIES</div>
+    <div id="winnerTitle" class="session-end-title">VINCITORE</div>
+    <div id="winnerName" class="session-end-name">—</div>
+    <div class="session-end-subtitle">SESSIONE TERMINATA</div>
+  </div>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../shared/supabase-config.js"></script><script src="../shared/supabase-room.js"></script>
+<script>
+(function(){
+ const p=new URLSearchParams(location.search),room=(p.get('room')||'').toUpperCase(),$=id=>document.getElementById(id);
+ let client,state={};
+ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ function render(s){
+   state={...state,...s};
+   $('roundLabel').textContent=state.started?'MISTERO '+(state.roundNumber||state.index+1)+' · '+String(state.difficulty||'facile').toUpperCase():'IN ATTESA DEL MISTERO';
+   $('storyTitle').textContent=state.title||'In attesa del Master';
+   $('storyText').textContent=state.story||'La chat è il giocatore. Le interazioni avvengono direttamente tramite Twitch.';
+   $('hints').innerHTML=(state.revealedHints||[]).map((h,i)=>'<div class="hint"><b>INDIZIO '+(i+1)+':</b> '+esc(h)+'</div>').join('');
+   $('leaderboard').innerHTML=Object.entries(state.scores||{}).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([n,p],i)=>'<div class="entry"><strong>'+(i+1)+'. '+esc(n)+'</strong>'+p+' punti</div>').join('')||'<p class="muted">Nessun punto assegnato.</p>';
+   const end=$('sessionEndOverlay'); end.classList.toggle('hidden',!state.sessionEnded);
+   if(state.sessionEnded){const names=state.winnerNames||[];$('winnerName').textContent=names.length===1?names[0]:(names.length?names.join(' · '):'NESSUN VINCITORE');$('winnerTitle').textContent=names.length>1?'VINCITORI':'VINCITORE';}
+ }
+ async function init(){
+   if(!/^[A-Z0-9]{6}$/.test(room)){$('chatStatus').textContent='Codice stanza non valido.';return;}
+   client=new TortelloSupabaseRoom({room,role:'guest',nickname:'CHAT',game:'dark-stories'});
+   client.on('connected',()=>{$('chatStatus').textContent='CHAT COLLEGATA · IN ATTESA DEL MASTER';client.broadcast('state_request',{requester:'chat'}).catch(()=>{});});
+   client.on('game-state',render);
+   client.on('presence',p=>{const master=Object.values(p||{}).flat().some(e=>e.role==='master');$('chatStatus').textContent=master?'CHAT COLLEGATA · MASTER ONLINE':'IN ATTESA DEL MASTER';if(master)client.broadcast('state_request',{requester:'chat'}).catch(()=>{});});
+   await client.connect();
+ }
+ init().catch(e=>$('chatStatus').textContent=e.message||'Errore di connessione.');
+})();
+</script>
+</body></html>
