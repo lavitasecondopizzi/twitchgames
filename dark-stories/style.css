@@ -688,3 +688,13 @@ form{display:grid;gap:5px}
   .player-actions{overflow:visible}
   .tab-panel{overflow:visible}
 }
+
+
+/* Countdown indizio: parte pieno e si svuota fino allo 0%.
+   Il colore viene aggiornato dal JS da rosso a verde. */
+.hint-timer-fill{
+  width:100%;
+  background:var(--red);
+  transition:width .4s linear,background .4s linear;
+}
+.hint-timer.ready .hint-timer-fill{background:var(--green)}
