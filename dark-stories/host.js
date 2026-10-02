@@ -67,7 +67,7 @@
     const difficultyStatus = $('difficultyStatus');
     if (difficultyStatus) difficultyStatus.textContent = s.started
       ? 'DIFFICOLTÀ: ' + difficulty + ' · GESTITA DAL MASTER'
-      : 'DIFFICOLTÀ ATTUALE: ' + difficulty + ' · SCELTA DALL’OSPITE';
+      : 'Difficoltà attuale: ' + difficulty + '. Il Master sta scegliendo una storia.';
     document.querySelectorAll('[data-difficulty]').forEach(button => {
       button.classList.toggle('selected', button.dataset.difficulty === (s.difficulty || 'facile'));
     });
