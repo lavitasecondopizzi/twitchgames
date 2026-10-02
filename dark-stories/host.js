@@ -64,10 +64,15 @@
     $('playerView').classList.toggle('hidden', !s.started);
 
     const difficulty = difficultyNames[s.difficulty] || 'FACILE';
-    $('difficultyValue').textContent = difficulty;
-    $('difficultyStatus').textContent = s.started
+    const difficultyValue = $('difficultyValue');
+    if (difficultyValue) difficultyValue.textContent = difficulty;
+    const difficultyStatus = $('difficultyStatus');
+    if (difficultyStatus) difficultyStatus.textContent = s.started
       ? 'DIFFICOLTÀ: ' + difficulty + ' · GESTITA DAL MASTER'
       : 'DIFFICOLTÀ ATTUALE: ' + difficulty + ' · SCELTA DALL’OSPITE';
+    document.querySelectorAll('[data-difficulty]').forEach(button => {
+      button.classList.toggle('selected', button.dataset.difficulty === (s.difficulty || 'facile'));
+    });
 
     if (!s.started) {
       $('roundLabel').textContent = 'IN ATTESA DEL MISTERO';
@@ -87,6 +92,7 @@
     $('hints').innerHTML = (s.revealedHints || [])
       .map((hint,i) => '<div class="hint"><b>INDIZIO ' + (i+1) + ':</b> ' + esc(hint) + '</div>').join('');
 
+    if ($('nickname')) $('nickname').value = (s.guestNickname || s.playerNickname || 'Ospite');
     $('answerHistory').innerHTML = (s.history || []).slice().reverse()
       .map(item => '<div class="entry"><strong>' + esc(item.author) + ' · ' + esc(item.answer) + '</strong>' + esc(item.question) + '</div>')
       .join('') || '<p class="muted">Ancora nessuna risposta.</p>';
