@@ -110,6 +110,17 @@
     hideLoading();
   }
 
+
+  function setupGameTabs() {
+    const root = $('playerView');
+    if (!root) return;
+    root.querySelectorAll('.game-tab').forEach(tab => tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+      root.querySelectorAll('.game-tab').forEach(item => item.classList.toggle('active', item === tab));
+      root.querySelectorAll('.tab-panel').forEach(panel => panel.classList.toggle('active', panel.dataset.panel === target));
+    }));
+  }
+
   function setupRules() {
     const overlay = $('rulesOverlay');
     const open = () => { overlay.classList.remove('hidden'); $('closeRules').focus(); };
