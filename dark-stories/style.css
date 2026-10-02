@@ -878,3 +878,26 @@ body.master-page{min-height:100vh}
   min-height:0;
   overflow:auto;
 }
+
+
+/* Master tabs: pannello operativo stabile e cliccabile */
+.master-operations{
+  position:relative;
+  z-index:20;
+  isolation:isolate;
+}
+.master-tabs{
+  position:relative;
+  z-index:30;
+  pointer-events:auto !important;
+}
+.master-tab{
+  position:relative;
+  z-index:31;
+  pointer-events:auto !important;
+  cursor:pointer;
+}
+.master-tab-panel{
+  position:relative;
+  z-index:1;
+}
