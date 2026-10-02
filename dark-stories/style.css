@@ -595,3 +595,20 @@ form{display:grid;gap:5px}
 .loading-overlay{
   z-index:500 !important;
 }
+
+
+/* Layering: solo le webcam restano sopra al caricamento */
+.top{
+  z-index:auto !important;
+}
+.top .camera-stack{
+  position:relative;
+  z-index:1001 !important;
+}
+.top .center{
+  position:relative;
+  z-index:1 !important;
+}
+.loading-overlay{
+  z-index:500 !important;
+}
