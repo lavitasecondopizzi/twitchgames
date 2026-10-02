@@ -824,10 +824,12 @@
       }
 
       if (game === 'dark-stories') {
-        const page = view === 'master' ? 'master.html' : (role === 'host' ? 'host.html' : 'index.html');
-        if (view === 'master' || role === 'host') {
-          return './dark-stories/' + page + '?room=' + room;
+        if (view === 'master') return './dark-stories/master.html?room=' + room;
+        if (view === 'chat' || (gameConfig.interactionMode === 'chat' && role === 'chat')) {
+          return './dark-stories/chat.html?room=' + room;
         }
+        const page = role === 'host' ? 'host.html' : 'index.html';
+        if (role === 'host') return './dark-stories/' + page + '?room=' + room;
         return './dark-stories/index.html?room=' + room + '&player=' + player;
       }
 
@@ -1000,6 +1002,10 @@
       try {
         await state.roomClient.startGame();
         const gameUrl = buildGameUrl(state.selectedGame, 'host', 'Pizzi', state.gameConfig, 'player', state.guestNickname || '');
+        if (state.interactionMode === 'chat' && state.selectedGame === 'dark-stories') {
+          const chatUrl = buildGameUrl(state.selectedGame, 'chat', 'CHAT', state.gameConfig, 'chat');
+          if (chatUrl) window.open(chatUrl, '_blank', 'noopener');
+        }
         if (gameUrl) window.location.href = gameUrl;
       } catch (_) {
         $('roomNotice').textContent = 'Non è stato possibile avviare la partita.';
