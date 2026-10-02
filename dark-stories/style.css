@@ -582,3 +582,16 @@ form{display:grid;gap:5px}
   position:relative;
   z-index:100000 !important;
 }
+
+
+/* Layering definitivo: la riga webcam deve stare sopra il caricamento.
+   Il precedente z-index sui figli era confinato dallo stacking context di .top. */
+.top{
+  z-index:1000 !important;
+}
+.top .camera-stack{
+  z-index:1001 !important;
+}
+.loading-overlay{
+  z-index:500 !important;
+}
