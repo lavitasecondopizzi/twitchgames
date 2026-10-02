@@ -1003,8 +1003,12 @@ button,input,select{font:inherit}
             <!-- Giocatore B -->
             <aside class="votes-panel" id="chatVotesPanel">
               <h2>Voti chat</h2>
-              <p class="votes-subtitle">Qui puoi mostrare le lettere proposte dalla chat.</p>
-              <div id="chatVotesList" class="votes-list">Nessuna integrazione bot ancora configurata.</div>
+              <p class="votes-subtitle">Quando tocca a B, la chat vota la lettera con <b>!vota A</b>, <b>!vota B</b>, ecc.</p>
+              <div id="chatVoteTimer" class="chat-vote-timer" hidden>
+                <div class="chat-vote-clock"><span id="chatVoteCountdown">30s</span></div>
+                <div class="chat-vote-track"><div id="chatVoteFill"></div></div>
+              </div>
+              <div id="chatVotesList" class="votes-list">In attesa del turno della chat.</div>
             </aside>
 
             <section class="board" data-player="B">
@@ -1077,8 +1081,8 @@ button,input,select{font:inherit}
 
 const urlParams   = new URLSearchParams(window.location.search);
 const forcedRole  = urlParams.get("role");   // "host", "guest", "chat" (A/B mantenuti per compatibilità)
-const isHostRole = forcedRole === "host" || isHostRole;
-const isGuestRole = forcedRole === "guest" || isGuestRole;
+const isHostRole = forcedRole === "host" || forcedRole === "A";
+const isGuestRole = forcedRole === "guest" || forcedRole === "B";
 const isChatRole = forcedRole === "chat";
 const sessionTheme = (urlParams.get("theme") || "Vita Reale").trim();
 const interactionMode = urlParams.get("interaction") === "chat" ? "chat" : "guest";
@@ -1741,7 +1745,7 @@ async function salvaStato(overrides = {}){
 
 async function caricaStato(){
   if (isHostRole) loadHostSnapshot();
-  if (!roomCode || !["A","B"].includes(forcedRole)){
+  if (!roomCode || !["host","guest","chat","A","B"].includes(forcedRole)){
     decidiRuoloDaStato();
     aggiornaUI();
     return;
@@ -1771,6 +1775,11 @@ async function caricaStato(){
       // Gli effetti UI devono essere riprodotti da tutti i client.
       if (event.type === "score_fx" && Number(event.delta)){
         showScoreFx(Number(event.delta));
+        return;
+      }
+
+      if (event.type === "chat_vote" && event.letter && event.voter && chatIsPlayerB){
+        await registerChatVote(event.letter, event.voter);
         return;
       }
 
@@ -2035,12 +2044,20 @@ async function finishChatVote(){
   await onLetterClick("B", winner, true);
 }
 
-async function registerChatVote(letter){
+async function registerChatVote(letter, voter = ""){
   if (!isHostRole || !chatIsPlayerB || !stato.chatVote?.active) return;
   letter = String(letter || "").trim().toUpperCase();
+  voter = String(voter || "").trim().toLowerCase();
   if (!/^[A-Z]$/.test(letter)) return;
   if (stato.game.B.correctLetters.includes(letter) || stato.game.B.wrongLetters.includes(letter)) return;
+
+  stato.chatVote.votes = stato.chatVote.votes || {};
+  stato.chatVote.voters = stato.chatVote.voters || {};
+  if (voter && stato.chatVote.voters[voter]) return;
+
   stato.chatVote.votes[letter] = Number(stato.chatVote.votes[letter] || 0) + 1;
+  if (voter) stato.chatVote.voters[voter] = letter;
+
   aggiornaUI();
   await broadcastGameState();
 }
@@ -2184,8 +2201,8 @@ function drawHangman(playerId){
 /* ========= INTERATTIVITÀ ========= */
 
 function puoControllare(playerId){
-  // Host/OBS e Solo Chat sono viste non interattive: solo l'ospite può usare la tastiera.
-  if (isHostRole || isChatRole) return false;
+  // Host = giocatore A, Guest = giocatore B. La chat non usa la tastiera.
+  if (isChatRole) return false;
   return player && player.toUpperCase() === playerId;
 }
 
@@ -2205,8 +2222,9 @@ function aggiornaEsitoRound(){
 }
 
 function aggiornaInterattivita(){
-  if (subScoreBtn) subScoreBtn.disabled = !isHostRole;
-  if (addScoreBtn) addScoreBtn.disabled = !isHostRole;
+  const canEditScore = !!player && !isChatRole;
+  if (subScoreBtn) subScoreBtn.disabled = !canEditScore;
+  if (addScoreBtn) addScoreBtn.disabled = !canEditScore;
   if (newRoundBtn){
     newRoundBtn.style.display = isHostRole ? "" : "none";
     newRoundBtn.disabled = !isHostRole;
