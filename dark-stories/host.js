@@ -2,7 +2,7 @@
   const params = new URLSearchParams(location.search);
   const room = (params.get('room') || '').toUpperCase();
   const $ = id => document.getElementById(id);
-  
+  let guestNickname = '';
   const difficultyNames = { facile: 'FACILE', medio: 'MEDIO', difficile: 'DIFFICILE' };
   const HINT_DELAY_MS = 10 * 60 * 1000;
   let client = null;
